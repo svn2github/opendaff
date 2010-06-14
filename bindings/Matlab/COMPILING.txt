@@ -1,0 +1,14 @@
+1) Building the OpenDAFF MEX using Matlab:
+
+This is the common way: Build the OpenDAFF MEX is to use the MEX Matlab compiler frontend.
+
+You can set it up using the command 'mex -setup'
+
+To build the OpenDAFF Matlab Extension run the script 'make.m'
+
+Note: You do not need the libdaff library files.
+      The Matlab-build includes the library sources.
+
+2) Building the OpenDAFF MEX using Microsoft Visual Studio
+
+Use the MSVC project files. This build requires to compile the libdaff library.

@@ -1,0 +1,24 @@
+====================
+ Compiling OpenDAFF
+====================
+
+
+Microsoft Visual C++ / Visual Studio compilers
+----------------------------------------------
+
+Please use the solution and project files to build OpenDAFF!
+You can find them in this directory.
+
+
+GNU Compiler Collection (GCC)
+-----------------------------
+
+First you need to select your build platform (e.g. Linux, MacOS) and type in your shell for instance
+
+export BUILD_PLATFORM=Linux
+
+After this you can run the makefile and build the software.
+In order to build the library type:
+
+make lib
+
