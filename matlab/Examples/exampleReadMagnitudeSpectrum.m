@@ -50,7 +50,7 @@ end
 
 % Now lets compare the data to another direction
 
-mags2 = DAFF('getNearestNeighbour', h, 'object', 90, 30);
+mags2 = DAFF('getNearestNeighbourRecord', h, 'object', 90, 30);
 for i=1:nchannels
     semilogx(props.freqs, 10*log10(mags2(i,:)), 'r');
 end
