@@ -55,7 +55,7 @@ void GetProperties(int, mxArray**, int, const mxArray**);
 void GetRecordCoords(int, mxArray**, int, const mxArray**);
 void GetRecordByIndex(int, mxArray**, int, const mxArray**);
 void GetNearestNeighbourRecord(int, mxArray**, int, const mxArray**);
-
+void GetCellRecords(int, mxArray**, int, const mxArray**);
 
 // Global variables
 typedef int32_t HANDLE;
@@ -207,14 +207,26 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 		mexPrintf("  Command \"getNearestNeighbourRecord\"\n\n");
 		mexPrintf("      Returns the data at the nearest neighbour grid point to the given direction\n\n");
-		mexPrintf("      Syntax:     [data, oob] = DAFF('getNearestNeighbour', handle, view, angle1, angle2)\n\n");
+		mexPrintf("      Syntax:     [data, oob] = DAFF('getNearestNeighbourRecord', handle, view, angle1, angle2)\n\n");
 		mexPrintf("      Parameters: handle		1x1 int32	Handle of the opened DAFF file\n");
 		mexPrintf("                  view		char		View ('data' => Data spherical coordinates, 'object' => Object spherical coordinates\n");
 		mexPrintf("                  angle1		1x1 real	First angle (For 'data' alpha; for 'object' azimuth)\n");
 		mexPrintf("                  angle2		1x1 real	Second angle (For 'data' beta; for 'object' elevation)\n");
 		mexPrintf("      Returns:    data		MxN double	Matrix containing the record data (rows => channel data)\n");
+		mexPrintf("                  oob 		1x1 logical Out-of-bounds indicator\n");
+		
 		// TODO: Later mexPrintf("                  oob		1x1 logical	Out of bounds flag\n\n\n");
 
+		mexPrintf("  Command \"getCellRecords\"\n\n");
+		mexPrintf("      Returns the data of all four records of the surrounding cell to the given direction\n\n");
+		mexPrintf("      Syntax:     [data, oob] = DAFF('getCellRecords', handle, view, angle1, angle2)\n\n");
+		mexPrintf("      Parameters: handle		1x1 int32	           Handle of the opened DAFF file\n");
+		mexPrintf("                  view		char		           View ('data' => Data spherical coordinates, 'object' => Object spherical coordinates\n");
+		mexPrintf("                  angle1		1x1 real	           First angle (For 'data' alpha; for 'object' azimuth)\n");
+		mexPrintf("                  angle2		1x1 real	           Second angle (For 'data' beta; for 'object' elevation)\n");
+		mexPrintf("      Returns:    data		cell(4) of MxN double  Matrix containing the record data (rows => channel data)\n");
+		mexPrintf("                  oob 		1x1 logical            Out-of-bounds indicator\n");		
+		
 		mexPrintf("  Command \"getVersion\"\n\n");
 		mexPrintf("      Returns the OpenDAFF version\n\n");
 		mexPrintf("      Syntax:     [version] = DAFF('getVersion')\n\n");
@@ -259,6 +271,11 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		bMatch = true;
 	}
 
+	if (sCommand == "getcellrecords") {
+		GetCellRecords(nlhs, plhs, nrhs, prhs);
+		bMatch = true;
+	}
+	
 	if (!bMatch)
 		mexErrMsgTxt("Invalid command");
 }
@@ -698,7 +715,53 @@ void GetNearestNeighbourRecord(int nlhs, mxArray *plhs[], int nrhs, const mxArra
 
 	int iRecordIndex;
 	bool bOutOfBounds;
-	pReader->getContent()->getNearestNeighbour(iView, dAngle1, dAngle2, iRecordIndex, bOutOfBounds);
+	pReader->getContent()->getNearestNeighbour(iView, (float) dAngle1, (float) dAngle2, iRecordIndex, bOutOfBounds);
 
 	GetRecordMatlab(pReader, pTarget->pfBuffer, iRecordIndex, plhs[0]);
+	
+	// TODO: Return out of bounds flags
+}
+
+void GetCellRecords(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
+
+	if (nrhs != 5)
+		mexErrMsgTxt("This command requires four arguments");
+
+	TARGET* pTarget = GetHandleTarget(prhs[1]);
+	DAFFReader* pReader = pTarget->pReader;
+
+	std::string sView;
+	if (!getString(prhs[2], sView))
+		mexErrMsgTxt("Parameter VIEW must be a string");
+	std::transform(sView.begin(), sView.end(), sView.begin(), tolower);
+
+	int iView = -1;
+	if (sView == "data") iView = DAFF_DATA_VIEW;
+	if (sView == "object") iView = DAFF_OBJECT_VIEW;
+	if (iView == -1)
+		mexErrMsgTxt("Invalid view");
+
+	double dAngle1, dAngle2;
+	if (!getRealScalar(prhs[3], dAngle1))
+		mexErrMsgTxt("Parameter ANGLE1 must be a real-valued scalar");
+	if (!getRealScalar(prhs[4], dAngle2))
+		mexErrMsgTxt("Parameter ANGLE2 must be a real-valued scalar");
+
+	DAFFQuad q;
+	bool bOutOfBounds;
+	pReader->getContent()->getCell(iView, (float) dAngle1, (float) dAngle2, q);
+	
+	mxArray* pResult = mxCreateCellMatrix(1, 4);
+	mxArray* pRecord;
+	
+	GetRecordMatlab(pReader, pTarget->pfBuffer, q.iIndex1, pRecord);
+	mxSetCell(pResult, 0, pRecord);
+	GetRecordMatlab(pReader, pTarget->pfBuffer, q.iIndex2, pRecord);
+	mxSetCell(pResult, 1, pRecord);
+	GetRecordMatlab(pReader, pTarget->pfBuffer, q.iIndex3, pRecord);
+	mxSetCell(pResult, 2, pRecord);
+	GetRecordMatlab(pReader, pTarget->pfBuffer, q.iIndex4, pRecord);
+	mxSetCell(pResult, 3, pRecord);
+
+	plhs[0] = pResult;
 }
