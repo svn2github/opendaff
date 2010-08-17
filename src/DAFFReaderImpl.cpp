@@ -269,7 +269,7 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 		if (m_pContentHeaderMS->iNumFreqs <= 0)
 			return DAFF_FILE_CORRUPTED;
 
-		float* pfFreqs = (float*) ((char*) m_pContentHeader + 4);
+		float* pfFreqs = (float*) ((char*) m_pContentHeader + 8);
 
 		// Fix the endianness of the frequency list
 		DAFF::le2se_4byte(pfFreqs, m_pContentHeaderMS->iNumFreqs);
@@ -929,7 +929,7 @@ int DAFFReaderImpl::getMagnitudes(int iRecordIndex, int iChannel, float* pfData)
 
 	if (pfData == NULL) return DAFF_NO_ERROR;
 
-	DAFFRecordDescMS& pDesc = m_pRecordDescMS[iRecordIndex];
+	DAFFRecordDescMS& pDesc = m_pRecordDescMS[iRecordIndex*m_pMainHeader->iNumChannels + iChannel];
 	float* pfSrc = reinterpret_cast<float*>( reinterpret_cast<char*>(m_pDataBlock) + pDesc.ui64DataOffset );
 	memcpy(pfData, pfSrc, m_pContentHeaderMS->iNumFreqs*sizeof(float));
 
