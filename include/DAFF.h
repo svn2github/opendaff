@@ -37,6 +37,9 @@
 #include <DAFFContent.h>
 #include <DAFFContentIR.h>
 #include <DAFFContentMS.h>
+#include <DAFFContentPS.h>
+#include <DAFFContentMPS.h>
+#include <DAFFContentDFT.h>
 #include <DAFFMetadata.h>
 #include <DAFFProperties.h>
 #include <DAFFReader.h>

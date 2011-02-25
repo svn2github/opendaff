@@ -41,6 +41,7 @@
 // Forward declarations
 class DAFFProperties;
 class DAFFReader;
+class DAFFMetadata;
 
 //! Common content interface
 /**
@@ -63,6 +64,16 @@ public:
 
 	//! Returns the properties
 	virtual const DAFFProperties* getProperties() const=0;
+
+	//! Returns the metadata of a record
+	/**
+	 * Note: The method always returns a valid DAFFMetadata, even if there is
+	 *       none specified in the file. Thereby we maintain a consistent 
+	 *       behaviour. You can query if the DAFFMetadata is empty using
+	 *       the bEmptyMetadata argument.
+	 */
+	virtual const DAFFMetadata* getRecordMetadata(int iRecordIndex, int iChannel) const=0;
+	virtual const DAFFMetadata* getRecordMetadata(int iRecordIndex, int iChannel, bool& bEmptyMetadata) const=0;
 
 	//! Determines the spherical coordinates of a record (grid point)
 	/**

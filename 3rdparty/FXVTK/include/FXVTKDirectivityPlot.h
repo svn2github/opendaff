@@ -30,6 +30,7 @@
 #pragma once
 #include "FXVTKPlotObject.h"
 
+class DAFFContentDFT;
 class DAFFContentMS;
 
 class FXVTKDirectivityPlot : public FXVTKPlotObject {
@@ -70,6 +71,7 @@ public:
 
 	// Set the data source (DAFF content object)
 	virtual void SetData(DAFFContentMS* pContent);
+	virtual void SetData(DAFFContentDFT* pContent);
 
 	//int GetSelectedFrequency() const;
 	void SetSelectedFrequency(int iIndex);
@@ -142,5 +144,6 @@ private:
 	*/
 
 	DAFFContentMS* m_pContentMS;
+	DAFFContentDFT* m_pContentDFT;
 	std::vector<std::vector<std::vector<float>>> m_data;
 };

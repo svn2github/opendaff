@@ -1,6 +1,7 @@
 // $Id: MainWindow.cpp,v 1.8 2010/02/10 11:23:31 schmoch Exp $
 
 #include <vector>
+#include <math.h>
 
 #include "MainWindow.h"
 
@@ -48,6 +49,7 @@ FXIMPLEMENT(MainWindow, FXMainWindow, MainWindowMap, ARRAYNUMBER(MainWindowMap))
 DAFFReader* MainWindow::m_pReader = NULL;
 DAFFContentIR* MainWindow::m_pContentIR = NULL;
 DAFFContentMS* MainWindow::m_pContentMS = NULL;
+DAFFContentDFT* MainWindow::m_pContentDFT = NULL;
 
 MainWindow::MainWindow(FXApp* app)
 : FXMainWindow(app, APPNAME, NULL, NULL, DECOR_ALL, 10, 10, 1020,700)
@@ -522,12 +524,14 @@ void MainWindow::load(const std::string& sFilename) {
 		if (pNewReader->getContentType() == DAFF_IMPULSE_RESPONSE) {
 			m_pContentIR = dynamic_cast<DAFFContentIR*>( m_pReader->getContent() );
 			m_pContentMS = NULL;
+			m_pContentDFT = NULL;
 		}
 
 
 		if (pNewReader->getContentType() == DAFF_MAGNITUDE_SPECTRUM) {
 			m_pContentIR = NULL;
 			m_pContentMS = dynamic_cast<DAFFContentMS*>( m_pReader->getContent() );
+			m_pContentDFT = NULL;
 			
 			slideFrequency->setRange(0, m_pContentMS->getNumFrequencies()-1);
 			slideFrequency->setValue(0);
@@ -544,6 +548,41 @@ void MainWindow::load(const std::string& sFilename) {
 			
 			
 			lblFrequency->setText( FXStringFormat("%d", m_pContentMS->getFrequencies()[0]) + " Hz");
+
+			listChannel->clearItems();
+			for (int i=1; i <= props->getNumberOfChannels(); i++) {
+				if( props->getChannelLabel(i-1).length() == 0) {
+					listChannel->appendItem("Channel " + FXStringFormat("%d", i));
+				} else {
+					listChannel->appendItem("Ch. " + FXStringFormat("%d", i) + " - " + props->getChannelLabel(i-1).c_str());
+				}
+			}
+			listChannel->setNumVisible(props->getNumberOfChannels());
+
+			menuInformation->enable();
+		}
+		
+		if (pNewReader->getContentType() == DAFF_DFT_SPECTRUM) {
+			m_pContentIR = NULL;
+			m_pContentMS = NULL;
+			m_pContentDFT = dynamic_cast<DAFFContentDFT*>( m_pReader->getContent() );
+			
+			slideFrequency->setRange(0, m_pContentDFT->getNumDFTCoeffs()-1);
+			slideFrequency->setValue(0);
+
+			for (int i=0;i<m_pContentDFT->getNumDFTCoeffs();i++)
+				fAvailableFreq.push_back(i);
+
+			thePlot->SetData(m_pContentDFT);
+			thePlot->SetSelectedFrequency(0);
+
+			const DAFFProperties* props = m_pReader->getProperties();
+			txtStatusBox1->setText(FXStringFormat("%d", props->getNumberOfChannels()) + " Channel(s)");
+			txtStatusBox2->setText("Resolution (A, B): " + FXStringFormat("%.0f°", props->getAlphaResolution()) + ", " + FXStringFormat("%.0f°", props->getBetaResolution()));
+			txtStatusBox3->setText(DAFFUtils::StrQuantizationType(props->getQuantization()).c_str());
+			
+			
+			lblFrequency->setText( FXStringFormat("%d", 0) + "TODO Hz");
 
 			listChannel->clearItems();
 			for (int i=1; i <= props->getNumberOfChannels(); i++) {

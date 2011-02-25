@@ -45,17 +45,20 @@
 #include <map>
 
 // Project includes
-#include <Helpers.h>
+#include "Helpers.h"
 
 // Command forward declarations
 void Open(int, mxArray**, int, const mxArray**);
 void Close(int, mxArray**, int, const mxArray**);
 void GetMetadata(int, mxArray**, int, const mxArray**);
+void GetRecordMetadata(int, mxArray**, int, const mxArray**);
 void GetProperties(int, mxArray**, int, const mxArray**);
 void GetRecordCoords(int, mxArray**, int, const mxArray**);
 void GetRecordByIndex(int, mxArray**, int, const mxArray**);
 void GetNearestNeighbourRecord(int, mxArray**, int, const mxArray**);
 void GetCellRecords(int, mxArray**, int, const mxArray**);
+void GetNearestNeighbourIndex(int, mxArray**, int, const mxArray**);
+void GetCell(int, mxArray**, int, const mxArray**);
 
 // Global variables
 typedef int32_t HANDLE;
@@ -79,6 +82,21 @@ public:
 		if (iContentType == DAFF_MAGNITUDE_SPECTRUM) {
 			DAFFContentMS* pContent = dynamic_cast<DAFFContentMS*>( pReader->getContent() );
 			pfBuffer = new float[pContent->getNumFrequencies()];
+		}
+
+		if (iContentType == DAFF_PHASE_SPECTRUM) {
+			DAFFContentPS* pContent = dynamic_cast<DAFFContentPS*>( pReader->getContent() );
+			pfBuffer = new float[pContent->getNumFrequencies()];
+		}
+		
+		if (iContentType == DAFF_MAGNITUDE_PHASE_SPECTRUM) {
+			DAFFContentMPS* pContent = dynamic_cast<DAFFContentMPS*>( pReader->getContent() );
+			pfBuffer = new float[2*pContent->getNumFrequencies()];
+		}
+		
+		if (iContentType == DAFF_DFT_SPECTRUM) {
+			DAFFContentDFT* pContent = dynamic_cast<DAFFContentDFT*>( pReader->getContent() );
+			pfBuffer = new float[2*pContent->getNumDFTCoeffs()];
 		}
 	}
 
@@ -184,6 +202,15 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		mexPrintf("      Parameters: handle		1x1 int32	Handle of the opened DAFF file\n\n");
 		mexPrintf("      Returns:    metadata	struct		Metadata\n\n\n");
 		
+		mexPrintf("  Command \"getRecordMetadata\"\n\n");
+		mexPrintf("      Returns the record metadata of an opened DAFF file\n\n");
+		mexPrintf("      Syntax:     [metadata, empty] = DAFF('getRecordMetadata', handle, index, channel)\n\n");
+		mexPrintf("      Parameters: handle		1x1 int32	Handle of the opened DAFF file\n\n");
+		mexPrintf("					 index		1x1 integer	Record index\n");
+		mexPrintf("					 channel	1x1 integer	Channel\n");
+		mexPrintf("      Returns:    metadata	struct		Metadata\n\n\n");
+		mexPrintf("					 empty		logical		Empty metadata flag\n\n\n");
+		
 		mexPrintf("  Command \"getProperties\"\n\n");
 		mexPrintf("      Returns the properties of an opened DAFF file\n\n");
 		mexPrintf("      Syntax:     [props] = DAFF('getProperties', handle)\n\n");
@@ -215,7 +242,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		mexPrintf("      Returns:    data		MxN double	Matrix containing the record data (rows => channel data)\n");
 		mexPrintf("                  oob 		1x1 logical Out-of-bounds indicator\n");
 		
-		// TODO: Later mexPrintf("                  oob		1x1 logical	Out of bounds flag\n\n\n");
 
 		mexPrintf("  Command \"getCellRecords\"\n\n");
 		mexPrintf("      Returns the data of all four records of the surrounding cell to the given direction\n\n");
@@ -227,6 +253,25 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		mexPrintf("      Returns:    data		cell(4) of MxN double  Matrix containing the record data (rows => channel data)\n");
 		mexPrintf("                  oob 		1x1 logical            Out-of-bounds indicator\n");		
 		
+        mexPrintf("  Command \"getNearestNeighbourIndex\"\n\n");
+        mexPrintf("      Returns the data at the nearest neighbour grid point to the given direction\n\n");
+        mexPrintf("      Syntax:     [index, oob] = DAFF('getNearestNeighbour', handle, view, angle1, angle2)\n\n");
+        mexPrintf("      Parameters: handle		1x1 int32	Handle of the opened DAFF file\n");
+        mexPrintf("                  view		char		View ('data' => Data spherical coordinates, 'object' => Object spherical coordinates\n");
+        mexPrintf("                  angle1		1x1 real	First angle (For 'data' alpha; for 'object' azimuth)\n");
+        mexPrintf("                  angle2		1x1 real	Second angle (For 'data' beta; for 'object' elevation)\n");
+        mexPrintf("      Returns:    index		1x1 integer	Nearest neighbour's record index\n");
+        mexPrintf("                  oob		1x1 logical	Out of bounds flag\n\n\n");
+		
+        mexPrintf("  Command \"getCell\"\n\n");
+        mexPrintf("      Returns the data at the nearest neighbour grid point to the given direction\n\n");
+        mexPrintf("      Syntax:     [index1, index2, index3, index4] = DAFF('getCell', handle, view, angle1, angle2)\n\n");
+        mexPrintf("      Parameters: handle		1x1 int32	Handle of the opened DAFF file\n");
+        mexPrintf("                  view		char		View ('data' => Data spherical coordinates, 'object' => Object spherical coordinates\n");
+        mexPrintf("                  angle1		1x1 real	First angle (For 'data' alpha; for 'object' azimuth)\n");
+        mexPrintf("                  angle2		1x1 real	Second angle (For 'data' beta; for 'object' elevation)\n");
+        mexPrintf("      Returns:    index1-4	1x1 integer	record indices of the cell points\n");
+
 		mexPrintf("  Command \"getVersion\"\n\n");
 		mexPrintf("      Returns the OpenDAFF version\n\n");
 		mexPrintf("      Syntax:     [version] = DAFF('getVersion')\n\n");
@@ -243,6 +288,11 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 	if (sCommand == "close") {
 		Close(nlhs, plhs, nrhs, prhs);
+		bMatch = true;
+	}
+
+	if (sCommand == "getrecordmetadata") {
+		GetRecordMetadata(nlhs, plhs, nrhs, prhs);
 		bMatch = true;
 	}
 
@@ -266,16 +316,26 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		bMatch = true;
 	}
 
-	if (sCommand == "getnearestneighbourrecord") {
-		GetNearestNeighbourRecord(nlhs, plhs, nrhs, prhs);
-		bMatch = true;
-	}
+    if (sCommand == "getnearestneighbourrecord") {
+            GetNearestNeighbourRecord(nlhs, plhs, nrhs, prhs);
+            bMatch = true;
+    }
 
 	if (sCommand == "getcellrecords") {
 		GetCellRecords(nlhs, plhs, nrhs, prhs);
 		bMatch = true;
 	}
 	
+    if (sCommand == "getnearestneighbourindex") {
+            GetNearestNeighbourIndex(nlhs, plhs, nrhs, prhs);
+            bMatch = true;
+    }
+	
+    if (sCommand == "getcell") {
+            GetCell(nlhs, plhs, nrhs, prhs);
+            bMatch = true;
+    }
+
 	if (!bMatch)
 		mexErrMsgTxt("Invalid command");
 }
@@ -361,22 +421,14 @@ void GetContentType(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) 
 	DAFFReader* pReader = GetHandleTarget(prhs[1])->pReader;
 	
 	int iType = pReader->getContentType();
-	std::string sType;
-	if (iType == DAFF_IMPULSE_RESPONSE) sType = "ir";
-	if (iType == DAFF_MAGNITUDE_SPECTRUM) sType = "ms";
+	std::string sType = DAFFUtils::StrShortContentType(iType);
 
 	// Return the string
 	plhs[0] = mxCreateString(sType.c_str());
 }
 
-void GetMetadata(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
-
-	if (nrhs != 2)
-		mexErrMsgTxt("This command requires one argument");
-
-	DAFFReader* pReader = GetHandleTarget(prhs[1])->pReader;
-	DAFFMetadata* pMetadata = pReader->getMetadata();
-
+// internal: convert DAFFMetadata to matlab struct matrix
+void GetMetadataMatlab(const DAFFMetadata* pMetadata, mxArray *&plhs){
 	// Get all the metadata keys
 	std::vector<std::string> vsKeys;
 	pMetadata->getKeys(vsKeys);
@@ -390,7 +442,7 @@ void GetMetadata(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		ppszFieldNames[i] = vsKeys[i].c_str();
 	}
 
-	plhs[0] = mxCreateStructMatrix(1, 1, iNumFields, ppszFieldNames);
+	plhs = mxCreateStructMatrix(1, 1, iNumFields, ppszFieldNames);
 
 	// Set the field values
 	for (int i=0; i<iNumFields; i++) {
@@ -415,7 +467,40 @@ void GetMetadata(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 				break;
 		}
 
-		mxSetFieldByNumber(plhs[0], 0, i, pValue);
+		mxSetFieldByNumber(plhs, 0, i, pValue);
+	}
+}
+
+void GetMetadata(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
+
+	if (nrhs != 2)
+		mexErrMsgTxt("This command requires one argument");
+
+	DAFFReader* pReader = GetHandleTarget(prhs[1])->pReader;
+	const DAFFMetadata* pMetadata = pReader->getMetadata();
+	
+	GetMetadataMatlab(pMetadata, plhs[0]);
+}
+
+void GetRecordMetadata(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
+
+	if (nrhs != 4)
+		mexErrMsgTxt("This command requires three arguments");
+
+	bool bEmptyMetadata=false;
+	int iRecordIndex=0, iChannel=0;
+	DAFFContent* pContent = GetHandleTarget(prhs[1])->pReader->getContent();
+	if ((!getIntegerScalar(prhs[2], iRecordIndex)) ||
+		(!getIntegerScalar(prhs[3], iChannel))){
+			mexErrMsgTxt("Input parameters index and channel must be integers");
+	}
+
+	const DAFFMetadata* pMetadata = pContent->getRecordMetadata(iRecordIndex, iChannel, bEmptyMetadata);
+
+	GetMetadataMatlab(pMetadata, plhs[0]);
+
+	if (nlhs == 2){
+		plhs[1] = mxCreateLogicalScalar(bEmptyMetadata);
 	}
 }
 
@@ -452,16 +537,23 @@ void GetProperties(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	vsFields.push_back("orientationDefault");
 	vsFields.push_back("fullSphere");
 
-	if (iContentType == DAFF_IMPULSE_RESPONSE) {
-		vsFields.push_back("samplerate");
-		vsFields.push_back("filterLength");
-		// Note: Low-level minFilterOffset and maxEffectiveFilterLength are not exported to Matlab.
+	switch (iContentType) {
+		case DAFF_IMPULSE_RESPONSE:
+			vsFields.push_back("samplerate");
+			vsFields.push_back("filterLength");
+			break;
+		case DAFF_MAGNITUDE_SPECTRUM:
+		case DAFF_PHASE_SPECTRUM:
+		case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+			vsFields.push_back("numFreqs");
+			vsFields.push_back("freqs");
+			break;
+		case DAFF_DFT_SPECTRUM:
+			vsFields.push_back("numDFTCoeffs");
+			vsFields.push_back("TransformSize");
+			break;
 	}
 
-	if (iContentType == DAFF_MAGNITUDE_SPECTRUM) {
-		vsFields.push_back("numFreqs");
-		vsFields.push_back("freqs");
-	}
 
 	// --= 2nd create a Matlab struct of the fields =----------
 
@@ -487,8 +579,7 @@ void GetProperties(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 	// Content type
 	std::string sContentType;
-	if (iContentType == DAFF_IMPULSE_RESPONSE) sContentType = "ir";
-	if (iContentType == DAFF_MAGNITUDE_SPECTRUM) sContentType = "ms";
+	sContentType = DAFFUtils::StrShortContentType(iContentType);
 	mxSetField(pStruct, 0, "contentType", mxCreateString( sContentType.c_str() ));
 
 	// Quantization
@@ -571,7 +662,8 @@ void GetProperties(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		mxSetField(pStruct, 0, "filterLength", mxCreateDoubleScalar( pContent->getFilterLength() ));
 	}
 
-	if (iContentType == DAFF_MAGNITUDE_SPECTRUM) {
+	if (iContentType == DAFF_MAGNITUDE_SPECTRUM)
+	{
 		DAFFContentMS* pContent = dynamic_cast<DAFFContentMS*>( pReader->getContent() );
 
 		// Number of frequencies
@@ -584,6 +676,47 @@ void GetProperties(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		const std::vector<float>& vfFreqs = pContent->getFrequencies();
 		for (int i=0; i<iNumFreqs; i++) pdData[i] = (double) vfFreqs[i];
 		mxSetField(pStruct, 0, "freqs", pValue);
+	}
+
+	if (iContentType == DAFF_PHASE_SPECTRUM)
+	{
+		DAFFContentPS* pContent = dynamic_cast<DAFFContentPS*>( pReader->getContent() );
+
+		// Number of frequencies
+		int iNumFreqs = pContent->getNumFrequencies();
+		mxSetField(pStruct, 0, "numFreqs", mxCreateDoubleScalar( iNumFreqs ));
+
+		// Frequencies
+		pValue = mxCreateDoubleMatrix(1, iNumFreqs, mxREAL);
+		pdData = mxGetPr(pValue);
+		const std::vector<float>& vfFreqs = pContent->getFrequencies();
+		for (int i=0; i<iNumFreqs; i++) pdData[i] = (double) vfFreqs[i];
+		mxSetField(pStruct, 0, "freqs", pValue);
+	}
+
+	if (iContentType == DAFF_MAGNITUDE_PHASE_SPECTRUM)
+	{
+		DAFFContentMPS* pContent = dynamic_cast<DAFFContentMPS*>( pReader->getContent() );
+
+		// Number of frequencies
+		int iNumFreqs = pContent->getNumFrequencies();
+		mxSetField(pStruct, 0, "numFreqs", mxCreateDoubleScalar( iNumFreqs ));
+
+		// Frequencies
+		pValue = mxCreateDoubleMatrix(1, iNumFreqs, mxREAL);
+		pdData = mxGetPr(pValue);
+		const std::vector<float>& vfFreqs = pContent->getFrequencies();
+		for (int i=0; i<iNumFreqs; i++) pdData[i] = (double) vfFreqs[i];
+		mxSetField(pStruct, 0, "freqs", pValue);
+	}
+	if (iContentType == DAFF_DFT_SPECTRUM) {
+		DAFFContentDFT* pContent = dynamic_cast<DAFFContentDFT*>( pReader->getContent() );
+
+		mxSetField(pStruct, 0, "transformSize", mxCreateDoubleScalar( pContent->getTransformSize() ));
+		mxSetField(pStruct, 0, "numDFTCoeffs", mxCreateDoubleScalar( pContent->getNumDFTCoeffs() ));
+		mxSetField(pStruct, 0, "isSymetric", mxCreateLogicalScalar( pContent->isSymetric() ));
+		mxSetField(pStruct, 0, "samplerate", mxCreateDoubleScalar( pContent->getSamplerate() ));
+		mxSetField(pStruct, 0, "frequencyBandwidth", mxCreateDoubleScalar( pContent->getFrequencyBandwidth() ));
 	}
 
 	plhs[0] = pStruct;
@@ -650,7 +783,8 @@ void GetRecordMatlab(DAFFReader* pReader, float* pConvBuffer, int iRecordIndex, 
 		}
 	}
 
-	if (iContentType == DAFF_MAGNITUDE_SPECTRUM) {
+	if (iContentType == DAFF_MAGNITUDE_SPECTRUM) 
+	{
 		DAFFContentMS* pContent = dynamic_cast<DAFFContentMS*>( pReader->getContent() );
 		int iNumFreqs = pContent->getNumFrequencies();
 	
@@ -665,6 +799,67 @@ void GetRecordMatlab(DAFFReader* pReader, float* pConvBuffer, int iRecordIndex, 
 
 			// Convert it to double precision (64-bit)
 			for (int i=0; i<iNumFreqs; i++)
+				pdData[i*iChannels+c] = (double) pConvBuffer[i];
+		}
+	}
+	
+	if (iContentType == DAFF_PHASE_SPECTRUM) 
+	{
+		DAFFContentPS* pContent = dynamic_cast<DAFFContentPS*>( pReader->getContent() );
+		int iNumFreqs = pContent->getNumFrequencies();
+	
+		// Create the result matrix (num rows = num of channels, num cols = num freqs)
+		pResult = mxCreateDoubleMatrix(iChannels, iNumFreqs, mxREAL);
+		double* pdData = mxGetPr(pResult);
+
+		// Copy the data
+		for (int c=0; c<iChannels; c++) {
+			// Get the magnitude spectrum
+			pContent->getPhases(iRecordIndex, c, pConvBuffer);
+
+			// Convert it to double precision (64-bit)
+			for (int i=0; i<iNumFreqs; i++)
+				pdData[i*iChannels+c] = (double) pConvBuffer[i];
+		}
+	}
+	//TODO: DAFF_MAGNITUDE_PHASE_SPECTRUM  - how to return complex data?
+	
+	if (iContentType == DAFF_MAGNITUDE_PHASE_SPECTRUM) {
+		DAFFContentMPS* pContent = dynamic_cast<DAFFContentMPS*>( pReader->getContent() );
+		int iNumFreqs = pContent->getNumFrequencies();
+	
+		// Create the result matrix (num rows = num of channels, num cols = the double element size)
+		// double size because we return magnitude and phase in an interleaved form
+		pResult = mxCreateDoubleMatrix(iChannels, 2*iNumFreqs, mxREAL);
+		double* pdData = mxGetPr(pResult);
+
+		// Copy the data
+		for (int c=0; c<iChannels; c++) {
+			// Get the impulse response
+			pContent->getCoefficientsRI(iRecordIndex, c, pConvBuffer);
+
+			// Convert it to double precision (64-bit)
+			for (int i=0; i<2*iNumFreqs; i++)
+				pdData[i*iChannels+c] = (double) pConvBuffer[i];
+		}
+	}
+
+	if (iContentType == DAFF_DFT_SPECTRUM) {
+		DAFFContentDFT* pContent = dynamic_cast<DAFFContentDFT*>( pReader->getContent() );
+		int iNumDFTCoeffs = pContent->getNumDFTCoeffs();
+	
+		// Create the result matrix (num rows = num of channels, num cols = the double element size)
+		// double size because we return real and imaginary parts in an interleaved form
+		pResult = mxCreateDoubleMatrix(iChannels, 2*iNumDFTCoeffs, mxREAL);
+		double* pdData = mxGetPr(pResult);
+
+		// Copy the data
+		for (int c=0; c<iChannels; c++) {
+			// Get the impulse response
+			pContent->getDFTCoeffs(iRecordIndex, c, pConvBuffer);
+
+			// Convert it to double precision (64-bit)
+			for (int i=0; i<2*iNumDFTCoeffs; i++)
 				pdData[i*iChannels+c] = (double) pConvBuffer[i];
 		}
 	}
@@ -715,11 +910,13 @@ void GetNearestNeighbourRecord(int nlhs, mxArray *plhs[], int nrhs, const mxArra
 
 	int iRecordIndex;
 	bool bOutOfBounds;
-	pReader->getContent()->getNearestNeighbour(iView, (float) dAngle1, (float) dAngle2, iRecordIndex, bOutOfBounds);
+	pReader->getContent()->getNearestNeighbour(iView, (float)dAngle1, (float)dAngle2, iRecordIndex, bOutOfBounds);
 
 	GetRecordMatlab(pReader, pTarget->pfBuffer, iRecordIndex, plhs[0]);
 	
-	// TODO: Return out of bounds flags
+	if (nlhs == 2){
+		plhs[1] = mxCreateLogicalScalar(bOutOfBounds);
+	}
 }
 
 void GetCellRecords(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
@@ -764,4 +961,73 @@ void GetCellRecords(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) 
 	mxSetCell(pResult, 3, pRecord);
 
 	plhs[0] = pResult;
+}
+
+void GetNearestNeighbourIndex(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
+
+        if (nrhs != 5)
+                mexErrMsgTxt("This command requires four arguments");
+
+        TARGET* pTarget = GetHandleTarget(prhs[1]);
+        DAFFReader* pReader = pTarget->pReader;
+
+        std::string sView;
+        if (!getString(prhs[2], sView))
+                mexErrMsgTxt("Parameter VIEW must be a string");
+        std::transform(sView.begin(), sView.end(), sView.begin(), tolower);
+
+        int iView = -1;
+        if (sView == "data") iView = DAFF_DATA_VIEW;
+        if (sView == "object") iView = DAFF_OBJECT_VIEW;
+        if (iView == -1)
+                mexErrMsgTxt("Invalid view");
+
+        double dAngle1, dAngle2;
+        if (!getRealScalar(prhs[3], dAngle1))
+                mexErrMsgTxt("Parameter ANGLE1 must be a real-valued scalar");
+        if (!getRealScalar(prhs[4], dAngle2))
+                mexErrMsgTxt("Parameter ANGLE2 must be a real-valued scalar");
+
+        int iRecordIndex;
+        bool bOutOfBounds;
+        pReader->getContent()->getNearestNeighbour(iView, (float)dAngle1, (float)dAngle2, iRecordIndex, bOutOfBounds);
+
+        plhs[0] = mxCreateDoubleScalar(iRecordIndex);
+        if (nlhs == 2){
+                plhs[1] = mxCreateLogicalScalar(bOutOfBounds);
+        }
+}
+
+void GetCell(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
+
+        if (nrhs != 5)
+                mexErrMsgTxt("This command requires four arguments");
+
+        TARGET* pTarget = GetHandleTarget(prhs[1]);
+        DAFFReader* pReader = pTarget->pReader;
+
+        std::string sView;
+        if (!getString(prhs[2], sView))
+                mexErrMsgTxt("Parameter VIEW must be a string");
+        std::transform(sView.begin(), sView.end(), sView.begin(), tolower);
+
+        int iView = -1;
+        if (sView == "data") iView = DAFF_DATA_VIEW;
+        if (sView == "object") iView = DAFF_OBJECT_VIEW;
+        if (iView == -1)
+                mexErrMsgTxt("Invalid view");
+
+        double dAngle1, dAngle2;
+        if (!getRealScalar(prhs[3], dAngle1))
+                mexErrMsgTxt("Parameter ANGLE1 must be a real-valued scalar");
+        if (!getRealScalar(prhs[4], dAngle2))
+                mexErrMsgTxt("Parameter ANGLE2 must be a real-valued scalar");
+
+        DAFFQuad qIndices;
+        pReader->getContent()->getCell(iView, (float)dAngle1, (float)dAngle2, qIndices);
+
+		plhs[0] = mxCreateDoubleScalar(qIndices.iIndex1);
+		plhs[1] = mxCreateDoubleScalar(qIndices.iIndex2);
+		plhs[2] = mxCreateDoubleScalar(qIndices.iIndex3);
+		plhs[3] = mxCreateDoubleScalar(qIndices.iIndex4);
 }

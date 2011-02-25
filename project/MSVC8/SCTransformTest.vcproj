@@ -20,7 +20,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="build\$(ConfigurationName)_$(PlatformName)"
+			OutputDirectory="..\..\build\$(PlatformName)\tests\"
 			IntermediateDirectory="temp\$(ConfigurationName)_$(PlatformName)"
 			ConfigurationType="1"
 			CharacterSet="1"

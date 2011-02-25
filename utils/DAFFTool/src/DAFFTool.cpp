@@ -44,6 +44,8 @@
 
 #if defined(WIN32)
 #include <windows.h>
+#else
+#include <sys/stat.h>
 #endif
 
 #include <sndfile.h>
@@ -369,6 +371,8 @@ int main_info(int argc, char* argv[]) {
 			}
 			printf(" Hz\n");
 			break;
+
+		// TODO: Implement new content types ...
 	}
 
 	printf("\n\n--= Metadata =--\n\n");
@@ -475,7 +479,6 @@ int main_dump(int argc, char* argv[]) {
 
 	int iRecordIndex = 0;
 	int iView = bObjectView ? DAFF_OBJECT_VIEW : DAFF_DATA_VIEW;
-	int iChannels = pDAFF->getProperties()->getNumberOfChannels();
 	
 	float fAngle1;
 	float fAngle2;
@@ -519,6 +522,9 @@ int main_dump(int argc, char* argv[]) {
 
 	DAFFContentIR* pContentIR;
 	DAFFContentMS* pContentMS;
+	DAFFContentPS* pContentPS;
+	DAFFContentMPS* pContentMPS;
+	DAFFContentDFT* pContentDFT;
 
 	int iResult = 0;
 
@@ -613,13 +619,133 @@ int main_dump(int argc, char* argv[]) {
 			}
 		}
 
-		iResult = exportMS(pContentMS, sOutFileName, -1, iView, bQuiet, bVerbose);
+		iResult = exportMS(pContentMS, sOutFileName, -1, 0, 0, iView, bQuiet, bVerbose);
 		if (iResult != 0) {
 			tidyup();
 			return iResult;
 		}
 
 		if (!bQuiet) printf("Exported magnitude spectrum to file \"%s\"\n", sOutFileName.c_str());
+
+		break;
+
+
+	/* ************************************** PHASE SPECTRUM ************************************** */
+
+	case DAFF_PHASE_SPECTRUM:
+		if (bVerbose) printf("Detected phase spectrum content type\n");
+		pContentPS = dynamic_cast<DAFFContentPS*>(pDAFF->getContent());
+
+		// Write TEXTFILE
+		ssOutFileName.str("");
+		ssOutFileName << sTargetDirectory << sPathSeparator;
+
+		if (sFilePrefix.length() > 0)
+			ssOutFileName << sFilePrefix << ".txt";
+		else
+			ssOutFileName << stripFilename(pDAFF->getFilename()) << ".txt";
+
+		sOutFileName = ssOutFileName.str();
+
+		if (doesPathExist(sOutFileName) && !bForce) {
+			std::string sInput;
+			printf("File \"%s\" already exists, overwrite? [y,N]: ", sOutFileName.c_str());
+			std::cin >> sInput;
+			std::transform(sInput.begin(), sInput.end(), sInput.begin(), ::toupper);
+			if (sInput.compare("Y") != 0) {
+				printf("Leaving ...\n");
+				tidyup();
+				return 0;
+			}
+		}
+
+		iResult = exportPS(pContentPS, sOutFileName, -1, 0, 0, iView, bQuiet, bVerbose);
+		if (iResult != 0) {
+			tidyup();
+			return iResult;
+		}
+
+		if (!bQuiet) printf("Exported phase spectrum to file \"%s\"\n", sOutFileName.c_str());
+
+		break;
+	
+
+	/* ************************************** MAGNITUDE PHASE SPECTRUM ************************************** */
+
+	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+		if (bVerbose) printf("Detected magnitude-phase spectrum content type\n");
+		pContentMPS = dynamic_cast<DAFFContentMPS*>(pDAFF->getContent());
+
+		// Write TEXTFILE
+		ssOutFileName.str("");
+		ssOutFileName << sTargetDirectory << sPathSeparator;
+
+		if (sFilePrefix.length() > 0)
+			ssOutFileName << sFilePrefix << ".txt";
+		else
+			ssOutFileName << stripFilename(pDAFF->getFilename()) << ".txt";
+
+		sOutFileName = ssOutFileName.str();
+
+		if (doesPathExist(sOutFileName) && !bForce) {
+			std::string sInput;
+			printf("File \"%s\" already exists, overwrite? [y,N]: ", sOutFileName.c_str());
+			std::cin >> sInput;
+			std::transform(sInput.begin(), sInput.end(), sInput.begin(), ::toupper);
+			if (sInput.compare("Y") != 0) {
+				printf("Leaving ...\n");
+				tidyup();
+				return 0;
+			}
+		}
+
+		iResult = exportMPS(pContentMPS, sOutFileName, -1, 0, 0, iView, bQuiet, bVerbose);
+		if (iResult != 0) {
+			tidyup();
+			return iResult;
+		}
+
+		if (!bQuiet) printf("Exported magnitude-phase spectrum to file \"%s\"\n", sOutFileName.c_str());
+
+		break;
+		
+
+	/* ************************************** DFT SPECTRUM ************************************** */
+
+	case DAFF_DFT_SPECTRUM:
+		if (bVerbose) printf("Detected discrete fourier spectrum content type\n");
+		pContentDFT = dynamic_cast<DAFFContentDFT*>(pDAFF->getContent());
+
+		// Write TEXTFILE
+		ssOutFileName.str("");
+		ssOutFileName << sTargetDirectory << sPathSeparator;
+
+		if (sFilePrefix.length() > 0)
+			ssOutFileName << sFilePrefix << ".txt";
+		else
+			ssOutFileName << stripFilename(pDAFF->getFilename()) << ".txt";
+
+		sOutFileName = ssOutFileName.str();
+
+		if (doesPathExist(sOutFileName) && !bForce) {
+			std::string sInput;
+			printf("File \"%s\" already exists, overwrite? [y,N]: ", sOutFileName.c_str());
+			std::cin >> sInput;
+			std::transform(sInput.begin(), sInput.end(), sInput.begin(), ::toupper);
+			if (sInput.compare("Y") != 0) {
+				printf("Leaving ...\n");
+				tidyup();
+				return 0;
+			}
+		}
+
+		iResult = exportDFT(pContentDFT, sOutFileName, -1, 0, 0, iView, bQuiet, bVerbose);
+		if (iResult != 0) {
+			tidyup();
+			return iResult;
+		}
+
+		if (!bQuiet) printf("Exported discrete fourier spectrum to file \"%s\"\n", sOutFileName.c_str());
 
 		break;
 	}
@@ -790,6 +916,9 @@ int main_query(int argc, char* argv[]) {
 
 	DAFFContentIR* pContentIR;
 	DAFFContentMS* pContentMS;
+	DAFFContentPS* pContentPS;
+	DAFFContentMPS* pContentMPS;
+	DAFFContentDFT* pContentDFT;
 
 	int iResult = 0;
 
@@ -854,7 +983,7 @@ int main_query(int argc, char* argv[]) {
 
 		// CONSOLE output
 		if (bConsoleOutput) {
-			printf("\n%s", convertMS2dat(pContentMS, iRecordIndex, iView, bQuiet, bVerbose).c_str());
+			printf("\n%s", convertMS2dat(pContentMS, iRecordIndex, fAngle1_projected, fAngle2_projected, iView, bQuiet, bVerbose).c_str());
 			return 0;
 		}
 
@@ -880,13 +1009,160 @@ int main_query(int argc, char* argv[]) {
 		}
 		
 		// Write TEXTFILE
-		iResult = exportMS(pContentMS, sOutFileName, iRecordIndex, iView, bQuiet, bVerbose);
+		iResult = exportMS(pContentMS, sOutFileName, iRecordIndex, fAngle1_projected, fAngle2_projected, iView, bQuiet, bVerbose);
 		if (iResult != 0) {
 			tidyup();
 			return iResult;
 		}
 
 		if (!bQuiet) printf("Exported magnitude spectrum to file \"%s\"\n", sOutFileName.c_str());
+
+		break;
+
+
+	/* ************************************** PHASE SPECTRUM ************************************** */
+	case DAFF_PHASE_SPECTRUM:
+		if (bVerbose) printf("Detected phase spectrum content type\n");
+		pContentPS = dynamic_cast<DAFFContentPS*>(pDAFF->getContent());
+
+		pContentPS->getNearestNeighbour(iView, fAngle1, fAngle2, iRecordIndex, bOutOfBounds);
+
+		if (!bQuiet && bOutOfBounds) printf("Requested angle %s is out of bounds\n", DAFFUtils::StrDirection(iView, fAngle1, fAngle2,3));
+		if (bVerbose) printf("Nearest neighbouring record index is %i\n", iRecordIndex);
+
+		// CONSOLE output
+		if (bConsoleOutput) {
+			printf("\n%s", convertPS2dat(pContentPS, iRecordIndex, fAngle1_projected, fAngle2_projected, iView, bQuiet, bVerbose).c_str());
+			return 0;
+		}
+
+		// Generate filename
+		if (sOutFileName.length() == 0) {
+			if (iView == DAFF_DATA_VIEW)
+				ssOutFileName << cAngle1ViewFlag << DAFFUtils::Double2StrNice(fAngle1_projected, 3, false, 3) << "_" << cAngle2ViewFlag << DAFFUtils::Double2StrNice(fAngle2_projected, 3, false, 3);
+			else
+				ssOutFileName << cAngle1ViewFlag << DAFFUtils::Double2StrNice(fAngle1_projected, 3, true, 3) << "_" << cAngle2ViewFlag << DAFFUtils::Double2StrNice(fAngle2_projected, 3, true, 3);
+			ssOutFileName << ".txt";
+			sOutFileName = ssOutFileName.str();
+		}
+
+		if (doesPathExist(sOutFileName) != NULL && !bForce) {
+			std::string sInput;
+			printf("File \"%s\" already exists, overwrite? [y,N]: ", sOutFileName.c_str());
+			std::cin >> sInput;
+			std::transform(sInput.begin(), sInput.end(), sInput.begin(), ::toupper);
+			if (sInput.compare("Y") != 0){
+				tidyup();
+				return 0;
+			}
+		}
+		
+		// Write TEXTFILE
+		iResult = exportPS(pContentPS, sOutFileName, iRecordIndex, fAngle1_projected, fAngle2_projected, iView, bQuiet, bVerbose);
+		if (iResult != 0) {
+			tidyup();
+			return iResult;
+		}
+
+		if (!bQuiet) printf("Exported phase spectrum to file \"%s\"\n", sOutFileName.c_str());
+
+		break;
+		
+
+	/* ************************************** MAGNITUDE PHASE SPECTRUM ************************************** */
+	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+		if (bVerbose) printf("Detected magnitude-phase spectrum content type\n");
+		pContentMPS = dynamic_cast<DAFFContentMPS*>(pDAFF->getContent());
+
+		pContentMPS->getNearestNeighbour(iView, fAngle1, fAngle2, iRecordIndex, bOutOfBounds);
+
+		if (!bQuiet && bOutOfBounds) printf("Requested angle %s is out of bounds\n", DAFFUtils::StrDirection(iView, fAngle1, fAngle2,3));
+		if (bVerbose) printf("Nearest neighbouring record index is %i\n", iRecordIndex);
+
+		// CONSOLE output
+		if (bConsoleOutput) {
+			printf("\n%s", convertMPS2dat(pContentMPS, iRecordIndex, fAngle1_projected, fAngle2_projected, iView, bQuiet, bVerbose).c_str());
+			return 0;
+		}
+
+		// Generate filename
+		if (sOutFileName.length() == 0) {
+			if (iView == DAFF_DATA_VIEW)
+				ssOutFileName << cAngle1ViewFlag << DAFFUtils::Double2StrNice(fAngle1_projected, 3, false, 3) << "_" << cAngle2ViewFlag << DAFFUtils::Double2StrNice(fAngle2_projected, 3, false, 3);
+			else
+				ssOutFileName << cAngle1ViewFlag << DAFFUtils::Double2StrNice(fAngle1_projected, 3, true, 3) << "_" << cAngle2ViewFlag << DAFFUtils::Double2StrNice(fAngle2_projected, 3, true, 3);
+			ssOutFileName << ".txt";
+			sOutFileName = ssOutFileName.str();
+		}
+
+		if (doesPathExist(sOutFileName) != NULL && !bForce) {
+			std::string sInput;
+			printf("File \"%s\" already exists, overwrite? [y,N]: ", sOutFileName.c_str());
+			std::cin >> sInput;
+			std::transform(sInput.begin(), sInput.end(), sInput.begin(), ::toupper);
+			if (sInput.compare("Y") != 0){
+				tidyup();
+				return 0;
+			}
+		}
+		
+		// Write TEXTFILE
+		iResult = exportMPS(pContentMPS, sOutFileName, iRecordIndex, fAngle1_projected, fAngle2_projected, iView, bQuiet, bVerbose);
+		if (iResult != 0) {
+			tidyup();
+			return iResult;
+		}
+
+		if (!bQuiet) printf("Exported magnitude-phase spectrum to file \"%s\"\n", sOutFileName.c_str());
+
+		break;
+		
+
+	/* ************************************** DFT SPECTRUM ************************************** */
+	case DAFF_DFT_SPECTRUM:
+		if (bVerbose) printf("Detected DFT spectrum content type\n");
+		pContentDFT = dynamic_cast<DAFFContentDFT*>(pDAFF->getContent());
+
+		pContentDFT->getNearestNeighbour(iView, fAngle1, fAngle2, iRecordIndex, bOutOfBounds);
+
+		if (!bQuiet && bOutOfBounds) printf("Requested angle %s is out of bounds\n", DAFFUtils::StrDirection(iView, fAngle1, fAngle2,3));
+		if (bVerbose) printf("Nearest neighbouring record index is %i\n", iRecordIndex);
+
+		// CONSOLE output
+		if (bConsoleOutput) {
+			printf("\n%s", convertDFT2dat(pContentDFT, iRecordIndex, fAngle1_projected, fAngle2_projected, iView, bQuiet, bVerbose).c_str());
+			return 0;
+		}
+
+		// Generate filename
+		if (sOutFileName.length() == 0) {
+			if (iView == DAFF_DATA_VIEW)
+				ssOutFileName << cAngle1ViewFlag << DAFFUtils::Double2StrNice(fAngle1_projected, 3, false, 3) << "_" << cAngle2ViewFlag << DAFFUtils::Double2StrNice(fAngle2_projected, 3, false, 3);
+			else
+				ssOutFileName << cAngle1ViewFlag << DAFFUtils::Double2StrNice(fAngle1_projected, 3, true, 3) << "_" << cAngle2ViewFlag << DAFFUtils::Double2StrNice(fAngle2_projected, 3, true, 3);
+			ssOutFileName << ".txt";
+			sOutFileName = ssOutFileName.str();
+		}
+
+		if (doesPathExist(sOutFileName) != NULL && !bForce) {
+			std::string sInput;
+			printf("File \"%s\" already exists, overwrite? [y,N]: ", sOutFileName.c_str());
+			std::cin >> sInput;
+			std::transform(sInput.begin(), sInput.end(), sInput.begin(), ::toupper);
+			if (sInput.compare("Y") != 0){
+				tidyup();
+				return 0;
+			}
+		}
+		
+		// Write TEXTFILE
+		iResult = exportDFT(pContentDFT, sOutFileName, iRecordIndex, fAngle1_projected, fAngle2_projected, iView, bQuiet, bVerbose);
+		if (iResult != 0) {
+			tidyup();
+			return iResult;
+		}
+
+		if (!bQuiet) printf("Exported DFT spectrum to file \"%s\"\n", sOutFileName.c_str());
 
 		break;
 	}

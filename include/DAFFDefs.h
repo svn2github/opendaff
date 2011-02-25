@@ -92,7 +92,10 @@ typedef unsigned __int64 uint64_t;
 //! Content types
 enum {
 	DAFF_IMPULSE_RESPONSE=0,		//!< Impulse response (IR) in the time-domain
-	DAFF_MAGNITUDE_SPECTRUM			//!< Magnitude spectrum defined at discrete frequencies
+	DAFF_MAGNITUDE_SPECTRUM,		//!< Magnitude spectrum defined at discrete frequencies
+	DAFF_PHASE_SPECTRUM,			//!< Phase spectrum defined at discrete frequencies
+	DAFF_MAGNITUDE_PHASE_SPECTRUM,	//!< Magnitude-phase spectrum defined at discrete frequencies
+	DAFF_DFT_SPECTRUM				//!< Discrete Fourier spectrum in the frequency-domain
 };
 
 

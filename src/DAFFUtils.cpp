@@ -165,9 +165,23 @@ std::string DAFFUtils::StrError(int iErrorcode) {
 std::string DAFFUtils::StrContentType(int iContentType) {
 	switch (iContentType) {
 
-	case DAFF_IMPULSE_RESPONSE:   return "Impulse response";
-	case DAFF_MAGNITUDE_SPECTRUM: return "Magnitude spectrum";
-	
+	case DAFF_IMPULSE_RESPONSE:				return "Impulse response";
+	case DAFF_MAGNITUDE_SPECTRUM:			return "Magnitude spectrum";
+	case DAFF_PHASE_SPECTRUM:				return "Phase spectrum";
+	case DAFF_MAGNITUDE_PHASE_SPECTRUM:		return "Magnitude-phase spectrum";
+	case DAFF_DFT_SPECTRUM:					return "Discrete Fourier-spectrum";
+	default: return "Invalid";
+	}
+}
+
+std::string DAFFUtils::StrShortContentType(int iContentType) {
+	switch (iContentType) {
+
+	case DAFF_IMPULSE_RESPONSE:				return "ir";
+	case DAFF_MAGNITUDE_SPECTRUM:			return "ms";
+	case DAFF_PHASE_SPECTRUM:				return "ps";
+	case DAFF_MAGNITUDE_PHASE_SPECTRUM:		return "mps";
+	case DAFF_DFT_SPECTRUM:					return "dft";
 	default: return "Invalid";
 	}
 }

@@ -1,5 +1,5 @@
-function [ freqs, mags, metadata ] = dfDiscMS( alpha, beta, basepath )
-% Example magnitude spectrum in disc shape weighted by frequency
+function [ freqs, mags, metadata ] = dfOmnidirectionalMS( alpha, beta, basepath )
+% Omnidirectional magnitude spectrum
            
     % Third-octave resolution
     freqs = [20 25 31.5 40 50 63 80 100 125 160 ...
@@ -12,8 +12,7 @@ function [ freqs, mags, metadata ] = dfDiscMS( alpha, beta, basepath )
     
     for c=1:channels
         for f=1:length(freqs)
-            %mags(c,f) = sin(beta*pi/180)^3/f;
-            mags(c,f) = exp(-abs(90-beta)/30)/f;
+            mags(c,f) = 1;
         end
     end   
 end

@@ -2,8 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="libdaff"
-	ProjectGUID="{5888DDBD-66DC-44B3-98BD-2A4A5E22B458}"
+	Name="VerificationTest"
+	ProjectGUID="{CDF5FCB6-97AD-4449-BAB2-23289253AA3D}"
+	RootNamespace="VerificationTest"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -19,9 +20,9 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\lib\$(PlatformName)"
+			OutputDirectory="..\..\build\$(PlatformName)\tests\"
 			IntermediateDirectory="temp\$(ConfigurationName)_$(PlatformName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -43,7 +44,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include;..\..\src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -62,11 +63,20 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\libdaffd.lib"
+				Name="VCLinkerTool"
+				UseLibraryDependencyInputs="false"
+				AdditionalDependencies="libdaffd.lib"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;..\..\lib\$(PlatformName)&quot;"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -78,6 +88,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -85,7 +101,7 @@
 			Name="Debug|x64"
 			OutputDirectory="build\$(ConfigurationName)_$(PlatformName)"
 			IntermediateDirectory="temp\$(ConfigurationName)_$(PlatformName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -108,7 +124,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include;..\..\src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -127,11 +143,19 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\libdaffd.lib"
+				Name="VCLinkerTool"
+				AdditionalDependencies="libdaffd.lib"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="build\$(ConfigurationName)_$(PlatformName)"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -143,6 +167,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -150,7 +180,7 @@
 			Name="Release|Win32"
 			OutputDirectory="build\$(ConfigurationName)_$(PlatformName)"
 			IntermediateDirectory="temp\$(ConfigurationName)_$(PlatformName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -171,19 +201,13 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\include;..\..\src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
-				StructMemberAlignment="5"
-				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -195,11 +219,21 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\libdaff.lib"
+				Name="VCLinkerTool"
+				AdditionalDependencies="libdaff.lib"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="build\$(ConfigurationName)_$(PlatformName)"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -211,6 +245,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -218,7 +258,7 @@
 			Name="Release|x64"
 			OutputDirectory="build\$(ConfigurationName)_$(PlatformName)"
 			IntermediateDirectory="temp\$(ConfigurationName)_$(PlatformName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -240,19 +280,13 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\include;..\..\src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
-				StructMemberAlignment="5"
-				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -264,11 +298,21 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\libdaff.lib"
+				Name="VCLinkerTool"
+				AdditionalDependencies="libdaff.lib"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="build\$(ConfigurationName)_$(PlatformName)"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -280,6 +324,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -287,112 +337,8 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="Quelldateien"
-			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
-			>
-			<File
-				RelativePath="..\..\src\DAFFHeader.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DAFFMetadataImpl.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DAFFMetadataImpl.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DAFFReader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DAFFReaderImpl.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DAFFReaderImpl.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DAFFSCTransform.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DAFFSCTransform.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DAFFUtils.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Utils.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Utils.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Headerdateien"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
-			>
-			<File
-				RelativePath="..\..\include\DAFF.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\DAFFContent.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\DAFFContentDFT.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\DAFFContentIR.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\DAFFContentMPS.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\DAFFContentMS.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\DAFFContentPS.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\DAFFDefs.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\DAFFMetadata.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\DAFFProperties.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\DAFFReader.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\DAFFUtils.h"
-				>
-			</File>
-		</Filter>
 		<File
-			RelativePath="..\..\TODO.txt"
+			RelativePath="..\..\tests\verification\VerificationTest.cpp"
 			>
 		</File>
 	</Files>

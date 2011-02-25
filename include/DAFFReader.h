@@ -186,7 +186,7 @@ public:
 	virtual DAFFContent* getContent() const=0;
 
 	//! Returns the metadata
-	virtual DAFFMetadata* getMetadata() const=0;
+	virtual const DAFFMetadata* getMetadata() const=0;
 
 	//! Returns the properties of the file
 	virtual const DAFFProperties* getProperties() const=0;

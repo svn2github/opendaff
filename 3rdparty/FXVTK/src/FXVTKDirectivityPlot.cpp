@@ -13,7 +13,7 @@
 
 #include <DAFF.h>
 
-#define PI  3.14159265358979323846
+#define PI 3.14159265358979323846
 
 
 FXVTKGetClassnameMacro( FXVTKDirectivityPlot )
@@ -76,6 +76,48 @@ void FXVTKDirectivityPlot::SetData(DAFFContentMS* pContentMS) {
 	}
 
 	SetValueRangeLin(0, pContentMS->getOverallMagnitudeMaximum());
+}
+
+void FXVTKDirectivityPlot::SetData(DAFFContentDFT* pContentDFT) {
+	m_pContentDFT = pContentDFT;
+
+	float sa = m_pContentDFT->getProperties()->getAlphaStart();
+	float ra = m_pContentDFT->getProperties()->getAlphaResolution();
+	float sb = m_pContentDFT->getProperties()->getBetaStart();
+	float rb = m_pContentDFT->getProperties()->getBetaResolution();
+	int na = m_pContentDFT->getProperties()->getAlphaPoints();
+	int nb = m_pContentDFT->getProperties()->getBetaPoints();
+	int ncoeffs = m_pContentDFT->getNumDFTCoeffs();
+
+	m_data.clear();
+	m_data.resize(nb);
+
+	float* pfComplexData = new float[ncoeffs*2*sizeof(float)];
+	float* pfAbsData = new float[ncoeffs*sizeof(float)];
+
+	for (int b=0; b<nb; b++) {
+		float fBeta = sb + b*rb;
+		m_data[b].resize(na);
+
+		for (int a=0; a<na; a++) {
+			float fAlpha = sa + a*ra;
+
+			int iRecordIndex;
+			m_pContentDFT->getNearestNeighbour(DAFF_DATA_VIEW, fAlpha, fBeta, iRecordIndex);			
+
+			m_data[b][a].resize(ncoeffs);
+
+			m_pContentDFT->getDFTCoeffs(iRecordIndex, 0, pfComplexData);
+
+			// ich schätze das hier ist falsch? oder doch nicht? SELBER MACHEN!!!
+			for (int i=0;i<ncoeffs;i++) {
+				m_data[b][a][i] = sqrt(pfComplexData[2*i]*pfComplexData[2*i] + pfComplexData[2*i+1]*pfComplexData[2*i+1]) / m_pContentDFT->getOverallMagnitudeMaximum();
+			}
+		}	
+	}
+	delete pfComplexData;
+
+	SetValueRangeLin(0, m_pContentDFT->getOverallMagnitudeMaximum());
 }
 
 void FXVTKDirectivityPlot::SetSelectedFrequency(int iIndex) {

@@ -20,7 +20,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="build\$(ConfigurationName)_$(PlatformName)"
+			OutputDirectory="..\..\build\$(PlatformName)\tools\"
 			IntermediateDirectory="temp\$(ConfigurationName)_$(PlatformName)"
 			ConfigurationType="1"
 			CharacterSet="1"
@@ -64,10 +64,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libdaffd.lib libsndfile.lib"
+				AdditionalDependencies="libdaffd.lib libsndfile-1.lib"
 				OutputFile="$(OutDir)\DAFFToolD.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="build\$(ConfigurationName)_$(PlatformName);../../../3rdParty/libsndfile/lib/$(PlatformName);"
+				AdditionalLibraryDirectories="&quot;..\..\lib\$(PlatformName)&quot;;&quot;..\..\..\3rdparty\libsndfile\lib\$(PlatformName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"

@@ -88,7 +88,7 @@ public:
 
 DAFFMetadataImpl::DAFFMetadataImpl() {}
 
-int DAFFMetadataImpl::load(void* pData) {
+int DAFFMetadataImpl::load(void* pData, size_t &iBytesRead) { 
 	char* p = (char*) pData;
 
 	// Read the number of keys
@@ -150,6 +150,7 @@ int DAFFMetadataImpl::load(void* pData) {
 		}
 	}
 
+	iBytesRead = (size_t) (p - (char*)pData);
 	return 0;
 };
 

@@ -48,7 +48,7 @@ public:
 	~DAFFMetadataImpl();
 
 	// Load data from a buffer
-	int load(void* pData);
+	int load(void* pData, size_t &iBytesRead);
 
 	// --= Implementation of the interface "DAFFMetadata" =--
 

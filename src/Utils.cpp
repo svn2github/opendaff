@@ -97,6 +97,19 @@ float anglef_mindiff_abs_0_360_DEG(float alpha, float beta) {
 }
 
 
+// --= Complex number conversion =--
+
+float cabs(float Re, float Im){
+	return sqrt(Re*Re+Im*Im);
+}
+
+float carg(float Re, float Im){
+	if (Re > 0)
+		return atan(Im/Re);
+	else
+		return PI_F+atan(Im/Re);
+}
+
 // --= Endianess conversion functions =--
 
 

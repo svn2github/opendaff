@@ -41,6 +41,9 @@
 #include <DAFFContent.h>
 #include <DAFFContentIR.h>
 #include <DAFFContentMS.h>
+#include <DAFFContentPS.h>
+#include <DAFFContentMPS.h>
+#include <DAFFContentDFT.h>
 #include <DAFFDefs.h>
 #include <DAFFHeader.h>
 #include <DAFFMetadataImpl.h>
@@ -60,12 +63,14 @@ DAFFReaderImpl::DAFFReaderImpl()
   m_pMainHeader(NULL),
   m_pContentHeader(NULL),
   m_pRecordDescBlock(NULL),
-  m_pDataBlock(NULL),
-  m_pMetadata(NULL)
-{}
+  m_pDataBlock(NULL)
+{
+	m_pEmptyMetadata = new DAFFMetadataImpl;
+}
 
 DAFFReaderImpl::~DAFFReaderImpl() {
 	if (isFileOpened()) closeFile();
+	delete m_pEmptyMetadata;
 }
 
 bool DAFFReaderImpl::isFileOpened() const {
@@ -98,8 +103,8 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 	}
 
 	// Check version
-	// [This implementation supports version number 0.1]
-	if (m_fileHeader.iFileFormatVersion != 100) {
+	// [This implementation supports version number 0.101]
+	if (m_fileHeader.iFileFormatVersion != 101) {
 		// Database version not supported
 		tidyup();
 		return DAFF_FILE_FORMAT_VERSION_UNSUPPORTED;
@@ -162,6 +167,9 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 	switch (m_pMainHeader->iContentType) {
 	case DAFF_IMPULSE_RESPONSE:
 	case DAFF_MAGNITUDE_SPECTRUM:
+	case DAFF_PHASE_SPECTRUM:
+	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+	case DAFF_DFT_SPECTRUM:
 		break;
 
 	default:
@@ -244,6 +252,8 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 		return DAFF_FILE_CORRUPTED;
 	}
 
+	float* pfFreqs=0;
+
 	switch (m_pMainHeader->iContentType) {
 	case DAFF_IMPULSE_RESPONSE:
 		m_pContentHeaderIR = static_cast<DAFFContentHeaderIR*>( m_pContentHeader );
@@ -264,12 +274,12 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 
 	case DAFF_MAGNITUDE_SPECTRUM:
 		m_pContentHeaderMS = static_cast<DAFFContentHeaderMS*>( m_pContentHeader );
-		//m_pContentHeaderMS->fixEndianness();
+		m_pContentHeaderMS->fixEndianness();
 
 		if (m_pContentHeaderMS->iNumFreqs <= 0)
 			return DAFF_FILE_CORRUPTED;
 
-		float* pfFreqs = (float*) ((char*) m_pContentHeader + 8);
+		pfFreqs = (float*) ((char*) m_pContentHeader + 8); 
 
 		// Fix the endianness of the frequency list
 		DAFF::le2se_4byte(pfFreqs, m_pContentHeaderMS->iNumFreqs);
@@ -277,6 +287,52 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 		// Load the (dynamically sized) frequency list
 		m_vfFreqs.resize(m_pContentHeaderMS->iNumFreqs);
 		for (int i=0; i<m_pContentHeaderMS->iNumFreqs; i++) m_vfFreqs[i] = pfFreqs[i];
+				
+		break;
+	
+	case DAFF_PHASE_SPECTRUM:
+		m_pContentHeaderPS = static_cast<DAFFContentHeaderPS*>( m_pContentHeader );
+		m_pContentHeaderPS->fixEndianness();
+
+		if (m_pContentHeaderPS->iNumFreqs <= 0)
+			return DAFF_FILE_CORRUPTED;
+
+		pfFreqs = (float*) ((char*) m_pContentHeader + 8); 
+
+		// Fix the endianness of the frequency list
+		DAFF::le2se_4byte(pfFreqs, m_pContentHeaderPS->iNumFreqs);
+
+		// Load the (dynamically sized) frequency list
+		m_vfFreqs.resize(m_pContentHeaderPS->iNumFreqs);
+		for (int i=0; i<m_pContentHeaderPS->iNumFreqs; i++) m_vfFreqs[i] = pfFreqs[i];
+				
+		break;
+	
+	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+		m_pContentHeaderMPS = static_cast<DAFFContentHeaderMPS*>( m_pContentHeader );
+		m_pContentHeaderMPS->fixEndianness();
+
+		if (m_pContentHeaderMPS->iNumFreqs <= 0)
+			return DAFF_FILE_CORRUPTED;
+
+		pfFreqs = (float*) ((char*) m_pContentHeader + 8); 
+
+		// Fix the endianness of the frequency list
+		DAFF::le2se_4byte(pfFreqs, m_pContentHeaderMPS->iNumFreqs);
+
+		// Load the (dynamically sized) frequency list
+		m_vfFreqs.resize(m_pContentHeaderMPS->iNumFreqs);
+		for (int i=0; i<m_pContentHeaderMPS->iNumFreqs; i++) m_vfFreqs[i] = pfFreqs[i];
+				
+		break;
+	
+	case DAFF_DFT_SPECTRUM:
+		m_pContentHeaderDFT = static_cast<DAFFContentHeaderDFT*>( m_pContentHeader );
+		m_pContentHeaderDFT->fixEndianness();
+
+		if ((m_pContentHeaderDFT->iNumDFTCoeffs != m_pContentHeaderDFT->iTransformSize) &&
+			(m_pContentHeaderDFT->iNumDFTCoeffs != floor(m_pContentHeaderDFT->iTransformSize/2.0)+1))
+			return DAFF_FILE_CORRUPTED;
 				
 		break;
 	};
@@ -307,8 +363,11 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 		break;
 
 	case DAFF_MAGNITUDE_SPECTRUM:
-		m_pRecordDescMS = reinterpret_cast<DAFFRecordDescMS*>( m_pRecordDescBlock );
-		for (int i=0; i<m_pMainHeader->iNumRecords; i++) m_pRecordDescMS[i].fixEndianness();
+	case DAFF_PHASE_SPECTRUM:
+	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+	case DAFF_DFT_SPECTRUM:
+		m_pRecordDescDef = reinterpret_cast<DAFFRecordDescDefault*>( m_pRecordDescBlock );
+		for (int i=0; i<m_pMainHeader->iNumRecords; i++) m_pRecordDescDef[i].fixEndianness();
 		
 		break;
 	};
@@ -356,7 +415,7 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 		return DAFF_FILE_CORRUPTED;
 	}
 
-	m_pMetadata = new DAFFMetadataImpl;
+	DAFFMetadataImpl *m_pMetadata = 0;
 	if (pfbMetadata) {
 		// Metadata block present
 		void* pMetadataBuf = DAFF::malloc_aligned16((size_t) pfbMetadata->ui64Size);
@@ -367,19 +426,35 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 			return DAFF_FILE_CORRUPTED;
 		}
 
-		int iError = m_pMetadata->load(pMetadataBuf);
-		if (iError != 0) {
-			DAFF::free_aligned16(pMetadataBuf);
-			tidyup();
-			return iError;
-		}
+		// Read all the DAFFMetadataImpl instances
+		size_t iBytesRead = 0;
+		char* pCurrentBuf = (char*)pMetadataBuf;
+		char* pEndOfMetaDataBuf = pCurrentBuf + (size_t)pfbMetadata->ui64Size;
+		while (pCurrentBuf < pEndOfMetaDataBuf)
+		{
+			m_pMetadata = new DAFFMetadataImpl;
+			int iError = m_pMetadata->load(pCurrentBuf, iBytesRead);
+			if ((iError != 0) || (iBytesRead == 0)) {
+				DAFF::free_aligned16(pMetadataBuf);
+				tidyup();
+				return iError;
+			}
 
+			m_vpMetadata.push_back(m_pMetadata);
+
+			// Set Buffer to next DAFFMetaDataImpl instance
+			pCurrentBuf += iBytesRead;
+		}
 		DAFF::free_aligned16(pMetadataBuf);
+	} else {
+		m_pMetadata = new DAFFMetadataImpl;
+		m_vpMetadata.push_back(m_pMetadata); // Empty
 	}
 
-	// Everything worked fine ...
 
+	// Everything worked fine ... Close the file
 	fclose(m_file);
+	m_file = NULL;
 
 	// Important: If there is only one point in a dimension => Then there is no resolution
 	// TODO: Recheck if this is correct for non-full and full angular ranges
@@ -407,7 +482,10 @@ void DAFFReaderImpl::closeFile() {
 }
 
 void DAFFReaderImpl::tidyup() {
-	if (m_file) fclose(m_file);
+	if (m_file) {
+		fclose(m_file);
+		m_file = NULL;
+	}
 
 	DAFF::free_aligned16(m_pFileBlockTable);
 	m_pFileBlockTable = NULL;
@@ -424,8 +502,10 @@ void DAFFReaderImpl::tidyup() {
 	DAFF::free_aligned16(m_pDataBlock);
 	m_pDataBlock = NULL;
 
-	delete m_pMetadata;
-	m_pMetadata = NULL;
+	for (size_t i=0; i<m_vpMetadata.size(); ++i)
+		delete m_vpMetadata[i];
+
+	m_vpMetadata.clear();
 
 	m_sFilename = "";
 	m_bFileOpened = false;
@@ -475,9 +555,9 @@ DAFFContent* DAFFReaderImpl::getContent() const {
 	return (DAFFContentIR*) this;
 }
 
-DAFFMetadata* DAFFReaderImpl::getMetadata() const {
+const DAFFMetadata* DAFFReaderImpl::getMetadata() const {
 	assert( m_bFileOpened );
-	return m_pMetadata;
+	return m_vpMetadata[0];
 }
 
 const DAFFProperties* DAFFReaderImpl::getProperties() const {
@@ -510,7 +590,9 @@ std::string DAFFReaderImpl::toString() const {
 	ss << "Orientation:         " << o.toString() << std::endl;
 
 	DAFFContentIR* pContentIR;
-	DAFFContentMS* pContentMS;
+	DAFFReaderImpl* pContent;
+	DAFFContentDFT* pContentDFT;
+	std::vector<float> vsFrequencies;
 	
 	switch (getContentType()) {
 		case DAFF_IMPULSE_RESPONSE:
@@ -520,15 +602,25 @@ std::string DAFFReaderImpl::toString() const {
 			break;
 
 		case DAFF_MAGNITUDE_SPECTRUM:
-			pContentMS = dynamic_cast<DAFFContentMS*>(getContent());
-			ss << "Number of frequencies: " << pContentMS->getNumFrequencies() << std::endl;
-			const std::vector<float> vsFrequencies(pContentMS->getFrequencies());
+		case DAFF_PHASE_SPECTRUM:
+		case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+			pContent = dynamic_cast<DAFFReaderImpl*>(getContent());
+			ss << "Number of frequencies: " << pContent->getNumFrequencies() << std::endl;
+			vsFrequencies = pContent->getFrequencies();
 			ss << "Frequency support:     ";
 			for (size_t i=0; i<vsFrequencies.size(); i++) {
 				ss << DAFFUtils::Float2StrNice(vsFrequencies[i], 3, false);
 				if (i < (vsFrequencies.size()-1)) ss << ", ";
 			}
 			ss << " Hz" << std::endl;
+			break;
+
+			
+		case DAFF_DFT_SPECTRUM:
+			pContentDFT = dynamic_cast<DAFFContentDFT*>(getContent());
+			ss << "Transform size: " << pContentDFT->getTransformSize() << std::endl;
+			ss << "Symmetric: " << ((pContentDFT->isSymetric()) ? "yes" : "no") << std::endl;
+			ss << "Samplerate: " << pContentDFT->getSamplerate() << std::endl;
 			break;
 	}
 	return ss.str();
@@ -563,7 +655,7 @@ std::string DAFFReaderImpl::getChannelLabel(int iChannel) const {
 	// Fetch the channel name from the metadata
 	std::stringstream ss;
 	ss << "LABEL_CHANNEL_" << (iChannel+1);
-	return (m_pMetadata->hasKey(ss.str()) ? m_pMetadata->getKeyString(ss.str()) : "");
+	return ((m_vpMetadata.size() > 0) && (m_vpMetadata[0]->hasKey(ss.str())) ? m_vpMetadata[0]->getKeyString(ss.str()) : "");
 }
 
 int DAFFReaderImpl::getAlphaPoints() const {
@@ -646,6 +738,42 @@ void DAFFReaderImpl::getNearestNeighbour(int iView, float fAngle1, float fAngle2
 
 	bool bDummy;
 	getNearestNeighbour(iView, fAngle1, fAngle2, iRecordIndex, bDummy);
+}
+
+const DAFFMetadata* DAFFReaderImpl::getRecordMetadata(int iRecordIndex, int iChannel) const
+{
+	bool bDummy=false;
+	return getRecordMetadata(iRecordIndex, iChannel, bDummy);
+}
+
+const DAFFMetadata* DAFFReaderImpl::getRecordMetadata(int iRecordIndex, int iChannel, bool& bEmptyMetadata) const
+{
+	assert( (iRecordIndex >= 0) && (iRecordIndex < m_pMainHeader->iNumRecords) );
+	assert( (iChannel >= 0) && (iChannel < m_pMainHeader->iNumChannels) );
+
+	bEmptyMetadata = true; // default
+	if ((iRecordIndex < 0) || (iRecordIndex >= m_pMainHeader->iNumRecords) ||
+		(iChannel < 0) || (iChannel >= m_pMainHeader->iNumChannels) )
+		return m_pEmptyMetadata;
+
+	int32_t iMetadataIndex=0;
+	if (m_pMainHeader->iContentType == DAFF_IMPULSE_RESPONSE)
+	{
+		DAFFRecordDescIR& pDesc = m_pRecordDescIR[iRecordIndex*m_pMainHeader->iNumChannels + iChannel];
+		iMetadataIndex = pDesc.iMetadataIndex;
+	} else
+	{
+		DAFFRecordDescDefault& pDesc = m_pRecordDescDef[iRecordIndex*m_pMainHeader->iNumChannels + iChannel];
+		iMetadataIndex = pDesc.iMetadataIndex;
+	}
+
+	if ((iMetadataIndex != 0) && (iMetadataIndex < (int32_t)m_vpMetadata.size()))
+	{
+		bEmptyMetadata = false;
+		return m_vpMetadata[iMetadataIndex];
+	}
+	else
+		return m_pEmptyMetadata;
 }
 
 int DAFFReaderImpl::getRecordCoords(int iRecordIndex, int iView, float& fAngle1, float& fAngle2) const {
@@ -825,7 +953,11 @@ void DAFFReaderImpl::transformAnglesO2D(const float fAzimuth, const float fEleva
 }
 
 double DAFFReaderImpl::getSamplerate() const {
-	return m_pContentHeaderIR->fSamplerate;
+	if (m_pMainHeader->iContentType == DAFF_IMPULSE_RESPONSE)
+		return m_pContentHeaderIR->fSamplerate;
+	if (m_pMainHeader->iContentType == DAFF_DFT_SPECTRUM)
+		return m_pContentHeaderDFT->fSamplerate;
+	return 0; // error
 }
 
 int DAFFReaderImpl::getFilterLength() const {
@@ -908,7 +1040,16 @@ int DAFFReaderImpl::getEffectiveFilterCoeffs(int iRecordIndex, int iChannel, flo
 }
 
 int DAFFReaderImpl::getNumFrequencies() const {
-	return m_pContentHeaderMS->iNumFreqs;
+	switch (m_pMainHeader->iContentType)
+	{
+	case DAFF_MAGNITUDE_SPECTRUM:
+		return m_pContentHeaderMS->iNumFreqs;
+	case DAFF_PHASE_SPECTRUM:
+		return m_pContentHeaderPS->iNumFreqs;
+	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+		return m_pContentHeaderMPS->iNumFreqs;
+	}
+	return 0; // error!
 }
 
 const std::vector<float>& DAFFReaderImpl::getFrequencies() const {
@@ -916,7 +1057,16 @@ const std::vector<float>& DAFFReaderImpl::getFrequencies() const {
 }
 
 float DAFFReaderImpl::getOverallMagnitudeMaximum() const {
-	return m_pContentHeaderMS->fMax;
+	switch (m_pMainHeader->iContentType)
+	{
+	case DAFF_MAGNITUDE_SPECTRUM:
+		return m_pContentHeaderMS->fMax;
+	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+		return m_pContentHeaderMPS->fMax;
+	case DAFF_DFT_SPECTRUM:
+		return m_pContentHeaderDFT->fMax;
+	}
+	return 0.0; // error!
 }
 
 int DAFFReaderImpl::getMagnitudes(int iRecordIndex, int iChannel, float* pfData) const {
@@ -929,9 +1079,127 @@ int DAFFReaderImpl::getMagnitudes(int iRecordIndex, int iChannel, float* pfData)
 
 	if (pfData == NULL) return DAFF_NO_ERROR;
 
-	DAFFRecordDescMS& pDesc = m_pRecordDescMS[iRecordIndex*m_pMainHeader->iNumChannels + iChannel];
+	DAFFRecordDescDefault& pDesc = m_pRecordDescDef[iRecordIndex*m_pMainHeader->iNumChannels + iChannel];
+	float* pfSrc=0;
+
+	switch (m_pMainHeader->iContentType) {
+		case DAFF_MAGNITUDE_SPECTRUM:
+			pfSrc = reinterpret_cast<float*>( reinterpret_cast<char*>(m_pDataBlock) + pDesc.ui64DataOffset );
+			memcpy(pfData, pfSrc, m_pContentHeaderMS->iNumFreqs*sizeof(float));
+			break;
+		case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+			pfSrc = reinterpret_cast<float*>( reinterpret_cast<char*>(m_pDataBlock) + pDesc.ui64DataOffset );
+			// TODO: maybe find a better way to do this
+			for (int i=0; i<=m_pContentHeaderMPS->iNumFreqs; i++)
+				pfData[i] = pfSrc[2*i];
+			break;
+		default:
+			return DAFF_MODAL_ERROR;
+	}
+
+	return DAFF_NO_ERROR;
+}
+
+int DAFFReaderImpl::getPhases(int iRecordIndex, int iChannel, float* pfData) const {
+	assert( (iRecordIndex >= 0) && (iRecordIndex < m_pMainHeader->iNumRecords) );
+	assert( (iChannel >= 0) && (iChannel < m_pMainHeader->iNumChannels) );
+
+	if ( (iRecordIndex < 0) || (iRecordIndex >= m_pMainHeader->iNumRecords) ||
+		(iChannel < 0) || (iChannel >= m_pMainHeader->iNumChannels) )
+		return DAFF_INVALID_INDEX;
+
+	if (pfData == NULL) return DAFF_NO_ERROR;
+
+	DAFFRecordDescDefault& pDesc = m_pRecordDescDef[iRecordIndex*m_pMainHeader->iNumChannels + iChannel];
+	float* pfSrc=0;
+
+	switch (m_pMainHeader->iContentType) {
+		case DAFF_PHASE_SPECTRUM:
+			pfSrc = reinterpret_cast<float*>( reinterpret_cast<char*>(m_pDataBlock) + pDesc.ui64DataOffset );
+			memcpy(pfData, pfSrc, m_pContentHeaderPS->iNumFreqs*sizeof(float));
+			break;
+		case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+			pfSrc = reinterpret_cast<float*>( reinterpret_cast<char*>(m_pDataBlock) + pDesc.ui64DataOffset );
+			// TODO: maybe find a better way to do this
+			for (int i=0; i<=m_pContentHeaderMPS->iNumFreqs; i++)
+				pfData[i] = pfSrc[2*i+1];
+			break;
+		default:
+			return DAFF_MODAL_ERROR;
+	}
+	return DAFF_NO_ERROR;
+}
+
+int DAFFReaderImpl::getCoefficientsMP(int iRecordIndex, int iChannel, float* pfDest) const {
+	assert( (iRecordIndex >= 0) && (iRecordIndex < m_pMainHeader->iNumRecords) );
+	assert( (iChannel >= 0) && (iChannel < m_pMainHeader->iNumChannels) );
+
+	if ( (iRecordIndex < 0) || (iRecordIndex >= m_pMainHeader->iNumRecords) ||
+		(iChannel < 0) || (iChannel >= m_pMainHeader->iNumChannels) )
+		return DAFF_INVALID_INDEX;
+
+	if (pfDest == NULL) return DAFF_NO_ERROR;
+
+	DAFFRecordDescDefault& pDesc = m_pRecordDescDef[iRecordIndex*m_pMainHeader->iNumChannels + iChannel];
 	float* pfSrc = reinterpret_cast<float*>( reinterpret_cast<char*>(m_pDataBlock) + pDesc.ui64DataOffset );
-	memcpy(pfData, pfSrc, m_pContentHeaderMS->iNumFreqs*sizeof(float));
+
+	//TODO: find a better way to do this
+	for(int i=0; i<=m_pContentHeaderMPS->iNumFreqs; i++) {
+		//Magnitude
+		pfDest[2*i] = DAFF::cabs(pfSrc[2*i],pfSrc[2*i+1]);
+		//Phase
+		pfDest[2*i+1] = DAFF::carg(pfSrc[2*i],pfSrc[2*i+1]);
+	}
+
+	return DAFF_NO_ERROR;
+}
+
+int DAFFReaderImpl::getCoefficientsRI(int iRecordIndex, int iChannel, float* pfDest) const {
+	assert( (iRecordIndex >= 0) && (iRecordIndex < m_pMainHeader->iNumRecords) );
+	assert( (iChannel >= 0) && (iChannel < m_pMainHeader->iNumChannels) );
+
+	if ( (iRecordIndex < 0) || (iRecordIndex >= m_pMainHeader->iNumRecords) ||
+		(iChannel < 0) || (iChannel >= m_pMainHeader->iNumChannels) )
+		return DAFF_INVALID_INDEX;
+
+	if (pfDest == NULL) return DAFF_NO_ERROR;
+
+	DAFFRecordDescDefault& pDesc = m_pRecordDescDef[iRecordIndex*m_pMainHeader->iNumChannels + iChannel];
+	float* pfSrc = reinterpret_cast<float*>( reinterpret_cast<char*>(m_pDataBlock) + pDesc.ui64DataOffset );
+	memcpy(pfDest, pfSrc, 2*m_pContentHeaderMPS->iNumFreqs*sizeof(float));
+
+	return DAFF_NO_ERROR;
+}
+
+int DAFFReaderImpl::getTransformSize() const {
+	return m_pContentHeaderDFT->iTransformSize;
+}
+
+int DAFFReaderImpl::getNumDFTCoeffs() const {
+	return m_pContentHeaderDFT->iNumDFTCoeffs;
+}
+
+bool DAFFReaderImpl::isSymetric() const {
+	return (m_pContentHeaderDFT->iNumDFTCoeffs != m_pContentHeaderDFT->iTransformSize);
+}
+
+double DAFFReaderImpl::getFrequencyBandwidth() const {
+	return 0;// TODO
+}
+
+int DAFFReaderImpl::getDFTCoeffs(int iRecordIndex, int iChannel, float* pfDest) const {
+	assert( (iRecordIndex >= 0) && (iRecordIndex < m_pMainHeader->iNumRecords) );
+	assert( (iChannel >= 0) && (iChannel < m_pMainHeader->iNumChannels) );
+
+	if ( (iRecordIndex < 0) || (iRecordIndex >= m_pMainHeader->iNumRecords) ||
+		(iChannel < 0) || (iChannel >= m_pMainHeader->iNumChannels) )
+		return DAFF_INVALID_INDEX;
+
+	if (pfDest == NULL) return DAFF_NO_ERROR;
+
+	DAFFRecordDescDefault& pDesc = m_pRecordDescDef[iRecordIndex*m_pMainHeader->iNumChannels + iChannel];
+	float* pfSrc = reinterpret_cast<float*>( reinterpret_cast<char*>(m_pDataBlock) + pDesc.ui64DataOffset );
+	memcpy(pfDest, pfSrc, 2*m_pContentHeaderDFT->iNumDFTCoeffs*sizeof(float));
 
 	return DAFF_NO_ERROR;
 }

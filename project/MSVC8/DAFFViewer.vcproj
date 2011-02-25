@@ -20,7 +20,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="build\$(ConfigurationName)_$(PlatformName)"
+			OutputDirectory="..\..\build\$(PlatformName)\tools\"
 			IntermediateDirectory="temp\$(ConfigurationName)_$(PlatformName)"
 			ConfigurationType="1"
 			CharacterSet="1"
@@ -66,7 +66,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="libdaffd.lib FOXD-1.6.lib libjpeg.lib libpng.lib zlib.lib Ws2_32.lib vtkCommon.lib vtkDICOMParser.lib vtkexoIIc.lib vtkexpat.lib vtkFiltering.lib vtkfreetype.lib vtkftgl.lib vtkGenericFiltering.lib vtkGraphics.lib vtkHybrid.lib vtkImaging.lib vtkIO.lib vtkjpeg.lib vtkNetCDF.lib vtkpng.lib vtkRendering.lib vtksys.lib vtktiff.lib vtkVolumeRendering.lib vtkWidgets.lib vtkzlib.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="build\$(ConfigurationName)_$(PlatformName);..\..\..\3rdParty\fox-1.6\lib\$(PlatformName);..\..\..\3rdParty\vtk-5.2.1\bin\relwithdebinfo_win32"
+				AdditionalLibraryDirectories="&quot;..\..\lib\$(PlatformName)&quot;;&quot;..\..\..\3rdParty\fox-1.6\lib\$(PlatformName)&quot;;&quot;..\..\..\3rdParty\vtk-5.2.1\bin\relwithdebinfo_win32&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				EntryPointSymbol="mainCRTStartup"

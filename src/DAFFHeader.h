@@ -219,6 +219,57 @@ public:
 	}
 } DAFF_PACK_ATTR;
 
+// DAFF file format content header for phase spectra
+
+class DAFFContentHeaderPS {
+public:
+#pragma pack(push,1)
+	int32_t iNumFreqs;		// Number of support frequencies
+	
+#pragma pack(pop)
+
+	// Convert the little-endian file format into the systems endianness
+	void fixEndianness() {
+		DAFF::le2se_4byte(&iNumFreqs, 1);
+	}
+} DAFF_PACK_ATTR;
+
+// DAFF file format content header for magnitude-phase spectra
+
+class DAFFContentHeaderMPS {
+public:
+#pragma pack(push,1)
+	float fMax;				// Maximum magnitude value over all records/channels/frequencies
+	int32_t iNumFreqs;		// Number of support frequencies
+	
+#pragma pack(pop)
+
+	// Convert the little-endian file format into the systems endianness
+	void fixEndianness() {
+		DAFF::le2se_4byte(&fMax, 1);
+		DAFF::le2se_4byte(&iNumFreqs, 1);
+	}
+} DAFF_PACK_ATTR;
+
+// DAFF file format content header for discrete Fourier spectra
+
+class DAFFContentHeaderDFT {
+public:
+#pragma pack(push,1)
+	int32_t iNumDFTCoeffs;		// Number of (stored) DFT coefficients (= complex elements per record)
+	int32_t iTransformSize;		// DFT transform size
+	float fSamplerate;			// Samplingrate [in Hertz]
+	float fMax;					// Maximum magnitude value over all records/channels/frequencies
+#pragma pack(pop)
+
+	// Convert the little-endian file format into the systems endianness
+	void fixEndianness() {
+		DAFF::le2se_4byte(&iNumDFTCoeffs, 1);
+		DAFF::le2se_4byte(&iTransformSize, 1);
+		DAFF::le2se_4byte(&fSamplerate, 1);
+		DAFF::le2se_4byte(&fMax, 1);
+	}
+} DAFF_PACK_ATTR;
 
 /* +---------------------------------------------------+
    |                                                   |
@@ -226,12 +277,29 @@ public:
    |                                                   |
    +---------------------------------------------------+ */
 
+// Default record descriptor for records with constant size.
+// (Used for: MS, PS, MPS and DFT content)
+class DAFFRecordDescDefault {
+public:
+#pragma pack(push,1)
+	int32_t iMetadataIndex;		// Index of metadata for this record
+	uint64_t ui64DataOffset;	// Position inside the file where samples/coefficients reside
+#pragma pack(pop)
+
+	// Convert the little-endian file format into the systems endianness
+	void fixEndianness() {
+		DAFF::le2se_4byte(&iMetadataIndex, 1);
+		DAFF::le2se_8byte(&ui64DataOffset, 1);
+	}
+} DAFF_PACK_ATTR;
+
 // Record descriptor: impulse responses content
 class DAFFRecordDescIR {
 public:
 #pragma pack(push,1)
 	int32_t iOffset;			// Number of leading zeros
 	int32_t iLength;			// Number of filter coefficients
+	int32_t iMetadataIndex;		// Index of metadata for this record
 	uint64_t ui64DataOffset;	// Position inside the file where samples/coefficients reside
 #pragma pack(pop)
 
@@ -239,25 +307,9 @@ public:
 	void fixEndianness() {
 		DAFF::le2se_4byte(&iOffset, 1);
 		DAFF::le2se_4byte(&iLength, 1);
+		DAFF::le2se_4byte(&iMetadataIndex, 1);
 		DAFF::le2se_8byte(&ui64DataOffset, 1);
 	}
 } DAFF_PACK_ATTR;
-
-
-// Record descriptor: magnitude spectrum content
-class DAFFRecordDescMS {
-public:
-#pragma pack(push,1)
-	uint64_t ui64DataOffset;	// Position inside the file where samples/coefficients reside
-#pragma pack(pop)
-
-	// Convert the little-endian file format into the systems endianness
-	void fixEndianness() {
-		DAFF::le2se_8byte(&ui64DataOffset, 1);
-	}
-} DAFF_PACK_ATTR;
-
-
-
 
 #endif // __DAFFHEADER_H__

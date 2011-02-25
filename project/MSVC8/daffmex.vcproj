@@ -20,7 +20,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="build\$(ConfigurationName)_$(PlatformName)"
+			OutputDirectory="..\..\build\Matlab"
 			IntermediateDirectory="temp\$(ConfigurationName)_$(PlatformName)"
 			ConfigurationType="2"
 			CharacterSet="1"
@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="src;..\..\include;D:\Programme\MATLAB\R2009b\extern\include"
+				AdditionalIncludeDirectories="src;..\..\include;D:\Programme\MATLAB\R2010b\extern\include;..\..\bindings\Matlab"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;DAFFMEX_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -65,11 +65,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				UseLibraryDependencyInputs="false"
 				AdditionalDependencies="libdaffd.lib libmex.lib libmx.lib"
 				OutputFile="$(OutDir)\DAFF.mexw32"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\lib\$(PlatformName);D:\Programme\MATLAB\R2009b\extern\lib\win32\microsoft"
-				ModuleDefinitionFile="daffmex.def"
+				AdditionalLibraryDirectories="&quot;..\..\lib\$(PlatformName)&quot;;..\..\bindings\Matlab;D:\Programme\MATLAB\R2010b\extern\lib\win32\microsoft"
+				ModuleDefinitionFile="..\..\bindings\Matlab\daffmex.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"

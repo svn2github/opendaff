@@ -1,4 +1,4 @@
-function [ freqs, mags, metadata ] = dfBulbMS( alpha, beta, basepath )
+function [ freqs, mags, metadata ] = multichannel_test_callback_function( alpha, beta, basepath )
 % Example magnitude spectrum of bulb shape for higher frequencies
     
     % This is just an example directivity.
@@ -8,9 +8,9 @@ function [ freqs, mags, metadata ] = dfBulbMS( alpha, beta, basepath )
     % Third-octave resolution
     freqs = [20 25 31.5 40 50 63 80 100 125 160 ...
              200 250 315 400 500 630 800 1000 1250 1600 ...
-             2000 2500 3150 4000 5000 6300 8000 10000 12500 16000 20000];
+             2000 3150 4000 5000 6300 8000 10000 12500 16000 20000];
     
-    channels = 1;
+    channels = 3;
     mags = zeros(channels, length(freqs));
     metadata = [];
     
@@ -25,10 +25,13 @@ function [ freqs, mags, metadata ] = dfBulbMS( alpha, beta, basepath )
             
             % Frequency weighting
             w = log(freqs(f)) / log(20000) / 2;
-            
-            mags(c,f) = (1-w) + w*exp(-lambda*phi^2);
+            if c==1
+                mags(c,f) = (1-w) + w*exp(-lambda*phi^2);
+            elseif c==2
+                mags(c,f) = c*f/100;
+            else
+                mags(c,f) = freqs(f)/20000;
+            end
         end
     end   
 end
-
-

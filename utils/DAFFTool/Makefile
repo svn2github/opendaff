@@ -2,6 +2,7 @@
 #  OpenDAFF DAFFTool Makefile
 #
 #  Autoren:	Frank Wefers  (Frank.Wefers@akustik.rwth-aachen.de)
+#		Jonas Stienen (Jonas.Stienen@akustik.rwth-aachen.de)
 #
 #  Version:	$Id: Makefile,v 1.2 2010/02/08 18:55:49 fwefers Exp $
 #
@@ -24,16 +25,16 @@ LIB_DIR := ../../$(LIB_DIR)
 BIN_DIR := ../../$(BIN_DIR)
 
 # Source files
-TOOL_SRC := src/DAFFTool.cpp
+TOOL_SRC := src/Export.cpp src/DAFFTool.cpp
 
-DAFFTool:
+dafftool:
 	$(MAKE_BIN_DIR)
-	$(CXX) $(CXX_FLAGS) -I$(INCLUDE_DIR) $(TOOL_SRC) -L$(LIB_DIR) -lDAFF -lsndfile -o $(BIN_DIR)/dafftool
+	$(CXX) $(CXX_FLAGS) -I$(INCLUDE_DIR) -Isrc $(TOOL_SRC) -L$(LIB_DIR) -ldaff -lsndfile -o $(BIN_DIR)/dafftool
 
-all: DAFFTool
+all: dafftool
 
 .PHONY: clean
 clean:
 	rm -f $(BIN_DIR)/dafftool
 	
-.DEFAULT_GOAL := DAFFTool
+.DEFAULT_GOAL := dafftool

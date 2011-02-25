@@ -41,6 +41,9 @@
 #include <DAFFContent.h>
 #include <DAFFContentIR.h>
 #include <DAFFContentMS.h>
+#include <DAFFContentPS.h>
+#include <DAFFContentMPS.h>
+#include <DAFFContentDFT.h>
 #include <DAFFHeader.h>
 #include <DAFFProperties.h>
 #include <DAFFReader.h>
@@ -48,7 +51,7 @@
 
 class DAFFMetadataImpl;
 
-class DAFFReaderImpl : public DAFFReader, public DAFFProperties, public DAFFContentIR, public DAFFContentMS {
+class DAFFReaderImpl : public DAFFReader, public DAFFProperties, public DAFFContentIR, public DAFFContentMS, public DAFFContentPS, public DAFFContentMPS, public DAFFContentDFT {
 public:
 	DAFFReaderImpl();
 	~DAFFReaderImpl();
@@ -61,7 +64,7 @@ public:
 	int getFileFormatVersion() const;
 	int getContentType() const;
 	DAFFContent* getContent() const;
-	DAFFMetadata* getMetadata() const;
+	const DAFFMetadata* getMetadata() const;
 	const DAFFProperties* getProperties() const;
 
 	std::string toString() const;	
@@ -93,6 +96,8 @@ public:
 	// --= Interface "DAFFContent" =--
 
 	DAFFReader* getParent() const;
+	const DAFFMetadata* getRecordMetadata(int iRecordIndex, int iChannel) const;
+	const DAFFMetadata* getRecordMetadata(int iRecordIndex, int iChannel, bool& bEmptyMetadata) const;
 	int getRecordCoords(int iRecordIndex, int iView, float& fAngle1, float& fAngle2) const;
 	void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex);
 	void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex, bool& bOutOfBounds);
@@ -116,6 +121,23 @@ public:
 	const std::vector<float>& getFrequencies() const;
 	float getOverallMagnitudeMaximum() const;
 	int getMagnitudes(int iRecordIndex, int iChannel, float* pfData) const;
+	
+	// --= Interface "DAFFContentPS" =--
+
+	int getPhases(int iRecordIndex, int iChannel, float* pfData) const;
+
+	// --= Interface "DAFFContentMPS" =--
+
+	int getCoefficientsMP(int iRecordIndex, int iChannel, float* pfDest) const;
+	int getCoefficientsRI(int iRecordIndex, int iChannel, float* pfDest) const;
+
+	// --= Interface "DAFFContentDFT" =--
+
+	int getTransformSize() const;
+	int getNumDFTCoeffs() const;
+	bool isSymetric() const;
+	double getFrequencyBandwidth() const;
+	int getDFTCoeffs(int iRecordIndex, int iChannel, float* pfDest) const;
 
 private:
 	bool m_bFileOpened;							// File state
@@ -130,11 +152,15 @@ private:
 
 	DAFFContentHeaderIR* m_pContentHeaderIR;	// Access pointer for additional header for impulse response content
 	DAFFContentHeaderMS* m_pContentHeaderMS;	// Access pointer for additional header for magnitude spectrum content
+	DAFFContentHeaderPS* m_pContentHeaderPS;	// Access pointer for additional header for phase spectrum content
+	DAFFContentHeaderMPS* m_pContentHeaderMPS;	// Access pointer for additional header for magnitude-phase spectrum content
+	DAFFContentHeaderDFT* m_pContentHeaderDFT;	// Access pointer for additional header for discrete fourier-spectrum content
+	DAFFRecordDescDefault* m_pRecordDescDef;	// Default record descriptor table 
 	DAFFRecordDescIR* m_pRecordDescIR;			// Record descriptor table (impulse responses)
-	DAFFRecordDescMS* m_pRecordDescMS;			// Record descriptor table (magnitude spectra)
 	std::vector<float> m_vfFreqs;				// List of frequencies (magnitude spectra)
 	
-	DAFFMetadataImpl* m_pMetadata;				// Metadata pointer
+	const DAFFMetadataImpl* m_pEmptyMetadata;	// Emptry metadata instance. getRecordMetadata() will return this as fallback
+	std::vector<DAFFMetadataImpl*> m_vpMetadata;// Metadata pointer
 	DAFFProperties* m_pProperties;				// Properties pointer
 
 	DAFFOrientationYPR m_orientation;			// Current orientation

@@ -13,6 +13,7 @@
 #include "FXVTKPolygons.h"
 
 class DAFFReader;
+class DAFFContentDFT;
 class DAFFContentIR;
 class DAFFContentMS;
 
@@ -82,6 +83,7 @@ public:
 	static DAFFReader* m_pReader;
 	static DAFFContentIR* m_pContentIR;
 	static DAFFContentMS* m_pContentMS;
+	static DAFFContentDFT* m_pContentDFT;
 
 protected:
     MainWindow() {};

@@ -14,34 +14,43 @@ function [] = daff_write( varargin )
 %
 %  --= General parameters =--
 %
+%  quiet        none        Suppress information and warning messages
+%
 %  -- Required --
 %
 %  filename     char        Output filename (*.daff)
 %  content      char        Content type
 %                           ('IR' => Impulse responses,
-%                            'MS' => Magnitude spectra)
+%                            'MS' => Magnitude spectra,
+%                            'PS' => Phase spectra,
+%                            'MPS' => Magnitude phase spectra,
+%                            'DFT' => discrete fourier spectra)
 %  datafunc     function    Data function (delivers the data for a direction)
-%  orient       vector-3    Orientation [yaw pitch roll] angles [°]                     
+%  orient       vector-3    Orientation [yaw pitch roll] angles [°]        
+%  channels     int         Number of channels             
+%
+%  alphares     float       Resolution of alpha-angles
+%  betares      float       Resolution of beta-angles
+%       or
+%  alphapoints  int         **TODO
+%  betapoints   int         **TODO
 %
 %  -- Optional --
 %
 %  basepath     char        Base path for all input files (default: none)
 %  metadata     struct      Metadata information (see daff_metadata_addKey)
-%    
-%   
-%   mdist           Measurement distance [m]
-%   reference       Reference value [dB]
 %
-%   
-%  
+%  alpharange   vector-2    Range of alpha-angles
+%  betarange    vector-2    Range of beta-angles
 %
-%   
+%  mdist        float       Measurement distance [m]
+%  reference    float       Reference value [dB]
 %
 %   --= Impulse response content parameters =--
 %
-%   samplerate      Sampling rate [Hertz]
-%   quantization    Element quantization (int16|int24|float32)
-%   zthreshold      Detection threshold for zero-coefficients (default: -inf)
+%  samplerate       float   Sampling rate [Hertz]
+%  quantization     char    Element quantization (int16|int24|float32)
+%  zthreshold       float   Detection threshold for zero-coefficients (default: -inf)
 %
 %   Options for magnitude spectra
 %
@@ -66,7 +75,7 @@ function [] = daff_write( varargin )
     strarg = {'filename', 'basepath', 'content', 'quantization'};
       
     % Options without an argument
-    nonarg = {'dummy'};
+    nonarg = {'quiet'};
     
     % Options with one argument
     onearg = [boolarg ingzarg floatarg pfloatarg floatvecarg strarg 'datafunc' 'metadata'];
@@ -192,13 +201,38 @@ function [] = daff_write( varargin )
         case 'MS'
             contentStr = 'Magnitude spectra';
             contentType = 1; % DAFF_MAGNITUDE_SPECTRUM
+        case 'PS'
+            contentStr = 'Phase spectra';
+            contentType = 2; % DAFF_PHASE_SPECTRUM
+        case 'MPS'
+            contentStr = 'Magnitude phase spectra';
+            contentType = 3; % DAFF_MAGNITUDE_PHASE_SPECTRUM
+        case 'DFT'
+            contentStr = 'Discrete fourier spectra';
+            contentType = 4; % DAFF_DFT_SPECTRUM
         
         otherwise
             error(['Invalid content type (' args.content ')']);
     end
     
     % Metadata
-    if ~isfield(args, 'metadata'), args.metadata = []; end;
+    if ~isfield(args, 'metadata')
+        args.metadata = [];
+	write_metadatablock = false;
+    else 
+	write_metadatablock = true;
+    end;
+    
+    % Datafunction
+    if (contentType == 4)
+        if nargout(args.datafunc) ~= 4
+            error('Argument for option ''datafunc'' must be a function which returns 4 arguments');
+        end
+    else
+        if nargout(args.datafunc) ~= 3
+            error('Argument for option ''datafunc'' must be a function which returns 3 arguments');
+        end
+    end
     
     % Angular ranges default values
     if ~isfield(args, 'alpharange'), args.alpharange = [0 360]; end
@@ -281,7 +315,16 @@ function [] = daff_write( varargin )
     end 
     
     % Quantization
-    if ~isfield(args, 'quantization'), args.quantization = 'int16'; end;
+    if ~isfield(args, 'quantization')
+		if (contentType == 0)
+			% For time-domain data => 16-Bit signed integer
+			args.quantization = 'int16';
+		else
+			% For all other data => 32-Bit floating points
+			args.quantization = 'float32';
+		end
+	end
+		
     if isfield(args, 'quantization')
         args.quantization = lower(args.quantization);
         switch args.quantization
@@ -342,6 +385,18 @@ function [] = daff_write( varargin )
         % Nothing yet ...
     end    
     
+    if strcmp(args.content, 'PS')
+        % Nothing yet ...
+    end    
+    
+    if strcmp(args.content, 'MPS')
+        % Nothing yet ...
+    end    
+    
+    if strcmp(args.content, 'DFT')
+        % Nothing yet ...
+    end    
+    
     % +------------------------------------------------+
     % |                                                |
     % |   Analysis of the input data                   |
@@ -359,20 +414,28 @@ function [] = daff_write( varargin )
     props.numRecords = 0;
     props.globalPeak = 0;
     props.eff_coeffs = 0;
+    props.transformSize = 0;
     
     % Generate a list of all input files
-    x = cell(args.alphapoints, args.betapoints);
+    x = cell(args.alphapoints, args.betapoints, args.channels);
     for b=1:args.betapoints
         beta = betastart + (b-1)*args.betares;
         
-        for a=1:args.alphapoints
+        % Write just one record at the poles
+        if ((beta == 0) || (beta == 180))
+            points = 1;
+        else
+            points = args.alphapoints;
+        end
+        
+        for a=1:points
             alpha = alphastart + (a-1)*args.alphares;
           
             % --= Impulse responses =--
             
             if strcmp(args.content, 'IR') 
                 % Get the data
-                [data, samplerate] = args.datafunc(alpha, beta, args.basepath);
+                [data, samplerate, metadata] = args.datafunc(alpha, beta, args.basepath);
                 [channels, filterlength] = size(data);
 
                 if (class(data) ~= 'double')
@@ -451,9 +514,14 @@ function [] = daff_write( varargin )
                     props.maxEffectiveFilterLength = max(elengths);
                 end
                 
-                x{a,b} = struct('peak', peak, ...
-                                'offsets', offsets, ...
-                                'elengths', elengths); 
+                for c=1:args.channels
+                    x{a,b,c} = struct('peak', peak, ...
+                                    'offset', offsets(c), ...
+                                    'elength', elengths(c), ...
+                                    'metadata', metadata, ...
+                                    'metadataIndex', 0); 
+                end
+		write_metadatablock = write_metadatablock || ~isempty(metadata);
                             
                 % Discard the data
                 clear data;
@@ -464,7 +532,74 @@ function [] = daff_write( varargin )
             
             if strcmp(args.content, 'MS') 
                 % Get the data
-                [freqs, data] = args.datafunc(alpha, beta, args.basepath);
+                [freqs, data, metadata] = args.datafunc(alpha, beta, args.basepath);
+                [channels, numfreqs] = size(data);
+
+                if (class(data) ~= 'double')
+                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values') );
+                end
+                
+                if isfield(props, 'freqs')
+                    if (freqs ~= props.freqs)
+                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Frequency support does not match', alpha, beta) );
+                    end
+
+                    if (channels ~= args.channels)
+                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Number of channels does not match', alpha, beta) );
+                    end
+                else
+                    % Checks on the frequency support
+                    if (numfreqs ~= size(freqs))
+                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Frequency support does not match', alpha, beta) );
+                    end;
+                    
+                    if (min(freqs) <= 0)
+                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Support frequencies must be greater zero', alpha, beta) );
+                    end;
+            
+                    if (sort(freqs) ~= freqs)
+                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Support frequencies must be stricly increasing', alpha, beta) );
+                    end   
+        
+                    if (length(unique(freqs)) ~= length(freqs))
+                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Support frequencies must be unique', alpha, beta) );
+                    end  
+                    
+                    % Now set the global properties, if they have not been set yet
+                    props.numfreqs = numfreqs;
+                    props.freqs = freqs;
+                    props.elementsPerRecord = length(freqs);
+
+                    fprintf('Global properties: Number of frequencies = %d\n', numfreqs);
+                end
+
+                % Important: Negative magnitudes are forbidden
+                if (min(min(data)) < 0)
+                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Contains negative magnitudes', alpha, beta) );
+                end
+                
+                
+                for c=1:args.channels
+                    % Determine the peak value
+                    peak = max(max(data(c,:)));
+                    props.globalPeak = max([props.globalPeak peak]);
+
+                    x{a,b,c} = struct('peak', peak, ...
+                                    'metadata', metadata, ...
+                                    'metadataIndex', 0); 
+                end
+		write_metadatablock = write_metadatablock || ~isempty(metadata);
+                            
+                % Discard the data
+                clear data; 
+            end
+            
+            
+            % --= Phase spectra =--
+            
+            if strcmp(args.content, 'PS') 
+                % Get the data
+                [freqs, data, metadata] = args.datafunc(alpha, beta, args.basepath);
                 [channels, numfreqs] = size(data);
 
                 if (class(data) ~= 'double')
@@ -501,16 +636,136 @@ function [] = daff_write( varargin )
                     fprintf('Global properties: Number of frequencies = %d\n', numfreqs);
                 end
 
-                % Important: Negative magnitudes are forbidden
-                if (min(min(data)) < 0)
-                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Contains negative magnitudes', alpha, beta) );
+                % Important: Phases must range between +-pi
+                if (min(min(data)) < -pi) || (max(max(data)) > pi)
+                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Phases must range between +-pi', alpha, beta) );
+                end
+                
+                props.globalPeak = 0;
+                                
+                for c=1:args.channels
+                    x{a,b,c} = struct('metadata', metadata, ...
+                                      'metadataIndex', 0); 
+                end
+		write_metadatablock = write_metadatablock || ~isempty(metadata);
+                            
+                % Discard the data
+                clear data; 
+            end
+            
+            % --= Magnitude phase spectra =--
+            
+            if strcmp(args.content, 'MPS') 
+                % Get the data
+                [freqs, data, metadata] = args.datafunc(alpha, beta, args.basepath);
+                [channels, numfreqs] = size(data);
+
+                if (class(data) ~= 'double')
+                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta) );
+                end
+                
+                if isfield(props, 'freqs')
+                    if (freqs ~= props.freqs)
+                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Frequency support does not match', alpha, beta) );
+                    end
+
+                    if (channels ~= args.channels)
+                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Number of channels does not match', alpha, beta) );
+                    end
+                else
+                    % Checks on the frequency support
+                    if (min(freqs) <= 0)
+                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Support frequencies must be greater zero', alpha, beta) );
+                    end;
+            
+                    if (sort(freqs) ~= freqs)
+                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Support frequencies must be stricly increasing', alpha, beta) );
+                    end   
+        
+                    if (length(unique(freqs)) ~= length(freqs))
+                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Support frequencies must be unique', alpha, beta) );
+                    end  
+                    
+                    % Now set the global properties, if they have not been set yet
+                    props.numfreqs = numfreqs;
+                    props.freqs = freqs;
+                    props.elementsPerRecord = length(freqs);
+
+                    fprintf('Global properties: Number of frequencies = %d\n', numfreqs);
                 end
                 
                 % Determine the peak value
-                peak = max(max(data));
+                peak = max(max(abs(data)));
+                props.globalPeak = max([props.globalPeak peak]);
+                    
+                for c=1:args.channels
+                    x{a,b,c} = struct('metadata', metadata, ... %'peak', peak, ...
+                                      'metadataIndex', 0); 
+                end
+		write_metadatablock = write_metadatablock || ~isempty(metadata);
+                            
+                % Discard the data
+                clear data; 
+            end
+            
+            % --= DFT spectra =--
+            
+            if strcmp(args.content, 'DFT') 
+                % Get the data
+                [data, sampleRate, isSymetric, metadata] = args.datafunc(alpha, beta, args.basepath);
+                [channels, numDFTCoeffs] = size(data);
+
+                if (class(data) ~= 'double')
+                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta) );
+                end
+               
+                % test something (TODO)
+                if (class(data) ~= 'double')
+                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta) );
+                end
+                
+                if (class(isSymetric) ~= 'logical')
+                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): third parameter isSymetric must be logical', alpha, beta));
+                end
+                
+                if isfield(props, 'samplerate')
+                    if (sampleRate ~= props.sampleRate)
+                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Sample rate does not match', alpha, beta));
+                    end
+                end
+                
+                if isfield(props, 'numDFTCoeffs')
+                    if (numDFTCoeffs ~= props.numDFTCoeffs)
+                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Number of discrete fourier spectra coefficients is not constant', alpha, beta));
+                    end
+                else
+                    if (numDFTCoeffs <= 0)
+                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Number of discrete fourier spectra coefficients must be greater than zero', alpha, beta));
+                    end
+                    
+                    props.numDFTCoeffs = numDFTCoeffs;
+                    props.elementsPerRecord = numDFTCoeffs;
+                    props.sampleRate = sampleRate;
+                    
+                    if isSymetric
+                        props.transformSize = 2*numDFTCoeffs-1;
+                    else
+                        props.transformSize = numDFTCoeffs;
+                    end
+                    
+                    fprintf('Global properties: Sampling rate = %d Hz, dft length = %d, transform size = %d\n',...
+                            props.sampleRate, props.numDFTCoeffs, props.transformSize);
+                end
+                                     
+                % Determine the peak value
+                peak = max(max(abs(data)));
                 props.globalPeak = max([props.globalPeak peak]);
                 
-                x{a,b} = struct('peak', peak ); 
+                for c=1:args.channels
+                    x{a,b,c} = struct('metadata', metadata, ... %'peak', peak, ...
+                                      'metadataIndex', 0); 
+                end
+		write_metadatablock = write_metadatablock || ~isempty(metadata);
                             
                 % Discard the data
                 clear data; 
@@ -522,7 +777,7 @@ function [] = daff_write( varargin )
         
     fprintf('Global peak: %+0.1f dB (%0.6f)\n', 20*log10(props.globalPeak), props.globalPeak);
   
-    if strcmp(args.content, 'IR') 
+    if strcmp(args.content, 'IR')
         % Calculate to overall storage saving
         props.total_coeffs = args.channels * props.numRecords * filterlength;
         props.zsavings = double(props.total_coeffs - props.eff_coeffs) / double(props.total_coeffs) * 100;
@@ -538,8 +793,8 @@ function [] = daff_write( varargin )
     % |                                                |
     % +------------------------------------------------+
       
-    % Current version = 0.1
-    FileFormatVersion = 0100;
+    % Current version = 0.101
+    FileFormatVersion = 0101;
     
     % Important! 'l' -> little endian (DAFF files are always little endian)
     fid = fopen(args.filename, 'wb', 'l'); 
@@ -549,7 +804,7 @@ function [] = daff_write( varargin )
     %  1st step: Write the file header
     %
    
-    if (length(args.metadata) > 0)
+    if (write_metadatablock > 0)
         iNumFileBlocks = 5;
     else
         iNumFileBlocks = 4;
@@ -590,7 +845,7 @@ function [] = daff_write( varargin )
     fpos.DataSize = ftell(fid);
     fwrite(fid, 0, 'uint64');
     
-    if (length(args.metadata) > 0)
+    if (write_metadatablock > 0)
         % Metadata block (FILEBLOCK_DAFF1_METADATA = 0x0005)
         fwrite(fid, hex2dec('0005'), 'int32');
         fpos.MetadataOffset = ftell(fid);
@@ -649,7 +904,34 @@ function [] = daff_write( varargin )
         fwrite(fid, props.numfreqs, 'int32');
         fwrite(fid, props.freqs, 'float32');
     end  
+    
+    % --= Phase spectra =--
+          
+    if strcmp(args.content, 'PS') 
+        % Number of frequencies
+        fwrite(fid, props.numfreqs, 'int32');
+        fwrite(fid, props.freqs, 'float32');
+    end  
+    
+    % --= Magnitude-phase spectra =--
+          
+    if strcmp(args.content, 'MPS') 
+        % Number of frequencies
+        fwrite(fid, props.globalPeak, 'float32');
+        fwrite(fid, props.numfreqs, 'int32');
+        fwrite(fid, props.freqs, 'float32');
+    end  
 
+    % --= DFT spectra =--
+          
+    if strcmp(args.content, 'DFT') 
+        % Number of frequencies
+        fwrite(fid, props.numDFTCoeffs, 'int32');
+        fwrite(fid, props.transformSize, 'int32');
+        fwrite(fid, props.sampleRate, 'int32');
+        fwrite(fid, props.globalPeak, 'float32');
+    end  
+    
     ContentHeaderSize = ftell(fid) - ContentHeaderOffset;
     
     % Adjust 16-Byte alignment
@@ -668,14 +950,13 @@ function [] = daff_write( varargin )
     %       unknown so far. We write placeholder and insert the data later...
     
     if strcmp(args.content, 'IR') 
-        % Note: Each IR record desc is 4+4+8 Byte = 16 Byte
-        fwrite(fid, zeros(1, 16*props.numRecords*args.channels, 'uint8'), 'uint8');
+        % Note: Each IR record desc is 4+4+4+8 Byte = 20 Byte
+        fwrite(fid, zeros(1, 20*props.numRecords*args.channels, 'uint8'), 'uint8');
+    else % default (MS/PS/MPS/DFT)
+        % Note: Each MS/PS/MPS/DFT record desc is 4+8=12 Byte
+        fwrite(fid, zeros(1, 12*props.numRecords*args.channels, 'uint8'), 'uint8');
     end
     
-    if strcmp(args.content, 'MS') 
-        % Note: Each MS record desc is 8 Byte
-        fwrite(fid, zeros(1, 8*props.numRecords*args.channels, 'uint8'), 'uint8');
-    end
     
     RecordDescSize = ftell(fid) - RecordDescOffset;
     
@@ -696,7 +977,14 @@ function [] = daff_write( varargin )
         for b=1:args.betapoints
             beta = betastart + (b-1)*args.betares;
             
-            for a=1:args.alphapoints
+            % Write just one record at the poles
+            if ((beta == 0) || (beta == 180))
+                points = 1;
+            else
+                points = args.alphapoints;
+            end
+
+            for a=1:points
                 alpha = alphastart + (a-1)*args.alphares;
                 
                 % Get the data (2nd time)
@@ -709,19 +997,18 @@ function [] = daff_write( varargin )
  
                 % Clipping check
                 peak = max(max(abs(data)));
-                if (peak > 1)
-                    warnning( sprintf('Dataset (A%0.1f°, B%0.1f°): Clipping occured (peak %0.3f)', alpha, beta, peak) );
+                if ((peak > 1) && (~args.quiet))
+                    warning( sprintf('Dataset (A%0.1f°, B%0.1f°): Clipping occured (peak %0.3f)', alpha, beta, peak) );
                 end
                    
-                x{a,b}.dataOffset = zeros(1, args.channels);
                 for c=1:args.channels
                     % Remember the offset of this records/channels data
                     % Important: Relative to the beginning of the data block
-                    x{a,b}.dataOffset(c) = ftell(fid) - DataOffset;
+                    x{a,b,c}.dataOffset = ftell(fid) - DataOffset;
                     
                     % Effective boundaries (Matlab indices)
-                    i1 = x{a,b}.offsets(c) + 1;
-                    i2 = i1 + x{a,b}.elengths(c) - 1;
+                    i1 = x{a,b,c}.offset + 1;
+                    i2 = i1 + x{a,b,c}.elength - 1;
                     
                     switch args.quantization
                     case 'int16'
@@ -747,7 +1034,14 @@ function [] = daff_write( varargin )
         for b=1:args.betapoints
             beta = betastart + (b-1)*args.betares;
             
-            for a=1:args.alphapoints
+            % Write just one record at the poles
+            if ((beta == 0) || (beta == 180))
+                points = 1;
+            else
+                points = args.alphapoints;
+            end
+
+            for a=1:points
                 alpha = alphastart + (a-1)*args.alphares;
                 
                 % Get the data (2nd time)
@@ -760,17 +1054,140 @@ function [] = daff_write( varargin )
  
                 % Clipping check
                 peak = max(max(data));
-                if (peak > 1)
+                if ((peak > 1) && (~args.quiet))
                     warning( sprintf('Dataset (A%0.1f°, B%0.1f°): Clipping occured (peak %0.3f)', alpha, beta, peak) );
                 end
                    
-                x{a,b}.dataOffset = zeros(1, args.channels);
+                %x{a,b}.dataOffset = zeros(1, args.channels); 
+                % TODO: find right syntax to do this
                 for c=1:args.channels
                     % Remember the offset of this records/channels data
                     % Important: Relative to the beginning of the data block
-                    x{a,b}.dataOffset(c) = ftell(fid) - DataOffset;
+                    x{a,b,c}.dataOffset = ftell(fid) - DataOffset;
    
                     fwrite(fid, data(c,:), 'float32');
+                end
+            end
+        end
+    end
+    
+    
+    if strcmp(args.content, 'PS') 
+        
+        for b=1:args.betapoints
+            beta = betastart + (b-1)*args.betares;
+            
+            % Write just one record at the poles
+            if ((beta == 0) || (beta == 180))
+                points = 1;
+            else
+                points = args.alphapoints;
+            end
+
+            for a=1:points
+                alpha = alphastart + (a-1)*args.alphares;
+                
+                % Get the data (2nd time)
+                [freqs, data] = args.datafunc(alpha, beta, args.basepath);
+                [channels, numfreqs] = size(data);
+
+                if (class(data) ~= 'double')
+                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values') );
+                end
+                   
+                %x{a,b}.dataOffset = zeros(1, args.channels); TODO
+                for c=1:args.channels
+                    % Remember the offset of this records/channels data
+                    % Important: Relative to the beginning of the data block
+                    x{a,b,c}.dataOffset = ftell(fid) - DataOffset;
+   
+                    fwrite(fid, data(c,:), 'float32');
+                end
+            end
+        end
+    end
+    
+    
+    if strcmp(args.content, 'MPS') 
+        
+        for b=1:args.betapoints
+            beta = betastart + (b-1)*args.betares;
+            
+            % Write just one record at the poles
+            if ((beta == 0) || (beta == 180))
+                points = 1;
+            else
+                points = args.alphapoints;
+            end
+
+            for a=1:points
+                alpha = alphastart + (a-1)*args.alphares;
+                
+                % Get the data (2nd time)
+                [freqs, data] = args.datafunc(alpha, beta, args.basepath);
+                [channels, numfreqs] = size(data);
+
+                if (class(data) ~= 'double')
+                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values') );
+                end
+                   
+                %x{a,b}.dataOffset = zeros(1, args.channels); TODO
+                for c=1:args.channels
+                    % Remember the offset of this records/channels data
+                    % Important: Relative to the beginning of the data block
+                    x{a,b,c}.dataOffset = ftell(fid) - DataOffset;
+   
+                    start = ftell(fid);
+                    fseek(fid, -4, 'cof');
+                    fwrite(fid, real(data(c,:)), 'float32', 4);
+                    fseek(fid, start, 'bof');
+                    fwrite(fid, imag(data(c,:)), 'float32', 4);
+                end
+            end
+        end
+    end
+    
+    
+    if strcmp(args.content, 'DFT') 
+        
+        for b=1:args.betapoints
+            beta = betastart + (b-1)*args.betares;
+            
+            % Write just one record at the poles
+            if ((beta == 0) || (beta == 180))
+                points = 1;
+            else
+                points = args.alphapoints;
+            end
+
+            for a=1:points
+                alpha = alphastart + (a-1)*args.alphares;
+                
+                % Get the data (2nd time)
+                [data] = args.datafunc(alpha, beta, args.basepath);
+                [channels, numfreqs] = size(data);
+
+                if (class(data) ~= 'double')
+                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values') );
+                end
+                   
+                %x{a,b}.dataOffset = zeros(1, args.channels); TODO
+                for c=1:args.channels
+                    % Remember the offset of this records/channels data
+                    % Important: Relative to the beginning of the data block
+                    x{a,b,c}.dataOffset = ftell(fid) - DataOffset;
+                                        
+                    %for z=1:numfreqs
+                    %    fwrite(fid, real(data(c,z)), 'float32');
+                    %    fwrite(fid, imag(data(c,z)), 'float32');
+                    %end
+                    
+                    start = ftell(fid);
+                    fseek(fid, -4, 'cof');
+                    fwrite(fid, real(data(c,:)), 'float32', 4);
+                    fseek(fid, start, 'bof');
+                    fwrite(fid, imag(data(c,:)), 'float32', 4);
+
                 end
             end
         end
@@ -782,10 +1199,48 @@ function [] = daff_write( varargin )
     %  6th step: Write the metadata
     %
     
-    if (length(args.metadata) > 0)
+    if (write_metadatablock > 0)
         MetadataOffset = ftell(fid);
-        daff_write_metadata(fid, args.metadata);
+        
+        % write metadata for the whole file
+        index = 0;
+        if ~isempty(args.metadata)
+            % args.metadata = daff_metadata_addKey(args.metadata, 'version', 'char', FileFormatVersion); 
+            % write something, so args.metadata is not empty
+            daff_write_metadata(fid, args.metadata);  
+            index = 1;
+        end
+        
+        % write metadata for each record
+        for b=1:args.betapoints
+            beta = betastart + (b-1)*args.betares;
+             
+            % Write just one metadata block for each pole
+            if ((beta == 0) || (beta == 180))
+                points = 1;
+            else
+                points = args.alphapoints;
+            end
+
+            for a=1:points
+                if ~isempty(x{a,b,1}.metadata) % allways check the first channel for metadata
+                    % TODO: validate metadata structure
+                    daff_write_metadata(fid, x{a,b,1}.metadata); 
+                    for c=1:args.channels % but write index to all channels
+                        x{a,b,c}.metadataIndex = index;
+                    end
+                    index = index + 1;
+                else
+                    for c=1:args.channels
+                        x{a,b,c}.metadataIndex = 0;
+                    end
+                end
+            end
+        end
+        
         MetadataSize = ftell(fid) - MetadataOffset;
+
+        fprintf('Number of written Metadata objects: %d\n', index);
     end
     
     %
@@ -796,23 +1251,41 @@ function [] = daff_write( varargin )
     
     if strcmp(args.content, 'IR') 
         for b=1:args.betapoints
-            for a=1:args.alphapoints
+            beta = betastart + (b-1)*args.betares;
+            
+            % Write just one record at the poles
+            if ((beta == 0) || (beta == 180))
+                points = 1;
+            else
+                points = args.alphapoints;
+            end
+
+            for a=1:points
                 for c=1:args.channels
-                    fwrite(fid, x{a,b}.offsets(c), 'int32');
-                    fwrite(fid, x{a,b}.elengths(c), 'int32');
-                    fwrite(fid, x{a,b}.dataOffset(c), 'uint64');
+                    fwrite(fid, x{a,b,c}.offset, 'int32');
+                    fwrite(fid, x{a,b,c}.elength, 'int32');
+                    fwrite(fid, x{a,b,c}.metadataIndex, 'int32'); 
+                    fwrite(fid, x{a,b,c}.dataOffset, 'uint64');
     
-                    % DEBUG: fprintf('Data offset alpha = %d, beta = %d, channel %d = %d\n', a, b, c, x{a,b}.dataOffset(c));
+                    % DEBUG: fprintf('Data offset alpha = %d, beta = %d, channel %d = %d\n', a, b, c, x{a,b}(c).dataOffset);
                 end
             end
         end
-    end
-    
-    if strcmp(args.content, 'MS') 
+    else % default (MS,PS,MPS,DFT)
         for b=1:args.betapoints
-            for a=1:args.alphapoints
+            beta = betastart + (b-1)*args.betares;
+            
+            % Write just one record at the poles
+            if ((beta == 0) || (beta == 180))
+                points = 1;
+            else
+                points = args.alphapoints;
+            end
+
+            for a=1:points
                 for c=1:args.channels
-                    fwrite(fid, x{a,b}.dataOffset(c), 'uint64');
+                    fwrite(fid, x{a,b,c}.metadataIndex, 'int32');
+                    fwrite(fid, x{a,b,c}.dataOffset, 'uint64');
                 end
             end
         end
@@ -846,7 +1319,7 @@ function [] = daff_write( varargin )
     fseek(fid, fpos.DataSize, 'bof');
     fwrite(fid, DataSize, 'uint64');    
     
-    if (length(args.metadata) > 0)
+    if (write_metadatablock > 0)
         fseek(fid, fpos.MetadataOffset, 'bof');
         fwrite(fid, MetadataOffset, 'uint64');
     
@@ -859,14 +1332,14 @@ function [] = daff_write( varargin )
     % -----------------------------------------------------
     
     % Some more information
-    fprintf('--= Summary =---------------------------------\n\n', ContentHeaderSize);
+    fprintf('--= Summary =---------------------------------\n\n');
     fprintf('Content header size = %d bytes\n', ContentHeaderSize);
     fprintf('Record descriptor size = %d bytes\n', RecordDescSize);
     fprintf('Data size = %d bytes\n', DataSize);
-    if (length(args.metadata) > 0)
+    if (write_metadatablock > 0)
         fprintf('Metadata size = %d bytes\n', MetadataSize);
     end
-    fprintf('\n----------------------------------------------\n\n', ContentHeaderSize);
+    fprintf('\n----------------------------------------------\n\n');
     
     % What we all been waiting for...
     fprintf('DAFF file ''%s'' successfully written\n', args.filename);

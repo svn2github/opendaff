@@ -43,7 +43,7 @@ int main() {
 	char c[4] = {1, 0, 0, 0};
 	int& i = *(int*) c;
 	cout << "i before conversion = " << i << endl;
-	le2se_4byte(&i, 1);
+	DAFF::le2se_4byte(&i, 1);
 	cout << "i after conversion = " << i << endl;
 
 	return 0;

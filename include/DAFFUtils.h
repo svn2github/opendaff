@@ -71,6 +71,9 @@ public:
 
 	//! Returns a string corresponding to a content type
 	static std::string StrContentType(int iContentType);
+	
+	//! Returns a short form string corresponding to a content type e.g. ("ir", "ms", "dft"...)
+	static std::string StrShortContentType(int iContentType);
 
 	//! Returns a string corresponding to a metadata key datatype
 	static std::string StrMetadataKeyType(int iKeyType);

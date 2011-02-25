@@ -79,6 +79,11 @@ float rad2gradf(float phi);
 double grad2rad(double phi);
 double rad2grad(double phi);
 
+// --= Complex number conversion =--
+
+float cabs(float Re, float Im);
+float carg(float Re, float Im);
+
 // degrees
 float anglef_proj_0_360_DEG(float alpha);
 float anglef_mindiff_0_360_DEG(float alpha, float beta);
