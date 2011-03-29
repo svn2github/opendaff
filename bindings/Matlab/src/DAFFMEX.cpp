@@ -490,12 +490,22 @@ void GetRecordMetadata(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[
 	bool bEmptyMetadata=false;
 	int iRecordIndex=0, iChannel=0;
 	DAFFContent* pContent = GetHandleTarget(prhs[1])->pReader->getContent();
-	if ((!getIntegerScalar(prhs[2], iRecordIndex)) ||
-		(!getIntegerScalar(prhs[3], iChannel))){
-			mexErrMsgTxt("Input parameters index and channel must be integers");
-	}
+	const DAFFProperties* pProps = GetHandleTarget(prhs[1])->pReader->getProperties();
+	
+	if (!getIntegerScalar(prhs[2], iRecordIndex))
+		mexErrMsgTxt("Invalid index");
 
-	const DAFFMetadata* pMetadata = pContent->getRecordMetadata(iRecordIndex, iChannel, bEmptyMetadata);
+	// Important: We use Matlab indexing here (starting with 1, 2, 3 ...)
+	if ((iRecordIndex < 1) || (iRecordIndex > pProps->getNumberOfRecords()))
+		mexErrMsgTxt("Invalid index");
+	
+	if (!getIntegerScalar(prhs[3], iChannel))
+		mexErrMsgTxt("Invalid channel");
+		
+	if ((iChannel < 1) || (iChannel > pProps->getNumberOfChannels()))
+		mexErrMsgTxt("Invalid channel");
+
+	const DAFFMetadata* pMetadata = pContent->getRecordMetadata(iRecordIndex-1, iChannel-1, bEmptyMetadata);
 
 	GetMetadataMatlab(pMetadata, plhs[0]);
 
@@ -945,7 +955,6 @@ void GetCellRecords(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) 
 		mexErrMsgTxt("Parameter ANGLE2 must be a real-valued scalar");
 
 	DAFFQuad q;
-	bool bOutOfBounds;
 	pReader->getContent()->getCell(iView, (float) dAngle1, (float) dAngle2, q);
 	
 	mxArray* pResult = mxCreateCellMatrix(1, 4);
@@ -992,7 +1001,7 @@ void GetNearestNeighbourIndex(int nlhs, mxArray *plhs[], int nrhs, const mxArray
         bool bOutOfBounds;
         pReader->getContent()->getNearestNeighbour(iView, (float)dAngle1, (float)dAngle2, iRecordIndex, bOutOfBounds);
 
-        plhs[0] = mxCreateDoubleScalar(iRecordIndex);
+        plhs[0] = mxCreateDoubleScalar(iRecordIndex+1); //cave: matlab indexing
         if (nlhs == 2){
                 plhs[1] = mxCreateLogicalScalar(bOutOfBounds);
         }
@@ -1026,8 +1035,9 @@ void GetCell(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
         DAFFQuad qIndices;
         pReader->getContent()->getCell(iView, (float)dAngle1, (float)dAngle2, qIndices);
 
-		plhs[0] = mxCreateDoubleScalar(qIndices.iIndex1);
-		plhs[1] = mxCreateDoubleScalar(qIndices.iIndex2);
-		plhs[2] = mxCreateDoubleScalar(qIndices.iIndex3);
-		plhs[3] = mxCreateDoubleScalar(qIndices.iIndex4);
+		// +1 because of Matlab indexing
+		plhs[0] = mxCreateDoubleScalar(qIndices.iIndex1+1);
+		plhs[1] = mxCreateDoubleScalar(qIndices.iIndex2+1);
+		plhs[2] = mxCreateDoubleScalar(qIndices.iIndex3+1);
+		plhs[3] = mxCreateDoubleScalar(qIndices.iIndex4+1);
 }

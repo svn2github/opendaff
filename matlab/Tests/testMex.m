@@ -20,13 +20,14 @@ metadata = DAFF('getMetadata', h);
 
 [data2] = DAFF('getNearestNeighbourRecord', h, 'object', 170, 0);
 [index] = DAFF('getNearestNeighbourIndex', h, 'object', 170, 0)
-[i1, i2, i3, i4] = DAFF('getCell', h, 'object', 170.1, 5);
+[i1, i2, i3, i4] = DAFF('getCell', h, 'object', 170.1, 4.9);
 [coords] = DAFF('getRecordCoords', h, 'object', i1)
 [coords] = DAFF('getRecordCoords', h, 'object', i2)
 [coords] = DAFF('getRecordCoords', h, 'object', i3)
 [coords] = DAFF('getRecordCoords', h, 'object', i4)
-[metadata2, empty] = DAFF('getRecordMetadata', h, index, 0)
-[data2] = DAFF('getRecordByIndex', h, 9);
+[metadata2, empty] = DAFF('getRecordMetadata', h, index, 1)
+[data2] = DAFF('getRecordByIndex', h, index);
+    
 figure;
 hold on
 plot(data2(1,1:512), 'r')
