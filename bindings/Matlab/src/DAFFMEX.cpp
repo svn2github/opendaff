@@ -60,8 +60,10 @@ void GetCellRecords(int, mxArray**, int, const mxArray**);
 void GetNearestNeighbourIndex(int, mxArray**, int, const mxArray**);
 void GetCell(int, mxArray**, int, const mxArray**);
 
-// Global variables
+// Handle datatype
 typedef int32_t HANDLE;
+
+// Reader wrapper/adapter
 class TARGET {
 public:
 	DAFFReader* pReader;		// Associated reader
@@ -106,11 +108,12 @@ public:
 	}
 };
 
+// Maps handle => reader
 typedef std::pair<HANDLE, TARGET*> HANDLE_PAIR;
 typedef std::map<HANDLE, TARGET*> HANDLE_MAP;
 const mxClassID HANDLE_CLASS_ID = mxINT32_CLASS;
 
-HANDLE hHandleCount=1;	// Handle counter
+HANDLE hHandleCount=1;	// Global handle counter
 HANDLE_MAP mHandles;	// Map handle->reader
 
 
@@ -204,10 +207,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		
 		mexPrintf("  Command \"getRecordMetadata\"\n\n");
 		mexPrintf("      Returns the record metadata of an opened DAFF file\n\n");
-		mexPrintf("      Syntax:     [metadata, empty] = DAFF('getRecordMetadata', handle, index, channel)\n\n");
+		mexPrintf("      Syntax:     [metadata, empty] = DAFF('getRecordMetadata', handle, index)\n\n");
 		mexPrintf("      Parameters: handle		1x1 int32	Handle of the opened DAFF file\n\n");
 		mexPrintf("					 index		1x1 integer	Record index\n");
-		mexPrintf("					 channel	1x1 integer	Channel\n");
 		mexPrintf("      Returns:    metadata	struct		Metadata\n\n\n");
 		mexPrintf("					 empty		logical		Empty metadata flag\n\n\n");
 		
@@ -484,11 +486,11 @@ void GetMetadata(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 void GetRecordMetadata(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
-	if (nrhs != 4)
+	if (nrhs != 3)
 		mexErrMsgTxt("This command requires three arguments");
 
 	bool bEmptyMetadata=false;
-	int iRecordIndex=0, iChannel=0;
+	int iRecordIndex=0;
 	DAFFContent* pContent = GetHandleTarget(prhs[1])->pReader->getContent();
 	const DAFFProperties* pProps = GetHandleTarget(prhs[1])->pReader->getProperties();
 	
@@ -499,18 +501,12 @@ void GetRecordMetadata(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[
 	if ((iRecordIndex < 1) || (iRecordIndex > pProps->getNumberOfRecords()))
 		mexErrMsgTxt("Invalid index");
 	
-	if (!getIntegerScalar(prhs[3], iChannel))
-		mexErrMsgTxt("Invalid channel");
-		
-	if ((iChannel < 1) || (iChannel > pProps->getNumberOfChannels()))
-		mexErrMsgTxt("Invalid channel");
-
-	const DAFFMetadata* pMetadata = pContent->getRecordMetadata(iRecordIndex-1, iChannel-1, bEmptyMetadata);
+	const DAFFMetadata* pMetadata = pContent->getRecordMetadata(iRecordIndex-1);
 
 	GetMetadataMatlab(pMetadata, plhs[0]);
 
-	if (nlhs == 2){
-		plhs[1] = mxCreateLogicalScalar(bEmptyMetadata);
+	if (nlhs == 2) {
+		plhs[1] = mxCreateLogicalScalar( pMetadata->isEmpty() );
 	}
 }
 
@@ -832,25 +828,26 @@ void GetRecordMatlab(DAFFReader* pReader, float* pConvBuffer, int iRecordIndex, 
 				pdData[i*iChannels+c] = (double) pConvBuffer[i];
 		}
 	}
-	//TODO: DAFF_MAGNITUDE_PHASE_SPECTRUM  - how to return complex data?
-	
+
 	if (iContentType == DAFF_MAGNITUDE_PHASE_SPECTRUM) {
 		DAFFContentMPS* pContent = dynamic_cast<DAFFContentMPS*>( pReader->getContent() );
 		int iNumFreqs = pContent->getNumFrequencies();
 	
-		// Create the result matrix (num rows = num of channels, num cols = the double element size)
-		// double size because we return magnitude and phase in an interleaved form
-		pResult = mxCreateDoubleMatrix(iChannels, 2*iNumFreqs, mxREAL);
-		double* pdData = mxGetPr(pResult);
+		// Create the result matrix (num rows = num of channels, num cols = the element size)
+		pResult = mxCreateDoubleMatrix(iChannels, iNumFreqs, mxCOMPLEX);
+		double* pdRealData = mxGetPr(pResult);
+		double* pdImagData = mxGetPi(pResult);
 
 		// Copy the data
 		for (int c=0; c<iChannels; c++) {
 			// Get the impulse response
 			pContent->getCoefficientsRI(iRecordIndex, c, pConvBuffer);
 
-			// Convert it to double precision (64-bit)
-			for (int i=0; i<2*iNumFreqs; i++)
-				pdData[i*iChannels+c] = (double) pConvBuffer[i];
+			// Convert it to double precision (64-bit) complex values
+			for (int i=0; i<iNumFreqs; i++) {
+				pdRealData[i*iChannels+c] = (double) pConvBuffer[2*i];
+				pdImagData[i*iChannels+c] = (double) pConvBuffer[2*i+1];
+			}
 		}
 	}
 
@@ -858,19 +855,21 @@ void GetRecordMatlab(DAFFReader* pReader, float* pConvBuffer, int iRecordIndex, 
 		DAFFContentDFT* pContent = dynamic_cast<DAFFContentDFT*>( pReader->getContent() );
 		int iNumDFTCoeffs = pContent->getNumDFTCoeffs();
 	
-		// Create the result matrix (num rows = num of channels, num cols = the double element size)
-		// double size because we return real and imaginary parts in an interleaved form
-		pResult = mxCreateDoubleMatrix(iChannels, 2*iNumDFTCoeffs, mxREAL);
-		double* pdData = mxGetPr(pResult);
+		// Create the result matrix (num rows = num of channels, num cols = the element size)
+		pResult = mxCreateDoubleMatrix(iChannels, iNumDFTCoeffs, mxCOMPLEX);
+		double* pdRealData = mxGetPr(pResult);
+		double* pdImagData = mxGetPi(pResult);
 
 		// Copy the data
 		for (int c=0; c<iChannels; c++) {
 			// Get the impulse response
 			pContent->getDFTCoeffs(iRecordIndex, c, pConvBuffer);
 
-			// Convert it to double precision (64-bit)
-			for (int i=0; i<2*iNumDFTCoeffs; i++)
-				pdData[i*iChannels+c] = (double) pConvBuffer[i];
+			// Convert it to double precision (64-bit) complex values
+			for (int i=0; i<iNumDFTCoeffs; i++) {
+				pdRealData[i*iChannels+c] = (double) pConvBuffer[2*i];
+				pdImagData[i*iChannels+c] = (double) pConvBuffer[2*i+1];
+			}
 		}
 	}
 }

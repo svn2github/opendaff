@@ -40,6 +40,7 @@
 #include <string>
 #include <vector>
 
+// These are helper functions to perform validations and other conversions
 bool isScalar(const mxArray *A);
 bool isVector(const mxArray *A);
 bool isRowVector(const mxArray *A);
@@ -48,7 +49,6 @@ bool getDoubleScalar(const mxArray *A, double& dest);
 bool getIntegerScalar(const mxArray *A, int& dest);
 bool getIntegerVector(const mxArray *A, std::vector<int>& dest);
 bool getString(const mxArray *A, std::string& dest);
-
 bool getRealScalar(const mxArray *A, double& dest);
 
 #endif // __HELPERS_H__
