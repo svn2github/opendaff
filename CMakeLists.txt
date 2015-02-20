@@ -3,6 +3,7 @@
 project(DAFF)
 
 cmake_minimum_required(VERSION 2.8)
+include(CMakeDependentOption)
 
 set_property (GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_DEBUG_POSTFIX "d")
@@ -33,6 +34,16 @@ message("${FOX_FOUND}")
 # if (VTK_FOUND)
 	# message(STATUS "Found VTK in directory: ${VTK_DIR}")
 # endif (VTK_FOUND)
+# --= Options =--
+
+option(BUILD_DAFFTOOL "Build the DAFF tool" ON)
+CMAKE_DEPENDENT_OPTION(BUILD_DAFFVIEWER "Build the DAFF viewer" ON "FFTW_FOUND;FOX_FOUND;VTK_FOUND;" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_DAFFMEX "Build the DAFF Matlab Extension" ON "MATLAB_FOUND;" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_DAFFMEX "Build the DAFF API documentation" ON "DOXYGEN_FOUND;" OFF)
+#option (BUILD_DAFFVIEWER "Build the DAFF viewer (requires FFTW,FOX,VTK)" ON) 
+#option (BUILD_DAFFDOC "Build the DAFF API documentation (requires doxygen)" CACHE BOOL ON) 
+
+set (BUILD_DAFFVIEWER OFF FORCE)
 
 # --- Libraries
 
