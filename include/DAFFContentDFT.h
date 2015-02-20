@@ -37,6 +37,7 @@
 #define __DAFFCONTENTDFT_H__
 
 #include <DAFFDefs.h>
+#include <DAFFContent.h>
 #include <vector>
 
 //! Discrete Fourier spectrum content interface
@@ -89,6 +90,21 @@ public:
 	virtual float getOverallMagnitudeMaximum() const=0;
 
 	// --= Data access =--
+
+	//! Retrieve a single magnitude coefficient
+	/**
+     * This method retrives a single complex-valued DFT coefficient for the given direction (record index)
+	 * and channel and stores them in the supplied destination variable.
+	 *
+	 * \param iRecordIndex  Record index (direction)
+	 * \param iChannel      Channel index
+	 * \param iDFTCoeff     DFT coefficient index
+	 * \param fDestReal		Real part
+	 * \param fDestImag		Imaginary part
+	 *
+	 * \return 0 on success, errorcode otherwise
+	 */
+	virtual int getDFTCoeff(int iRecordIndex, int iChannel, int iDFTCoeff, float& fReal, float& fImag) const=0;
 
 	//! Retrieves magnitude coefficients
 	/**

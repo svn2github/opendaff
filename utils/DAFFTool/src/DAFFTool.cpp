@@ -62,10 +62,15 @@ using namespace std;
 #define PROGRAM_NAME "DAFFTool"
 #define PROGRAM_BLANK "        "
 #define EXECUTABLE_NAME "dafftool"
-#define VERSION "0.1"
+#define VERSION "0.105"
 #define SYNTAX "MODE [OPTIONS] FILENAME"
-#define COPYRIGHT_YEARS "2008-2010"
+#define COPYRIGHT_YEARS "2008-2011"
 #define SEPARATOR "-------------------------------------------------------------------"
+
+// Access rights when creating directories with Posix 'mkdir'
+#if !defined(WIN32)
+const int DIRECTORY_MASK = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
+#endif
 
 // Define necessary roundf for Microsoft compilers
 #ifdef _MSC_VER 
@@ -77,6 +82,9 @@ std::string sPathSeparator = "/";
 #else
 std::string sPathSeparator = "\\";
 #endif
+
+// Global variables
+DAFFReader* g_pDAFFReader = NULL;
 
 // Forward declaration of mode-dependent main functions
 int main_info(int argc, char* argv[]);
@@ -90,15 +98,15 @@ int main_query(int argc, char* argv[]);
    +-----------------------------------------------+ */
 
 std::string stripFilename(const std::string& sFilename) {
-	size_t i = sFilename.length()-1;
+	int i = (int) sFilename.length()-1;
 	if (sFilename.find('.') != string::npos) 
-		i = sFilename.find_last_of('.');
+		i = (int) sFilename.find_last_of('.');
 
 	size_t j = 0;
 	if (sFilename.find(sPathSeparator.c_str()) != string::npos)
-		j = sFilename.find_last_of(sPathSeparator.c_str()) + 1;
+		j = (int) sFilename.find_last_of(sPathSeparator.c_str()) + 1;
 
-	return ((i == -1) || (i==(sFilename.length()-1)) ? "" : sFilename.substr(j, i-j));
+	return ((i == -1) || (i==((int) sFilename.length()-1)) ? "" : sFilename.substr(j, i-j));
 }
 
 bool isDirectory(const std::string& sPath) {
@@ -158,7 +166,7 @@ void help() {
 
 	printf("Examples:\t%s info trombone.daff\n", EXECUTABLE_NAME);
 	printf("         \t%s dump hrir.daff\n", EXECUTABLE_NAME);
-	printf("         \t%s query loudspeaker.daff P10,T-84\n\n\n", EXECUTABLE_NAME);
+	printf("         \t%s query loudspeaker.daff P10 T-84\n\n\n", EXECUTABLE_NAME);
 
 	printf("Version: \tThis is %s %s\n\n", PROGRAM_NAME, VERSION);
 
@@ -176,7 +184,7 @@ void help_info() {
 	printf(" Info mode - Print information on a DAFF file\n");
 	printf("%s\n\n", SEPARATOR);
 
-	printf("Syntax:  \t%s info FILENAME\n\n", EXECUTABLE_NAME);
+	printf("Syntax:  \t%s info DAFFFILENAME\n\n", EXECUTABLE_NAME);
 	printf("Options: \tThere are no options available\n\n");
 	printf("Examples:\t%s info trombone.daff\n\n", EXECUTABLE_NAME);
 }
@@ -187,10 +195,10 @@ void help_query() {
 	printf(" Query mode - Query a single record from a DAFF file\n");
 	printf("%s\n\n", SEPARATOR);
 	
-	printf("Syntax:  \t%s query [OPTIONS] FILENAME DIRECTION\n\n", EXECUTABLE_NAME);
+	printf("Syntax:  \t%s query [OPTIONS] DAFFFILENAME DIRECTION\n\n", EXECUTABLE_NAME);
 
-	printf("Directions:\tA### B###\tData view direction (alpha, beta)\n");
-	printf("           \tP### T###\tObject view direction (azimuth, elevation)\n\n");
+	printf("Directions:\tA### B###\tData view direction (alpha and beta)\n");
+	printf("           \tP### T###\tObject view direction (azimuth and elevation)\n\n");
 
 	printf("Options: \t-c	     \tPrint data (discards -d, -o, -p, -r)\n");
 	printf("         \t-d DIR    \tOutput target directory\n");
@@ -213,7 +221,7 @@ void help_dump() {
 	printf(" Dump mode - Dump the whole set of records from a DAFF file\n");
 	printf("%s\n\n", SEPARATOR);
 	
-	printf("Syntax:  \t%s dump [OPTIONS] FILENAME\n\n", EXECUTABLE_NAME);
+	printf("Syntax:  \t%s dump [OPTIONS] DAFFFILENAME\n\n", EXECUTABLE_NAME);
 
 	printf("Options: \t-c        \tUse object view angles for filenames\n");
 	printf("         \t-d DIR	 \tSet output target directory\n");
@@ -229,7 +237,9 @@ void help_dump() {
 }
 
 // Closes all open or allocated resources (memory, files, etc.)
-void tidyup() {}
+void tidyup() {
+	delete g_pDAFFReader;
+}
 
 // Global main function
 int main(int argc, char* argv[]) {
@@ -237,6 +247,7 @@ int main(int argc, char* argv[]) {
 	// At least we need one argument or option
 	if (argc < 2) {
 		syntax();
+
 		return 255;
 	}
 
@@ -257,17 +268,20 @@ int main(int argc, char* argv[]) {
 		// Help dialog requested
 		if (arg.compare("-h") == 0) {
 			help();
+
 			return 0;
 		}
 
 		// Version dialog requested
 		if (arg.compare("-v") == 0) {
 			version();
+
 			return 0;
 		}
 
 		// Anything else is syntactically incorrect
 		syntax();
+
 		return 255;
 	}
 
@@ -276,6 +290,8 @@ int main(int argc, char* argv[]) {
 	else if (sMode == "DUMP") return main_dump(argc, argv);
 	else if (sMode == "QUERY") return main_query(argc, argv);
 	else syntax();
+
+	tidyup();
 
 	return 255;
 }
@@ -315,10 +331,8 @@ int main_info(int argc, char* argv[]) {
 
 	string sInputFile = argv[optind+1];
 
-	DAFFReader* pDAFF = NULL;
-
-	pDAFF = DAFFReader::create();
-	int iError = pDAFF->openFile(sInputFile);
+	g_pDAFFReader = DAFFReader::create();
+	int iError = g_pDAFFReader->openFile(sInputFile);
 	if (iError != 0) {
 		if (iError == DAFF_FILE_NOT_FOUND)
 			fprintf(stderr, "Error: %s (\"%s\")\n", DAFFUtils::StrError(iError).c_str(), sInputFile.c_str());
@@ -327,10 +341,10 @@ int main_info(int argc, char* argv[]) {
 		return iError;
 	}
 
-	const DAFFProperties* pProps = pDAFF->getProperties();
+	const DAFFProperties* pProps = g_pDAFFReader->getProperties();
 	DAFFOrientationYPR o;
-	pDAFF->getProperties()->getOrientation(o);
-	float fVersion = pDAFF->getFileFormatVersion() / 1000.0F;
+	g_pDAFFReader->getProperties()->getOrientation(o);
+	float fVersion = g_pDAFFReader->getFileFormatVersion() / 1000.0F;
 
 	printf("\n--= Properties =--\n\n");
 
@@ -352,24 +366,32 @@ int main_info(int argc, char* argv[]) {
 	
 	DAFFContentIR* pContentIR;
 	DAFFContentMS* pContentMS;
+	DAFFContentDFT* pContentDFT;
 
-	switch (pDAFF->getContentType()) {
+	switch (g_pDAFFReader->getContentType()) {
 		case DAFF_IMPULSE_RESPONSE:
-			pContentIR = dynamic_cast<DAFFContentIR*>(pDAFF->getContent());
+			pContentIR = dynamic_cast<DAFFContentIR*>(g_pDAFFReader->getContent());
 			printf("Samplerate:          %.1f Hz\n", pContentIR->getSamplerate());
 			printf("Filter length:       %i\n", pContentIR->getFilterLength());
 			break;
 
 		case DAFF_MAGNITUDE_SPECTRUM:
-			pContentMS = dynamic_cast<DAFFContentMS*>(pDAFF->getContent());
+			pContentMS = dynamic_cast<DAFFContentMS*>(g_pDAFFReader->getContent());
 			printf("Number of frequencies: %i\n", pContentMS->getNumFrequencies());
-			const std::vector<float> vsFrequencies(pContentMS->getFrequencies());
 			printf("Frequency support:     ");
-			for (size_t i=0; i<vsFrequencies.size(); i++) {
-				printf("%s", DAFFUtils::Float2StrNice(vsFrequencies[i], 3, false).c_str());
-				if (i < (vsFrequencies.size()-1)) printf(", ");
+			for (size_t i=0; i<pContentMS->getFrequencies().size(); i++) {
+				printf("%s", DAFFUtils::Float2StrNice(pContentMS->getFrequencies()[i], 3, false).c_str());
+				if (i < (pContentMS->getFrequencies().size()-1)) printf(", ");
 			}
 			printf(" Hz\n");
+			break;
+
+		case DAFF_DFT_SPECTRUM:
+			pContentDFT = dynamic_cast<DAFFContentDFT*>(g_pDAFFReader->getContent());
+			printf("Samplerate:          %.1f Hz\n", pContentDFT->getSamplerate());
+			printf("Number of coefficients: %i\n", pContentDFT->getNumDFTCoeffs());
+			if (pContentDFT->isSymetric())
+				printf("Spectrum is symmetric\n");
 			break;
 
 		// TODO: Implement new content types ...
@@ -377,20 +399,20 @@ int main_info(int argc, char* argv[]) {
 
 	printf("\n\n--= Metadata =--\n\n");
 	std::vector<std::string> vsKeyList;
-	pDAFF->getMetadata()->getKeys(vsKeyList);
+	g_pDAFFReader->getMetadata()->getKeys(vsKeyList);
 	
 	for (std::vector<std::string>::const_iterator cit=vsKeyList.begin(); cit != vsKeyList.end(); ++cit) {
-		std::string sType = std::string("[") + DAFFUtils::StrMetadataKeyType( pDAFF->getMetadata()->getKeyType(*cit) ) + std::string("]");
+		std::string sType = std::string("[") + DAFFUtils::StrMetadataKeyType( g_pDAFFReader->getMetadata()->getKeyType(*cit) ) + std::string("]");
 		printf("%-10s %s: %s\n", sType.c_str(),
 			   (*cit).c_str(),
-			   pDAFF->getMetadata()->getKeyString(*cit).c_str());
+			   g_pDAFFReader->getMetadata()->getKeyString(*cit).c_str());
 	}
 
 	if (vsKeyList.empty()) printf("< No metadata defined >\n");
 	printf("\n");
 
-	pDAFF->closeFile();
 	tidyup();
+
 	return 0;
 }
 
@@ -466,9 +488,8 @@ int main_dump(int argc, char* argv[]) {
 	bVerbose = bQuiet ? false : bVerbose;
 
 	// Open DAFF file
-	DAFFReader* pDAFF = NULL;
-	pDAFF = DAFFReader::create();
-	int iError = pDAFF->openFile(sInputFile);
+	g_pDAFFReader = DAFFReader::create();
+	int iError = g_pDAFFReader->openFile(sInputFile);
 	if (iError != 0) {
 		if (iError == DAFF_FILE_NOT_FOUND)
 			fprintf(stderr, "Error: %s (\"%s\")\n", DAFFUtils::StrError(iError).c_str(), sInputFile.c_str());
@@ -509,7 +530,7 @@ int main_dump(int argc, char* argv[]) {
 		if (bVerbose) printf("Creating directory \"%s\"\n", sTargetDirectory.c_str());
 		// Create target directory
 #if !defined(WIN32)
-		mkdir(sTargetDirectory.c_str(), 0);
+		mkdir(sTargetDirectory.c_str(), DIRECTORY_MASK);
 #else
 		CreateDirectoryA(sTargetDirectory.c_str(), NULL);
 #endif
@@ -528,13 +549,13 @@ int main_dump(int argc, char* argv[]) {
 
 	int iResult = 0;
 
-	switch (pDAFF->getContentType()) {
+	switch (g_pDAFFReader->getContentType()) {
 
 	/* ************************************** IMPULSE RESPONSE ************************************** */
 
 	case DAFF_IMPULSE_RESPONSE:
 		if (bVerbose) printf("Detected impulse response content type\n");
-		pContentIR = dynamic_cast<DAFFContentIR*>(pDAFF->getContent());
+		pContentIR = dynamic_cast<DAFFContentIR*>(g_pDAFFReader->getContent());
 
 		if (!bForce) {
 			std::string sInput;
@@ -548,7 +569,7 @@ int main_dump(int argc, char* argv[]) {
 			}
 		}
 
-		for (iRecordIndex=0; iRecordIndex<pDAFF->getProperties()->getNumberOfRecords(); iRecordIndex++) {
+		for (iRecordIndex=0; iRecordIndex<g_pDAFFReader->getProperties()->getNumberOfRecords(); iRecordIndex++) {
 
 			// Derive angles
 			pContentIR->getRecordCoords(iRecordIndex, iView, fAngle1, fAngle2);
@@ -559,7 +580,7 @@ int main_dump(int argc, char* argv[]) {
 			if (sFilePrefix.length() > 0)
 				ssOutFileName << sFilePrefix << "_";
 			else
-				ssOutFileName << stripFilename(pDAFF->getFilename()) << "_";
+				ssOutFileName << stripFilename(g_pDAFFReader->getFilename()) << "_";
 
 			if (bReverseAngles) 
 				ssOutFileName << cAngle2ViewFlag << DAFFUtils::Double2StrNice(fAngle2, 3, bObjectView, 3) << "_" << cAngle1ViewFlag << DAFFUtils::Double2StrNice(fAngle1, 3, bObjectView, 3);
@@ -594,7 +615,7 @@ int main_dump(int argc, char* argv[]) {
 
 	case DAFF_MAGNITUDE_SPECTRUM:
 		if (bVerbose) printf("Detected magnitude spectrum content type\n");
-		pContentMS = dynamic_cast<DAFFContentMS*>(pDAFF->getContent());
+		pContentMS = dynamic_cast<DAFFContentMS*>(g_pDAFFReader->getContent());
 
 		// Write TEXTFILE
 		ssOutFileName.str("");
@@ -603,7 +624,7 @@ int main_dump(int argc, char* argv[]) {
 		if (sFilePrefix.length() > 0)
 			ssOutFileName << sFilePrefix << ".txt";
 		else
-			ssOutFileName << stripFilename(pDAFF->getFilename()) << ".txt";
+			ssOutFileName << stripFilename(g_pDAFFReader->getFilename()) << ".txt";
 
 		sOutFileName = ssOutFileName.str();
 
@@ -634,7 +655,7 @@ int main_dump(int argc, char* argv[]) {
 
 	case DAFF_PHASE_SPECTRUM:
 		if (bVerbose) printf("Detected phase spectrum content type\n");
-		pContentPS = dynamic_cast<DAFFContentPS*>(pDAFF->getContent());
+		pContentPS = dynamic_cast<DAFFContentPS*>(g_pDAFFReader->getContent());
 
 		// Write TEXTFILE
 		ssOutFileName.str("");
@@ -643,7 +664,7 @@ int main_dump(int argc, char* argv[]) {
 		if (sFilePrefix.length() > 0)
 			ssOutFileName << sFilePrefix << ".txt";
 		else
-			ssOutFileName << stripFilename(pDAFF->getFilename()) << ".txt";
+			ssOutFileName << stripFilename(g_pDAFFReader->getFilename()) << ".txt";
 
 		sOutFileName = ssOutFileName.str();
 
@@ -674,7 +695,7 @@ int main_dump(int argc, char* argv[]) {
 
 	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
 		if (bVerbose) printf("Detected magnitude-phase spectrum content type\n");
-		pContentMPS = dynamic_cast<DAFFContentMPS*>(pDAFF->getContent());
+		pContentMPS = dynamic_cast<DAFFContentMPS*>(g_pDAFFReader->getContent());
 
 		// Write TEXTFILE
 		ssOutFileName.str("");
@@ -683,7 +704,7 @@ int main_dump(int argc, char* argv[]) {
 		if (sFilePrefix.length() > 0)
 			ssOutFileName << sFilePrefix << ".txt";
 		else
-			ssOutFileName << stripFilename(pDAFF->getFilename()) << ".txt";
+			ssOutFileName << stripFilename(g_pDAFFReader->getFilename()) << ".txt";
 
 		sOutFileName = ssOutFileName.str();
 
@@ -714,7 +735,7 @@ int main_dump(int argc, char* argv[]) {
 
 	case DAFF_DFT_SPECTRUM:
 		if (bVerbose) printf("Detected discrete fourier spectrum content type\n");
-		pContentDFT = dynamic_cast<DAFFContentDFT*>(pDAFF->getContent());
+		pContentDFT = dynamic_cast<DAFFContentDFT*>(g_pDAFFReader->getContent());
 
 		// Write TEXTFILE
 		ssOutFileName.str("");
@@ -723,7 +744,7 @@ int main_dump(int argc, char* argv[]) {
 		if (sFilePrefix.length() > 0)
 			ssOutFileName << sFilePrefix << ".txt";
 		else
-			ssOutFileName << stripFilename(pDAFF->getFilename()) << ".txt";
+			ssOutFileName << stripFilename(g_pDAFFReader->getFilename()) << ".txt";
 
 		sOutFileName = ssOutFileName.str();
 
@@ -749,6 +770,8 @@ int main_dump(int argc, char* argv[]) {
 
 		break;
 	}
+
+	tidyup();
 
 	return 0;
 }
@@ -786,6 +809,7 @@ int main_query(int argc, char* argv[]) {
 
 		case 'h':
 			help_query();
+			
 			return 0;
 
 		case 'o':
@@ -822,6 +846,7 @@ int main_query(int argc, char* argv[]) {
 
 	if (iArgs != 3) {
 		syntax();
+
 		return 255;
 	}
 
@@ -879,7 +904,7 @@ int main_query(int argc, char* argv[]) {
 		if (bVerbose) printf("Creating directory \"%s\"\n", sTargetDirectory.c_str());
 		// Create target directory
 #if !defined(WIN32)
-		mkdir(sTargetDirectory.c_str(), 0);
+		mkdir(sTargetDirectory.c_str(), DIRECTORY_MASK);
 #else
 		CreateDirectoryA(sTargetDirectory.c_str(), NULL);
 #endif
@@ -887,14 +912,14 @@ int main_query(int argc, char* argv[]) {
 	if (bVerbose) printf("Using output directory \"%s\"\n", sTargetDirectory.c_str());
 	
 	// Open DAFF file
-	DAFFReader* pDAFF = NULL;
-	pDAFF = DAFFReader::create();
-	int iError = pDAFF->openFile(sInputFile);
+	g_pDAFFReader = DAFFReader::create();
+	int iError = g_pDAFFReader->openFile(sInputFile);
 	if (iError != 0) {
 		if (iError == DAFF_FILE_NOT_FOUND)
 			fprintf(stderr, "Error: %s (\"%s\")\n", DAFFUtils::StrError(iError).c_str(), sInputFile.c_str());
 		else
 			fprintf(stderr, "Error: %s\n", DAFFUtils::StrError(iError).c_str());
+
 		return iError;
 	}
 
@@ -911,7 +936,7 @@ int main_query(int argc, char* argv[]) {
 		if (sFilePrefix.length() > 0)
 			ssOutFileName << sFilePrefix << "_";
 		else
-			ssOutFileName << stripFilename(pDAFF->getFilename()) << "_";
+			ssOutFileName << stripFilename(g_pDAFFReader->getFilename()) << "_";
 	}
 
 	DAFFContentIR* pContentIR;
@@ -923,11 +948,11 @@ int main_query(int argc, char* argv[]) {
 	int iResult = 0;
 
 	/* ************************************** IMPULSE RESPONSE ************************************** */
-	switch (pDAFF->getContentType()) {
+	switch (g_pDAFFReader->getContentType()) {
 	case DAFF_IMPULSE_RESPONSE:
 		if (bVerbose) printf("Detected impulse response content type\n");
 
-		pContentIR = dynamic_cast<DAFFContentIR*>(pDAFF->getContent());
+		pContentIR = dynamic_cast<DAFFContentIR*>(g_pDAFFReader->getContent());
 
 		pContentIR->getNearestNeighbour(iView, fAngle1, fAngle2, iRecordIndex, bOutOfBounds);
 
@@ -974,11 +999,11 @@ int main_query(int argc, char* argv[]) {
 	/* ************************************** MAGNITUDE SPECTRUM ************************************** */
 	case DAFF_MAGNITUDE_SPECTRUM:
 		if (bVerbose) printf("Detected magnitude spectrum content type\n");
-		pContentMS = dynamic_cast<DAFFContentMS*>(pDAFF->getContent());
+		pContentMS = dynamic_cast<DAFFContentMS*>(g_pDAFFReader->getContent());
 
 		pContentMS->getNearestNeighbour(iView, fAngle1, fAngle2, iRecordIndex, bOutOfBounds);
 
-		if (!bQuiet && bOutOfBounds) printf("Requested angle %s is out of bounds\n", DAFFUtils::StrDirection(iView, fAngle1, fAngle2,3));
+		if (!bQuiet && bOutOfBounds) printf("Requested angle %s is out of bounds\n", DAFFUtils::StrDirection(iView, fAngle1, fAngle2,3).c_str());
 		if (bVerbose) printf("Nearest neighbouring record index is %i\n", iRecordIndex);
 
 		// CONSOLE output
@@ -997,7 +1022,7 @@ int main_query(int argc, char* argv[]) {
 			sOutFileName = ssOutFileName.str();
 		}
 
-		if (doesPathExist(sOutFileName) != NULL && !bForce) {
+		if (doesPathExist(sOutFileName) && !bForce) {
 			std::string sInput;
 			printf("File \"%s\" already exists, overwrite? [y,N]: ", sOutFileName.c_str());
 			std::cin >> sInput;
@@ -1023,11 +1048,11 @@ int main_query(int argc, char* argv[]) {
 	/* ************************************** PHASE SPECTRUM ************************************** */
 	case DAFF_PHASE_SPECTRUM:
 		if (bVerbose) printf("Detected phase spectrum content type\n");
-		pContentPS = dynamic_cast<DAFFContentPS*>(pDAFF->getContent());
+		pContentPS = dynamic_cast<DAFFContentPS*>(g_pDAFFReader->getContent());
 
 		pContentPS->getNearestNeighbour(iView, fAngle1, fAngle2, iRecordIndex, bOutOfBounds);
 
-		if (!bQuiet && bOutOfBounds) printf("Requested angle %s is out of bounds\n", DAFFUtils::StrDirection(iView, fAngle1, fAngle2,3));
+		if (!bQuiet && bOutOfBounds) printf("Requested angle %s is out of bounds\n", DAFFUtils::StrDirection(iView, fAngle1, fAngle2,3).c_str());
 		if (bVerbose) printf("Nearest neighbouring record index is %i\n", iRecordIndex);
 
 		// CONSOLE output
@@ -1046,7 +1071,7 @@ int main_query(int argc, char* argv[]) {
 			sOutFileName = ssOutFileName.str();
 		}
 
-		if (doesPathExist(sOutFileName) != NULL && !bForce) {
+		if (doesPathExist(sOutFileName) && !bForce) {
 			std::string sInput;
 			printf("File \"%s\" already exists, overwrite? [y,N]: ", sOutFileName.c_str());
 			std::cin >> sInput;
@@ -1072,11 +1097,11 @@ int main_query(int argc, char* argv[]) {
 	/* ************************************** MAGNITUDE PHASE SPECTRUM ************************************** */
 	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
 		if (bVerbose) printf("Detected magnitude-phase spectrum content type\n");
-		pContentMPS = dynamic_cast<DAFFContentMPS*>(pDAFF->getContent());
+		pContentMPS = dynamic_cast<DAFFContentMPS*>(g_pDAFFReader->getContent());
 
 		pContentMPS->getNearestNeighbour(iView, fAngle1, fAngle2, iRecordIndex, bOutOfBounds);
 
-		if (!bQuiet && bOutOfBounds) printf("Requested angle %s is out of bounds\n", DAFFUtils::StrDirection(iView, fAngle1, fAngle2,3));
+		if (!bQuiet && bOutOfBounds) printf("Requested angle %s is out of bounds\n", DAFFUtils::StrDirection(iView, fAngle1, fAngle2,3).c_str());
 		if (bVerbose) printf("Nearest neighbouring record index is %i\n", iRecordIndex);
 
 		// CONSOLE output
@@ -1095,7 +1120,7 @@ int main_query(int argc, char* argv[]) {
 			sOutFileName = ssOutFileName.str();
 		}
 
-		if (doesPathExist(sOutFileName) != NULL && !bForce) {
+		if (doesPathExist(sOutFileName) && !bForce) {
 			std::string sInput;
 			printf("File \"%s\" already exists, overwrite? [y,N]: ", sOutFileName.c_str());
 			std::cin >> sInput;
@@ -1121,11 +1146,11 @@ int main_query(int argc, char* argv[]) {
 	/* ************************************** DFT SPECTRUM ************************************** */
 	case DAFF_DFT_SPECTRUM:
 		if (bVerbose) printf("Detected DFT spectrum content type\n");
-		pContentDFT = dynamic_cast<DAFFContentDFT*>(pDAFF->getContent());
+		pContentDFT = dynamic_cast<DAFFContentDFT*>(g_pDAFFReader->getContent());
 
 		pContentDFT->getNearestNeighbour(iView, fAngle1, fAngle2, iRecordIndex, bOutOfBounds);
 
-		if (!bQuiet && bOutOfBounds) printf("Requested angle %s is out of bounds\n", DAFFUtils::StrDirection(iView, fAngle1, fAngle2,3));
+		if (!bQuiet && bOutOfBounds) printf("Requested angle %s is out of bounds\n", DAFFUtils::StrDirection(iView, fAngle1, fAngle2,3).c_str());
 		if (bVerbose) printf("Nearest neighbouring record index is %i\n", iRecordIndex);
 
 		// CONSOLE output
@@ -1144,7 +1169,7 @@ int main_query(int argc, char* argv[]) {
 			sOutFileName = ssOutFileName.str();
 		}
 
-		if (doesPathExist(sOutFileName) != NULL && !bForce) {
+		if (doesPathExist(sOutFileName) && !bForce) {
 			std::string sInput;
 			printf("File \"%s\" already exists, overwrite? [y,N]: ", sOutFileName.c_str());
 			std::cin >> sInput;
@@ -1166,6 +1191,8 @@ int main_query(int argc, char* argv[]) {
 
 		break;
 	}
+
+	tidyup();
 
 	return 0;
 }

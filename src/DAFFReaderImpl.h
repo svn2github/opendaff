@@ -44,10 +44,10 @@
 #include <DAFFContentPS.h>
 #include <DAFFContentMPS.h>
 #include <DAFFContentDFT.h>
-#include <DAFFHeader.h>
+#include "DAFFHeader.h"
 #include <DAFFProperties.h>
 #include <DAFFReader.h>
-#include <DAFFSCTransform.h>
+#include "DAFFSCTransform.h"
 
 class DAFFMetadataImpl;
 
@@ -65,7 +65,7 @@ public:
 	int getContentType() const;
 	DAFFContent* getContent() const;
 	const DAFFMetadata* getMetadata() const;
-	const DAFFProperties* getProperties() const;
+	DAFFProperties* getProperties() const;
 
 	std::string toString() const;	
 
@@ -74,34 +74,36 @@ public:
 	int getQuantization() const;
 	int getNumberOfChannels() const;
 	int getNumberOfRecords() const;
-	float getMeasurementDistance() const;
 	std::string getChannelLabel(int iChannel) const;
 
 	int getAlphaPoints() const;
 	float getAlphaResolution() const;
 	float getAlphaStart() const;
 	float getAlphaEnd() const;
+	float getAlphaSpan() const;
 	int getBetaPoints() const;
 	float getBetaResolution() const;
 	float getBetaStart() const;
 	float getBetaEnd() const;
+	float getBetaSpan() const;
 
 	void getDefaultOrientation(DAFFOrientationYPR& o) const;
 	void setDefaultOrientation();
 	void getOrientation(DAFFOrientationYPR& o) const;
 	void setOrientation(const DAFFOrientationYPR& o);
 
+	bool coversFullAlphaRange() const;
+	bool coversFullBetaRange() const;
 	bool coversFullSphere() const;
 
 	// --= Interface "DAFFContent" =--
 
 	DAFFReader* getParent() const;
-	const DAFFMetadata* getRecordMetadata(int iRecordIndex, int iChannel) const;
-	const DAFFMetadata* getRecordMetadata(int iRecordIndex, int iChannel, bool& bEmptyMetadata) const;
+	const DAFFMetadata* getRecordMetadata(int iRecordIndex) const;
 	int getRecordCoords(int iRecordIndex, int iView, float& fAngle1, float& fAngle2) const;
-	void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex);
-	void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex, bool& bOutOfBounds);
-	void getCell(int iView, const float fAngle1, const float fAngle2, DAFFQuad& qIndices);
+	void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex) const;
+	void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex, bool& bOutOfBounds) const;
+	void getCell(int iView, const float fAngle1, const float fAngle2, DAFFQuad& qIndices) const;
 	void transformAnglesD2O(const float fAlpha, const float fBeta, float& fAzimuth, float& fElevation) const;
 	void transformAnglesO2D(const float fAzimuth, const float fElevation, float& fAlpha, float& fBeta) const;
 
@@ -109,11 +111,12 @@ public:
 
 	double getSamplerate() const;
 	int getFilterLength() const;
-	int getFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest) const;
+	int getFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const;
 	int getMinEffectiveFilterOffset() const;
 	int getMaxEffectiveFilterLength() const;
 	int getEffectiveFilterBounds(int iRecordIndex, int iChannel, int& iOffset, int& iLength) const;
-	int getEffectiveFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest) const;
+	int getEffectiveFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const;
+	float getOverallPeak(); // no const because of lazy initialization
 
 	// --= Interface "DAFFContentMS" =--
 
@@ -121,10 +124,12 @@ public:
 	const std::vector<float>& getFrequencies() const;
 	float getOverallMagnitudeMaximum() const;
 	int getMagnitudes(int iRecordIndex, int iChannel, float* pfData) const;
+	int getMagnitude(int iRecordIndex, int iChannel, int iFreqIndex, float& fMag) const;
 	
 	// --= Interface "DAFFContentPS" =--
 
 	int getPhases(int iRecordIndex, int iChannel, float* pfData) const;
+	int getPhase(int iRecordIndex, int iChannel, int iFreqIndex, float& fPhase) const;
 
 	// --= Interface "DAFFContentMPS" =--
 
@@ -137,6 +142,7 @@ public:
 	int getNumDFTCoeffs() const;
 	bool isSymetric() const;
 	double getFrequencyBandwidth() const;
+	int getDFTCoeff(int iRecordIndex, int iChannel, int iDFTCoeff, float& fReal, float& fImag) const;
 	int getDFTCoeffs(int iRecordIndex, int iChannel, float* pfDest) const;
 
 private:
@@ -146,22 +152,25 @@ private:
 	DAFFFileHeader m_fileHeader;				// File header
 	DAFFFileBlockEntry* m_pFileBlockTable;		// File block table
 	DAFFMainHeader* m_pMainHeader;				// Main header
+	DAFFFileBlockEntry* m_pfbRDT;				// File block of the record descriptor table
+	DAFFFileBlockEntry* m_pfbData;				// File block of the record descriptor table
 	void* m_pContentHeader;						// Content related header (will become IR or MS)
 	void* m_pRecordDescBlock;					// Record descriptor block
 	void* m_pDataBlock;							// Record data block
+	int m_iRecordChannelDescSize;				// Size of a record channel descriptor (Bytes)
 
 	DAFFContentHeaderIR* m_pContentHeaderIR;	// Access pointer for additional header for impulse response content
 	DAFFContentHeaderMS* m_pContentHeaderMS;	// Access pointer for additional header for magnitude spectrum content
 	DAFFContentHeaderPS* m_pContentHeaderPS;	// Access pointer for additional header for phase spectrum content
 	DAFFContentHeaderMPS* m_pContentHeaderMPS;	// Access pointer for additional header for magnitude-phase spectrum content
 	DAFFContentHeaderDFT* m_pContentHeaderDFT;	// Access pointer for additional header for discrete fourier-spectrum content
-	DAFFRecordDescDefault* m_pRecordDescDef;	// Default record descriptor table 
-	DAFFRecordDescIR* m_pRecordDescIR;			// Record descriptor table (impulse responses)
 	std::vector<float> m_vfFreqs;				// List of frequencies (magnitude spectra)
 	
 	const DAFFMetadataImpl* m_pEmptyMetadata;	// Emptry metadata instance. getRecordMetadata() will return this as fallback
 	std::vector<DAFFMetadataImpl*> m_vpMetadata;// Metadata pointer
 	DAFFProperties* m_pProperties;				// Properties pointer
+	bool m_bOverallPeakInitialized;				// tells if fOverallPeak has already been initialized (lazy initialization)
+	float m_fOverallPeak;						// Peak value over all records and channels
 
 	DAFFOrientationYPR m_orientation;			// Current orientation
 	DAFFOrientationYPR m_orientationDefault;	// Default orientation
@@ -176,6 +185,12 @@ private:
 
 	// Search for all file blocks with the given ID (returns the number of matches)
 	int getFileBlocksByID(int iID, std::vector<DAFFFileBlockEntry*>& vpfDest) const;
+
+	// Returns the memory address of a record channel descriptor in the RDB
+	void* getRecordChannelDescPtr(int iRecord, int iChannel) const;
+
+	// Returns the memory address of a record metadata index in the RDB
+	int* getRecordMetadataIndexPtr(int iRecord) const;
 
 	// Clear up the instance, free resources revert to the uninitialized state
 	void tidyup();

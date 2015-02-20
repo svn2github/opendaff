@@ -69,11 +69,9 @@ public:
 	/**
 	 * Note: The method always returns a valid DAFFMetadata, even if there is
 	 *       none specified in the file. Thereby we maintain a consistent 
-	 *       behaviour. You can query if the DAFFMetadata is empty using
-	 *       the bEmptyMetadata argument.
+	 *       behaviour.
 	 */
-	virtual const DAFFMetadata* getRecordMetadata(int iRecordIndex, int iChannel) const=0;
-	virtual const DAFFMetadata* getRecordMetadata(int iRecordIndex, int iChannel, bool& bEmptyMetadata) const=0;
+	virtual const DAFFMetadata* getRecordMetadata(int iRecordIndex) const=0;
 
 	//! Determines the spherical coordinates of a record (grid point)
 	/**
@@ -92,8 +90,8 @@ public:
 	 *       we maintain a consistent behaviour. You can query if the point was within
 	 *       the boundaries using the bOutOfBounds argument.
 	 */
-	virtual void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex)=0;
-	virtual void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex, bool& bOutOfBounds)=0;
+	virtual void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex) const=0;
+	virtual void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex, bool& bOutOfBounds) const=0;
 
 	//! Determines the cell of a given direction on the sphere grid and delivers its surrounding record indices
 	/**
@@ -165,7 +163,7 @@ public:
 	 *		Anyway, using getCell out of the boundaries does not make that much sense. In case you run
 	 *		out of bounds xonsider using  getNearestNeighbour with boundary flag instead.
 	 */
-	virtual void getCell(int iView, const float fAngle1, const float fAngle2, DAFFQuad& qIndices)=0;
+	virtual void getCell(int iView, const float fAngle1, const float fAngle2, DAFFQuad& qIndices) const=0;
 
 	// --= Coordinate transformations =--
 

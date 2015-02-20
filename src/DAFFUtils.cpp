@@ -52,8 +52,8 @@
 void DAFFUtils::getLibraryVersion(DAFFVersion& version) {
 	// Version 0.1
 	version.iVersionMajor = 0;
-	version.iVersionMinor = 1;
-	version.sVersion = "0.1";
+	version.iVersionMinor = 105;
+	version.sVersion = "0.105";
 }
 
 // Helper function: Convert float => std::string (fixed format, but without trailing zeros)
@@ -121,6 +121,8 @@ std::string DAFFUtils::StrDirection(int iView, double dAngle1, double dAngle2, i
 		assert( false );
 		return "";
 	}
+	// we will never reach this point	
+	return "";
 }
 
 std::string DAFFUtils::StrDirectionCompact(int iView, double dAngle1, double dAngle2, int precision, int leadingzeros) {
@@ -146,6 +148,8 @@ std::string DAFFUtils::StrDirectionCompact(int iView, double dAngle1, double dAn
 		assert( false );
 		return "";
 	}
+	// we will never reach this point	
+	return "";
 }
 
 std::string DAFFUtils::StrError(int iErrorcode) {

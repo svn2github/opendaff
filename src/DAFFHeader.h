@@ -43,7 +43,7 @@
 #ifndef __DAFFHEADER_H__
 #define __DAFFHEADER_H__
 
-#include <Utils.h>
+#include "Utils.h"
 
 #ifdef _MSC_VER
 // No packing attribute on Microsoft Compilers
@@ -137,7 +137,7 @@ public:
 	int32_t iNumChannels;			// Number of channels
 	int32_t iNumRecords;			// Overall number of records
 	int32_t iElementsPerRecord;		// Number of elements per records (number of taps/DFT coefficients)
-	float fMeasurementDistance;		// Distance of the measurement [meters]
+	int32_t iMetadataIndex;			// Index of global metadata
 
 	int32_t iAlphaPoints;			// Number of measurement points in alpha range [0°, 360°)
 	float fAlphaStart, fAlphaEnd;	// Alpha range boundaries
@@ -157,7 +157,7 @@ public:
 		DAFF::le2se_4byte(&iNumChannels, 1);
 		DAFF::le2se_4byte(&iNumRecords, 1);
 		DAFF::le2se_4byte(&iElementsPerRecord, 1);
-		DAFF::le2se_4byte(&fMeasurementDistance, 1);
+		DAFF::le2se_4byte(&iMetadataIndex, 1);
 
 		DAFF::le2se_4byte(&iAlphaPoints, 1);
 		DAFF::le2se_4byte(&fAlphaStart, 1);
@@ -187,7 +187,6 @@ class DAFFContentHeaderIR {
 public:
 #pragma pack(push,1)
 	float fSamplerate;					// Samplingrate [in Hertz]
-	float fRefDecibel;					// Reference value [dB] (e.g. SPL)
 	int32_t iMinFilterOffset;			// Minimum offset (number of leading zeros) among all IRs
 	int32_t iMaxEffectiveFilterLength;	// Maximum effective Filterlength among all IRs
 #pragma pack(pop)
@@ -195,7 +194,6 @@ public:
 	// Convert the little-endian file format into the systems endianness
 	void fixEndianness() {
 		DAFF::le2se_4byte(&fSamplerate, 1);
-		DAFF::le2se_4byte(&fRefDecibel, 1);
 		DAFF::le2se_4byte(&iMinFilterOffset, 1);
 		DAFF::le2se_4byte(&iMaxEffectiveFilterLength, 1);
 	}
@@ -277,29 +275,27 @@ public:
    |                                                   |
    +---------------------------------------------------+ */
 
-// Default record descriptor for records with constant size.
+// Default record channel descriptor for records with constant size.
 // (Used for: MS, PS, MPS and DFT content)
-class DAFFRecordDescDefault {
+class DAFFRecordChannelDescDefault {
 public:
 #pragma pack(push,1)
-	int32_t iMetadataIndex;		// Index of metadata for this record
 	uint64_t ui64DataOffset;	// Position inside the file where samples/coefficients reside
 #pragma pack(pop)
 
 	// Convert the little-endian file format into the systems endianness
 	void fixEndianness() {
-		DAFF::le2se_4byte(&iMetadataIndex, 1);
 		DAFF::le2se_8byte(&ui64DataOffset, 1);
 	}
 } DAFF_PACK_ATTR;
 
-// Record descriptor: impulse responses content
-class DAFFRecordDescIR {
+// Record channel descriptor: impulse responses content
+class DAFFRecordChannelDescIR {
 public:
 #pragma pack(push,1)
 	int32_t iOffset;			// Number of leading zeros
 	int32_t iLength;			// Number of filter coefficients
-	int32_t iMetadataIndex;		// Index of metadata for this record
+	float fScaling;				// Scaling factor (only used for integer quantization)
 	uint64_t ui64DataOffset;	// Position inside the file where samples/coefficients reside
 #pragma pack(pop)
 
@@ -307,7 +303,7 @@ public:
 	void fixEndianness() {
 		DAFF::le2se_4byte(&iOffset, 1);
 		DAFF::le2se_4byte(&iLength, 1);
-		DAFF::le2se_4byte(&iMetadataIndex, 1);
+		DAFF::le2se_4byte(&fScaling, 1);
 		DAFF::le2se_8byte(&ui64DataOffset, 1);
 	}
 } DAFF_PACK_ATTR;

@@ -37,6 +37,7 @@
 #define __DAFFCONTENTMS_H__
 
 #include <DAFFDefs.h>
+#include <DAFFContent.h>
 #include <vector>
 
 //! Magnitude spectrum content interface
@@ -87,6 +88,22 @@ public:
 	 * \note The magnitude values are factors (no decibel).
 	 */
 	virtual int getMagnitudes(int iRecordIndex, int iChannel, float* pfDest) const=0;
+
+	//! Retrieves a single magnitude coefficient
+	/**
+     * This method retrives the magnitude coefficient for the given direction (record index),
+	 * channel and frequency index. It stores the value in the supplied destination. 
+	 *
+	 * \param iRecordIndex  Record index (direction)
+	 * \param iChannel      Channel index
+	 * \param iFreqIndex    Frequency index
+	 * \param fMag			Magnuitude value
+	 *
+	 * \return 0 on success, errorcode otherwise
+	 *
+	 * \note The magnitude value is a factor (no decibel).
+	 */
+	virtual int getMagnitude(int iRecordIndex, int iChannel, int iFreqIndex, float& fMag) const=0;
 };
 
 #endif // __DAFFCONTENTMS_H__

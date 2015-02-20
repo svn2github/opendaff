@@ -37,6 +37,7 @@
 #define __DAFFCONTENTIR_H__
 
 #include <DAFFDefs.h>
+#include <DAFFContent.h>
 
 //! Impulse response content interface
 /**
@@ -85,10 +86,11 @@ public:
 	 * \param iRecordIndex  Record index (direction)
 	 * \param iChannel      Channel index
 	 * \param pfDest		Destination buffer (size >= filter length)
+	 * \param fGain			Gain factor (optional, default: 1)
 	 *
 	 * \return 0 on success, errorcode otherwise
 	 */
-	virtual int getFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest) const=0;
+	virtual int getFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const=0;
 
 	// --= Low-level data access =--
 
@@ -139,12 +141,15 @@ public:
 	 * \param iRecordIndex  Record index (direction)
 	 * \param iChannel      Channel index
 	 * \param pfDest		Destination buffer (size >= effective filter length)
+	 * \param fGain			Gain factor (optional, default: 1)
 	 *
 	 * \return 0 on success, errorcode otherwise
 	 *
 	 * \sa getEffectiveFilterBounds
 	 */
-	virtual int getEffectiveFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest) const=0;
+	virtual int getEffectiveFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const=0;
+
+	virtual float getOverallPeak()=0;
 };
 
 #endif // __DAFFCONTENTIR_H__

@@ -37,6 +37,7 @@
 #define __DAFFCONTENTMPS_H__
 
 #include <DAFFDefs.h>
+#include <DAFFContent.h>
 #include <vector>
 
 //! Magnitude-phase spectrum content interface
@@ -91,6 +92,22 @@ public:
 	 */
 	virtual int getMagnitudes(int iRecordIndex, int iChannel, float* pfDest) const=0;
 
+	//! Retrieves a single magnitude coefficient
+	/**
+     * This method retrives the magnitude coefficient for the given direction (record index),
+	 * channel and frequency index. It stores the value in the supplied destination. 
+	 *
+	 * \param iRecordIndex  Record index (direction)
+	 * \param iChannel      Channel index
+	 * \param iFreqIndex    Frequency index
+	 * \param fMag			Magnuitude value
+	 *
+	 * \return 0 on success, errorcode otherwise
+	 *
+	 * \note The magnitude value is a factor (no decibel).
+	 */
+	virtual int getMagnitude(int iRecordIndex, int iChannel, int iFreqIndex, float& fMag) const=0;
+
 	//! Retrieves phase coefficients
 	/**
      * This method retrives the phase coefficients for the given direction (record index)
@@ -106,12 +123,27 @@ public:
 	 */
 	virtual int getPhases(int iRecordIndex, int iChannel, float* pfDest) const=0;
 	
+	//! Retrieves a single phase coefficient
+	/**
+     * This method retrives the phase coefficient for the given direction (record index),
+	 * channel and frequency index. It stores the value in the supplied destination. 
+	 *
+	 * \param iRecordIndex  Record index (direction)
+	 * \param iChannel      Channel index
+	 * \param iFreqIndex    Frequency index
+	 * \param fPhase		Phase value
+	 *
+	 * \return 0 on success, errorcode otherwise
+	 *
+	 */
+	virtual int getPhase(int iRecordIndex, int iChannel, int iFreqIndex, float& fPhase) const=0;
+
 	//! Retrieves coefficients in polar form
 	/**
      * This method retrives the coefficients for the given direction (record index)
 	 * and channel and stores them in the supplied destination buffers. 
 	 * Each coefficient consists of a magnitude and phase which will be returned 
-	 * in separate destination buffers. The method writes exactly
+	 * in the destination buffer. The method writes exactly
 	 * as many coefficients as there are support frequencies. Their number can be determined
 	 * using the method getNumFrequencies.
 	 *
@@ -131,7 +163,7 @@ public:
      * This method retrives the coefficients for the given direction (record index)
 	 * and channel and stores them in the supplied destination buffers. 
 	 * Each coefficient consists of a real and imaginary part which will be returned 
-	 * in separate destination buffers. The method writes exactly
+	 * in the destination buffer. The method writes exactly
 	 * as many coefficients as there are support frequencies. Their number can be determined
 	 * using the method getNumFrequencies.
 	 *

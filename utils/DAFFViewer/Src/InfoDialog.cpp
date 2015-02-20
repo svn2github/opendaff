@@ -2,7 +2,7 @@
 
 #include "Globals.h"
 #include "MainWindow.h"
-#include "Resources.h"
+#include "../Res/Resources.h"
 
 #include <DAFF.h>
 

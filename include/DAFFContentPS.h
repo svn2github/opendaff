@@ -37,6 +37,7 @@
 #define __DAFFCONTENTPS_H__
 
 #include <DAFFDefs.h>
+#include <DAFFContent.h>
 #include <vector>
 
 //! Phase spectrum content interface

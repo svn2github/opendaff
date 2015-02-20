@@ -57,14 +57,17 @@ class DAFF_API DAFFMetadata {
 public:
 	//! Metadata types
 	enum {
-		DAFF_BOOL=0, //<! Boolean (true|false, yes|no)
-		DAFF_INT,	 //<! Integer number
-		DAFF_FLOAT,  //<! Floating-point number
-		DAFF_STRING  //<! String
+		DAFF_BOOL=0,	//<! Boolean (true|false, yes|no)
+		DAFF_INT=1,		//<! Integer number
+		DAFF_FLOAT=2,  //<! Floating-point number
+		DAFF_STRING=3  //<! String
 	};
 
 	//! Destructor
 	virtual ~DAFFMetadata() {};
+
+	//! Returns if metadata does not contain any keys
+	virtual bool isEmpty() const=0;
 
 	//! Checks for existence of a key
 	virtual bool hasKey(const std::string& sKey) const=0;

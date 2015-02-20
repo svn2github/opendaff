@@ -33,7 +33,7 @@
  *              Jonas Stienen (Jonas.Stienen@akustik.rwth-aachen.de)
  *
  */
-#include <Utils.h>
+#include "Utils.h"
 
 #ifdef _MSC_VER
 // Microsoft Visual Studio compilers
@@ -41,6 +41,14 @@
 #endif
 
 #include <cstdlib>
+
+#ifdef __APPLE__
+// Different include path on MacOS
+#include <sys/malloc.h>
+#else
+#include <malloc.h>
+#endif
+
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -227,9 +235,16 @@ void noswap(void*,size_t) {}
 void* malloc_aligned16(size_t bytes) {
 #ifdef WIN32
 	return _aligned_malloc(bytes, 16);
-#else
-	// TODO: Implement
+#elif __APPLE__
+	// [fwe 2011-10-17] Manpage for malloc on MacOS tells that
+	// malloc returns data aligned on a memory boundary,
+	// so that AltiVec, SSE, etc. work on these…
+	// Let's hope they mean 16-Byte alignment.
+	// TODO: Recheck
 	return malloc(bytes);
+#else
+	// Default
+	return memalign(16, bytes);
 #endif
 }
 
@@ -237,7 +252,6 @@ void free_aligned16(void* ptr) {
 #ifdef WIN32
 	_aligned_free(ptr);
 #else
-	// TODO: Implement
 	free(ptr);
 #endif
 }
@@ -245,12 +259,13 @@ void free_aligned16(void* ptr) {
 // --= Sample type conversion =--
 
 
-void stc_sint16_to_float(float* dest, const short* src, size_t count, int input_stride, int output_stride) {
+void stc_sint16_to_float(float* dest, const short* src, size_t count, int input_stride, int output_stride, float gain) {
+	float c = gain / 32767.0F;
 	for (size_t i=0; i<count; i++)
-		dest[i*output_stride] = (float) src[i*input_stride] / 32767.0F;
+		dest[i*output_stride] = (float) src[i*input_stride] * c;
 }
 
-void stc_sint24_to_float(float* dest, const void* src, size_t count, int input_stride, int output_stride) {
+void stc_sint24_to_float(float* dest, const void* src, size_t count, int input_stride, int output_stride, float gain) {
 	
 	const unsigned char* p = (const unsigned char*) src;
 
@@ -258,6 +273,8 @@ void stc_sint24_to_float(float* dest, const void* src, size_t count, int input_s
 		int ivalue;
 		unsigned char byte[4];
 	};
+
+	float c = gain / 8388607.0F;
 
 	if (iTest != 1) {
 		for (size_t i=0; i<count; i++) {
@@ -273,7 +290,7 @@ void stc_sint24_to_float(float* dest, const void* src, size_t count, int input_s
 			else
 				byte[0] = 0x00;
 
-			dest[i*output_stride] = (float) ivalue / 8388607.0F;
+			dest[i*output_stride] = (float) ivalue * c;
 
 			p = p + input_stride*3;
 		}
@@ -291,7 +308,7 @@ void stc_sint24_to_float(float* dest, const void* src, size_t count, int input_s
 			else
 				byte[3] = 0x00;
 
-			dest[i*output_stride] = (float) ivalue / 8388607.0F;
+			dest[i*output_stride] = (float) ivalue * c;
 
 			p = p + input_stride*3;
 		}

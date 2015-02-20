@@ -52,6 +52,7 @@ public:
 
 	// --= Implementation of the interface "DAFFMetadata" =--
 
+	bool isEmpty() const;
 	bool hasKey(const std::string& sKey) const;
 	void getKeys(std::vector< std::string >& vsKeyList) const;
 	int getKeyType(const std::string& sKey) const;

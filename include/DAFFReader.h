@@ -189,7 +189,7 @@ public:
 	virtual const DAFFMetadata* getMetadata() const=0;
 
 	//! Returns the properties of the file
-	virtual const DAFFProperties* getProperties() const=0;
+	virtual DAFFProperties* getProperties() const=0;
 
 
 	// --= Utility & helper methods =--

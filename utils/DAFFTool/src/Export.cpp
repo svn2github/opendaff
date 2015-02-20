@@ -34,7 +34,7 @@
  *
  */
 
-#include <Export.h>
+#include "Export.h"
 
 #include <DAFF.h>
 
@@ -56,7 +56,7 @@ int exportIR(DAFFContentIR* pContentIR, int iRecordIndex, const std::string& sFi
 	int iCursor=0;
 	for (int iFrame=0; iFrame<iFilterLength; iFrame++)
 		for (int iChannel=0; iChannel<iChannels; iChannel++)
-			pfDataInterleaved[iCursor++] = pfData[iChannel*iFilterLength + iFrame + iChannel];
+			pfDataInterleaved[iCursor++] = pfData[iChannel*iFilterLength + iFrame];
 
 	delete[] pfData;
 
@@ -103,7 +103,7 @@ int exportIR(DAFFContentIR* pContentIR, int iRecordIndex, const std::string& sFi
 			   sFilename.c_str(),
 			   iFilterLength,
 			   iChannels,
-			   DAFFUtils::Float2StrNice((float) (pContentIR->getSamplerate()*0.001),1,false).c_str(),
+			   DAFFUtils::Float2StrNice((float)pContentIR->getSamplerate(),1,false).c_str(),
 			   sOutfileQuantization.c_str());
 	}
 
@@ -120,7 +120,7 @@ int exportMS(DAFFContentMS* pContentMS, const std::string& sFilename, int iRecor
 		return 255;
 	}
 
-	if (fprintf(file, convertMS2dat(pContentMS, iRecordIndex, fAngle1, fAngle2, iView, bQuiet, bVerbose).c_str()) < 0) {
+	if (fprintf(file, "%s", convertMS2dat(pContentMS, iRecordIndex, fAngle1, fAngle2, iView, bQuiet, bVerbose).c_str()) < 0) {
 		fprintf(stderr, "Error: Failed to write output file \"%s\"\n", sFilename.c_str());
 		fclose(file);
 		return 255;
@@ -139,7 +139,7 @@ int exportPS(DAFFContentPS* pContentPS, const std::string& sFilename, int iRecor
 		return 255;
 	}
 
-	if (fprintf(file, convertPS2dat(pContentPS, iRecordIndex, fAngle1, fAngle2, iView, bQuiet, bVerbose).c_str()) < 0) {
+	if (fprintf(file, "%s", convertPS2dat(pContentPS, iRecordIndex, fAngle1, fAngle2, iView, bQuiet, bVerbose).c_str()) < 0) {
 		fprintf(stderr, "Error: Failed to write output file \"%s\"\n", sFilename.c_str());
 		fclose(file);
 		return 255;
@@ -158,7 +158,7 @@ int exportMPS(DAFFContentMPS* pContent, const std::string& sFilename, int iRecor
 		return 255;
 	}
 
-	if (fprintf(file, convertMPS2dat(pContent, iRecordIndex, fAngle1, fAngle2, iView, bQuiet, bVerbose).c_str()) < 0) {
+	if (fprintf(file, "%s", convertMPS2dat(pContent, iRecordIndex, fAngle1, fAngle2, iView, bQuiet, bVerbose).c_str()) < 0) {
 		fprintf(stderr, "Error: Failed to write output file \"%s\"\n", sFilename.c_str());
 		fclose(file);
 		return 255;
@@ -177,7 +177,7 @@ int exportDFT(DAFFContentDFT* pContent, const std::string& sFilename, int iRecor
 		return 255;
 	}
 
-	if (fprintf(file, convertDFT2dat(pContent, iRecordIndex, fAngle1, fAngle2, iView, bQuiet, bVerbose).c_str()) < 0) {
+	if (fprintf(file, "%s", convertDFT2dat(pContent, iRecordIndex, fAngle1, fAngle2, iView, bQuiet, bVerbose).c_str()) < 0) {
 		fprintf(stderr, "Error: Failed to write output file \"%s\"\n", sFilename.c_str());
 		fclose(file);
 		return 255;
@@ -235,11 +235,9 @@ std::string convertMS2dat(DAFFContentMS* pContentMS, int iRecordIndex, float fAn
 			
 		for (int iChannel=0; iChannel<pContentMS->getProperties()->getNumberOfChannels(); iChannel++) {
 			float* pfDest = &vfData[0];
-			bool bEmptyMetadata=false;
 
 			pContentMS->getMagnitudes(iIndex, iChannel, pfDest);
-			metadata = pContentMS->getRecordMetadata(iIndex, iChannel, bEmptyMetadata);
-
+			
 			ss << "direction: " << DAFFUtils::StrDirectionCompact(iView, fAngle1, fAngle2) << ", channel: " << (iChannel+1) << " = ";
 
 			for (int i=0; i < pContentMS->getNumFrequencies(); i++) {
@@ -247,9 +245,11 @@ std::string convertMS2dat(DAFFContentMS* pContentMS, int iRecordIndex, float fAn
 				ss << DAFFUtils::Float2StrNice( vfData[i], 9, false );
 			}
 			ss << std::endl;
-			if (!bEmptyMetadata)
-				ss << "metadata: " << std::endl << metadata->toString() << std::endl << std::endl;
 		}
+
+		metadata = pContentMS->getRecordMetadata(iIndex);
+		if (!metadata->isEmpty())
+			ss << "metadata: " << std::endl << metadata->toString() << std::endl << std::endl;
 	}
 
 	return ss.str();
@@ -296,11 +296,8 @@ std::string convertPS2dat(DAFFContentPS* pContentPS, int iRecordIndex, float fAn
 			
 		for (int iChannel=0; iChannel<pContentPS->getProperties()->getNumberOfChannels(); iChannel++) {
 			float* pfDest = &vfData[0];
-			const DAFFMetadata* metadata=0;
-			bool bEmptyMetadata=false;
 
 			pContentPS->getPhases(iIndex, iChannel, pfDest);
-			metadata = pContentPS->getRecordMetadata(iIndex, iChannel, bEmptyMetadata);
 
 			ss << "direction: " << DAFFUtils::StrDirectionCompact(iView, fAngle1, fAngle2) << ", channel: " << (iChannel+1) << " = ";
 
@@ -310,9 +307,11 @@ std::string convertPS2dat(DAFFContentPS* pContentPS, int iRecordIndex, float fAn
 			}
 			ss << std::endl;
 
-			if (!bEmptyMetadata)
-				ss << "metadata: " << std::endl << metadata->toString() << std::endl << std::endl;
 		}
+
+		const DAFFMetadata* metadata = pContentPS->getRecordMetadata(iIndex);
+		if (!metadata->isEmpty())
+			ss << "metadata: " << std::endl << metadata->toString() << std::endl << std::endl;
 	}
 
 	return ss.str();
@@ -348,11 +347,8 @@ std::string convertMPS2dat(DAFFContentMPS* pContent, int iRecordIndex, float fAn
 			
 		for (int iChannel=0; iChannel < pContent->getProperties()->getNumberOfChannels(); iChannel++) {
 			float* pfDest = new float[2*pContent->getNumFrequencies()];
-			const DAFFMetadata* metadata=0;
-			bool bEmptyMetadata=false;
 
 			pContent->getCoefficientsRI(iIndex, iChannel, pfDest);
-			metadata = pContent->getRecordMetadata(iIndex, iChannel, bEmptyMetadata);
 
 			ss << "direction: " << DAFFUtils::StrDirectionCompact(iView, fAngle1, fAngle2) << ", channel: " << (iChannel+1) << " = ";
 
@@ -362,10 +358,12 @@ std::string convertMPS2dat(DAFFContentMPS* pContent, int iRecordIndex, float fAn
 			}
 			ss << std::endl;
 
-			if (!bEmptyMetadata)
-				ss << "metadata: " << std::endl << metadata->toString() << std::endl << std::endl;
 			delete[] pfDest;
 		}
+
+		const DAFFMetadata* metadata = pContent->getRecordMetadata(iIndex);
+		if (!metadata->isEmpty())
+			ss << "metadata: " << std::endl << metadata->toString() << std::endl << std::endl;
 	}
 
 	return ss.str();
@@ -391,11 +389,8 @@ std::string convertDFT2dat(DAFFContentDFT* pContent, int iRecordIndex, float fAn
 			
 		for (int iChannel=0; iChannel < pContent->getProperties()->getNumberOfChannels(); iChannel++) {
 			float* pfDest = new float[2*pContent->getNumDFTCoeffs()];
-			const DAFFMetadata* metadata=0;
-			bool bEmptyMetadata=false;
 
 			pContent->getDFTCoeffs(iIndex, iChannel, pfDest);
-			metadata = pContent->getRecordMetadata(iIndex, iChannel, bEmptyMetadata);
 
 			ss << "direction: " << DAFFUtils::StrDirectionCompact(iView, fAngle1, fAngle2) << ", channel: " << (iChannel+1) << " = ";
 
@@ -405,10 +400,12 @@ std::string convertDFT2dat(DAFFContentDFT* pContent, int iRecordIndex, float fAn
 			}
 			ss << std::endl;
 
-			if (!bEmptyMetadata)
-				ss << "metadata: " << std::endl << metadata->toString() << std::endl << std::endl;
 			delete[] pfDest;
 		}
+
+		const DAFFMetadata* metadata = pContent->getRecordMetadata(iIndex);
+		if (!metadata->isEmpty())
+			ss << "metadata: " << std::endl << metadata->toString() << std::endl << std::endl;
 	}
 
 	return ss.str();

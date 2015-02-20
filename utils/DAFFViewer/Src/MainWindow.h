@@ -6,11 +6,10 @@
 #include <fx.h>
 #include <string>
 
-#include "FXVTKWidget.h"
-#include "FXVTKDirectivityPlot.h"
-#include "FXVTKSphere.h"
-#include "FXVTKCylinder.h"
-#include "FXVTKPolygons.h"
+#include <daffviz/FXVTK2BalloonPlot.h>
+#include <daffviz/FXVTK2CarpetPlot.h>
+
+#include <FXVTK2.h>
 
 class DAFFReader;
 class DAFFContentDFT;
@@ -23,25 +22,36 @@ class MainWindow : public FXMainWindow {
 public:
 	// Messages
 	enum {
-		ID_SOMETHING = FXMainWindow::ID_LAST,
+		ID_DUMMY = FXMainWindow::ID_LAST,
 
-		ID_MENU_HELP_ABOUT,
 		ID_MENU_FILE_OPEN,
 		ID_MENU_FILE_INFO,
+		ID_MENU_SCREENSHOT,
 		ID_MENU_FILE_QUIT,
+
+		ID_MENU_HELP_ABOUT,
 
 		ID_THESCREEN,
 
-		ID_SLIDER_AZIMUTH,
-		ID_SLIDER_ELEVATION,
-		ID_SLIDER_FREQ,
+		ID_FREQUENCY,
+		ID_CHANNEL,
 
-		ID_LISTBOX_CHANNEL,
-		ID_CHK_GRID,
-		ID_CHK_VECTORS,
-		ID_CHK_NSPOLE,
-		ID_RADIO_LIN,
-		ID_RADIO_LOG,
+		ID_SCALING,
+		ID_FIXED_ANGLE,
+		ID_PLOT_TYPE,
+		ID_GRID,
+		ID_SCALE,
+		ID_VECTORS,
+		ID_NSPOLE,
+
+		ID_NORMALIZE,
+		ID_WARP,
+		ID_COLOR,
+		ID_WIRE,
+		ID_RANGE,
+
+		ID_REFERENCE,
+		ID_PROBE,
 
 		ID_LAST
 	};
@@ -51,31 +61,28 @@ public:
 
 	// -= Event handler =-
 
-	long onDrop(FXObject*, FXSelector, void*);
-
 	long onCmdHelpAbout(FXObject*, FXSelector, void*);
 	long onCmdFileQuit(FXObject*, FXSelector, void*);
 	long onCmdFileOpen(FXObject*, FXSelector, void*);
 	long onCmdFileInfo(FXObject*, FXSelector, void*);
 
-	long onSlideAzimuth(FXObject*, FXSelector, void*);
-	long onWheelAzimuth(FXObject*, FXSelector, void*);
-	long onSlideElevation(FXObject*, FXSelector, void*);
-	long onWheelElevation(FXObject*, FXSelector, void*);
-	long onSlideFreq(FXObject*, FXSelector, void*);
-	long onWheelFreq(FXObject*, FXSelector, void*);
+	long onCmdFrequency(FXObject*, FXSelector, void*);
 
-	long onListChannels(FXObject*, FXSelector, void*);
-	long onChkGrid(FXObject*, FXSelector, void*);
-	long onChkVectors(FXObject*, FXSelector, void*);
-	long onChkNSPole(FXObject*, FXSelector, void*);
-	long onRadLin(FXObject*, FXSelector, void*);
-	long onRadLog(FXObject*, FXSelector, void*);
-
-	long onSomething(FXObject*, FXSelector, void*);
-
-	long onDNDEnter(FXObject*, FXSelector, void*);
-	long onDNDDrop(FXObject*, FXSelector, void*);
+	long onCmdChannels(FXObject*, FXSelector, void*);
+	long onCmdGrid(FXObject*, FXSelector, void*);
+	long onCmdScale(FXObject*, FXSelector, void*);
+	long onCmdVectors(FXObject*, FXSelector, void*);
+	long onCmdNSPole(FXObject*, FXSelector, void*);
+	long onCmdWarp(FXObject*, FXSelector, void*);
+	long onCmdColor(FXObject*, FXSelector, void*);
+	long onCmdWire(FXObject*, FXSelector, void*);
+	long onCmdScaling(FXObject*, FXSelector, void*);
+	long onCmdRange(FXObject*, FXSelector, void*);
+	long onCmdFixedAngle(FXObject*, FXSelector, void*);
+	long onCmdPlotType(FXObject*, FXSelector, void*);
+	long onCmdSreenshot(FXObject* sender, FXSelector, void*);
+	long onCmdReference(FXObject* sender, FXSelector, void*);
+	long onCmdProbe(FXObject* sender, FXSelector, void*);
 
 	// -= Others methods =-
 
@@ -95,53 +102,75 @@ private:
 	// Icons
 	FXIcon* iconWindow;
 	FXStatusBar* statusbar;
-	FXTextField* txtStatusBox1;
-	FXTextField* txtStatusBox2;
-	FXTextField* txtStatusBox3;
+	FXTextField* m_pTxtStatusBox1;
+	FXTextField* m_pTxtStatusBox2;
+	FXTextField* m_pTxtStatusBox3;
 
-	//Menu
-	FXMenuCommand* menuInformation;
+	// Menu
+	FXMenuCommand* m_pMenuInformation;
+	FXMenuCommand* m_pMenuScreenshot;
 
-	// 3D Plot
-	FXVTKWidget* theScreen;
-	FXVTKDirectivityPlot* thePlot;
-	FXVTKSphere* sphNorth;
-	FXVTKSphere* sphSouth;
-	FXVTKCylinder* cylPoleAxis;
-	FXVTKCylinder* cylUpVektor;
-	FXVTKCylinder* cylViewVektor;
-	FXVTKPolygons* arrUpVektor;
-	FXVTKPolygons* arrViewVektor;
+	// 3D plot
+	FXVTK2::Frame* m_pScreen;
+	FXVTK2::SGNode* m_pRootNode;
+	FXVTK2::SphericalCoordinateAssistant* m_pSphericalCoordAssist;
+	FXVTK2::CartesianCoordinateAssistant* m_pCartesianCoordAssist;
+	FXVTK2::BalloonPlot* m_pBalloonPlotNode;
+	FXVTK2::CarpetPlot* m_pCarpetPlotNode;
 
 	// Controls
-	FXSlider* slideAzimuth;
-	FXSlider* slideElevation;
-	FXSlider* slideFrequency;
+	FXVerticalFrame* m_pControllerSidebar;
+	FXGroupBox* m_pSliderGroupBox;
+	FXSlider* m_pFrequencySlider;
+	FXTextField* m_pFrequencyIndicator;
 
-	FXLabel* lblAzimuth;
-	FXLabel* lblElevation;
-	FXLabel* lblFrequency;
+	FXListBox* m_pChannelList;
+	FXCheckButton* m_pScaleCheckButton;
+	FXCheckButton* m_pGridCheckButton;
+	FXCheckButton* m_pVectorsCheckButton;
+	FXCheckButton* m_pNSPoleCheckButton;
+	FXCheckButton* m_pWarpCheckButton;
+	FXCheckButton* m_pColorCheckButton;
+	FXCheckButton* m_pPhaseColorCheckButton;
+	FXCheckButton* m_pWireCheckButton;
+	FXCheckButton* m_pReferenceCheckButton;
+	FXCheckButton* m_pProbeCheckButton;
 
-	FXListBox* listChannel;
-	FXCheckButton* chkGrid;
-	FXCheckButton* chkVectors;
-	FXCheckButton* chkNSPole;
+	FXRadioButton* m_pLinearRadioButton;
+	FXRadioButton* m_pLogRadioButton;
+	FXRadioButton* m_pFixedAlphaRadioButton;
+	FXRadioButton* m_pFixedBetaRadioButton;
+	FXRadioButton* m_pBalloonPlotRadioButton;
+	FXRadioButton* m_pCarpetPlotRadioButton;
 
-	FXRadioButton* radLin;
-	FXRadioButton* radLog;
+	FXLabel* m_pMinLabel, *m_pMaxLabel, *m_pRResLabel, *m_pPhiResLabel, 
+			*m_pOpacityLabel, *m_pLevelLabel, *m_pProbeFirstLabel, *m_pProbeSecondLabel;
+	FXString m_sBalloonLinResText, m_sBalloonLogResText, m_sBalloonPhiResText, 
+			m_sCarpetBetaResText, m_sCarpetAlphaResText, m_sCarpetYLinResText, 
+			m_sCarpetYLogResText, m_sLevelLinText, m_sLevelLogText, 
+			m_sMinLinText, m_sMaxLinText, m_sMinLogText, m_sMaxLogText,
+			m_sFrequencyText, m_sAlphaAngleText, m_sBetaAngleText, m_sSampleText;
+	FXTextField* m_pMinTextField, *m_pMaxTextField, *m_pRResTextField, *m_pPhiResTextField;
+	FXButton* m_pResetButton;
 
-	std::string sRecentDir;
+	FXSlider* m_pOpacitySlider, *m_pLevelSlider, *m_pProbeFirstSlider, 
+			*m_pProbeSecondSlider;
+	FXTextField* m_pOpacityIndicator, *m_pProbeFirstTextField, *m_pLevelTextField, 
+			*m_pProbeSecondTextField;
 
-	std::vector<float> fAvailableFreq;
+	std::string m_sRecentDir;
+	std::string m_sInputFile;
+
+	std::vector<float> m_vFrequencies;
 
 	// Loads a DAFF file
-	void load(const std::string& sFilename);
+	void load(const std::string& sFilename, bool bQuiet=false);
 
 	//Initiates alle Widgets (called from Constructor)
 	void initWidgets();
 
-	// Update the states of GUI elements (after file loading)
-	void updateElements();
+	// update vtk directivity or carpetplot nodes
+	void updatePlot();
 };
 
 #endif // __MAINWINDOW_H__

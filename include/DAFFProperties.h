@@ -78,6 +78,9 @@ public:
 	// Returns ending angle of the alpha range
 	virtual float getAlphaEnd() const=0;
 
+	// Returns the spanned alpha range
+	virtual float getAlphaSpan() const=0;
+
 	// -= Beta angle =----------------------------------
 
 	// Returns the number of measurement points of the beta range
@@ -91,6 +94,9 @@ public:
 
 	// Returns ending angle of the beta range
 	virtual float getBetaEnd() const=0;
+
+	// Returns the spanned beta range
+	virtual float getBetaSpan() const=0;
 
 	// -= Orientations =----------------------------------
 
@@ -107,6 +113,12 @@ public:
 	virtual void setOrientation(const DAFFOrientationYPR& o)=0;
 
 	// -= Coverage =--------------------------------------
+
+	//! Indicates wheather the data covers the full alpha range [0°, 360°)
+	virtual bool coversFullAlphaRange() const=0;
+
+	//! Indicates wheather the data covers the full beta range [0°, 180°]
+	virtual bool coversFullBetaRange() const=0;
 
 	//! Indicates wheather the data covers the full sphere
 	virtual bool coversFullSphere() const=0;

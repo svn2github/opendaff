@@ -57,6 +57,7 @@
 #include <cmath>
 #include <string>
 #include <cstring> // required for size_t
+#include <stdint.h> // required for int64_t
 
 namespace DAFF {
 
@@ -116,10 +117,10 @@ void free_aligned16(void* ptr);
 // --= Sample type conversion =--
 
 //! Convert signed integer 16-Bit -> single precision floating point (32-Bit)
-void stc_sint16_to_float(float* dest, const short* src, size_t count, int input_stride=1, int output_stride=1);
+void stc_sint16_to_float(float* dest, const short* src, size_t count, int input_stride=1, int output_stride=1, float gain=1);
 
 //! Convert signed integer 24-Bit -> single precision floating point (32-Bit)
-void stc_sint24_to_float(float* dest, const void* src, size_t count, int input_stride=1, int output_stride=1);
+void stc_sint24_to_float(float* dest, const void* src, size_t count, int input_stride=1, int output_stride=1, float gain=1);
 
 
 // --= File system functions =--

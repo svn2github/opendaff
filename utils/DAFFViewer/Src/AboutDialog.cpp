@@ -1,7 +1,8 @@
 #include "AboutDialog.h"
 
+#include "Globals.h"
 #include "MainWindow.h"
-#include "Resources.h"
+#include "../Res/Resources.h"
 
 #include <FXJPGIcon.h>
 
@@ -30,10 +31,10 @@ AboutDialog::AboutDialog(FXWindow* owner)
 	label = new FXLabel(sub, L"A 2D/3D viewer of DAFF directional audio files", NULL, LABEL_NORMAL | JUSTIFY_LEFT);
 	label->setBackColor(FXRGB(0xFF,0xFF,0xFF));
 
-	label = new FXLabel(sub, L"Version 0.1", NULL, LABEL_NORMAL | JUSTIFY_LEFT);
+	label = new FXLabel(sub, FXStringFormat("Version %s %s", VERSION, PLATFORM), NULL, LABEL_NORMAL | JUSTIFY_LEFT);
 	label->setBackColor(FXRGB(0xFF,0xFF,0xFF));
 
-	label = new FXLabel(sub, L"(c) Copyright Institute of Technical Acoustics (ITA), RWTH Aachen, 2009-2010\n", NULL, LABEL_NORMAL | JUSTIFY_LEFT);
+	label = new FXLabel(sub, L"(c) Copyright Institute of Technical Acoustics (ITA), RWTH Aachen, 2009-2011\n", NULL, LABEL_NORMAL | JUSTIFY_LEFT);
 	label->setBackColor(FXRGB(0xFF,0xFF,0xFF));
 
 	label = new FXLabel(sub, L"This software is distributed under the terms of the GNU Lesser Public License (LGPL)", NULL, LABEL_NORMAL | JUSTIFY_LEFT);

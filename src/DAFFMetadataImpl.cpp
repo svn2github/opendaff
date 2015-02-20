@@ -33,9 +33,9 @@
  *
  */
 
-#include <DAFFMetadataImpl.h>
+#include "DAFFMetadataImpl.h"
 
-#include <Utils.h>
+#include "Utils.h"
 
 #include <algorithm>
 #include <cassert>
@@ -160,6 +160,10 @@ DAFFMetadataImpl::~DAFFMetadataImpl() {
 	m_mKeys.clear();
 };
 
+bool DAFFMetadataImpl::isEmpty() const {
+	return m_mKeys.empty();
+}
+
 bool DAFFMetadataImpl::hasKey(const std::string& sKey) const {
 	return (findKey(sKey) != NULL);
 }
@@ -249,7 +253,7 @@ void DAFFMetadataImpl::insertKey(const std::string& sName, DAFFMetadataKey* pKey
 	std::string sKeyUpper(sName);
 	std::transform(sKeyUpper.begin(), sKeyUpper.end(), sKeyUpper.begin(), (int(*)(int)) ::toupper);
 
-	m_mKeys.insert( KeyPair(sKeyUpper, pKey) );
+	m_mKeys[sKeyUpper] = pKey;
 };
 
 const DAFFMetadataKey* DAFFMetadataImpl::findKey(const std::string& sKey) const {

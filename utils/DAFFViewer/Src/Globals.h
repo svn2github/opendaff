@@ -3,7 +3,22 @@
 #ifndef __GLOBALS_H__
 #define __GLOBALS_H__
 
-#define APPNAME		L"DAFF Viewer"
+#define APPNAME		"DAFF Viewer"
+
+#define VERSION		"1.23"
+#define DATE		"$Date: $"
+
+#ifdef WIN32
+	#ifdef _M_X64
+		#define PLATFORM	"Windows 64-Bit"
+	#else
+		#define PLATFORM	"Windows 32-Bit"
+	#endif
+#endif
+
+#ifndef PLATFORM
+#define PLATFORM	L""
+#endif
 
 //#define INI_FILE "Preferences.ini"
 //

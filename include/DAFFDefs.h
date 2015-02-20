@@ -63,9 +63,10 @@
  * |                                   | *
  * +-----------------------------------+ */
 
-// Define necessary typedef from stdint.h for Microsoft compilers
-#ifdef _MSC_VER 
+// Define necessary typedef from stdint.h for Microsoft compilers before Visual C++ 2010
+#if _MSC_VER < 1600
 
+#ifdef WIN32
 typedef __int8 int8_t;
 typedef __int16 int16_t;
 typedef __int32 int32_t;
@@ -75,6 +76,7 @@ typedef unsigned __int8 uint8_t;
 typedef unsigned __int16 uint16_t;
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int64 uint64_t;
+#endif
 
 #else
 
@@ -91,26 +93,26 @@ typedef unsigned __int64 uint64_t;
 
 //! Content types
 enum {
-	DAFF_IMPULSE_RESPONSE=0,		//!< Impulse response (IR) in the time-domain
-	DAFF_MAGNITUDE_SPECTRUM,		//!< Magnitude spectrum defined at discrete frequencies
-	DAFF_PHASE_SPECTRUM,			//!< Phase spectrum defined at discrete frequencies
-	DAFF_MAGNITUDE_PHASE_SPECTRUM,	//!< Magnitude-phase spectrum defined at discrete frequencies
-	DAFF_DFT_SPECTRUM				//!< Discrete Fourier spectrum in the frequency-domain
+	DAFF_IMPULSE_RESPONSE=0,			//!< Impulse response (IR) in the time-domain
+	DAFF_MAGNITUDE_SPECTRUM=1,			//!< Magnitude spectrum defined at discrete frequencies
+	DAFF_PHASE_SPECTRUM=2,				//!< Phase spectrum defined at discrete frequencies
+	DAFF_MAGNITUDE_PHASE_SPECTRUM=3,	//!< Magnitude-phase spectrum defined at discrete frequencies
+	DAFF_DFT_SPECTRUM=4					//!< Discrete Fourier spectrum in the frequency-domain
 };
 
 
 //! Quantization modes
 enum {
 	DAFF_INT16=0,	//! 16-Bit signed integer
-	DAFF_INT24,		//! 24-Bit signed integer
-	DAFF_FLOAT32,	//! 32-Bit floating point
+	DAFF_INT24=1,	//! 24-Bit signed integer
+	DAFF_FLOAT32=2,	//! 32-Bit floating point
 };
 
 
 //! Views
 enum {
 	DAFF_DATA_VIEW=0,	//! Data-related view referring to data spherical coordinates (DSC)
-	DAFF_OBJECT_VIEW,	//! Object-related view referring to object spherical coordinates (OSC)
+	DAFF_OBJECT_VIEW=1,	//! Object-related view referring to object spherical coordinates (OSC)
 };
 
 
@@ -162,7 +164,7 @@ public:
 	std::string toString() const {
 		std::stringstream ss;
 		// Note: \xF8 => Degree sign
-		ss << "( Y" << fYawAngle << "\xF8, P" << fPitchAngle << "\xF8, R" << fRollAngle << "\xF8)";
+		ss << "( Y" << fYawAngle << "\xF8, P" << fPitchAngle << "\xF8, R" << fRollAngle << "\xF8 )";
 		return ss.str();
 	}
 };
