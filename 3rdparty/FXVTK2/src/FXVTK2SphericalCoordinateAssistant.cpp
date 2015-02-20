@@ -1,0 +1,522 @@
+#include "FXVTK2SphericalCoordinateAssistant.h"
+
+#include <FXVTK2GlobalLock.h>
+#include <sstream>
+
+#include <FXVTK2.h>
+
+#include <vtkActor.h>
+#include <vtkAssembly.h>
+#include <vtkCellArray.h>
+#include <vtkDoubleArray.h>
+#include <vtkPoints.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkPolyLine.h>
+#include <vtkProperty.h>
+#include <vtkFollower.h>
+#include <vtkLine.h>
+#include <vtkVectorText.h>
+#include <vtkCamera.h>
+#include <vtkSphereSource.h>
+
+#define PI_F 3.1415
+
+namespace FXVTK2 {
+
+
+SphericalCoordinateAssistant::SphericalCoordinateAssistant(double dMin, double dMax, double dPrec, double dScaleRes)
+	: SGNode(), m_dMin(dMin), m_dMax(dMax), m_dPrecision(dPrec), m_pCamera(0), m_dScaleRes(dScaleRes)
+{
+	init();
+}
+
+void SphericalCoordinateAssistant::init() {
+	// View (yellow) and up vector (white)
+	m_pViewUpVectors = new SGNode(this);
+	Arrow* view = new Arrow(m_pViewUpVectors, 0.15, 0.06, 36, 0.02, 36);
+	view->SetColor(1, 1, 0);
+	view->SetOrientationYPR(+90, 0, 0);
+	view->SetScale(1.21,1.0,1.0);
+	
+	Arrow* up = new Arrow(m_pViewUpVectors, 0.15, 0.06, 36, 0.02, 36);
+	up->SetColor(1, 1, 1);
+	up->SetOrientationYPR(0, 0, -90);
+	up->SetScale(1.21,1.0,1.0);
+
+	// Pole balls
+	m_pPoles = new SGNode(this);
+	Sphere* northpole = new Sphere(m_pPoles, 0.04, 24, 12);
+	northpole->SetPosition(0, 1.25, 0);
+	northpole->SetColor(1, 0, 0);
+
+	Sphere* southpole = new Sphere(m_pPoles, 0.04, 24, 12);
+	southpole->SetPosition(0, -1.25, 0);
+	southpole->SetColor(0, 1, 0);
+
+	Line* sphereaxis = new Line(m_pPoles, 0, 1.25, 0, 0, -1.25, 0);
+	sphereaxis->SetColor(0.5, 0.5, 0.5);
+	sphereaxis->SetAlpha(0.9);
+
+	// Meridians and Equator
+	int res = 18*3;
+
+	vtkPoints* prime_meridian = vtkPoints::New();
+	vtkPoints* meridian90 = vtkPoints::New();
+	vtkPoints* meridian180 = vtkPoints::New();
+	vtkPoints* meridian270 = vtkPoints::New();
+
+	prime_meridian->SetNumberOfPoints(res+1);
+	meridian90->SetNumberOfPoints(res+1);
+	meridian180->SetNumberOfPoints(res+1);
+	meridian270->SetNumberOfPoints(res+1);
+	
+	vtkPolyLine* polyline = vtkPolyLine::New();
+	polyline->GetPointIds()->SetNumberOfIds(res+1);
+
+	float fAngleRad;
+	for (int i=0; i<res+1;i++) {
+		fAngleRad = i * PI_F / res;
+		prime_meridian->InsertPoint(i, 0, -cos(fAngleRad), sin(fAngleRad));
+		meridian90->InsertPoint(i, sin(fAngleRad), -cos(fAngleRad), 0);
+		meridian180->InsertPoint(i, 0, -cos(fAngleRad), -sin(fAngleRad));
+		meridian270->InsertPoint(i, -sin(fAngleRad), -cos(fAngleRad), 0);
+		polyline->GetPointIds()->SetId(i, i);
+	}
+
+	// Prime meridian
+	vtkCellArray* cells = vtkCellArray::New();
+	cells->InsertNextCell(polyline);
+
+	vtkPolyData* polydata = vtkPolyData::New();
+	polydata->SetPoints(prime_meridian);
+	polydata->SetLines(cells);
+	
+	vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+	mapper->SetInput(polydata);
+
+	vtkActor* actor = vtkActor::New();
+	actor->SetMapper(mapper);
+
+	actor->GetProperty()->SetOpacity(0.4);
+
+	AddActor(actor);
+	m_pMeridians.push_back(actor);
+	
+	// 90 degree meridian
+	polydata = vtkPolyData::New();
+	polydata->SetPoints(meridian90);
+	polydata->SetLines(cells);
+
+	mapper = vtkPolyDataMapper::New();
+	mapper->SetInput(polydata);
+	
+	actor = vtkActor::New();
+	actor->SetMapper(mapper);
+
+	actor->GetProperty()->SetOpacity(0.2);
+
+	AddActor(actor);
+	m_pMeridians.push_back(actor);
+
+	// 180 degree meridian
+	polydata = vtkPolyData::New();
+	polydata->SetPoints(meridian180);
+	polydata->SetLines(cells);
+
+	mapper = vtkPolyDataMapper::New();
+	mapper->SetInput(polydata);
+	
+	actor = vtkActor::New();
+	actor->SetMapper(mapper);
+
+	actor->GetProperty()->SetOpacity(0.2);
+
+	AddActor(actor);
+	m_pMeridians.push_back(actor);
+
+	// 270 degree meridian
+	polydata = vtkPolyData::New();
+	polydata->SetPoints(meridian270);
+	polydata->SetLines(cells);
+
+	mapper = vtkPolyDataMapper::New();
+	mapper->SetInput(polydata);
+	
+	actor = vtkActor::New();
+	actor->SetMapper(mapper);
+
+	actor->GetProperty()->SetOpacity(0.2);
+
+	AddActor(actor);
+	m_pMeridians.push_back(actor);
+
+	// Equator
+	vtkPoints* equator = vtkPoints::New();
+	equator->SetNumberOfPoints(2*res);
+
+	polyline = vtkPolyLine::New();
+	polyline->GetPointIds()->SetNumberOfIds(2*res);
+
+	for (int i=0; i<2*res;i++) {
+		fAngleRad = i * 2*PI_F / (2*res-1);
+		equator->InsertPoint(i, sin(fAngleRad), 0, -cos(fAngleRad));
+		polyline->GetPointIds()->SetId(i, i);
+	}
+
+	cells = vtkCellArray::New();
+	cells->InsertNextCell(polyline);
+
+	polydata = vtkPolyData::New();
+	polydata->SetPoints(equator);
+	polydata->SetLines(cells);
+	
+	mapper = vtkPolyDataMapper::New();
+	mapper->SetInput(polydata);
+
+	m_pEquator = vtkActor::New();
+	m_pEquator->SetMapper(mapper);
+
+	m_pEquator->GetProperty()->SetOpacity(0.4);
+
+	AddActor(m_pEquator);	
+
+	// Reference
+
+	// create a reference sphere
+	m_pSphere = vtkSphereSource::New();
+	m_pSphere->SetRadius(0);
+	m_pSphere->SetThetaResolution(res);
+	m_pSphere->SetPhiResolution(res); 
+
+	// Create a mapper and actor
+	mapper = vtkPolyDataMapper::New();
+	mapper->SetInput(m_pSphere->GetOutput());
+
+	m_pReferenceActor = vtkActor::New();
+	m_pReferenceActor->SetMapper(mapper);
+	m_pReferenceActor->GetProperty()->SetOpacity(0.0);
+
+	AddActor(m_pReferenceActor);
+
+	// Grid
+	UpdateGrid();
+}
+
+SphericalCoordinateAssistant::~SphericalCoordinateAssistant() {
+	RemoveActor(m_pReferenceActor);
+	RemoveActor(m_pEquator);
+
+	for(int i=0; i<(int)m_pGrid.size(); i++) {
+		RemoveActor(m_pGrid.at(i));
+	}
+	m_pGrid.clear();
+
+	for(int i=0; i<(int)m_pLabels.size(); i++) {
+		RemoveActor(m_pLabels.at(i));
+	}
+	m_pLabels.clear();
+}
+
+void SphericalCoordinateAssistant::UpdateGrid() {
+	bool bWasVisible = GetGridVisible(); 
+	int res = 18*3;
+	float fAngleRad;
+	// Delete old Grid
+	// TODO: is it sufficient to delete the actor or do i have to delete polyline/cells/polydata as well?
+	for(int i=0; i<(int)m_pGrid.size(); i++) {
+		RemoveActor(m_pGrid.at(i));
+		m_pGrid.at(i)->GetMapper()->GetInput()->Delete();
+	}
+	m_pGrid.clear();
+	for(int i=0; i<(int)m_pCircles.size(); i++) {
+		RemoveActor(m_pCircles.at(i));
+		m_pCircles.at(i)->GetMapper()->GetInput()->Delete();
+	}
+	m_pCircles.clear();
+	for(int i=0; i<(int)m_pLabels.size(); i++) {
+		RemoveActor(m_pLabels.at(i));
+		//m_pLabels.at(i)->GetMapper()->GetInput()->Delete();
+	}
+	m_pLabels.clear();
+
+	// create new grid
+	vtkCellArray* cells;
+	vtkPolyData* polydata;
+	vtkPolyLine* polyline;
+	vtkFollower* actor;
+	vtkPolyDataMapper* mapper;
+	vtkVectorText* pLabel;
+
+	double min = ceil(m_dMin/m_dPrecision)*m_dPrecision; // inner gridline
+	double max = floor(m_dMax/m_dPrecision)*m_dPrecision; // outter gridline
+	//int gridRes = (max-min)/m_dPrecision; // total number of gridlines
+	for (double f=min; f<=m_dMax; f+=m_dPrecision) {
+		vtkPoints* gridLine = vtkPoints::New();
+		gridLine->SetNumberOfPoints(2*res);
+
+		polyline = vtkPolyLine::New();
+		polyline->GetPointIds()->SetNumberOfIds(2*res);
+
+		double factor = (f-m_dMin)/(m_dMax-m_dMin);
+
+		for (int i=0; i<2*res;i++) {
+			fAngleRad = i * 2*PI_F / (2*res-1);
+			gridLine->InsertPoint(i, sin(fAngleRad)*factor, 0, -cos(fAngleRad)*factor);
+			polyline->GetPointIds()->SetId(i, i);
+		}
+
+		cells = vtkCellArray::New();
+		cells->InsertNextCell(polyline);
+
+		polydata = vtkPolyData::New();
+		polydata->SetPoints(gridLine);
+		polydata->SetLines(cells);
+
+		mapper = vtkPolyDataMapper::New();
+		mapper->SetInput(polydata);
+
+		actor = vtkFollower::New();
+		actor->SetMapper(mapper);
+		actor->RotateX(90);
+		if (m_pCamera != 0) 
+			actor->SetCamera(m_pCamera);
+		
+
+		actor->GetProperty()->SetOpacity(0.15);
+
+		AddActor(actor);
+		m_pCircles.push_back(actor);
+		
+		// label
+		pLabel = vtkVectorText::New();
+		std::ostringstream s;
+		s << f;
+		pLabel->SetText(s.str().c_str());
+				
+		mapper = vtkPolyDataMapper::New();
+		mapper->SetInputConnection(pLabel->GetOutputPort());
+
+		actor = vtkFollower::New();
+		actor->SetMapper(mapper);
+		actor->SetScale(0.025);
+		actor->SetPosition(0.02, factor+.01, 0);
+		actor->GetProperty()->SetOpacity(0.2);
+
+		if (m_pCamera != 0) 
+			actor->SetCamera(m_pCamera);
+		
+		AddActor(actor);
+		m_pLabels.push_back(actor);
+	}
+
+	// Scale
+	
+	vtkPoints* scale = vtkPoints::New();
+	scale->SetNumberOfPoints(6*m_dScaleRes);
+
+	cells = vtkCellArray::New();
+	vtkLine* line;
+
+	for (int i=0; i<m_dScaleRes;i++) {		
+		fAngleRad = i * 2*PI_F / m_dScaleRes;
+		if (fmod((double)i / m_dScaleRes, .25) == 0.0) // skip  0° 90° 180° 270° lines
+			continue;
+		// equator
+		scale->InsertPoint(6*i, 0.975*sin(fAngleRad), 0, -0.975*cos(fAngleRad));
+		scale->InsertPoint(6*i+1, 1.025*sin(fAngleRad), 0, -1.025*cos(fAngleRad));
+		line = vtkLine::New();
+		line->GetPointIds()->SetId(0,6*i);
+		line->GetPointIds()->SetId(1,6*i+1);
+		cells->InsertNextCell(line);
+		// prime meridian
+		scale->InsertPoint(6*i+2, 0, -0.975*cos(fAngleRad), 0.975*sin(fAngleRad));
+		scale->InsertPoint(6*i+3, 0, -1.025*cos(fAngleRad), 1.025*sin(fAngleRad));
+		line = vtkLine::New();
+		line->GetPointIds()->SetId(0,6*i+2);
+		line->GetPointIds()->SetId(1,6*i+3);
+		cells->InsertNextCell(line);
+		// meridian 90 degree
+		scale->InsertPoint(6*i+4, 0.975*sin(fAngleRad), -0.975*cos(fAngleRad), 0);
+		scale->InsertPoint(6*i+5, 1.025*sin(fAngleRad), -1.025*cos(fAngleRad), 0);
+		line = vtkLine::New();
+		line->GetPointIds()->SetId(0,6*i+4);
+		line->GetPointIds()->SetId(1,6*i+5);
+		cells->InsertNextCell(line);
+	}
+
+	polydata = vtkPolyData::New();
+	polydata->SetPoints(scale);
+	polydata->SetLines(cells);
+	
+	mapper = vtkPolyDataMapper::New();
+	mapper->SetInput(polydata);
+
+	actor = vtkFollower::New();
+	actor->SetMapper(mapper);
+
+	actor->GetProperty()->SetOpacity(0.2);
+
+	AddActor(actor);	
+	m_pGrid.push_back(actor);
+
+	
+	// draw thicker 0° 90° 180° 270° lines
+	scale = vtkPoints::New();
+	scale->SetNumberOfPoints(8);
+
+	cells = vtkCellArray::New();
+
+	for (int i=0; i<4;i++) {
+		line = vtkLine::New();
+		fAngleRad = i * 2*PI_F / 4;
+		scale->InsertPoint(2*i, .975*sin(fAngleRad), 0, -.975*cos(fAngleRad));
+		scale->InsertPoint(2*i+1, 1.075*sin(fAngleRad), 0, -1.075*cos(fAngleRad));
+		line->GetPointIds()->SetId(0,2*i);
+		line->GetPointIds()->SetId(1,2*i+1);
+		cells->InsertNextCell(line);
+	}
+
+	polydata = vtkPolyData::New();
+	polydata->SetPoints(scale);
+	polydata->SetLines(cells);
+	
+	mapper = vtkPolyDataMapper::New();
+	mapper->SetInput(polydata);
+
+	actor = vtkFollower::New();
+	actor->SetMapper(mapper);
+
+	actor->GetProperty()->SetOpacity(0.4);
+
+	AddActor(actor);
+	m_pGrid.push_back(actor);
+
+	if (!bWasVisible)
+		SetGridVisible(false);
+	UpdateReference();
+}
+
+void SphericalCoordinateAssistant::SetVisible(bool bVisible) {
+	SGNode::SetVisible(bVisible);
+	m_pViewUpVectors->SetVisible(bVisible);
+	m_pPoles->SetVisible(bVisible);
+	if (bVisible) {
+		m_pEquator->VisibilityOn();
+		for (int i=0; i<(int)m_pMeridians.size(); i++)
+			m_pMeridians[i]->VisibilityOn();
+		for (int i=0; i<(int)m_pGrid.size(); i++)
+			m_pGrid[i]->VisibilityOn();
+		for (int i=0; i<(int)m_pCircles.size(); i++)
+			m_pCircles[i]->VisibilityOn();
+		for (int i=0; i<(int)m_pLabels.size(); i++)
+			m_pLabels[i]->VisibilityOn();
+	} else {
+		m_pEquator->VisibilityOff();
+		for (int i=0; i<(int)m_pMeridians.size(); i++)
+			m_pMeridians[i]->VisibilityOff();
+		for (int i=0; i<(int)m_pGrid.size(); i++)
+			m_pGrid[i]->VisibilityOff();
+		for (int i=0; i<(int)m_pCircles.size(); i++)
+			m_pCircles[i]->VisibilityOff();
+		for (int i=0; i<(int)m_pLabels.size(); i++)
+			m_pLabels[i]->VisibilityOff();
+	}
+}
+
+void SphericalCoordinateAssistant::SetAxesVisible(const bool bVisible) {
+	m_pPoles->SetVisible(bVisible);
+}
+void SphericalCoordinateAssistant::SetViewUpVectorsVisible(const bool bVisible) {
+	m_pViewUpVectors->SetVisible(bVisible);
+}
+
+void SphericalCoordinateAssistant::SetMeridiansVisible(const bool bVisible) {
+	if (bVisible)
+		for (int i=0; i<(int)m_pMeridians.size(); i++)
+			m_pMeridians[i]->VisibilityOn();
+	else
+		for (int i=0; i<(int)m_pMeridians.size(); i++)
+			m_pMeridians[i]->VisibilityOff();
+}
+
+void SphericalCoordinateAssistant::SetGridVisible(const bool bVisible) {
+	if (bVisible) {
+		for (int i=0; i<(int)m_pGrid.size(); i++)
+			m_pGrid[i]->VisibilityOn();
+		for (int i=0; i<(int)m_pCircles.size(); i++)
+			m_pCircles[i]->VisibilityOn();
+		for (int i=0; i<(int)m_pLabels.size(); i++)
+			m_pLabels[i]->VisibilityOn();
+	} else {
+		for (int i=0; i<(int)m_pGrid.size(); i++)
+			m_pGrid[i]->VisibilityOff();
+		for (int i=0; i<(int)m_pCircles.size(); i++)
+			m_pCircles[i]->VisibilityOff();
+		for (int i=0; i<(int)m_pLabels.size(); i++)
+			m_pLabels[i]->VisibilityOff();
+	}
+}
+
+bool SphericalCoordinateAssistant::GetGridVisible() const {
+	return (m_pGrid.size()>0) ? m_pGrid[0]->GetVisibility()!=0 : true;
+}
+bool SphericalCoordinateAssistant::GetAxesVisible() const {
+	return (m_pPoles) ? m_pPoles->IsVisible() : true;
+}
+bool SphericalCoordinateAssistant::GetViewUpVectorsVisible() const {
+	return (m_pViewUpVectors) ? m_pViewUpVectors->IsVisible() : true;
+}
+bool SphericalCoordinateAssistant::GetVisible() const {
+	return (GetAxesVisible() || GetGridVisible());
+}
+
+void SphericalCoordinateAssistant::SetEquatorVisible(const bool bVisible) {
+	if (bVisible)
+		m_pEquator->VisibilityOn();
+	else
+		m_pEquator->VisibilityOff();
+}
+
+void SphericalCoordinateAssistant::SetReferenceLevel(const double dLevel){ m_dReferenceLevel = dLevel; }
+
+void SphericalCoordinateAssistant::SetReferenceOpacity(const double dOpacity) { m_dReferenceOpacity = dOpacity; }
+
+void SphericalCoordinateAssistant::SetMin(double min) { m_dMin = min; }
+	
+void SphericalCoordinateAssistant::SetMax(double max) { m_dMax = max; }
+
+void SphericalCoordinateAssistant::SetRResolution(double prec) { m_dPrecision = prec; }
+
+void SphericalCoordinateAssistant::SetPhiResolution(double res) { m_dScaleRes = 360/res; }
+
+double SphericalCoordinateAssistant::GetMin() const { return m_dMin; }
+
+double SphericalCoordinateAssistant::GetMax() const { return m_dMax; }
+
+double SphericalCoordinateAssistant::GetRResolution() const { return m_dPrecision; }
+
+double SphericalCoordinateAssistant::GetPhiResolution() const { return 360/m_dScaleRes; }
+
+void SphericalCoordinateAssistant::OnSetFollowerCamera(vtkCamera* pCamera) {
+	FXVTK2_LOCK_VTK;
+	for (int i=0; i < (int)m_pCircles.size(); i++) {
+		m_pCircles[i]->SetCamera(pCamera);
+	}
+	for (int i=0; i < (int)m_pLabels.size(); i++) {
+		m_pLabels[i]->SetCamera(pCamera);
+	}
+	m_pCamera = pCamera;
+	FXVTK2_UNLOCK_VTK;
+
+	// Delegate
+	SGNode::OnSetFollowerCamera(pCamera);
+}
+
+void SphericalCoordinateAssistant::UpdateReference() {
+	double factor = (m_dReferenceLevel-m_dMin)/(m_dMax-m_dMin);
+	m_pSphere->SetRadius(factor);
+	m_pReferenceActor->GetProperty()->SetOpacity(m_dReferenceOpacity);
+}
+
+} // End of namespace "FXVTK2"
