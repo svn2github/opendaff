@@ -2,23 +2,31 @@
  Compiling OpenDAFF
 ====================
 
+OpenDAFF uses CMake 
+
+For Windows and Mac download CMake from http://www.cmake.org
+Under Linux it is typically found in your package management system
+
+The simplest way to build OpenDAFF with CMake is as follows:
+
+- Checkout the source code
+  > svn checkout http://opendaff.svn.sourceforge.net/svnroot/opendaff/trunk
+
+- Run CMake to generate build files for your platform
+  > cmake .
+  
+- If you created Unix makefiles you build the library by
+  > make
+  > make install
+  
+- If you created project files for your IDE (e.g. CodeBlocks or VisualStudio),
+  open them in your IDE and build the library there
+  
 
 Microsoft Visual C++ / Visual Studio compilers
 ----------------------------------------------
 
-Please use the solution and project files to build OpenDAFF!
-You can find them in this directory.
-
-
-GNU Compiler Collection (GCC)
------------------------------
-
-First you need to select your build platform (e.g. Linux, MacOS) and type in your shell for instance
-
-export BUILD_PLATFORM=Linux
-
-After this you can run the makefile and build the software.
-In order to build the library type:
-
-make lib
+You should use CMake to create Visual Studio project files.
+However, we still host native project files for Visual Studio 2010.
+You find them in the "project" directory
 

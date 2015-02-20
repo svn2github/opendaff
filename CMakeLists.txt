@@ -2,20 +2,37 @@
 
 project(DAFF)
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 2.8)
 
+set_property (GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_DEBUG_POSTFIX "d")
 
-# Define 3rdparty path
-set (THIRD_PARTY_DIR ${CMAKE_SOURCE_DIR}/3rdparty)
+# 3rdParty folder [ITA specific]
+set (THIRD_PARTY_DIR ${CMAKE_SOURCE_DIR}/../3rdParty)
+#set (THIRD_PARTY_DIR D:/ITA/Arbeitsbereich/3rdParty)
 
 # If cmake does not find FOX or VTK place the Find***.cmake files here
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${THIRD_PARTY_DIR}/CMakeModules)
 
-# Packages
-#find_package (FOX)
-#find_package (VTK)
-#find_package (FFTW)
+# --= Packages =--
+
+SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/3rdParty/CMakeScripts)
+
+find_package(FOX)
+find_package(SndFile)
+
+message("${FOX_FOUND}")
+
+#[ITA specific]
+# find_package(VTK)
+# if (!VTK_FOUND)
+	# set (VTK_DIR "${THIRD_PARTY_DIR}/vtk-5.6")
+	# find_package(VTK)
+# endif (!VTK_FOUND)
+
+# if (VTK_FOUND)
+	# message(STATUS "Found VTK in directory: ${VTK_DIR}")
+# endif (VTK_FOUND)
 
 # --- Libraries
 
@@ -30,7 +47,7 @@ include_directories (${CMAKE_SOURCE_DIR}/3rdparty/IFX/include)
 # --= DAFF library =--
 
 # Include files of the library
-set (daff_includes
+set (DAFF_INCLUDE_FILES
 	${CMAKE_SOURCE_DIR}/include/DAFF.h
 	${CMAKE_SOURCE_DIR}/include/DAFFContent.h
 	${CMAKE_SOURCE_DIR}/include/DAFFContentDFT.h
@@ -46,7 +63,7 @@ set (daff_includes
 )
 
 # Source files of the library
-set (daff_sources
+set (DAFF_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/DAFFHeader.h
 	${CMAKE_SOURCE_DIR}/src/DAFFMetadataImpl.h
 	${CMAKE_SOURCE_DIR}/src/DAFFMetadataImpl.cpp
@@ -63,52 +80,85 @@ set (daff_sources
 	${CMAKE_SOURCE_DIR}/src/Utils.cpp
 )
 
+set (DAFF_FILES ${DAFF_INCLUDE_FILES} ${DAFF_SOURCE_FILES})
+source_group( "" FILES ${DAFF_FILES})
+
 # Es wird festgelegt, dass es sich um eine gemeinsam genutzt Bibliothek
 # handelt. Um eine statische Bibliothek zu bekommen, wird
 # SHARED durch STATIC ersetzt.
-add_library (daff SHARED ${daff_sources})
+add_library (daff SHARED ${DAFF_FILES})
+set_property(TARGET daff PROPERTY FOLDER "Libraries")
 
-# Disable CRT warnings for unsafe functions under Win32
 if (WIN32)
-	#set_property(TARGET daff APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "_CRT_SECURE_NO_WARNINGS") 
-	#set_property(TARGET daff APPEND PROPERTY COMPILE_DEFINITIONS_RELEASE "_CRT_SECURE_NO_WARNINGS") 
+	# Shared library export conventions
+	target_compile_definitions(daff PUBLIC $<$<CONFIG:Debug>:DAFF_DLL>)
+	target_compile_definitions(daff PUBLIC $<$<CONFIG:Debug>:DAFF_DLL>)
+	target_compile_definitions(daff PUBLIC $<$<CONFIG:Debug>:DAFF_DLL_EXPORTS>)
+	target_compile_definitions(daff PUBLIC $<$<CONFIG:Debug>:DAFF_DLL_EXPORTS>)
+	
+	# Disable CRT warnings for unsafe functions under Win32
 	target_compile_definitions(daff PRIVATE $<$<CONFIG:Debug>:_CRT_SECURE_NO_WARNINGS>)
 	target_compile_definitions(daff PRIVATE $<$<CONFIG:Release>:_CRT_SECURE_NO_WARNINGS>)
 endif (WIN32)
 
-install (FILES ${daff_includes} DESTINATION include)
+install (FILES ${DAFF_INCLUDE_FILES} DESTINATION include)
 install (TARGETS daff RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
+
+# --= DAFF tool =--
+
+set (GETOPT_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/3rdParty/getopt")
+set (GETOPT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/3rdParty/getopt")
+
+# Source files of the tool
+set (DAFFTOOL_SOURCE_FILES
+	${CMAKE_SOURCE_DIR}/utils/DAFFTool/src/DAFFTool.cpp
+	${CMAKE_SOURCE_DIR}/utils/DAFFTool/src/Export.h
+	${CMAKE_SOURCE_DIR}/utils/DAFFTool/src/Export.cpp
+	
+	# Getopt (TODO: Remove on POSIX platforms)
+	${GETOPT_INCLUDE_DIR}/getopt.h
+	${GETOPT_SOURCE_DIR}/getopt.c
+)
+
+set(DAFFTOOL_FILES ${DAFFTOOL_SOURCE_FILES})
+if (MSVC)
+	# Visual Studio resource file
+	set(DAFFTOOL_FILES ${DAFFTOOL_FILES} ${CMAKE_SOURCE_DIR}/utils/DAFFTool/res/DAFFTool.rc)
+endif (MSVC)
+source_group( "" FILES ${DAFF_FILES})
+
+add_executable (dafftool ${DAFFTOOL_FILES})
+set_property(TARGET dafftool PROPERTY FOLDER "Utils")
+target_include_directories (dafftool PUBLIC ${SNDFILE_INCLUDE_DIR} ${GETOPT_INCLUDE_DIR})
+target_link_libraries (dafftool daff ${SNDFILE_LIBRARY})
 
 # --= DAFFVIZ library =--
 	
-set (DAFFVIZSrc
-	${CMAKE_SOURCE_DIR}/src/FXVTK2BalloonPlot.cpp
-	${CMAKE_SOURCE_DIR}/src/FXVTK2CarpetPlot.cpp
-	${CMAKE_SOURCE_DIR}/src/DAFFTransformerIR2DFT.cpp
-	${CMAKE_SOURCE_DIR}/src/IFXDAFFDialogBox.cpp
-	${CMAKE_SOURCE_DIR}/src/IFXDAFFFrame.cpp
-	)
+# set (DAFFVIZSrc
+	# ${CMAKE_SOURCE_DIR}/src/FXVTK2BalloonPlot.cpp
+	# ${CMAKE_SOURCE_DIR}/src/FXVTK2CarpetPlot.cpp
+	# ${CMAKE_SOURCE_DIR}/src/DAFFTransformerIR2DFT.cpp
+	# ${CMAKE_SOURCE_DIR}/src/IFXDAFFDialogBox.cpp
+	# ${CMAKE_SOURCE_DIR}/src/IFXDAFFFrame.cpp
+	# )
 
-#if (${FOX_FOUND} STREQUAL "YES" AND ${VTK_FOUND} AND ${FFTW_FOUND} STREQUAL "TRUE")
-#  add_library (daffviz ${DAFFVIZSrc})
-#  set (libdaffviz 1)
-#endif (${FOX_FOUND} STREQUAL "YES" AND ${VTK_FOUND} AND ${FFTW_FOUND} STREQUAL "TRUE")
+# #if (${FOX_FOUND} STREQUAL "YES" AND ${VTK_FOUND} AND ${FFTW_FOUND} STREQUAL "TRUE")
+# #  add_library (daffviz ${DAFFVIZSrc})
+# #  set (libdaffviz 1)
+# #endif (${FOX_FOUND} STREQUAL "YES" AND ${VTK_FOUND} AND ${FFTW_FOUND} STREQUAL "TRUE")
 
+  # install (TARGETS daffviz DESTINATION lib)
 
-if (${libdaffviz})
+  # set (DAFFVIZInc
+	  # ${CMAKE_SOURCE_DIR}/include/daffviz/FXVTK2BalloonPlot.h
+	  # ${CMAKE_SOURCE_DIR}/include/daffviz/FXVTK2CarpetPlot.h
+	  # ${CMAKE_SOURCE_DIR}/include/daffviz/IFXDAFFDialogBox.h
+	  # ${CMAKE_SOURCE_DIR}/include/daffviz/IFXDAFFFrame.h
+	  # )
 
-  install (TARGETS daffviz DESTINATION lib)
+  # install (FILES ${DAFFVIZInc} DESTINATION include/daffviz)
 
-  set (DAFFVIZInc
-	  ${CMAKE_SOURCE_DIR}/include/daffviz/FXVTK2BalloonPlot.h
-	  ${CMAKE_SOURCE_DIR}/include/daffviz/FXVTK2CarpetPlot.h
-	  ${CMAKE_SOURCE_DIR}/include/daffviz/IFXDAFFDialogBox.h
-	  ${CMAKE_SOURCE_DIR}/include/daffviz/IFXDAFFFrame.h
-	  )
-
-  install (FILES ${DAFFVIZInc} DESTINATION include/daffviz)
-
-endif (${libdaffviz})
+# endif (${libdaffviz})
 
 # Es sollen auch einige Dateien installiert werden, z.B. Bilder oder Übersetzungen
 # install(FILES img/icon.png DESTINATION img)
