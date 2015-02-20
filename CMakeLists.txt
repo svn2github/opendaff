@@ -6,11 +6,10 @@ cmake_minimum_required(VERSION 2.8)
 include(CMakeDependentOption)
 
 set_property (GLOBAL PROPERTY USE_FOLDERS ON)
-set(CMAKE_DEBUG_POSTFIX "d")
+set(CMAKE_DEBUG_POSTFIX "D")
 
 # 3rdParty folder [ITA specific]
 set (THIRD_PARTY_DIR ${CMAKE_SOURCE_DIR}/../3rdParty)
-#set (THIRD_PARTY_DIR D:/ITA/Arbeitsbereich/3rdParty)
 
 # If cmake does not find FOX or VTK place the Find***.cmake files here
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${THIRD_PARTY_DIR}/CMakeModules)
@@ -58,7 +57,7 @@ include_directories (${CMAKE_SOURCE_DIR}/3rdparty/IFX/include)
 # --= DAFF library =--
 
 # Include files of the library
-set (DAFF_INCLUDE_FILES
+set (DAFFLIB_INCLUDE_FILES
 	${CMAKE_SOURCE_DIR}/include/DAFF.h
 	${CMAKE_SOURCE_DIR}/include/DAFFContent.h
 	${CMAKE_SOURCE_DIR}/include/DAFFContentDFT.h
@@ -74,7 +73,7 @@ set (DAFF_INCLUDE_FILES
 )
 
 # Source files of the library
-set (DAFF_SOURCE_FILES
+set (DAFFLIB_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/DAFFHeader.h
 	${CMAKE_SOURCE_DIR}/src/DAFFMetadataImpl.h
 	${CMAKE_SOURCE_DIR}/src/DAFFMetadataImpl.cpp
@@ -91,29 +90,155 @@ set (DAFF_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/Utils.cpp
 )
 
-set (DAFF_FILES ${DAFF_INCLUDE_FILES} ${DAFF_SOURCE_FILES})
-source_group( "" FILES ${DAFF_FILES})
+if (WIN32)
+	# On Windows, add the DLL main function
+	set (DAFFLIB_SOURCE_FILES ${DAFFLIB_SOURCE_FILES} ${CMAKE_SOURCE_DIR}/src/platforms/windows/DAFFDLLMain.cpp)
+endif (WIN32)
+
+set (DAFFLIB_FILES ${DAFFLIB_INCLUDE_FILES} ${DAFFLIB_SOURCE_FILES})
+source_group( "" FILES ${DAFFLIB_FILES})
 
 # Es wird festgelegt, dass es sich um eine gemeinsam genutzt Bibliothek
 # handelt. Um eine statische Bibliothek zu bekommen, wird
 # SHARED durch STATIC ersetzt.
-add_library (daff SHARED ${DAFF_FILES})
-set_property(TARGET daff PROPERTY FOLDER "Libraries")
+add_library (DAFF SHARED ${DAFFLIB_FILES})
+set_property(TARGET DAFF PROPERTY FOLDER "Libraries")
 
 if (WIN32)
+	# Call the shared library DAFFDLL not DAFF
+	set_target_properties(DAFF PROPERTIES OUTPUT_NAME DAFFDLL)
+
 	# Shared library export conventions
-	target_compile_definitions(daff PUBLIC $<$<CONFIG:Debug>:DAFF_DLL>)
-	target_compile_definitions(daff PUBLIC $<$<CONFIG:Debug>:DAFF_DLL>)
-	target_compile_definitions(daff PUBLIC $<$<CONFIG:Debug>:DAFF_DLL_EXPORTS>)
-	target_compile_definitions(daff PUBLIC $<$<CONFIG:Debug>:DAFF_DLL_EXPORTS>)
+	target_compile_definitions(DAFF PUBLIC $<$<CONFIG:Debug>:DAFF_DLL>)
+	target_compile_definitions(DAFF PUBLIC $<$<CONFIG:Debug>:DAFF_DLL>)
+	target_compile_definitions(DAFF PUBLIC $<$<CONFIG:Debug>:DAFF_DLL_EXPORTS>)
+	target_compile_definitions(DAFF PUBLIC $<$<CONFIG:Debug>:DAFF_DLL_EXPORTS>)
 	
 	# Disable CRT warnings for unsafe functions under Win32
-	target_compile_definitions(daff PRIVATE $<$<CONFIG:Debug>:_CRT_SECURE_NO_WARNINGS>)
-	target_compile_definitions(daff PRIVATE $<$<CONFIG:Release>:_CRT_SECURE_NO_WARNINGS>)
+	target_compile_definitions(DAFF PRIVATE $<$<CONFIG:Debug>:_CRT_SECURE_NO_WARNINGS>)
+	target_compile_definitions(DAFF PRIVATE $<$<CONFIG:Release>:_CRT_SECURE_NO_WARNINGS>)
 endif (WIN32)
 
-install (FILES ${DAFF_INCLUDE_FILES} DESTINATION include)
-install (TARGETS daff RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
+install (FILES ${DAFFLIB_INCLUDE_FILES} DESTINATION include)
+install (TARGETS DAFF
+	RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib
+)
+
+
+# --= DAFFViz library =--
+
+# Include files of the visulization library
+set (DAFFVIZLIB_INCLUDE_FILES
+	${CMAKE_SOURCE_DIR}/include/DAFFViz/FXVTK2BalloonPlot.h
+	${CMAKE_SOURCE_DIR}/include/DAFFViz/FXVTK2CarpetPlot.h
+	${CMAKE_SOURCE_DIR}/include/DAFFViz/IFXDAFFDialogBox.h
+	${CMAKE_SOURCE_DIR}/include/DAFFViz/IFXDAFFDialogBoxRes.h
+	${CMAKE_SOURCE_DIR}/include/DAFFViz/IFXDAFFFrame.h
+)
+
+# Source files of the visulization library
+set (DAFFVIZLIB_SOURCE_FILES
+	${CMAKE_SOURCE_DIR}/src/DAFFViz/FXVTK2BalloonPlot.cpp
+	${CMAKE_SOURCE_DIR}/src/DAFFViz/FXVTK2CarpetPlot.cpp
+	${CMAKE_SOURCE_DIR}/src/DAFFViz/IFXDAFFDialogBox.cpp
+	${CMAKE_SOURCE_DIR}/src/DAFFViz/IFXDAFFFrame.cpp
+	${CMAKE_SOURCE_DIR}/src/DAFFViz/IFXFancyTable.h
+	${CMAKE_SOURCE_DIR}/src/DAFFViz/IFXFancyTable.cpp
+	
+	
+	# TODO: Move to another place
+	${CMAKE_SOURCE_DIR}/src/DAFFTransformerIR2DFT.h
+	${CMAKE_SOURCE_DIR}/src/DAFFTransformerIR2DFT.cpp
+)
+
+set (DAFFVIZLIB_FILES ${DAFFVIZLIB_INCLUDE_FILES} ${DAFFVIZLIB_SOURCE_FILES})
+source_group( "" FILES ${DAFFVIZLIB_FILES})
+
+add_library (DAFFViz STATIC ${DAFFVIZLIB_FILES})
+set_property(TARGET DAFFViz PROPERTY FOLDER "Libraries")
+
+# TODO: Überarbeiten
+target_include_directories(DAFFViz PUBLIC 
+	${CMAKE_SOURCE_DIR}/src
+	${CMAKE_SOURCE_DIR}/src/daffviz
+	${THIRD_PARTY_DIR}/vtk-5.6/include/x64
+	${THIRD_PARTY_DIR}/fox-1.6/include
+	${THIRD_PARTY_DIR}/fftw3/include
+)
+# Deps: FXVTK2D.lib;IFXD.lib;FOXD-1.6.lib;libjpegd.lib;libpngd.lib;zlibd.lib;libfftw3f-3.lib;vtkCommon.lib;vtkexpat.lib;vtkFiltering.lib;vtkfreetype.lib;vtkftgl.lib;vtkGraphics.lib;vtkHybrid.lib;vtkIO.lib;vtkjpeg.lib;vtkpng.lib;vtkRendering.lib;vtksys.lib;vtktiff.lib;vtkzlib.lib
+
+if (WIN32)
+	# FOX import declarations
+	target_compile_definitions(DAFF PUBLIC $<$<CONFIG:Debug>:FOX_DLL>)
+	target_compile_definitions(DAFF PUBLIC $<$<CONFIG:Debug>:FOX_DLL>)
+endif (WIN32)
+
+install (FILES ${DAFFVIZ_INCLUDE_FILES} DESTINATION include)
+install (TARGETS DAFFViz
+	ARCHIVE DESTINATION lib
+	RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib
+)
+
+# --= FXVTK2 library =--
+
+# Include files of the FXVTK2 library
+set (FXVTK2_INCLUDE_FILES
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/include/FXVTK2.h
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/include/FXVTK2Arrow.h
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/include/FXVTK2CartesianCoordinateAssistant.h
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/include/FXVTK2Frame.h
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/include/FXVTK2GlobalLock.h
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/include/FXVTK2Grid.h
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/include/FXVTK2Label.h
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/include/FXVTK2Line.h
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/include/FXVTK2Plane.h
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/include/FXVTK2SGNode.h
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/include/FXVTK2Sphere.h
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/include/FXVTK2SphericalCoordinateAssistant.h
+)
+
+# Source files of the FXVTK2 library
+set (FXVTK2_SOURCE_FILES
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/src/FXVTK2Arrow.cpp
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/src/FXVTK2CartesianCoordinateAssistant.cpp
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/src/FXVTK2Frame.cpp
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/src/FXVTK2GlobalLock.cpp
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/src/FXVTK2Grid.cpp
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/src/FXVTK2Label.cpp
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/src/FXVTK2Line.cpp
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/src/FXVTK2Plane.cpp
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/src/FXVTK2SGNode.cpp
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/src/FXVTK2Sphere.cpp
+	${CMAKE_SOURCE_DIR}/3rdParty/FXVTK2/src/FXVTK2SphericalCoordinateAssistant.cpp
+)
+
+set (FXVTK2_FILES ${FXVTK2_INCLUDE_FILES} ${FXVTK2_SOURCE_FILES})
+source_group( "" FILES ${FXVTK2_FILES})
+
+add_library (FXVTK2 STATIC ${FXVTK2_FILES})
+set_property(TARGET FXVTK2 PROPERTY FOLDER "Libraries")
+
+# TODO: Überarbeiten
+target_include_directories(FXVTK2 PUBLIC 
+	${THIRD_PARTY_DIR}/fox-1.6/include
+	${THIRD_PARTY_DIR}/vtk-5.6/include/x64
+)
+
+if (WIN32)
+	# FOX import declarations
+	target_compile_definitions(FXVTK2 PUBLIC $<$<CONFIG:Debug>:FOX_DLL>)
+	target_compile_definitions(FXVTK2 PUBLIC $<$<CONFIG:Debug>:FOX_DLL>)
+endif (WIN32)
+
+install (FILES ${FXVTK2_INCLUDE_FILES} DESTINATION include)
+install (TARGETS FXVTK2
+	ARCHIVE DESTINATION lib
+	RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib
+)
+
 
 # --= DAFF tool =--
 
@@ -138,38 +263,40 @@ if (MSVC)
 endif (MSVC)
 source_group( "" FILES ${DAFF_FILES})
 
-add_executable (dafftool ${DAFFTOOL_FILES})
-set_property(TARGET dafftool PROPERTY FOLDER "Utils")
-target_include_directories (dafftool PUBLIC ${SNDFILE_INCLUDE_DIR} ${GETOPT_INCLUDE_DIR})
-target_link_libraries (dafftool daff ${SNDFILE_LIBRARY})
+add_executable (DAFFTool ${DAFFTOOL_FILES})
+set_property(TARGET DAFFTool PROPERTY FOLDER "Utils")
+target_include_directories (DAFFTool PUBLIC ${SNDFILE_INCLUDE_DIR} ${GETOPT_INCLUDE_DIR})
+target_link_libraries (DAFFTool DAFF ${SNDFILE_LIBRARY})
 
-# --= DAFFVIZ library =--
-	
-# set (DAFFVIZSrc
-	# ${CMAKE_SOURCE_DIR}/src/FXVTK2BalloonPlot.cpp
-	# ${CMAKE_SOURCE_DIR}/src/FXVTK2CarpetPlot.cpp
-	# ${CMAKE_SOURCE_DIR}/src/DAFFTransformerIR2DFT.cpp
-	# ${CMAKE_SOURCE_DIR}/src/IFXDAFFDialogBox.cpp
-	# ${CMAKE_SOURCE_DIR}/src/IFXDAFFFrame.cpp
-	# )
 
-# #if (${FOX_FOUND} STREQUAL "YES" AND ${VTK_FOUND} AND ${FFTW_FOUND} STREQUAL "TRUE")
-# #  add_library (daffviz ${DAFFVIZSrc})
-# #  set (libdaffviz 1)
-# #endif (${FOX_FOUND} STREQUAL "YES" AND ${VTK_FOUND} AND ${FFTW_FOUND} STREQUAL "TRUE")
+# --= DAFF viewer =--
 
-  # install (TARGETS daffviz DESTINATION lib)
+# Source files of the tool
+set (DAFFVIEWER_SOURCE_FILES
+	${CMAKE_SOURCE_DIR}/utils/DAFFViewer/src/AboutDialog.h
+	${CMAKE_SOURCE_DIR}/utils/DAFFViewer/src/AboutDialog.cpp
+	${CMAKE_SOURCE_DIR}/utils/DAFFViewer/src/Globals.h
+	${CMAKE_SOURCE_DIR}/utils/DAFFViewer/src/InfoDialog.h
+	${CMAKE_SOURCE_DIR}/utils/DAFFViewer/src/InfoDialog.cpp
+	${CMAKE_SOURCE_DIR}/utils/DAFFViewer/src/Main.cpp
+	${CMAKE_SOURCE_DIR}/utils/DAFFViewer/src/MainWindow.h
+	${CMAKE_SOURCE_DIR}/utils/DAFFViewer/src/MainWindow.cpp
+)
 
-  # set (DAFFVIZInc
-	  # ${CMAKE_SOURCE_DIR}/include/daffviz/FXVTK2BalloonPlot.h
-	  # ${CMAKE_SOURCE_DIR}/include/daffviz/FXVTK2CarpetPlot.h
-	  # ${CMAKE_SOURCE_DIR}/include/daffviz/IFXDAFFDialogBox.h
-	  # ${CMAKE_SOURCE_DIR}/include/daffviz/IFXDAFFFrame.h
-	  # )
+set(DAFFVIEWER_FILES ${DAFFVIEWER_SOURCE_FILES})
+if (MSVC)
+	# Visual Studio resource file
+	set(DAFFVIEWER_FILES ${DAFFVIEWER_FILES} ${CMAKE_SOURCE_DIR}/utils/DAFFViewer/Res/DAFFViewer.rc)
+endif (MSVC)
+source_group( "" FILES ${DAFFVIEWER_FILES})
 
-  # install (FILES ${DAFFVIZInc} DESTINATION include/daffviz)
-
-# endif (${libdaffviz})
+add_executable (DAFFViewer ${DAFFVIEWER_FILES})
+set_property(TARGET DAFFViewer PROPERTY FOLDER "Utils")
+target_include_directories (DAFFViewer PUBLIC
+	${CMAKE_SOURCE_DIR}/src
+	${CMAKE_SOURCE_DIR}/src/DAFFViz
+)
+target_link_libraries (DAFFViewer DAFF DAFFViz)
 
 # Es sollen auch einige Dateien installiert werden, z.B. Bilder oder Übersetzungen
 # install(FILES img/icon.png DESTINATION img)
