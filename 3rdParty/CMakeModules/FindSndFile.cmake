@@ -47,8 +47,6 @@ FIND_PATH(SNDFILE_INCLUDE_DIR sndfile.h
     include
 )
 
-message(STATUS "Found SndFile includes: ${SNDFILE_INCLUDE_DIR}")
-
 FIND_LIBRARY(SNDFILE_LIBRARY
   NAMES "sndfile" "libsndfile"
   HINTS ${_sndfile_SEARCH_DIRS}
@@ -64,7 +62,6 @@ FIND_LIBRARY(SNDFILE_LIBRARY
 	PATH_SUFFIXES lib64 lib
   endif (WIN32)
 )
-message(STATUS "Found SndFile library: ${SNDFILE_LIBRARY}")
 
 # handle the QUIETLY and REQUIRED arguments and set SNDFILE_FOUND to TRUE if 
 # all listed variables are TRUE
@@ -74,6 +71,9 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(SndFile DEFAULT_MSG SNDFILE_LIBRARY SNDFILE_IN
 IF(SNDFILE_FOUND)
   SET(SNDFILE_LIBRARIES ${SNDFILE_LIBRARY})
   SET(SNDFILE_INCLUDE_DIRS ${SNDFILE_INCLUDE_DIR})
+
+  message(STATUS "Found SndFile includes: ${SNDFILE_INCLUDE_DIR}")
+  message(STATUS "Found SndFile library: ${SNDFILE_LIBRARY}")
 ENDIF(SNDFILE_FOUND)
 
 MARK_AS_ADVANCED(

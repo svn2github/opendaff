@@ -23,6 +23,17 @@ The simplest way to build OpenDAFF with CMake is as follows:
   open them in your IDE and build the library there
   
 
+Dependencies
+
+libfox-1.6.0
+libfox-1.6-dev
+libsndfile1
+libsndfile1-dev
+libfftw3-bin
+libfftw3-dev
+libvtk5.8
+libvtk5-dev
+
 Microsoft Visual C++ / Visual Studio compilers
 ----------------------------------------------
 

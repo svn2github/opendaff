@@ -35,7 +35,6 @@ FIND_PATH(FOX_INCLUDE_DIR fx.h
     /usr/freeware/include
 	${THIRD_PARTY_DIR}/fox-1.6/include # ITA
 )
-message("FOX include: ${FOX_INCLUDE_DIR}")
 
 MACRO(FIND_FOX_LIBRARY MYLIBRARY MYLIBRARYNAME)
 
@@ -53,8 +52,8 @@ MACRO(FIND_FOX_LIBRARY MYLIBRARY MYLIBRARYNAME)
         /opt/csw/lib
         /opt/lib
         /usr/freeware/lib64
-		${THIRD_PARTY_DIR}/fox-1.6/Win32 # ITA
-		${THIRD_PARTY_DIR}/fox-1.6/x64 # ITA
+	${THIRD_PARTY_DIR}/fox-1.6/Win32 # ITA
+	${THIRD_PARTY_DIR}/fox-1.6/x64 # ITA
     )
 
 ENDMACRO(FIND_FOX_LIBRARY LIBRARY LIBRARYNAME)
@@ -64,4 +63,6 @@ FIND_FOX_LIBRARY(FOX_LIBRARY FOX-1.6)
 SET(FOX_FOUND "")
 IF(FOX_LIBRARY AND FOX_INCLUDE_DIR)
     SET(FOX_FOUND "YES")
+    message(STATUS "Found FOX toolkit includes: ${FOX_INCLUDE_DIR}")
+    message(STATUS "Found FOX toolkit library: ${FOX_LIBRARY}")
 ENDIF(FOX_LIBRARY AND FOX_INCLUDE_DIR)
