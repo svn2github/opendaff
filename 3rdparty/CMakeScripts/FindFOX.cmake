@@ -35,6 +35,7 @@ FIND_PATH(FOX_INCLUDE_DIR fx.h
     /usr/freeware/include
 	${THIRD_PARTY_DIR}/fox-1.6/include # ITA
 )
+message("FOX include: ${FOX_INCLUDE_DIR}")
 
 MACRO(FIND_FOX_LIBRARY MYLIBRARY MYLIBRARYNAME)
 
