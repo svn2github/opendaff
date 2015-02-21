@@ -55,7 +55,11 @@ ENDMACRO(FIND_FFTW_LIBRARY LIBRARY LIBRARYNAME)
 
 # Note: We are only interested in the single-precision version of FFTW3
 # TODO: This works under windows. Also under linux?
-FIND_FFTW_LIBRARY(FFTW_LIBRARY libfftw3f-3)
+if (WIN32)
+	FIND_FFTW_LIBRARY(FFTW_LIBRARY libfftw3f-3)
+else (WIN32)
+	FIND_FFTW_LIBRARY(FFTW_LIBRARY fftw3f)
+endif (WIN32)
 
 message(STATUS ${FFTW_LIBRARY})
 
