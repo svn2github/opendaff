@@ -4,7 +4,8 @@
 
 #include "DAFFTransformerIR2DFT.h"
 
-#include <math.h>
+#include <cassert>
+#include <cmath>
 #include <IFXFancyTable.h>
 #include <DAFF.h>
 #include <FXVTK2Frame.h>

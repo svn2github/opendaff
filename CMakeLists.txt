@@ -1,9 +1,9 @@
-# Author: Jonas Stienen
+# Authors: Jonas Stienen, Frank Wefers
 
 cmake_minimum_required(VERSION 2.8)
 
 # Source for package modules (do not change position of this line!)
-set (THIRD_PARTY_DIR ${CMAKE_SOURCE_DIR}/3rdParty)
+set (THIRD_PARTY_DIR ${CMAKE_SOURCE_DIR}/3rdParty CACHE STRING "Directory where dependent 3rd party projects are located")
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${THIRD_PARTY_DIR}/CMakeModules)
 
 include(CMakeDependentOption)
@@ -14,30 +14,36 @@ set(CMAKE_DEBUG_POSTFIX "D")
 
 # --= Packages =--
 
-find_package(FFTW)
+# TODO: FFTW currently required due to transformer
+find_package(doxygen)
+find_package(FFTW REQUIRED)
 find_package(FOX)
 find_package(SndFile)
+#set (VTK_DIR "/" THIRD_PARTY_DIR)
 find_package(VTK)
 
-include_directories(${FFTW_INCLUDE_DIR} ${FOX_INCLUDE_DIR} ${SNDFILE_INCLUDE_DIR})
-include(${VTK_USE_FILE})
+if (FFTW_FOUND)
+	include_directories(${FFTW_INCLUDE_DIR})
+endif (FFTW_FOUND)
 
-#[ITA specific]
-# find_package(VTK)
-# if (!VTK_FOUND)
-	# set (VTK_DIR "${THIRD_PARTY_DIR}/vtk-5.6")
-	# find_package(VTK)
-# endif (!VTK_FOUND)
+if (FOX_FOUND)
+	include_directories(${FOX_INCLUDE_DIR})
+endif (FOX_FOUND)
 
-# if (VTK_FOUND)
-	# message(STATUS "Found VTK in directory: ${VTK_DIR}")
-# endif (VTK_FOUND)
+if (SNDFILE_LIBRARY)
+	include_directories(${SNDFILE_INCLUDE_DIR})
+endif (SNDFILE_LIBRARY)
+
+if (VTK_FOUND)
+	include(${VTK_USE_FILE})
+endif (VTK_FOUND)
+
 # --= Options =--
 
 option(BUILD_DAFFTOOL "Build the DAFF tool" ON)
 CMAKE_DEPENDENT_OPTION(BUILD_DAFFVIEWER "Build the DAFF viewer" ON "FFTW_FOUND;FOX_FOUND;VTK_FOUND;" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_DAFFMEX "Build the DAFF Matlab Extension" ON "MATLAB_FOUND;" OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_DAFFMEX "Build the DAFF API documentation" ON "DOXYGEN_FOUND;" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_DAFFDOC "Build the DAFF API documentation" ON "DOXYGEN_FOUND;" OFF)
 #option (BUILD_DAFFVIEWER "Build the DAFF viewer (requires FFTW,FOX,VTK)" ON) 
 #option (BUILD_DAFFDOC "Build the DAFF API documentation (requires doxygen)" CACHE BOOL ON) 
 
@@ -53,7 +59,11 @@ include_directories (${CMAKE_SOURCE_DIR}/3rdParty/IFX/include)
 #include_directories (${VTK_INCLUDE_DIRS})
 #include_directories (${FFTW_INCLUDE_DIR})
 
-# --= DAFF library =--
+# +--------------------------------------+
+# |                                      |
+# |    DAFF library                      |
+# |                                      |
+# +--------------------------------------+
 
 # Include files of the library
 set (DAFFLIB_INCLUDE_FILES
@@ -68,6 +78,7 @@ set (DAFFLIB_INCLUDE_FILES
 	${CMAKE_SOURCE_DIR}/include/DAFFMetadata.h
 	${CMAKE_SOURCE_DIR}/include/DAFFProperties.h
 	${CMAKE_SOURCE_DIR}/include/DAFFReader.h
+	${CMAKE_SOURCE_DIR}/include/DAFFTransformerIR2DFT.h
 	${CMAKE_SOURCE_DIR}/include/DAFFUtils.h
 )
 
@@ -82,8 +93,7 @@ set (DAFFLIB_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/DAFFReaderImpl.cpp
 	${CMAKE_SOURCE_DIR}/src/DAFFSCTransform.h
 	${CMAKE_SOURCE_DIR}/src/DAFFSCTransform.cpp
-	#${CMAKE_SOURCE_DIR}/src/DAFFTransformerIR2DFT.h
-	#${CMAKE_SOURCE_DIR}/src/DAFFTransformerIR2DFT.cpp
+	${CMAKE_SOURCE_DIR}/src/DAFFTransformerIR2DFT.cpp
 	${CMAKE_SOURCE_DIR}/src/DAFFUtils.cpp
 	${CMAKE_SOURCE_DIR}/src/Utils.h
 	${CMAKE_SOURCE_DIR}/src/Utils.cpp
@@ -103,15 +113,23 @@ source_group( "" FILES ${DAFFLIB_FILES})
 add_library (DAFF SHARED ${DAFFLIB_FILES})
 set_property(TARGET DAFF PROPERTY FOLDER "Libraries")
 
+target_include_directories(DAFF PUBLIC
+	${CMAKE_SOURCE_DIR}/include
+	${CMAKE_SOURCE_DIR}/src
+)
+
+target_link_libraries (DAFF ${FFTW_LIBRARY})
+
+
 if (WIN32)
 	# Call the shared library DAFFDLL not DAFF
 	set_target_properties(DAFF PROPERTIES OUTPUT_NAME DAFFDLL)
 
 	# Shared library export conventions
 	target_compile_definitions(DAFF PUBLIC $<$<CONFIG:Debug>:DAFF_DLL>)
-	target_compile_definitions(DAFF PUBLIC $<$<CONFIG:Debug>:DAFF_DLL>)
+	target_compile_definitions(DAFF PUBLIC $<$<CONFIG:Release>:DAFF_DLL>)
 	target_compile_definitions(DAFF PUBLIC $<$<CONFIG:Debug>:DAFF_DLL_EXPORTS>)
-	target_compile_definitions(DAFF PUBLIC $<$<CONFIG:Debug>:DAFF_DLL_EXPORTS>)
+	target_compile_definitions(DAFF PUBLIC $<$<CONFIG:Release>:DAFF_DLL_EXPORTS>)
 	
 	# Disable CRT warnings for unsafe functions under Win32
 	target_compile_definitions(DAFF PRIVATE $<$<CONFIG:Debug>:_CRT_SECURE_NO_WARNINGS>)
@@ -127,7 +145,11 @@ install (TARGETS DAFF
 )
 
 
-# --= DAFFViz library =--
+# +--------------------------------------+
+# |                                      |
+# |    DAFFViz library                   |
+# |                                      |
+# +--------------------------------------+
 
 # Include files of the visulization library
 set (DAFFVIZLIB_INCLUDE_FILES
@@ -146,11 +168,6 @@ set (DAFFVIZLIB_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/daffviz/IFXDAFFFrame.cpp
 	${CMAKE_SOURCE_DIR}/src/daffviz/IFXFancyTable.h
 	${CMAKE_SOURCE_DIR}/src/daffviz/IFXFancyTable.cpp
-	
-	
-	# TODO: Move to another place
-	${CMAKE_SOURCE_DIR}/src/DAFFTransformerIR2DFT.h
-	${CMAKE_SOURCE_DIR}/src/DAFFTransformerIR2DFT.cpp
 )
 
 set (DAFFVIZLIB_FILES ${DAFFVIZLIB_INCLUDE_FILES} ${DAFFVIZLIB_SOURCE_FILES})
@@ -171,8 +188,8 @@ target_include_directories(DAFFViz PUBLIC
 
 if (WIN32)
 	# FOX import declarations
-	target_compile_definitions(DAFFViz PUBLIC $<$<CONFIG:Debug>:FOX_DLL>)
-	target_compile_definitions(DAFFViz PUBLIC $<$<CONFIG:Debug>:FOX_DLL>)
+	target_compile_definitions(DAFFViz PUBLIC $<$<CONFIG:Debug>:FOXDLL>)
+	target_compile_definitions(DAFFViz PUBLIC $<$<CONFIG:Release>:FOXDLL>)
 else (WIN32)
 	set_property(TARGET DAFFViz PROPERTY OUTPUT_NAME daffviz)
 endif (WIN32)
@@ -184,7 +201,11 @@ install (TARGETS DAFFViz
 	LIBRARY DESTINATION lib
 )
 
-# --= FXVTK2 library =--
+# +--------------------------------------+
+# |                                      |
+# |    FXVTK2 library                    |
+# |                                      |
+# +--------------------------------------+
 
 # Include files of the FXVTK2 library
 set (FXVTK2_INCLUDE_FILES
@@ -231,8 +252,8 @@ target_include_directories(FXVTK2 PUBLIC
 
 if (WIN32)
 	# FOX import declarations
-	target_compile_definitions(FXVTK2 PUBLIC $<$<CONFIG:Debug>:FOX_DLL>)
-	target_compile_definitions(FXVTK2 PUBLIC $<$<CONFIG:Debug>:FOX_DLL>)
+	target_compile_definitions(FXVTK2 PUBLIC $<$<CONFIG:Debug>:FOXDLL>)
+	target_compile_definitions(FXVTK2 PUBLIC $<$<CONFIG:Release>:FOXDLL>)
 else (WIN32)
 	set_property(TARGET FXVTK2 PROPERTY OUTPUT_NAME fxvtk2)
 endif (WIN32)
@@ -245,7 +266,11 @@ install (TARGETS FXVTK2
 )
 
 
-# --= DAFF tool =--
+# +--------------------------------------+
+# |                                      |
+# |    DAFFTool binary                   |
+# |                                      |
+# +--------------------------------------+
 
 set (GETOPT_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/3rdParty/getopt")
 set (GETOPT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/3rdParty/getopt")
@@ -280,7 +305,16 @@ if(NOT WIN32)
 	set_property(TARGET DAFFTool PROPERTY OUTPUT_NAME dafftool)
 endif(NOT WIN32)
 
-# --= DAFF viewer =--
+install (TARGETS DAFFTool
+	RUNTIME DESTINATION bin
+	COMPONENT ${FFTW_BINARY}
+)
+
+# +--------------------------------------+
+# |                                      |
+# |    DAFFViewer binary                 |
+# |                                      |
+# +--------------------------------------+
 
 # TODO: Src => src
 # Source files of the tool
@@ -316,6 +350,14 @@ target_link_libraries (DAFFViewer DAFF DAFFViz FXVTK2 ${FFTW_LIBRARY} ${FOX_LIBR
 #add_subdirectory (${CMAKE_SOURCE_DIR}/utils/DAFFTool)
 #add_subdirectory (${CMAKE_SOURCE_DIR}/utils/DAFFViewer)
 
-if(NOT WIN32)
+if (WIN32)
+	# FOX import declarations
+	target_compile_definitions(DAFFViewer PUBLIC $<$<CONFIG:Debug>:FOXDLL>)
+	target_compile_definitions(DAFFViewer PUBLIC $<$<CONFIG:Release>:FOXDLL>)
+else (WIN32)
 	set_property(TARGET DAFFViewer PROPERTY OUTPUT_NAME daffviewer)
-endif(NOT WIN32)
+endif(WIN32)
+
+install (TARGETS DAFFViewer
+	RUNTIME DESTINATION bin
+)

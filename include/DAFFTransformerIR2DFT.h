@@ -39,7 +39,6 @@
 #include <DAFFDefs.h>
 #include <DAFFContentDFT.h>
 #include <DAFFContentIR.h>
-#include <DAFFPropertiesImpl.h>
 #include <cmath>
 
 //! Window functions
@@ -117,115 +116,8 @@ public:
 	void transform();
 
 private:
-	// Inner content interface realization
-	class ContentDFTRealization : public DAFFContentDFT {
-	public:
-		ContentDFTRealization(DAFFTransformerIR2DFT* pParent, const DAFFContentIR* pInputContent)
-			: m_pParent(pParent), m_pInputContent(pInputContent)
-		{
-			m_oProps = *(pInputContent->getProperties());
-			m_oProps.m_iContentType = DAFF_DFT_SPECTRUM;
-		};
-		
-		virtual ~ContentDFTRealization() {};
-
-		// --= Interface "DAFFContentDFT" =--
-
-		int getTransformSize() const {
-			// Same as filter length in input content
-			return m_pInputContent->getFilterLength();
-		}
-
-		int getNumDFTCoeffs() const {
-			// The input data is always real valued,
-			// resulting in complex-conjugate symmetric DFT spectra.
-			// Their number of symmetric coefficients is given by
-			// ceil( (K+1) / 2 )
-			
-			int K = getTransformSize();
-			return (int) ceil( ((double) K + 1)/2 );
-			// TODO: Simplify formula to integer arithmetic
-		}
-
-		bool isSymetric() const {
-			return true;
-		}
-
-		double getSamplerate() const {
-			return m_pInputContent->getSamplerate();
-		}
-
-		double getFrequencyBandwidth() const {
-			return getSamplerate() / (double) getTransformSize();
-		}
-
-		float getOverallMagnitudeMaximum() const {
-			return m_pParent->getOverallMagnitudeMaximum();
-		}
-
-		int getDFTCoeff(int iRecordIndex, int iChannel, int iDFTCoeff, float& fReal, float& fImag) const {
-			return m_pParent->getDFTCoeff(iRecordIndex, iChannel, iDFTCoeff, fReal, fImag);
-		}
-
-		int getDFTCoeffs(int iRecordIndex, int iChannel, float* pfDest) const {
-			return m_pParent->getDFTCoeffs(iRecordIndex, iChannel, pfDest);
-		}
-
-		// --= Interface "DAFFContent" =--
-
-		// This interface is completely delegated to the input content of the transform
-
-		DAFFReader* getParent() const {
-			return m_pInputContent->getParent();
-		}
-
-		const DAFFPropertiesImpl* getProperties() const {
-			return reinterpret_cast<const DAFFPropertiesImpl*>(&m_oProps);
-			//return m_pInputContent->getProperties();
-		}
-
-		const DAFFMetadata* getRecordMetadata(int iRecordIndex) const {
-			return m_pInputContent->getRecordMetadata(iRecordIndex);
-		}
-
-		int getRecordCoords(int iRecordIndex, int iView, float& fAngle1, float& fAngle2) const {
-			return m_pInputContent->getRecordCoords(iRecordIndex, iView, fAngle1, fAngle2);
-		}
-
-		void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex) const {
-			m_pInputContent->getNearestNeighbour(iView, fAngle1, fAngle2, iRecordIndex);
-		}
-
-		void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex, bool& bOutOfBounds) const {
-			m_pInputContent->getNearestNeighbour(iView, fAngle1, fAngle2, iRecordIndex, bOutOfBounds);
-		}
-
-		void getCell(int iView, const float fAngle1, const float fAngle2, DAFFQuad& qIndices) const {
-			m_pInputContent->getCell(iView, fAngle1, fAngle2, qIndices);
-		}
-
-		void transformAnglesD2O(const float fAlpha,
-								const float fBeta,
-								float& fAzimuth,
-								float& fElevation) const {
-			m_pInputContent->transformAnglesD2O(fAlpha, fBeta, fAzimuth, fElevation);
-		}
-
-		void transformAnglesO2D(const float fAzimuth,
-								const float fElevation,
-								float& fAlpha,
-								float& fBeta) const {
-			m_pInputContent->transformAnglesO2D(fAzimuth, fElevation, fAlpha, fBeta);
-		}
-
-	private:
-		DAFFTransformerIR2DFT* m_pParent;
-		const DAFFContentIR* m_pInputContent;
-		DAFFPropertiesImpl m_oProps;
-	};
-
 	const DAFFContentIR* m_pInputContent;		// Assigned input data
-	ContentDFTRealization* m_pOutputContent;	// Transformed output data
+	DAFFContentDFT* m_pOutputContent;			// Transformed output data
 	int m_iWindowFunction;						// Window function
 	float* m_pfBuf;								// Buffer for transformed DFT spectra
 	int m_iNumDFTCoeffs;						// Number of symmetric DFT coefficients
@@ -236,6 +128,8 @@ private:
 	float getOverallMagnitudeMaximum() const;
 	int getDFTCoeff(int iRecordIndex, int iChannel, int iDFTCoeff, float& fReal, float& fImag) const;
 	int getDFTCoeffs(int iRecordIndex, int iChannel, float* pfDest) const;
+
+	friend class DAFFContentDFTRealization;
 };
 
 #endif // __DAFFTRANSFORMER_IR2DFT_H__

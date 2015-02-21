@@ -36,6 +36,17 @@ FIND_PATH(FOX_INCLUDE_DIR fx.h
 	${THIRD_PARTY_DIR}/fox-1.6/include # ITA
 )
 
+# Platform sub directories for Visual Studio builds (Win32|x64)
+if (MSVC)
+	if (CMAKE_CL_64)
+		set (FOX_LIBRARY_WIN_PLATFORM x64)
+	else (CMAKE_CL_64)
+		set (FOX_LIBRARY_WIN_PLATFORM Win32)
+	endif (CMAKE_CL_64)
+elseif (MSVC)
+	set (FOX_LIBRARY_WIN_PLATFORM "")
+endif (MSVC)
+
 MACRO(FIND_FOX_LIBRARY MYLIBRARY MYLIBRARYNAME)
 
     FIND_LIBRARY(${MYLIBRARY}
@@ -52,17 +63,24 @@ MACRO(FIND_FOX_LIBRARY MYLIBRARY MYLIBRARYNAME)
         /opt/csw/lib
         /opt/lib
         /usr/freeware/lib64
-	${THIRD_PARTY_DIR}/fox-1.6/Win32 # ITA
-	${THIRD_PARTY_DIR}/fox-1.6/x64 # ITA
+		# Order strictly necessary for ITA build environment
+		${THIRD_PARTY_DIR}/fox-1.6/lib/${FOX_LIBRARY_WIN_PLATFORM}
+		${THIRD_PARTY_DIR}/fox-1.6/lib
     )
 
 ENDMACRO(FIND_FOX_LIBRARY LIBRARY LIBRARYNAME)
 
-FIND_FOX_LIBRARY(FOX_LIBRARY FOX-1.6)
+# Use shared linking under Windows
+# TODO: Define somewhere else. Maybe a switch?
+if (WIN32)
+	FIND_FOX_LIBRARY(FOX_LIBRARY FOXDLL-1.6)
+else (WIN32)
+	FIND_FOX_LIBRARY(FOX_LIBRARY FOX-1.6)
+endif (WIN32)
 
 SET(FOX_FOUND "")
 IF(FOX_LIBRARY AND FOX_INCLUDE_DIR)
     SET(FOX_FOUND "YES")
-    message(STATUS "Found FOX toolkit includes: ${FOX_INCLUDE_DIR}")
+    #message(STATUS "Found FOX toolkit includes: ${FOX_INCLUDE_DIR}")
     message(STATUS "Found FOX toolkit library: ${FOX_LIBRARY}")
 ENDIF(FOX_LIBRARY AND FOX_INCLUDE_DIR)

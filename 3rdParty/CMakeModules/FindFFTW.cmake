@@ -18,8 +18,19 @@ FIND_PATH(FFTW_INCLUDE_DIR fftw3.h
     /opt/csw/include # Blastwave
     /opt/include
     /usr/freeware/include
-    ${THIRD_PARTY_DIR}/fftw3/include # ITA
+    ${THIRD_PARTY_DIR}/fftw3/include
 )
+
+# Platform sub directories for Visual Studio builds (Win32|x64)
+if (MSVC)
+	if (CMAKE_CL_64)
+		set (FFTW_LIBRARY_WIN_PLATFORM x64)
+	else (CMAKE_CL_64)
+		set (FFTW_LIBRARY_WIN_PLATFORM Win32)
+	endif (CMAKE_CL_64)
+elseif (MSVC)
+	set (FFTW_LIBRARY_WIN_PLATFORM "")
+endif (MSVC)
 
 MACRO(FIND_FFTW_LIBRARY MYLIBRARY MYLIBRARYNAME)
 
@@ -35,18 +46,22 @@ MACRO(FIND_FFTW_LIBRARY MYLIBRARY MYLIBRARYNAME)
         /opt/csw/lib
         /opt/lib
         /usr/freeware/lib64
-	${THIRD_PARTY_DIR}/fftw3/Lib/Win32 # ITA
-	${THIRD_PARTY_DIR}/fftw3/Lib/x64 # ITA
+		# Order strictly necessary for ITA build environment
+		${THIRD_PARTY_DIR}/fftw3/lib/${FFTW_LIBRARY_WIN_PLATFORM}
+		${THIRD_PARTY_DIR}/fftw3/Lib
     )
 
 ENDMACRO(FIND_FFTW_LIBRARY LIBRARY LIBRARYNAME)
 
 # Note: We are only interested in the single-precision version of FFTW3
-FIND_FFTW_LIBRARY(FFTW_LIBRARY fftw3f)
+# TODO: This works under windows. Also under linux?
+FIND_FFTW_LIBRARY(FFTW_LIBRARY libfftw3f-3)
+
+message(STATUS ${FFTW_LIBRARY})
 
 SET(FFTW_FOUND "")
 IF(FFTW_LIBRARY AND FFTW_INCLUDE_DIR)
     SET(FFTW_FOUND "YES")
-    message(STATUS "Found FFTW includes: ${FFTW_INCLUDE_DIR}")
+    #message(STATUS "Found FFTW includes: ${FFTW_INCLUDE_DIR}")
     message(STATUS "Found FFTW library: ${FFTW_LIBRARY}")
 ENDIF(FFTW_LIBRARY AND FFTW_INCLUDE_DIR)

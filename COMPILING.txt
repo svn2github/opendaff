@@ -34,6 +34,53 @@ libfftw3-dev
 libvtk5.8
 libvtk5-dev
 
+
+Windows:
+
+Download the VTK source code from http://www.vtk.org/VTK/resources/software.html
+and build VTK using CMake
+
+Building VTK can take you half an hour. Make yourself a nice cup of coffee...
+
+In order to install VTK, execute Visual Studio as administrator
+(folder Program Files\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe, right-click XYZ)
+
+MAN BRAUCHT VTK NICHT KOMPLETT ZU installieren. CMake findet das im VTK-Build
+TODO: Geht nur mit VTK 5.X
+
+WELCHE TEILE BRAUCHT MAN?
+
+CMAKE_CONFIGURATION_TYPES
+Genügt Releae anstelle Debug;Release;MinSizeRel;RelWithDebInfo
+
+ZUM BAUEN: VTK-Pfad setzen 3rdParty\vtk-5.10.1\lib\vtk-5.10
+
+libsndfile1
+http://www.mega-nerd.com/libsndfile/files
+
+libsndfile-1.0.25-w64-setup.exe
+C:\Program Files\Mega-Nerd\libsndfile
+
+-----------
+
+TODO: Fox Build erläutern
+TODO: Check ob JPEG/PNG benötigt wird? Screenshots?
+
+FOX Toolkit
+
+http://www.fox-toolkit.org/
+
+1.6 Stable release for Windows
+Download fox-1.6.50.zip
+
+Visual Studio project files are in the directory "windows\vcpp".
+These are project files for Visual Studio 6. If asked, convert them to the current format.
+Select "Release" as build type.
+If you are using 64-Bit Windows => Select "x64" als build platform
+You need to build the project "fox" and "foxdll" only. Compiling everything takes a quite a while.
+
+
+
 Microsoft Visual C++ / Visual Studio compilers
 ----------------------------------------------
 
@@ -41,3 +88,11 @@ You should use CMake to create Visual Studio project files.
 However, we still host native project files for Visual Studio 2010.
 You find them in the "project" directory
 
+
+
+
+
+
+TODO:
+
+- Test ob auch baut wenn libsndfile unter 3rdparty

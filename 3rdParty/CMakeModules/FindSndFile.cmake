@@ -24,12 +24,15 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
-# Extended by Jonas Stienen.
+# Extended by Jonas Stienen and Frank Wefers
 
 # If SNDFILE_ROOT_DIR was defined in the environment, use it.
 IF(NOT SNDFILE_ROOT_DIR AND NOT $ENV{SNDFILE_ROOT_DIR} STREQUAL "")
   SET(SNDFILE_ROOT_DIR $ENV{SNDFILE_ROOT_DIR})
 ENDIF()
+
+file(TO_CMAKE_PATH "$ENV{ProgramFiles}/Mega-Nerd/libsndfile" SNDFILE_WIN_PATH1) # Windows 32/64
+file(TO_CMAKE_PATH "$ENV{ProgramW6432}/Mega-Nerd/libsndfile" SNDFILE_WIN_PATH2) # Windows 64
 
 SET(_sndfile_SEARCH_DIRS
   ${SNDFILE_ROOT_DIR}
@@ -37,7 +40,9 @@ SET(_sndfile_SEARCH_DIRS
   /sw # Fink
   /opt/local # DarwinPorts
   /opt/csw # Blastwave
-  ${THIRD_PARTY_DIR}/libsndfile # ITA build environment
+  ${SNDFILE_WIN_PATH1}
+  ${SNDFILE_WIN_PATH2}
+  ${THIRD_PARTY_DIR}/libsndfile
 )
 
 FIND_PATH(SNDFILE_INCLUDE_DIR sndfile.h
@@ -47,20 +52,21 @@ FIND_PATH(SNDFILE_INCLUDE_DIR sndfile.h
     include
 )
 
-FIND_LIBRARY(SNDFILE_LIBRARY
-  NAMES "sndfile" "libsndfile"
-  HINTS ${_sndfile_SEARCH_DIRS}
-  if (WIN32)
+# Platform sub directories for Visual Studio builds (Win32|x64)
+if (MSVC)
 	if (CMAKE_CL_64)
-		# x64 builds under windows
-		PATH_SUFFIXES lib64 lib lib/x64
-	else
-		# x64 builds under windows
-		PATH_SUFFIXES lib64 lib lib/win32
+		set (SNDFILE_LIBRARY_WIN_PLATFORM x64)
+	else (CMAKE_CL_64)
+		set (SNDFILE_LIBRARY_WIN_PLATFORM Win32)
 	endif (CMAKE_CL_64)
-  else
-	PATH_SUFFIXES lib64 lib
-  endif (WIN32)
+elseif (MSVC)
+	set (SNDFILE_LIBRARY_WIN_PLATFORM "")
+endif (MSVC)
+
+FIND_LIBRARY(SNDFILE_LIBRARY
+	NAMES "sndfile" "libsndfile" "libsndfile-1"
+	HINTS ${_sndfile_SEARCH_DIRS}
+	PATH_SUFFIXES lib64 lib lib/${SNDFILE_LIBRARY_WIN_PLATFORM}
 )
 
 # handle the QUIETLY and REQUIRED arguments and set SNDFILE_FOUND to TRUE if 
@@ -72,7 +78,7 @@ IF(SNDFILE_FOUND)
   SET(SNDFILE_LIBRARIES ${SNDFILE_LIBRARY})
   SET(SNDFILE_INCLUDE_DIRS ${SNDFILE_INCLUDE_DIR})
 
-  message(STATUS "Found SndFile includes: ${SNDFILE_INCLUDE_DIR}")
+  #message(STATUS "Found SndFile includes: ${SNDFILE_INCLUDE_DIR}")
   message(STATUS "Found SndFile library: ${SNDFILE_LIBRARY}")
 ENDIF(SNDFILE_FOUND)
 
