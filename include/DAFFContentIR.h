@@ -78,7 +78,7 @@ public:
 
 	//! Retrieves filter coefficients for record and channel
 	/**
-	 * This method retrives the full filter impulse response for the given
+	 * This method retrieves the full filter impulse response for the given
 	 * direction (record index) and channel and stores them in the supplied
 	 * destination buffer. The method writes exactly as many filter coefficients
 	 * into the buffer as the filter length.
@@ -91,6 +91,24 @@ public:
 	 * \return 0 on success, errorcode otherwise
 	 */
 	virtual int getFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const=0;
+
+	//! Adds filter coefficients for record and channel to a given buffer
+	/**
+	 * This method retrieves the full filter impulse response for the given
+	 * direction (record index) and channel and numerically adds them in the supplied
+	 * destination buffer. The method writes exactly as many filter coefficients
+	 * into the buffer as the filter is long. A copy of the entire filter in user
+	 * code can be avoided using the add filter funcionality. Extensive use of 
+	 * record requests can be accelerated by this method.
+	 *
+	 * \param iRecordIndex  Record index (direction)
+	 * \param iChannel      Channel index
+	 * \param pfDest		Destination buffer (size >= filter length)
+	 * \param fGain			Gain factor (optional, default: 1)
+	 *
+	 * \return 0 on success, errorcode otherwise
+	 */
+	virtual int addFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const=0;
 
 	// --= Low-level data access =--
 
@@ -131,7 +149,7 @@ public:
 
 	//! Retrieves effective filter coefficients for record and channel
 	/**
-	 * This method retrives the only the effective (non-zero) filter impulse coefficients
+	 * This method retrieves the only the effective (non-zero) filter impulse coefficients
 	 * for the given direction (record index) and channel and stores them in the supplied
 	 * destination buffer. The method only writes as many filter coefficients
 	 * into the buffer as this very filter's effective length. This length can be determined
@@ -148,6 +166,28 @@ public:
 	 * \sa getEffectiveFilterBounds
 	 */
 	virtual int getEffectiveFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const=0;
+	
+	//! Adds effective filter coefficients for record and channel to a given buffer
+	/**
+	 * This method retrieves effective filter impulse response only (non-zero sample range)
+	 * for the given direction (record index) and channel and numerically adds them in the supplied
+	 * destination buffer. The method writes exactly as many filter coefficients
+	 * into the buffer as the effective filter is long. This length can be requested
+	 * using the \getEffectiveFilterBounds method. A copy of the entire filter in user
+	 * code can be avoided using the add filter funcionality. Extensive use of 
+	 * record requests can be accelerated by this method. The method starts to write into the
+	 * destination buffer at position 0 (but not the effective filter offset).
+	 *
+	 * \param iRecordIndex  Record index (direction)
+	 * \param iChannel      Channel index
+	 * \param pfDest		Destination buffer (size >= effective filter length)
+	 * \param fGain			Gain factor (optional, default: 1)
+	 *
+	 * \return 0 on success, errorcode otherwise
+	 *
+	 * \sa getEffectiveFilterBounds
+	 */
+	virtual int addEffectiveFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const=0;
 
 	virtual float getOverallPeak()=0;
 };

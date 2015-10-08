@@ -112,10 +112,12 @@ public:
 	double getSamplerate() const;
 	int getFilterLength() const;
 	int getFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const;
+	int addFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const;
 	int getMinEffectiveFilterOffset() const;
 	int getMaxEffectiveFilterLength() const;
 	int getEffectiveFilterBounds(int iRecordIndex, int iChannel, int& iOffset, int& iLength) const;
 	int getEffectiveFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const;
+	int addEffectiveFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const;
 	float getOverallPeak(); // no const because of lazy initialization
 
 	// --= Interface "DAFFContentMS" =--

@@ -1048,10 +1048,26 @@ int DAFFReaderImpl::getFilterCoeffs(int iRecordIndex, int iChannel, float* pfDes
 
 	// Insert the data
 	iError = getEffectiveFilterCoeffs(iRecordIndex, iChannel, pfDest+iOffset, fGain);
+	if (iError != DAFF_NO_ERROR) return iError;
 	
 	// Place zeros behind the data
 	for	(int i=iOffset+iEffectiveLength; i<getFilterLength(); i++) pfDest[i] = 0;
 		
+	return DAFF_NO_ERROR;
+}
+
+int DAFFReaderImpl::addFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain) const {
+	int iOffset;
+	int iEffectiveLength;
+	int iError;
+
+	iError = getEffectiveFilterBounds(iRecordIndex, iChannel, iOffset, iEffectiveLength);
+	if (iError != DAFF_NO_ERROR) return iError;
+
+	// Insert the data
+	iError = addEffectiveFilterCoeffs(iRecordIndex, iChannel, pfDest+iOffset, fGain);
+	if (iError != DAFF_NO_ERROR) return iError;
+			
 	return DAFF_NO_ERROR;
 }
 
@@ -1106,6 +1122,41 @@ int DAFFReaderImpl::getEffectiveFilterCoeffs(int iRecordIndex, int iChannel, flo
 				for (int i=0; i<pDesc->iLength; i++)
 					pfDest[i] = pfData[i] * fGain;
 			}
+			break;
+	}
+
+	return DAFF_NO_ERROR;
+}
+
+int DAFFReaderImpl::addEffectiveFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain) const {
+	assert( (iRecordIndex >= 0) && (iRecordIndex < m_pMainHeader->iNumRecords) );
+	assert( (iChannel >= 0) && (iChannel < m_pMainHeader->iNumChannels) );
+
+	if ((iRecordIndex < 0) || (iRecordIndex >= m_pMainHeader->iNumRecords) ||
+		(iChannel < 0) || (iChannel >= m_pMainHeader->iNumChannels) )
+		return DAFF_INVALID_INDEX;
+
+	if (pfDest == NULL) return DAFF_NO_ERROR;
+
+	DAFFRecordChannelDescIR* pDesc = reinterpret_cast<DAFFRecordChannelDescIR*>( getRecordChannelDescPtr(iRecordIndex, iChannel) );
+	// Check data offset for buffer overruns
+	assert( pDesc->ui64DataOffset < m_pfbData->ui64Size );
+	void* pData = reinterpret_cast<char*>(m_pDataBlock) + pDesc->ui64DataOffset;
+
+	// Data type conversion
+	switch (m_pMainHeader->iQuantization) {
+		case DAFF_INT16:
+			DAFF::stc_sint16_to_float_add(pfDest, (const short*) pData, pDesc->iLength, 1, 1, fGain * pDesc->fScaling);
+			break;
+
+		case DAFF_INT24:
+			DAFF::stc_sint24_to_float_add(pfDest, pData, pDesc->iLength, 1, 1, fGain * pDesc->fScaling);
+			break;
+
+		case DAFF_FLOAT32:
+			float* pfData = (float*) pData;
+			for (int i=0; i<pDesc->iLength; i++)
+				pfDest[i] += pfData[i] * fGain;
 			break;
 	}
 

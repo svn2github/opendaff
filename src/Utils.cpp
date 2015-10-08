@@ -265,6 +265,12 @@ void stc_sint16_to_float(float* dest, const short* src, size_t count, int input_
 		dest[i*output_stride] = (float) src[i*input_stride] * c;
 }
 
+void stc_sint16_to_float_add(float* dest, const short* src, size_t count, int input_stride, int output_stride, float gain) {
+	float c = gain / 32767.0F;
+	for (size_t i=0; i<count; i++)
+		dest[i*output_stride] += (float) src[i*input_stride] * c;
+}
+
 void stc_sint24_to_float(float* dest, const void* src, size_t count, int input_stride, int output_stride, float gain) {
 	
 	const unsigned char* p = (const unsigned char*) src;
@@ -309,6 +315,56 @@ void stc_sint24_to_float(float* dest, const void* src, size_t count, int input_s
 				byte[3] = 0x00;
 
 			dest[i*output_stride] = (float) ivalue * c;
+
+			p = p + input_stride*3;
+		}
+	}
+}
+
+void stc_sint24_to_float_add(float* dest, const void* src, size_t count, int input_stride, int output_stride, float gain) {
+	
+	const unsigned char* p = (const unsigned char*) src;
+
+	union {
+		int ivalue;
+		unsigned char byte[4];
+	};
+
+	float c = gain / 8388607.0F;
+
+	if (iTest != 1) {
+		for (size_t i=0; i<count; i++) {
+			
+			// Big endian
+			byte[1] = p[0];
+			byte[2] = p[1];
+			byte[3] = p[2];
+
+			// Input value negative (MSB = 1)?
+			if (p[1] & 0x80)
+				byte[0] = 0xFF;
+			else
+				byte[0] = 0x00;
+
+			dest[i*output_stride] += (float) ivalue * c;
+
+			p = p + input_stride*3;
+		}
+	} else {
+		for (size_t i=0; i<count; i++) {
+			
+			// Little endian
+			byte[0] = p[0];
+			byte[1] = p[1];
+			byte[2] = p[2];
+
+			// Input value negative (MSB = 1)?
+			if (p[2] & 0x80)
+				byte[3] = 0xFF;
+			else
+				byte[3] = 0x00;
+
+			dest[i*output_stride] += (float) ivalue * c;
 
 			p = p + input_stride*3;
 		}

@@ -51,6 +51,7 @@
 #else
 // Packing attribute requires for the GCC
 #define DAFF_PACK_ATTR __attribute__((__packed__))
+// #define HANDLE_PRAGMA_PACK_PUSH_POP // try this with your gcc compiler, if packing errors occur
 #endif
 
 /* +---------------------------------------------------+
