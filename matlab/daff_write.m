@@ -1,4 +1,4 @@
-%
+1%
 %  OpenDAFF
 %
 %  File:    daff_write.m
@@ -793,8 +793,8 @@ function [] = daff_write( varargin )
     % |                                                |
     % +------------------------------------------------+
       
-    % Current version = 0.101
-    FileFormatVersion = 0101;
+    % Current version = 0.105
+    FileFormatVersion = 0105;
     
     % Important! 'l' -> little endian (DAFF files are always little endian)
     fid = fopen(args.filename, 'wb', 'l'); 
