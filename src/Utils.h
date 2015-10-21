@@ -118,9 +118,11 @@ void free_aligned16(void* ptr);
 
 //! Convert signed integer 16-Bit -> single precision floating point (32-Bit)
 void stc_sint16_to_float(float* dest, const short* src, size_t count, int input_stride=1, int output_stride=1, float gain=1);
+void stc_sint16_to_float_add(float* dest, const short* src, size_t count, int input_stride=1, int output_stride=1, float gain=1);
 
 //! Convert signed integer 24-Bit -> single precision floating point (32-Bit)
 void stc_sint24_to_float(float* dest, const void* src, size_t count, int input_stride=1, int output_stride=1, float gain=1);
+void stc_sint24_to_float_add(float* dest, const void* src, size_t count, int input_stride=1, int output_stride=1, float gain=1);
 
 
 // --= File system functions =--
