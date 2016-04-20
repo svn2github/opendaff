@@ -1,70 +1,52 @@
-# - Find a VTK installation or build tree.
-# The following variables are set if VTK is found.  If VTK is not
-# found, VTK_FOUND is set to false.
-#  VTK_FOUND         - Set to true when VTK is found.
-#  VTK_USE_FILE      - CMake file to use VTK.
-#  VTK_MAJOR_VERSION - The VTK major version number.
-#  VTK_MINOR_VERSION - The VTK minor version number
-#                       (odd non-release).
-#  VTK_BUILD_VERSION - The VTK patch level
-#                       (meaningless for odd minor).
-#  VTK_INCLUDE_DIRS  - Include directories for VTK
-#  VTK_LIBRARY_DIRS  - Link directories for VTK libraries
-#  VTK_KITS          - List of VTK kits, in CAPS
-#                      (COMMON,IO,) etc.
-#  VTK_LANGUAGES     - List of wrapped languages, in CAPS
-#                      (TCL, PYHTON,) etc.
-# The following cache entries must be set by the user to locate VTK:
-#  VTK_DIR  - The directory containing VTKConfig.cmake.
-#             This is either the root of the build tree,
-#             or the lib/vtk directory.  This is the
-#             only cache entry.
-# The following variables are set for backward compatibility and
-# should not be used in new code:
-#  USE_VTK_FILE - The full path to the UseVTK.cmake file.
-#                 This is provided for backward
-#                 compatibility.  Use VTK_USE_FILE
-#                 instead.
+# OpenDAFF
+#
+# VTK_LIBRARIES library names
+# VTK_INCLUDE_DIR, where to find the headers
+# VTK_LIBRARY_DIRS folder where libraries can be found
+# VTK_FOUND TRUE if found
 #
 
-#=============================================================================
-# Copyright 2001-2009 Kitware, Inc.
-#
-# Distributed under the OSI-approved BSD License (the "License");
-# see accompanying file Copyright.txt for details.
-#
-# This software is distributed WITHOUT ANY WARRANTY; without even the
-# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# See the License for more information.
-#=============================================================================
-# (To distribute this file outside of CMake, substitute the full
-#  License text for the above reference.)
+if( NOT DEFINED VTK_ROOT_DIR )
+	set( VTK_ROOT_DIR "${OPENDAFF_THIRD_PARTY_DIR}/vtk" CACHE PATH "Path to VTK folder with bin, include, lib folder structure" )
+endif( NOT DEFINED VTK_ROOT_DIR )
 
-# Assume not found.
-set(VTK_FOUND 0)
+find_path( VTK_INCLUDE_DIR "vtkAssembly.h"
+    "$ENV{VTK_DIR}/include"
+    "/usr/local/include"
+    "/opt/local/include"
+    "${OPENDAFF_THIRD_PARTY_DIR}/vtk/include"
+	"${VTK_ROOT_DIR}/include"
+	"${VTK_ROOT_DIR}/include/vtk-6.1"
+)
 
-# Construct consistent error messages for use below.
-set(VTK_DIR_DESCRIPTION "directory containing VTKConfig.cmake.  This is either the root of the build tree, or PREFIX/lib/vtk for an installation.")
-set(VTK_DIR_MESSAGE "VTK not found.  Set the VTK_DIR cmake cache entry to the ${VTK_DIR_DESCRIPTION}")
+find_path( VTK_LIBRARY_DIRS "vtkCommonCore-6.1.lib"
+    "${OPENDAFF_THIRD_PARTY_DIR}/vtk/lib"
+	"${VTK_ROOT_DIR}/lib"
+    "${OPENDAFF_THIRD_PARTY_DIR}/vtk/bin"
+	"${VTK_ROOT_DIR}/bin"
+)
 
-# Use the Config mode of the find_package() command to find VTKConfig.
-# If this succeeds (possibly because VTK_DIR is already set), the
-# command will have already loaded VTKConfig.cmake and set VTK_FOUND.
-if(NOT VTK_FOUND)
-  find_package(VTK QUIET NO_MODULE)
-endif()
-
-#-----------------------------------------------------------------------------
-if(VTK_FOUND)
-  # Set USE_VTK_FILE for backward-compatibility.
-  set(USE_VTK_FILE ${VTK_USE_FILE})
-else()
-  # VTK not found, explain to the user how to specify its location.
-  if(VTK_FIND_REQUIRED)
-    message(FATAL_ERROR ${VTK_DIR_MESSAGE})
-  else()
-    if(NOT VTK_FIND_QUIETLY)
-      message(STATUS ${VTK_DIR_MESSAGE})
-    endif()
-  endif()
-endif()
+set( VTK_FOUND "" )
+if( VTK_LIBRARY_DIRS AND VTK_INCLUDE_DIR )
+    set( VTK_FOUND "YES" )
+	set( VTK_LIBRARIES 
+		optimized vtkalglib-6.1 debug vtkalglib-6.1D
+		optimized vtkCommonCore-6.1 debug vtkCommonCore-6.1D
+		optimized vtkexpat-6.1 debug vtkexpat-6.1D
+		optimized vtkFiltersCore-6.1 debug vtkFiltersCore-6.1D
+		optimized vtkfreetype-6.1 debug vtkfreetype-6.1D
+		optimized vtkftgl-6.1 debug vtkftgl-6.1D
+		#optimized vtkGraphics-6.1 debug vtkGraphics-6.1
+		#optimized vtkHybrid-6.1 debug vtkGraphics-6.1
+		optimized vtkIOCore-6.1 debug vtkIOCore-6.1D
+		optimized vtkjpeg-6.1 debug vtkjpeg-6.1D
+		optimized vtkpng-6.1 debug vtkpng-6.1D
+		optimized vtkRenderingCore-6.1 debug vtkRenderingCore-6.1D
+		optimized vtksys-6.1 debug vtksys-6.1D
+		optimized vtktiff-6.1 debug vtktiff-6.1D
+		optimized vtkzlib-6.1 debug vtkzlib-6.1D
+		)
+    message( STATUS "Found VTK includes: ${VTK_INCLUDE_DIR}" )
+    message( STATUS "Found VTK libraries: ${VTK_LIBRARIES}" )
+    message( STATUS "Found VTK library directories: ${VTK_LIBRARY_DIRS}" )
+endif( VTK_LIBRARY_DIRS AND VTK_INCLUDE_DIR )

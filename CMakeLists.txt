@@ -8,7 +8,6 @@ set( CMAKE_DEBUG_POSTFIX "D" )
 
 find_package( doxygen )
 find_package( FFTW )
-find_package( FOX )
 find_package( SndFile )
 find_package( VTK )
 
@@ -117,39 +116,50 @@ install( FILES ${OPENDAFF_DAFFLIB_HEADER_FILES} DESTINATION "include" )
 
 
 set( OPENDAFF_DAFFVIZ_HEADER_FILES
-	"include/daffviz/FXVTK2BalloonPlot.h"
-	"include/daffviz/FXVTK2CarpetPlot.h"
-	"include/daffviz/IFXDAFFDialogBox.h"
-	"include/daffviz/IFXDAFFDialogBoxRes.h"
-	"include/daffviz/IFXDAFFFrame.h"
+	"include/daffviz/DAFFViz.h"
+	"include/daffviz/DAFFVizArrow.h"
+	"include/daffviz/DAFFVizBalloonPlot.h"
+	"include/daffviz/DAFFVizCarpetPlot.h"
+	"include/daffviz/DAFFVizCartesianCoordinateAssistant.h"
+	"include/daffviz/DAFFVizGlobalLock.h"
+	"include/daffviz/DAFFVizGrid.h"
+	"include/daffviz/DAFFVizLabel.h"
+	"include/daffviz/DAFFVizLine.h"
+	"include/daffviz/DAFFVizPlane.h"
+	"include/daffviz/DAFFVizSGNode.h"
+	"include/daffviz/DAFFVizSphere.h"
+	"include/daffviz/DAFFVizSphericalCoordinateAssistant.h"
 )
 
 set( OPENDAFF_DAFFVIZ_SOURCE_FILES
-	"src/daffviz/FXVTK2BalloonPlot.cpp"
-	"src/daffviz/FXVTK2CarpetPlot.cpp"
-	"src/daffviz/IFXDAFFDialogBox.cpp"
-	"src/daffviz/IFXDAFFFrame.cpp"
-	"src/daffviz/IFXFancyTable.h"
-	"src/daffviz/IFXFancyTable.cpp"
+	"src/daffviz/DAFFVizBalloonPlot.cpp"
+	"src/daffviz/DAFFVizCarpetPlot.cpp"
+	"src/daffviz/DAFFVizCarpetPlot.cpp"
+	"src/daffviz/DAFFVizCartesianCoordinateAssistant.cpp"
+	"src/daffviz/DAFFVizGlobalLock.cpp"
+	"src/daffviz/DAFFVizGrid.cpp"
+	"src/daffviz/DAFFVizLabel.cpp"
+	"src/daffviz/DAFFVizLine.cpp"
+	"src/daffviz/DAFFVizPlane.cpp"
+	"src/daffviz/DAFFVizSGNode.cpp"
+	"src/daffviz/DAFFVizSphere.cpp"
+	"src/daffviz/DAFFVizSphericalCoordinateAssistant.cpp"
 )
 
 set( DAFFVIZLIB_FILES ${OPENDAFF_DAFFVIZ_HEADER_FILES} ${OPENDAFF_DAFFVIZ_SOURCE_FILES} )
 	
 if( OPENDAFF_WITH_DAFFVIZ )
 
-	source_group( "" FILES ${DAFFVIZLIB_FILES})
+	#source_group( "" FILES ${DAFFVIZLIB_FILES})
 
 	if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
-		if( WIN32 )
-			list( APPEND OPENDAFF_DAFFLIB_FILES "src/platforms/windows/DAFFDLLMain" )
-		endif( WIN32 )
 		add_definitions( -DDAFF_DLL -DDAFF_DLL_EXPORTS )
-		add_library( DAFFViz SHARED "${OPENDAFF_DAFFVIZ_SOURCE_FILES}" )
+		add_library( DAFFViz SHARED "${DAFFVIZLIB_FILES}" )
 	else( OPENDAFF_BUILD_DAFFLIBS_SHARED )
-		add_library( DAFFViz "${OPENDAFF_DAFFVIZ_SOURCE_FILES}" )
+		add_library( DAFFViz "${DAFFVIZLIB_FILES}" )
 	endif( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 
-	install( FILES ${OPENDAFF_DAFFVIZ_HEADER_FILES} DESTINATION "include" )
+	install( FILES ${OPENDAFF_DAFFVIZ_HEADER_FILES} DESTINATION "include/daffviz" )
 	install( TARGETS DAFFViz
 		ARCHIVE DESTINATION "lib"
 		RUNTIME DESTINATION "bin"
@@ -165,3 +175,7 @@ endif( OPENDAFF_BUILD_DAFF_TOOL )
 if( OPENDAFF_BUILD_DAFF_VIEWER AND OPENDAFF_WITH_DAFFVIZ )
 	add_subdirectory( "utils/DAFFViewer" )
 endif( OPENDAFF_BUILD_DAFF_VIEWER AND OPENDAFF_WITH_DAFFVIZ )
+
+if( OPENDAFF_BUILD_DAFF_TESTS )
+	add_subdirectory( "tests" )
+endif( OPENDAFF_BUILD_DAFF_TESTS )
