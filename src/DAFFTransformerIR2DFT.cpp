@@ -37,11 +37,12 @@
 
 #include <DAFFContentDFT.h>
 #include <DAFFContentIR.h>
-#include <DAFFPropertiesImpl.h>
+#include "DAFFPropertiesImpl.h"
 
 #include "Utils.h"
 
 #include <cassert>
+#include <algorithm>
 #include <fftw3.h>
 
 // Inner content interface realization
