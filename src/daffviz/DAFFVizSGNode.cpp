@@ -1,4 +1,3 @@
-// $Id: FXVTK2SGNode.cpp 2315 2012-02-28 08:20:05Z stienen $
 
 #include <daffviz/DAFFVizSGNode.h>
 
@@ -444,4 +443,4 @@ vtkAssembly* SGNode::GetNodeAssembly() {
 	return m_pNodeAssembly;
 }
 
-} // End of namespace "FXVTK2"
+} // End of namespace "DAFFViz"

@@ -658,4 +658,4 @@ void BalloonPlot::SetUsePhaseAsColor(bool bUse) {
 	m_bUsePhaseAsColor = bUse;
 }
 
-} // End of namespace "FXVTK2"
+} // End of namespace "DAFFViz"

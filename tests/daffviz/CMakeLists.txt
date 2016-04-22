@@ -1,9 +1,11 @@
 cmake_minimum_required( VERSION 2.9 )
 
-find_package( VTK )
+find_package( VTK REQUIRED )
 
-link_directories( "${VTK_LIBRARY_DIRS}" )
+include( "${VTK_USE_FILE}" )
 
-add_executable( DAFFVizTest main.cpp )
-target_link_libraries( DAFFVizTest DAFFViz DAFF ${VTK_LIBRARIES} )
+add_executable( DAFFVizTest main.cpp VTKDAFFVizWindow.h VTKDAFFVizWindow.cpp )
+target_link_libraries( DAFFVizTest DAFFViz DAFF )
 install( TARGETS DAFFVizTest RUNTIME DESTINATION "bin" )
+
+set_property( TARGET DAFFVizTest PROPERTY FOLDER "DAFFTests" )

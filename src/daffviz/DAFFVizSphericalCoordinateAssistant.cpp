@@ -498,7 +498,8 @@ double SphericalCoordinateAssistant::GetRResolution() const { return m_dPrecisio
 
 double SphericalCoordinateAssistant::GetPhiResolution() const { return 360/m_dScaleRes; }
 
-void SphericalCoordinateAssistant::OnSetFollowerCamera(vtkCamera* pCamera) {
+void SphericalCoordinateAssistant::OnSetFollowerCamera(vtkCamera* pCamera)
+{
 	DAFFVIZ_LOCK_VTK;
 	for (int i=0; i < (int)m_pCircles.size(); i++) {
 		m_pCircles[i]->SetCamera(pCamera);
@@ -519,4 +520,4 @@ void SphericalCoordinateAssistant::UpdateReference() {
 	m_pReferenceActor->GetProperty()->SetOpacity(m_dReferenceOpacity);
 }
 
-} // End of namespace "FXVTK2"
+} // End of namespace "DAFFViz"

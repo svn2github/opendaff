@@ -10,8 +10,8 @@
 *
 */
 
-#ifndef __FXVTK2_CARPETPLOT_H__
-#define __FXVTK2_CARPETPLOT_H__
+#ifndef IW_DAFF_CARPETPLOT
+#define IW_DAFF_CARPETPLOT
 
 #include <daffviz/DAFFVizSGNode.h>
 
@@ -24,125 +24,126 @@ class vtkVectorText;
 
 class DAFFContentIR;
 
-namespace DAFFViz {
+namespace DAFFViz
+{
 
-//! Simple directivity object node
-/**
- * This class derived from the scene graph node class creates a directivity.
- */
+	//! Simple directivity object node
+	/**
+	 * This class derived from the scene graph node class creates a directivity.
+	 */
 
-class CarpetPlot : public DAFFViz::SGNode {
-public:
-	enum {
-		SCALING_LINEAR=0,
-		SCALING_DECIBEL
-	};
-	enum {
-		BETA_FIXED=0,
-		ALPHA_FIXED
-	};
-	enum {
-		MODE_SURFACE=0,
-		MODE_WIREFRAME,
-		MODE_POINT
-	};
+	class DAFF_API CarpetPlot : public DAFFViz::SGNode {
+	public:
+		enum {
+			SCALING_LINEAR=0,
+			SCALING_DECIBEL
+		};
+		enum {
+			BETA_FIXED=0,
+			ALPHA_FIXED
+		};
+		enum {
+			MODE_SURFACE=0,
+			MODE_WIREFRAME,
+			MODE_POINT
+		};
 
 
-	CarpetPlot(const DAFFContentIR* pContentIR);
-	virtual ~CarpetPlot();
+		CarpetPlot(const DAFFContentIR* pContentIR);
+		virtual ~CarpetPlot();
 
-	// --= Object related methods =--
+		// --= Object related methods =--
 
-	//! Returns the currently selected angle in degree (interval [-90° 90°])
-	float GetSelectedAngle() const;
+		//! Returns the currently selected angle in degree (interval [-90° 90°])
+		float GetSelectedAngle() const;
 
-	//! Sets the currently selected angle in degree
-	void SetSelectedAngle(float fAngle);
+		//! Sets the currently selected angle in degree
+		void SetSelectedAngle(float fAngle);
 
-	//! Get scaling (SCALING_LINEAR | SCALING_DECIBEL)
-	int GetScaling() const;
+		//! Get scaling (SCALING_LINEAR | SCALING_DECIBEL)
+		int GetScaling() const;
 
-	//! Set scaling (SCALING_LINEAR | SCALING_DECIBEL)
-	void SetScaling(int iScaling);
+		//! Set scaling (SCALING_LINEAR | SCALING_DECIBEL)
+		void SetScaling(int iScaling);
 
-	//! Set fixed angle (ALPHA_FIXED | BETA_FIXED)
-	void SetFixedAngle(int iFixedAngle);
+		//! Set fixed angle (ALPHA_FIXED | BETA_FIXED)
+		void SetFixedAngle(int iFixedAngle);
 
-	//! Get fixed angle (ALPHA_FIXED | BETA_FIXED)
-	int getFixedAngle();
+		//! Get fixed angle (ALPHA_FIXED | BETA_FIXED)
+		int getFixedAngle();
 
-	//! Set whether scalars should be used to color the model
-	void SetScalarVisibility(bool bVisible);
+		//! Set whether scalars should be used to color the model
+		void SetScalarVisibility(bool bVisible);
 
-	//! Get whether scalars should be used to color the model
-	int getScalarVisibility();
+		//! Get whether scalars should be used to color the model
+		int getScalarVisibility();
 
-	//! Set display mode (MODE_SURFACE | MODE_WIREFRAME | MODE_POINT)
-	void SetDisplayMode(int iMode);
+		//! Set display mode (MODE_SURFACE | MODE_WIREFRAME | MODE_POINT)
+		void SetDisplayMode(int iMode);
 
-	//! Set minimum of data range (in dB or absolute values depending on currently used scaling)
-	double GetRangeMin() const;
+		//! Set minimum of data range (in dB or absolute values depending on currently used scaling)
+		double GetRangeMin() const;
 	
-	//! Set minimum of data range (in dB or absolute values depending on currently used scaling)
-	double GetRangeMax() const;
+		//! Set minimum of data range (in dB or absolute values depending on currently used scaling)
+		double GetRangeMax() const;
 
-	//! Set data range (in dB or absolute values depending on currently used scaling)
-	void SetRange(double dMin, double dMax);
+		//! Set data range (in dB or absolute values depending on currently used scaling)
+		void SetRange(double dMin, double dMax);
 
-	//! Set active channel
-	void SetChannel(int iChannel);
+		//! Set active channel
+		void SetChannel(int iChannel);
 
-	//! get active channel
-	int GetChannel();
+		//! get active channel
+		int GetChannel();
 
-	//! Enable/Disable warping (WARP_DISABLE | WARP_ENABLE)
-	// \note default: enabled
-	void EnableWarp();
-	void DisableWarp();
+		//! Enable/Disable warping (WARP_DISABLE | WARP_ENABLE)
+		// \note default: enabled
+		void EnableWarp();
+		void DisableWarp();
 	
-	//! Set probe angles
-	void SetProbeAngles(const double dAlpha, const double dBeta);
+		//! Set probe angles
+		void SetProbeAngles(const double dAlpha, const double dBeta);
 
-	//! Enables/disables probe
-	void SetProbeVisible(const bool bVisible);
+		//! Enables/disables probe
+		void SetProbeVisible(const bool bVisible);
 
-	//! Update probe nodes
-	void UpdateProbe();
+		//! Update probe nodes
+		void UpdateProbe();
 
-private:
+	private:
 
-	const DAFFContentIR* m_pContentIR;
-	vtkWarpScalar* m_pWarp;
-	vtkPolyDataMapper* m_pMapper;
-	vtkActor* m_pPlotActor;
-	vtkPolyData* m_pPlotPolydata;
-	float m_fAngle;
-	int m_iScaling;
-	int m_iFixedAngle;
-	float m_dMin, m_dMax; // linear factors!
-	int m_iChannel;
-	bool m_bWarp;
-	vtkActor* m_pProbe;
-	vtkVectorText *m_pProbeLabel;
-	vtkActor* m_pLabel;
-	float m_dProbeX, m_dProbeY;
+		const DAFFContentIR* m_pContentIR;
+		vtkWarpScalar* m_pWarp;
+		vtkPolyDataMapper* m_pMapper;
+		vtkActor* m_pPlotActor;
+		vtkPolyData* m_pPlotPolydata;
+		float m_fAngle;
+		int m_iScaling;
+		int m_iFixedAngle;
+		float m_dMin, m_dMax; // linear factors!
+		int m_iChannel;
+		bool m_bWarp;
+		vtkActor* m_pProbe;
+		vtkVectorText *m_pProbeLabel;
+		vtkActor* m_pLabel;
+		float m_dProbeX, m_dProbeY;
 
-	// The initializer generates dynamic objects like source, mapper, actor ...
-	void init();
+		// The initializer generates dynamic objects like source, mapper, actor ...
+		void init();
 
-	// Update scalars (e.g. when selected angle changed)
-	void SetScalars();
+		// Update scalars (e.g. when selected angle changed)
+		void SetScalars();
 
-	// Convert a linear value into decibel
-	double factor2decibel(double x) const;
+		// Convert a linear value into decibel
+		double factor2decibel(double x) const;
 	
-	// Convert decibel to linear value
-	double decibel2factor(double x) const;
+		// Convert decibel to linear value
+		double decibel2factor(double x) const;
 
-	// moves the whole plot to fit to the coordinate axes
-	void updatePlotOffset();
-};
+		// moves the whole plot to fit to the coordinate axes
+		void updatePlotOffset();
+	};
 
-} // End of namespace "FXVTK2"
+} // End of namespace "DAFFViz"
 
-#endif //  __FXVTK2_CARPETPLOT_H__
+#endif //  IW_DAFF_CARPETPLOT

@@ -10,9 +10,10 @@
 *
 */
 
-#ifndef __FXVTK2_ARROW_H__
-#define __FXVTK2_ARROW_H__
+#ifndef IW_DAFF_ARROW
+#define IW_DAFF_ARROW
 
+#include <DAFFDefs.h>
 #include <daffviz/DAFFVizSGNode.h>
 
 // Forward declarations
@@ -27,7 +28,7 @@ namespace DAFFViz {
  * This class derived from the scene graph node class creates an arrow from VTK.
  */
 
-class Arrow : public DAFFViz::SGNode {
+class DAFF_API Arrow : public DAFFViz::SGNode {
 public:
 	Arrow();
 	Arrow(double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution);
@@ -96,6 +97,6 @@ private:
 	void init();
 };
 
-} // End of namespace "FXVTK2"
+} // End of namespace "DAFFViz"
 
-#endif //  __FXVTK2_ARROW_H__
+#endif //  IW_DAFF_ARROW

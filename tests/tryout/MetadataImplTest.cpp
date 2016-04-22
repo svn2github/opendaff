@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <iostream>
 #include <DAFFMetadataImpl.h>
-#include <DAFFMetadataImpl.cpp>
+//#include <DAFFMetadataImpl.cpp>
 
 using namespace std;
 
@@ -16,7 +16,7 @@ int main() {
 	DAFFMetadataImpl* md = new DAFFMetadataImpl;
 
 	DAFFMetadataKey* sKey;
-	md->insertKey("Robot", new DAFFMetadataKeyString( "I am one." ));
+	//md->insertKey("Robot", new DAFFMetadataKeyString( "I am one." ));
 
 	cout << md->toString() << endl;
 

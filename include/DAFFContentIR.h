@@ -1,40 +1,17 @@
 /*
- *  OpenDAFF - A free, open-source software package for directional audio data,
- *  OpenDAFF is distributed under the terms of the GNU Lesser Public License (LGPL)
- *
- *  Copyright (C) Institute of Technical Acoustics, RWTH Aachen University, 2009-2010
- *
- *  Visit the OpenDAFF homepage: http://www.opendaff.org
- *
- *
- *  --= License & warranty =--
- *
- *  OpenDAFF is free software, distributed under the terms of the
- *  GNU Lesser General Public License (LGPL) version 3.
- *  You can redistribute it and/or modify it under the terms of the
- *  GNU Lesser General Public License (LGPL) version 3,
- *  as published by the Free Software Foundation.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *  See the GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- *
- *  --= File information =--
- *
- *  File:		DAFFContentIR.h
- *  Purpose:	Impulse response content interface definition
- *  Version:    $Id: DAFFContentIR.h,v 1.8 2010/03/11 12:49:27 fwefers Exp $
- *	Authors:	Frank Wefers (Frank.Wefers@akustik.rwth-aachen.de)
- *
- */
+* -------------------------------------------------------------------------------------
+*
+*  OpenDAFF - A free, open source software package for directional audio data
+*  OpenDAFF is distributed under the terms of the GNU Lesser Public License (LGPL)
+*
+*  Copyright (c) Institute of Technical Acoustics, RWTH Aachen University, 2009-2016
+*
+*  ------------------------------------------------------------------------------------
+*
+*/
 
-#ifndef __DAFFCONTENTIR_H__
-#define __DAFFCONTENTIR_H__
+#ifndef IW_DAFF_CONTENTIR
+#define IW_DAFF_CONTENTIR
 
 #include <DAFFDefs.h>
 #include <DAFFContent.h>
@@ -192,4 +169,4 @@ public:
 	virtual float getOverallPeak()=0;
 };
 
-#endif // __DAFFCONTENTIR_H__
+#endif // IW_DAFF_CONTENTIR

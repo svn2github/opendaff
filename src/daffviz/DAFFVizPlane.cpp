@@ -94,4 +94,4 @@ void Plane::SetVisible(bool bVisible) {
 	DAFFVIZ_UNLOCK_VTK;
 }
 
-} // End of namespace "FXVTK2"
+} // End of namespace "DAFFViz"

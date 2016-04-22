@@ -9,7 +9,7 @@ set( CMAKE_DEBUG_POSTFIX "D" )
 find_package( doxygen )
 find_package( FFTW )
 find_package( SndFile )
-find_package( VTK )
+find_package( VTK QUIET )
 
 if( NOT DEFINED OPENDAFF_BUILD_DAFFLIBS_SHARED )
 	set( OPENDAFF_BUILD_DAFFLIBS_SHARED OFF CACHE BOOL "Build OpenDAFF as a shared library" )
@@ -48,7 +48,9 @@ if( SNDFILE_FOUND )
 endif( SNDFILE_FOUND )
 
 if( VTK_FOUND )
-	include_directories( "${VTK_INCLUDE_DIR}" )
+	include( "${VTK_USE_FILE}" )
+else( VTK_FOUND )
+	message( STATUS "VTK not found, which is required for DAFFViz library" )
 endif( VTK_FOUND )
 
 include_directories( "include" )
@@ -86,7 +88,7 @@ set( OPENDAFF_DAFFLIB_SOURCE_FILES
 if( FFTW_FOUND )
 	list( APPEND OPENDAFF_DAFFLIB_HEADER_FILES "include/DAFFTransformerIR2DFT.h" )
 	list( APPEND OPENDAFF_DAFFLIB_SOURCE_FILES "src/DAFFTransformerIR2DFT.cpp" )
-	add_definitions( -DOPENDAFF_WITH_FFWT )
+	add_definitions( -DOPENDAFF_WITH_FFTW )
 endif( FFTW_FOUND )
 
 set( OPENDAFF_DAFFLIB_FILES ${OPENDAFF_DAFFLIB_HEADER_FILES} ${OPENDAFF_DAFFLIB_SOURCE_FILES} )
@@ -95,8 +97,15 @@ if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 	if( WIN32 )
 		list( APPEND OPENDAFF_DAFFLIB_FILES "src/platforms/windows/DAFFDLLMain" )
 	endif( WIN32 )
+
+	if( MSVC )
+		# Deactivate warning C4251 on inconsistent DLL bindings of string and vector
+		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4251" )
+	endif( MSVC )
+
 	add_definitions( -DDAFF_DLL -DDAFF_DLL_EXPORTS )
 	add_library( DAFF SHARED "${OPENDAFF_DAFFLIB_FILES}" )
+	set_property( TARGET DAFF PROPERTY FOLDER "DAFFLibs" )
 	message( "Building shared OpenDAFF library" )
 
 	if( FFTW_FOUND )
@@ -106,8 +115,9 @@ if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 	endif( FFTW_FOUND )
 
 else( OPENDAFF_BUILD_DAFFLIBS_SHARED )
-	add_library( DAFF "${OPENDAFF_DAFFLIB_FILES}" )
+	add_library( DAFF STATIC "${OPENDAFF_DAFFLIB_FILES}" )
 	message( "Building static OpenDAFF library" )
+	set_property( TARGET DAFF PROPERTY FOLDER "DAFFLibs" )
 endif( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 
 
@@ -132,6 +142,7 @@ set( OPENDAFF_DAFFVIZ_HEADER_FILES
 )
 
 set( OPENDAFF_DAFFVIZ_SOURCE_FILES
+	"src/daffviz/DAFFVizArrow.cpp"
 	"src/daffviz/DAFFVizBalloonPlot.cpp"
 	"src/daffviz/DAFFVizCarpetPlot.cpp"
 	"src/daffviz/DAFFVizCarpetPlot.cpp"
@@ -150,13 +161,15 @@ set( DAFFVIZLIB_FILES ${OPENDAFF_DAFFVIZ_HEADER_FILES} ${OPENDAFF_DAFFVIZ_SOURCE
 	
 if( OPENDAFF_WITH_DAFFVIZ )
 
-	#source_group( "" FILES ${DAFFVIZLIB_FILES})
-
 	if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 		add_definitions( -DDAFF_DLL -DDAFF_DLL_EXPORTS )
+		link_directories( "${VTK_LIBRARY_DIRS}")
 		add_library( DAFFViz SHARED "${DAFFVIZLIB_FILES}" )
+		target_link_libraries( DAFFViz ${VTK_LIBRARIES} )
+		set_property( TARGET DAFFViz PROPERTY FOLDER "DAFFLibs" )
 	else( OPENDAFF_BUILD_DAFFLIBS_SHARED )
-		add_library( DAFFViz "${DAFFVIZLIB_FILES}" )
+		add_library( DAFFViz STATIC "${DAFFVIZLIB_FILES}" )
+		set_property( TARGET DAFFViz PROPERTY FOLDER "DAFFLibs" )
 	endif( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 
 	install( FILES ${OPENDAFF_DAFFVIZ_HEADER_FILES} DESTINATION "include/daffviz" )
@@ -165,6 +178,7 @@ if( OPENDAFF_WITH_DAFFVIZ )
 		RUNTIME DESTINATION "bin"
 		LIBRARY DESTINATION "lib"
 	)
+	
 	
 endif( OPENDAFF_WITH_DAFFVIZ )
 

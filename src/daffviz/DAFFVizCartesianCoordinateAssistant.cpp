@@ -500,4 +500,4 @@ double CartesianCoordinateAssistant::GetResolutionZ() const { return m_dResoluti
 
 double CartesianCoordinateAssistant::GetOffsetY() const { return m_dOffsetY; }
 
-} // End of namespace "FXVTK2"
+} // End of namespace "DAFFViz"

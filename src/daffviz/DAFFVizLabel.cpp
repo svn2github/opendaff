@@ -112,4 +112,4 @@ void Label::OnSetFollowerCamera(vtkCamera* pCamera) {
 	SGNode::OnSetFollowerCamera(pCamera);
 }
 
-} // End of namespace "FXVTK2"
+} // End of namespace "DAFFViz"

@@ -12,111 +12,112 @@
 #include <vtkPolygon.h>
 #include <vtkUnstructuredGrid.h>
 
-namespace DAFFViz {
-
-Grid::Grid(unsigned int iCellsX, unsigned int iCellsZ)
-: SGNode(), m_iCellsX(iCellsX), m_iCellsZ(iCellsZ)
+namespace DAFFViz
 {
-	if (m_iCellsX == 0)
-		m_iCellsX = 10;
 
-	if (m_iCellsZ == 0)
-		m_iCellsZ = 10;
+	Grid::Grid(unsigned int iCellsX, unsigned int iCellsZ)
+	: SGNode(), m_iCellsX(iCellsX), m_iCellsZ(iCellsZ)
+	{
+		if (m_iCellsX == 0)
+			m_iCellsX = 10;
 
-	init();
-}
+		if (m_iCellsZ == 0)
+			m_iCellsZ = 10;
 
-Grid::Grid(DAFFViz::SGNode* pParentNode, unsigned int iCellsX, unsigned int iCellsZ)
-: SGNode(pParentNode), m_iCellsX(iCellsX), m_iCellsZ(iCellsZ)
-{
-	if (m_iCellsX == 0)
-		m_iCellsX = 10;
-
-	if (m_iCellsZ == 0)
-		m_iCellsZ = 10;
-
-	init();
-}
-
-Grid::~Grid() {
-	RemoveActor(m_pActorGrid);
-
-	m_pActorGrid->GlobalWarningDisplayOff();
-	m_pActorGrid->Delete();
-}
-
-void Grid::init() {
-	// Points
-	vtkPoints* pGridPoints = vtkPoints::New();
-
-	// Grids
-	vtkUnstructuredGrid* pGrid = vtkUnstructuredGrid::New();
-
-	pGrid->SetPoints(pGridPoints);
-	pGrid->Allocate(m_iCellsX + m_iCellsZ + 2, 1);
-	
-	// Helper
-	vtkLine* pLine = vtkLine::New(); 
-
-	// Create grid
-	int k = 0;
-	int subk = 0;
-
-	// X direction lines
-	for (int i=0; i<=m_iCellsX; i++) {
-		pGridPoints->InsertPoint(k++, i/(double) m_iCellsX, 0, 0);
-		pGridPoints->InsertPoint(k++, i/(double) m_iCellsX, 0, 1);
-		pLine->GetPointIds()->SetId(0, k-2);
-		pLine->GetPointIds()->SetId(1, k-1);
-		pGrid->InsertNextCell(pLine->GetCellType(), pLine->GetPointIds());
+		init();
 	}
 
-	// Z direction lines
-	for (int i=0; i<=m_iCellsZ; i++) {
-		pGridPoints->InsertPoint(k++, 0, 0, i/(double) m_iCellsZ);
-		pGridPoints->InsertPoint(k++, 1, 0, i/(double) m_iCellsZ);
-		pLine->GetPointIds()->SetId(0, k-2);
-		pLine->GetPointIds()->SetId(1, k-1);
-		pGrid->InsertNextCell(pLine->GetCellType(), pLine->GetPointIds());
+	Grid::Grid(DAFFViz::SGNode* pParentNode, unsigned int iCellsX, unsigned int iCellsZ)
+	: SGNode(pParentNode), m_iCellsX(iCellsX), m_iCellsZ(iCellsZ)
+	{
+		if (m_iCellsX == 0)
+			m_iCellsX = 10;
+
+		if (m_iCellsZ == 0)
+			m_iCellsZ = 10;
+
+		init();
 	}
 
-	pLine->Delete();
+	Grid::~Grid() {
+		RemoveActor(m_pActorGrid);
+
+		m_pActorGrid->GlobalWarningDisplayOff();
+		m_pActorGrid->Delete();
+	}
+
+	void Grid::init() {
+		// Points
+		vtkPoints* pGridPoints = vtkPoints::New();
+
+		// Grids
+		vtkUnstructuredGrid* pGrid = vtkUnstructuredGrid::New();
+
+		pGrid->SetPoints(pGridPoints);
+		pGrid->Allocate(m_iCellsX + m_iCellsZ + 2, 1);
 	
-	// Grid actor
-	vtkDataSetMapper* pGridMapper = vtkDataSetMapper::New();
-	pGridMapper->SetInputData( pGrid );
+		// Helper
+		vtkLine* pLine = vtkLine::New(); 
 
-	m_pActorGrid = vtkActor::New();
-	m_pActorGrid->SetMapper(pGridMapper);
+		// Create grid
+		int k = 0;
+		int subk = 0;
 
-	DAFFVIZ_LOCK_VTK;
-	m_pActorGrid->GetProperty()->SetAmbient(1);
-	m_pActorGrid->GetProperty()->SetDiffuse(0);
-	m_pActorGrid->GetProperty()->SetSpecular(0);
-	double dGridColor = 0.4;
-	m_pActorGrid->GetProperty()->SetColor(dGridColor, dGridColor, dGridColor);
-	m_pActorGrid->GetProperty()->SetOpacity(0.8);
-	DAFFVIZ_UNLOCK_VTK;
+		// X direction lines
+		for (int i=0; i<=m_iCellsX; i++) {
+			pGridPoints->InsertPoint(k++, i/(double) m_iCellsX, 0, 0);
+			pGridPoints->InsertPoint(k++, i/(double) m_iCellsX, 0, 1);
+			pLine->GetPointIds()->SetId(0, k-2);
+			pLine->GetPointIds()->SetId(1, k-1);
+			pGrid->InsertNextCell(pLine->GetCellType(), pLine->GetPointIds());
+		}
 
-	AddActor(m_pActorGrid);
+		// Z direction lines
+		for (int i=0; i<=m_iCellsZ; i++) {
+			pGridPoints->InsertPoint(k++, 0, 0, i/(double) m_iCellsZ);
+			pGridPoints->InsertPoint(k++, 1, 0, i/(double) m_iCellsZ);
+			pLine->GetPointIds()->SetId(0, k-2);
+			pLine->GetPointIds()->SetId(1, k-1);
+			pGrid->InsertNextCell(pLine->GetCellType(), pLine->GetPointIds());
+		}
+
+		pLine->Delete();
 	
-	// Cleanup
-	pGridMapper->Delete();
-	pGrid->Delete();
-	pGridPoints->Delete();
+		// Grid actor
+		vtkDataSetMapper* pGridMapper = vtkDataSetMapper::New();
+		pGridMapper->SetInputData( pGrid );
 
-}
+		m_pActorGrid = vtkActor::New();
+		m_pActorGrid->SetMapper(pGridMapper);
 
-bool Grid::IsVisible() const {
-	return m_pActorGrid->GetVisibility() ? true : false;
-}
+		DAFFVIZ_LOCK_VTK;
+		m_pActorGrid->GetProperty()->SetAmbient(1);
+		m_pActorGrid->GetProperty()->SetDiffuse(0);
+		m_pActorGrid->GetProperty()->SetSpecular(0);
+		double dGridColor = 0.4;
+		m_pActorGrid->GetProperty()->SetColor(dGridColor, dGridColor, dGridColor);
+		m_pActorGrid->GetProperty()->SetOpacity(0.8);
+		DAFFVIZ_UNLOCK_VTK;
 
-void Grid::SetVisible(bool bVisible) {
-	SGNode::SetVisible(bVisible);
+		AddActor(m_pActorGrid);
+	
+		// Cleanup
+		pGridMapper->Delete();
+		pGrid->Delete();
+		pGridPoints->Delete();
 
-	DAFFVIZ_LOCK_VTK;
-	bVisible ? m_pActorGrid->VisibilityOn() : m_pActorGrid->VisibilityOff();
-	DAFFVIZ_UNLOCK_VTK;
-}
+	}
 
-} // End of namespace "FXVTK2"
+	bool Grid::IsVisible() const {
+		return m_pActorGrid->GetVisibility() ? true : false;
+	}
+
+	void Grid::SetVisible(bool bVisible) {
+		SGNode::SetVisible(bVisible);
+
+		DAFFVIZ_LOCK_VTK;
+		bVisible ? m_pActorGrid->VisibilityOn() : m_pActorGrid->VisibilityOff();
+		DAFFVIZ_UNLOCK_VTK;
+	}
+
+} // End of namespace "DAFFViz"

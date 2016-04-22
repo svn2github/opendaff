@@ -2,29 +2,30 @@
 
 #include <mutex>
 
-namespace DAFFViz {
-
-class GlobalLockImpl : public GlobalLock
+namespace DAFFViz
 {
-public:
-	inline void lock() 
-	{ 
-		m_mutex.lock();
+
+	class GlobalLockImpl : public GlobalLock
+	{
+	public:
+		inline void lock() 
+		{ 
+			m_mutex.lock();
+		};
+
+		inline void unlock()
+		{ 
+			m_mutex.unlock();
+		};
+
+	private:
+		std::mutex m_mutex;
 	};
 
-	inline void unlock()
+	GlobalLockImpl g_oGlobalLock;
+
+	GlobalLock* GlobalLock::getInstance()
 	{ 
-		m_mutex.unlock();
+		return &g_oGlobalLock;
 	};
-
-private:
-	std::mutex m_mutex;
-};
-
-GlobalLockImpl g_oGlobalLock;
-
-GlobalLock* GlobalLock::getInstance() { return &g_oGlobalLock; }
-
-GlobalLock::~GlobalLock() {}
-
-} // End of namespace "FXVTK2"
+} // End of namespace "DAFFViz"

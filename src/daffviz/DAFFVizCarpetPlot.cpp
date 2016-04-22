@@ -458,4 +458,4 @@ int CarpetPlot::GetChannel() {
 	return m_iChannel;
 }
 
-} // End of namespace "FXVTK2"
+} // End of namespace "DAFFViz"

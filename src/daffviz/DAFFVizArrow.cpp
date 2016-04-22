@@ -1,5 +1,5 @@
-#include <FXVTK2Arrow.h>
-#include <FXVTK2GlobalLock.h>
+#include <daffviz/DAFFVizArrow.h>
+#include <daffviz/DAFFVizGlobalLock.h>
 
 #include <vtkActor.h>
 #include <vtkArrowSource.h>
@@ -7,7 +7,7 @@
 #include <vtkPolyDataNormals.h>
 #include <vtkProperty.h>
 
-namespace FXVTK2 {
+namespace DAFFViz {
 
 Arrow::Arrow()
 : SGNode(), m_pSource(NULL), m_pMapper(NULL), m_pActor(NULL)
@@ -26,7 +26,7 @@ Arrow::Arrow(double dTipLength, double dTipRadius, int iTipResolution, double dS
 	m_pSource->SetShaftResolution(iShaftResolution);
 }
 
-Arrow::Arrow(FXVTK2::SGNode* pParentNode, double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution)
+Arrow::Arrow(DAFFViz::SGNode* pParentNode, double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution)
 : SGNode(pParentNode), m_pSource(NULL), m_pMapper(NULL), m_pActor(NULL)
 {
 	init();
@@ -54,7 +54,7 @@ void Arrow::init() {
 	normals->SetInputConnection(m_pSource->GetOutputPort());
 	
 	m_pMapper = vtkPolyDataMapper::New();
-	m_pMapper->SetInput(normals->GetOutput());
+	m_pMapper->SetInputData(normals->GetOutput());
 
 	m_pActor = vtkActor::New();
 	m_pActor->SetMapper(m_pMapper);
@@ -113,9 +113,9 @@ void Arrow::SetShaftResolution(int iResolution) {
 // --= general methods =--
 
 void Arrow::SetColor(const double r, const double g, const double b) {
-	FXVTK2_LOCK_VTK;
+	DAFFVIZ_LOCK_VTK;
 	m_pActor->GetProperty()->SetColor(r, g, b);
-	FXVTK2_UNLOCK_VTK;
+	DAFFVIZ_UNLOCK_VTK;
 }
 
 void Arrow::GetColor(double& r, double& g, double& b) {
@@ -127,25 +127,25 @@ double Arrow::GetAlpha() const {
 }
 
 void Arrow::SetAlpha(const double a) {
-	FXVTK2_LOCK_VTK;
+	DAFFVIZ_LOCK_VTK;
 	m_pActor->GetProperty()->SetOpacity(a);
-	FXVTK2_UNLOCK_VTK;
+	DAFFVIZ_UNLOCK_VTK;
 }
 
 void Arrow::SetVisible(bool bVisible) {
 	// keep visibility traversal
 	SGNode::SetVisible(bVisible);
 	
-	FXVTK2_LOCK_VTK;
+	DAFFVIZ_LOCK_VTK;
 	if (bVisible)
 		m_pActor->VisibilityOn();
 	else
 		m_pActor->VisibilityOff();
-	FXVTK2_UNLOCK_VTK;
+	DAFFVIZ_UNLOCK_VTK;
 }
 
 bool Arrow::IsVisible() const {
 	return m_pActor->GetVisibility() > 0 ? true : false;
 }
 
-} // End of namespace "FXVTK2"
+} // End of namespace "DAFFViz"
