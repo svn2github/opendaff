@@ -18,6 +18,12 @@
 #include <cstdlib>
 #include <sstream>
 
+// Disable MSVC security warning for unsafe fopen
+#ifdef _MSC_VER
+#pragma warning(disable: 4996)
+#endif // _MSC_VER
+
+
 DAFFReaderImpl::DAFFReaderImpl()
 : m_bFileOpened(false),
   m_file(NULL),
@@ -49,7 +55,7 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 	 *  1st step: Load the file header and validate it for correctness
 	 */
 
-	fopen_s( &m_file, sFilename.c_str(), "rb");
+	m_file = fopen( sFilename.c_str(), "rb" );
 	if (!m_file) return DAFF_FILE_NOT_FOUND;
 
 	if (fread(&m_fileHeader, 1, DAFF_FILE_HEADER_SIZE, m_file) != DAFF_FILE_HEADER_SIZE) {

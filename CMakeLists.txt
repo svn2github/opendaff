@@ -161,6 +161,9 @@ set( DAFFVIZLIB_FILES ${OPENDAFF_DAFFVIZ_HEADER_FILES} ${OPENDAFF_DAFFVIZ_SOURCE
 	
 if( OPENDAFF_WITH_DAFFVIZ )
 
+	# DAFFViz uses C++11 mutex
+	add_definitions( -std=c++11 )
+
 	if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 		add_definitions( -DDAFF_DLL -DDAFF_DLL_EXPORTS )
 		link_directories( "${VTK_LIBRARY_DIRS}")
