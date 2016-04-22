@@ -1,5 +1,7 @@
 cmake_minimum_required( VERSION 2.9 )
 
+# inspired by https://cmake.org/Wiki/VTK/Examples/Cxx/Qt/RenderWindowUISingleInheritance
+
 set( CMAKE_AUTOMOC ON )
 
 find_package( VTK )

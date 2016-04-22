@@ -1,4 +1,5 @@
-add_subdirectory( "daffviz" )
+add_subdirectory( "vtktest" )
 add_subdirectory( "qttest" )
 add_subdirectory( "tryout" )
 add_subdirectory( "verification" )
+add_subdirectory( "qtvtktest" )
