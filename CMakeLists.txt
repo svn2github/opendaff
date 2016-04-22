@@ -6,7 +6,7 @@ list( APPEND CMAKE_MODULE_PATH "${OPENDAFF_THIRD_PARTY_DIR}/CMakeModules" )
 project( OpenDAFF )
 set( CMAKE_DEBUG_POSTFIX "D" )
 
-find_package( doxygen )
+find_package( doxygen QUIET )
 find_package( FFTW )
 find_package( SndFile )
 find_package( VTK QUIET )
@@ -162,8 +162,10 @@ set( DAFFVIZLIB_FILES ${OPENDAFF_DAFFVIZ_HEADER_FILES} ${OPENDAFF_DAFFVIZ_SOURCE
 if( OPENDAFF_WITH_DAFFVIZ )
 
 	# DAFFViz uses C++11 mutex
-	add_definitions( -std=c++11 )
-
+	if( CMAKE_COMPILER_IS_GNUCXX )
+		add_definitions(-std=gnu++0x)
+	endif()
+	
 	if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 		add_definitions( -DDAFF_DLL -DDAFF_DLL_EXPORTS )
 		link_directories( "${VTK_LIBRARY_DIRS}")

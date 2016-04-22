@@ -10,18 +10,19 @@
 *
 */
 
-#include <iostream>
-#include "../../src/Utils.h"
+#include "DAFFVizQtTestWindow.h"
+#include <QApplication>
 
-using namespace std;
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    a.setOrganizationName( "Institute of Technical Acoustics" );
+    a.setOrganizationDomain( "akustik.rwth-aachen.de" );
+    a.setApplicationName( "DAFFVizQtTest" );
+    a.setApplicationDisplayName( "OpenDAFF" );
 
-int main() {
-	// The number 1 as 32-bit in in little endian (LSB first)
-	char c[4] = {1, 0, 0, 0};
-	int& i = *(int*) c;
-	cout << "i before conversion = " << i << endl;
-	DAFF::le2se_4byte(&i, 1);
-	cout << "i after conversion = " << i << endl;
+    DAFFVizQtWindow w;
+    w.show();
 
-	return 0;
+    return a.exec();
 }

@@ -1,12 +1,19 @@
 /*
- *  A small tryout test for the metadata implementation class
- *  Autor: Frank.Wefers@akustik.rwth-aachen.de
- */
+* -------------------------------------------------------------------------------------
+*
+*  OpenDAFF - A free, open source software package for directional audio data
+*  OpenDAFF is distributed under the terms of the GNU Lesser Public License (LGPL)
+*
+*  Copyright (c) Institute of Technical Acoustics, RWTH Aachen University, 2009-2016
+*
+*  ------------------------------------------------------------------------------------
+*
+*/
 
 #include <algorithm>
 #include <iostream>
-#include <DAFFMetadataImpl.h>
-//#include <DAFFMetadataImpl.cpp>
+#include "../../src/DAFFMetadataImpl.h"
+#include "../../src/DAFFMetadataImpl.h"
 
 using namespace std;
 
@@ -15,7 +22,7 @@ void PrintKey(const std::string& s) { cout << "Key: " << s << endl; }
 int main() {
 	DAFFMetadataImpl* md = new DAFFMetadataImpl;
 
-	DAFFMetadataKey* sKey;
+	//DAFFMetadataKey* sKey;
 	//md->insertKey("Robot", new DAFFMetadataKeyString( "I am one." ));
 
 	cout << md->toString() << endl;

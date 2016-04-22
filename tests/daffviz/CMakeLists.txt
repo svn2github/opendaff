@@ -5,7 +5,8 @@ find_package( VTK REQUIRED )
 include( "${VTK_USE_FILE}" )
 
 add_executable( DAFFVizTest main.cpp VTKDAFFVizWindow.h VTKDAFFVizWindow.cpp )
-target_link_libraries( DAFFVizTest DAFFViz DAFF )
+target_link_libraries( DAFFVizTest DAFFViz DAFF ${VTK_LIBRARIES} )
+
 install( TARGETS DAFFVizTest RUNTIME DESTINATION "bin" )
 
 set_property( TARGET DAFFVizTest PROPERTY FOLDER "DAFFTests" )
