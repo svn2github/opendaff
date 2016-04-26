@@ -1,22 +1,22 @@
 cmake_minimum_required( VERSION 2.9 )
 
-set( OPENDAFF_THIRD_PARTY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty" CACHE STRING "Directory where dependent 3rd party projects are located" )
-list( APPEND CMAKE_MODULE_PATH "${OPENDAFF_THIRD_PARTY_DIR}/CMakeModules" )
+list( APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
 
 project( OpenDAFF )
 set( CMAKE_DEBUG_POSTFIX "D" )
 
 find_package( doxygen QUIET )
-find_package( FFTW )
-find_package( SndFile )
+find_package( FFTW QUIET )
+find_package( SndFile QUIET )
 find_package( VTK QUIET )
+find_package( Matlab QUIET )
 
 if( NOT DEFINED OPENDAFF_BUILD_DAFFLIBS_SHARED )
 	set( OPENDAFF_BUILD_DAFFLIBS_SHARED OFF CACHE BOOL "Build OpenDAFF as a shared library" )
 endif(  NOT DEFINED OPENDAFF_BUILD_DAFFLIBS_SHARED )
 
 if( NOT DEFINED OPENDAFF_WITH_DAFFVIZ )
-	set( OPENDAFF_WITH_DAFFVIZ OFF CACHE BOOL "Build OpenDAFF visualization library (requires third party libraries)" )
+	set( OPENDAFF_WITH_DAFFVIZ ${VTK_FOUND} CACHE BOOL "Build OpenDAFF visualization library (requires third party libraries)" )
 endif(  NOT DEFINED OPENDAFF_WITH_DAFFVIZ )
 
 if( NOT DEFINED OPENDAFF_BUILD_DAFF_TOOL )
@@ -30,6 +30,10 @@ endif( NOT DEFINED OPENDAFF_BUILD_DAFF_VIEWER )
 if( NOT DEFINED OPENDAFF_BUILD_DAFF_TESTS )
 	set( OPENDAFF_BUILD_DAFF_TESTS OFF CACHE BOOL "Build OpenDAFF with tests" )
 endif( NOT DEFINED OPENDAFF_BUILD_DAFF_TESTS )
+
+if( NOT DEFINED OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
+	set( OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB OFF CACHE BOOL "Build OpenDAFF with Matlab binding (mex)" )
+endif( NOT DEFINED OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
 
 if( NOT DEFINED OPENDAFF_BUILD_DAFF_DOCUMENTATION )
 	set( OPENDAFF_BUILD_DAFF_DOCUMENTATION ${DOXYGEN_FOUND} CACHE BOOL "Build OpenDAFF with Doxygen documentation (requires third party libraries)" )
@@ -50,8 +54,11 @@ endif( SNDFILE_FOUND )
 if( VTK_FOUND )
 	include( "${VTK_USE_FILE}" )
 else( VTK_FOUND )
-	message( STATUS "VTK not found, which is required for DAFFViz library" )
+	message( STATUS "VTK not found, DAFFViz library is disabled" )
 endif( VTK_FOUND )
+
+
+# daff lib
 
 include_directories( "include" )
 
@@ -125,6 +132,22 @@ install( TARGETS DAFF RUNTIME DESTINATION "bin" LIBRARY DESTINATION "lib" ARCHIV
 install( FILES ${OPENDAFF_DAFFLIB_HEADER_FILES} DESTINATION "include" )
 
 
+# apps
+
+if( OPENDAFF_BUILD_DAFF_TOOL )
+	add_subdirectory( "apps/tool" )
+endif( OPENDAFF_BUILD_DAFF_TOOL )
+
+if( OPENDAFF_BUILD_DAFF_VIEWER )
+	if( NOT OPENDAFF_WITH_DAFFVIZ )
+		set( OPENDAFF_WITH_DAFFVIZ TRUE )
+	endif()
+	add_subdirectory( "apps/viewer" )
+endif( OPENDAFF_BUILD_DAFF_VIEWER )
+
+
+# daff viz lib
+
 set( OPENDAFF_DAFFVIZ_HEADER_FILES
 	"include/daffviz/DAFFViz.h"
 	"include/daffviz/DAFFVizArrow.h"
@@ -187,14 +210,15 @@ if( OPENDAFF_WITH_DAFFVIZ )
 	
 endif( OPENDAFF_WITH_DAFFVIZ )
 
-if( OPENDAFF_BUILD_DAFF_TOOL )
-	add_subdirectory( "utils/DAFFTool" )
-endif( OPENDAFF_BUILD_DAFF_TOOL )
 
-if( OPENDAFF_BUILD_DAFF_VIEWER AND OPENDAFF_WITH_DAFFVIZ )
-	add_subdirectory( "utils/DAFFViewer" )
-endif( OPENDAFF_BUILD_DAFF_VIEWER AND OPENDAFF_WITH_DAFFVIZ )
+# tests
 
 if( OPENDAFF_BUILD_DAFF_TESTS )
 	add_subdirectory( "tests" )
 endif( OPENDAFF_BUILD_DAFF_TESTS )
+
+
+# bindings
+if( OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
+	add_subdirectory( "bindings/matlab" )
+endif( OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
