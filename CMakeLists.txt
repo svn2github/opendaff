@@ -184,9 +184,13 @@ set( DAFFVIZLIB_FILES ${OPENDAFF_DAFFVIZ_HEADER_FILES} ${OPENDAFF_DAFFVIZ_SOURCE
 	
 if( OPENDAFF_WITH_DAFFVIZ )
 
+	if( NOT VTK_FOUND )
+		message( FATAL_ERROR "DAFFViz requires VTK, which could not be found." )
+	endif( NOT VTK_FOUND )
+
 	# DAFFViz uses C++11 mutex
 	if( CMAKE_COMPILER_IS_GNUCXX )
-		add_definitions(-std=gnu++0x)
+		add_definitions( -std=gnu++0x )
 	endif()
 	
 	if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
@@ -222,3 +226,9 @@ endif( OPENDAFF_BUILD_DAFF_TESTS )
 if( OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
 	add_subdirectory( "bindings/matlab" )
 endif( OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
+
+
+# doc
+if( OPENDAFF_BUILD_DAFF_DOCUMENTATION )
+	add_subdirectory( "doc" )
+endif( OPENDAFF_BUILD_DAFF_DOCUMENTATION )

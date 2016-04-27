@@ -1,5 +1,5 @@
-﻿#ifndef IW_DAFFVIZQTTESTWINDOW_H
-#define IW_DAFFVIZQTTESTWINDOW_H
+﻿#ifndef IW_DAFFVIZQTTESTWINDOW
+#define IW_DAFFVIZQTTESTWINDOW
 
 #include <QMainWindow>
 
@@ -26,4 +26,4 @@ private:
     Ui::DAFFVizQtWindow *ui;
 };
 
-#endif // IW_DAFFVIZQTTESTWINDOW_H
+#endif // IW_DAFFVIZQTTESTWINDOW
