@@ -17,12 +17,12 @@ include_directories( "${SNDFILE_INCLUDE_DIR}" )
 
 set( OPENDAFF_DAFFVIEWER_SOURCES
 	"res/Resources.h"
-	"src/AboutDialog.cpp"
-	"src/AboutDialog.h"
-	"src/Globals.h"
-	"src/InfoDialog.h"
-	"src/AboutDialog.cpp"
-	"src/AboutDialog.h"
+	#"src/AboutDialog.cpp"
+	#"src/AboutDialog.h"
+	#"src/Globals.h"
+	#"src/InfoDialog.h"
+	#"src/AboutDialog.cpp"
+	#"src/AboutDialog.h"
 	)
 add_executable( DAFFViewer ${OPENDAFF_DAFFVIEWER_SOURCES} )
 target_link_libraries( DAFFViewer DAFFViz DAFF ${FFTW_LIBRARIES} ${SNDFILE_LIBRARIES} ${VTK_LIBRARIES} Qt5::Widgets )

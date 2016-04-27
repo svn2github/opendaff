@@ -46,3 +46,30 @@
 #include <DAFFContentDFT.h>
 
 #include <DAFFUtils.h>
+
+
+/*! @mainpage  OpenDAFF - A free, open source software package for directional audio data
+*
+* @section intro_sec Introduction
+*
+* The OpenDAFF project is free, open source software package for directional audio data. It is distributed under the terms of the GNU Lesser Public License (LGPL)
+* with an exception that permits static linking for commercial use.
+*
+* @section license_sec License and warranty notes
+*
+*  OpenDAFF is free software, distributed under the terms of the
+*  GNU Lesser General Public License (LGPL) version 3.
+*  You can redistribute it and/or modify it under the terms of the
+*  GNU Lesser General Public License (LGPL) version 3,
+*  as published by the Free Software Foundation.
+*
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*  See the GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+* 
+*
+*/

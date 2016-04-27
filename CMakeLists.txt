@@ -5,7 +5,7 @@ list( APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
 project( OpenDAFF )
 set( CMAKE_DEBUG_POSTFIX "D" )
 
-find_package( doxygen QUIET )
+find_package( Doxygen QUIET )
 find_package( FFTW QUIET )
 find_package( SndFile QUIET )
 find_package( VTK QUIET )
@@ -211,7 +211,6 @@ if( OPENDAFF_WITH_DAFFVIZ )
 		LIBRARY DESTINATION "lib"
 	)
 	
-	
 endif( OPENDAFF_WITH_DAFFVIZ )
 
 
@@ -230,5 +229,8 @@ endif( OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
 
 # doc
 if( OPENDAFF_BUILD_DAFF_DOCUMENTATION )
+	if( NOT DOXYGEN_EXECUTABLE )
+		message( FATAL_ERROR "OpenDAFF documentation requires Doxygen." )
+	endif( NOT DOXYGEN_EXECUTABLE )
 	add_subdirectory( "doc" )
 endif( OPENDAFF_BUILD_DAFF_DOCUMENTATION )
