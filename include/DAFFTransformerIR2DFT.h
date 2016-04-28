@@ -64,9 +64,9 @@ public:
 
 	//! Initializing constructor
 	/**
-	 * \param pInputData	Input data
-	 * \param iWindow		Window type [optional, default: none]
-	 * \param bTransform	Transform the data directly? [optional, default: yes]
+	 * \param [in] pInputContent	Input data
+	 * \param [in] iWindowFunction	Window type [optional, default: none]
+	 * \param [in] bTransform		Transform the data directly? [optional, default: yes]
 	 */
 	DAFFTransformerIR2DFT(const DAFFContentIR* pInputContent, int iWindowFunction=DAFF_WINDOW_NONE, bool bTransform=true);
 

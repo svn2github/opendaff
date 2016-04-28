@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <string>
+#include <algorithm>
 
 bool isScalar(const mxArray *A) {
 	// TODO: Dieser Test ist möglicherweise nicht 100%tig sicher.

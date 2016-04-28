@@ -14,7 +14,8 @@
 #endif // _MSC_VER
 
 
-void DAFFUtils::getLibraryVersion(DAFFVersion& version) {
+void DAFFUtils::getLibraryVersion(DAFFVersion& version)
+{
 	// Version 0.1
 	version.iVersionMajor = 0;
 	version.iVersionMinor = 105;

@@ -25,44 +25,60 @@
  * stored as real and imaginary part.
  *
  * The number and values of the support frequencies can be determined
- * using the methods getNumFrequencies and getFrequencies.
- * The magnitude coefficients can be retrieved using the method getMagnitudes.
+ * using the methods getNumDFTCoeffs(), getFrequencyBandwidth() and getSamplingrate().
+ * The magnitude coefficients can be retrieved using the method getDFTCoeffs().
  */
 
-class DAFF_API DAFFContentDFT: public DAFFContent {
+class DAFF_API DAFFContentDFT: public DAFFContent
+{
 public:
-	virtual ~DAFFContentDFT() {};
+	inline virtual ~DAFFContentDFT() {};
 
 	//! Returns the size of the transform (number of overall DFT coefficients)
 	/**
 	 * This functions returns the overall number of complex-valued DFT coefficients.
-	 * Note: For real-valued time-domain data, this also includes the symetric coefficients.
+	 * Note: For real-valued time-domain data, this also includes the symmetric coefficients.
+	 *
+	 * @return DFT transform size
 	 */
 	virtual int getTransformSize() const=0;
 
 	//! Returns the number of DFT coefficients
 	/**
 	 * This functions returns the actually stored number of complex-valued DFT coefficients.
-	 * Note: For real-valued time-domain data, this includes only the non-symetric coefficients.
+	 * Note: For real-valued time-domain data, this includes only the non-symmetric coefficients.
 	 * Examplarily, for a transform size of N the function returns floor(N/2)+1.
 	 * For arbitrary complex-valued time-domain data the returned number equals the
 	 * transform size.
+	 *
+	 * @return Number of DFT coefficients
 	 */
 	virtual int getNumDFTCoeffs() const=0;
 
-	//! Returns wheather the spectrum is complex-conjugated symetric
+	//! Returns wheather the spectrum is complex-conjugated symmetric
+	/**
+	  * @return True, if the DFT spectrum is complex-conjugated symmetric
+	  */
 	virtual bool isSymetric() const=0;
 
 	//! Returns the correspondig sampling rate [in Hertz]
+	/**
+	* @return Sampling rate in Hertz
+	*/
 	virtual double getSamplerate() const=0;
 
 	//! Returns the frequency resolution [in Hertz]
+	/**
+	* @return Linear frequency spacing in Hertz
+	*/
 	virtual double getFrequencyBandwidth() const=0;
 
 	//! Returns the overall greatest magnitude value
 	/**
 	 * This method returns the greatest magnitude value of the
 	 * DFT coefficients over all directions, channels and frequencies.
+	 *
+	 * @return Absolute maximum magnitude value
 	 */
 	virtual float getOverallMagnitudeMaximum() const=0;
 
@@ -73,13 +89,13 @@ public:
      * This method retrives a single complex-valued DFT coefficient for the given direction (record index)
 	 * and channel and stores them in the supplied destination variable.
 	 *
-	 * \param iRecordIndex  Record index (direction)
-	 * \param iChannel      Channel index
-	 * \param iDFTCoeff     DFT coefficient index
-	 * \param fDestReal		Real part
-	 * \param fDestImag		Imaginary part
+	 * @param [in] iRecordIndex Record index (direction)
+	 * @param [in] iChannel     Channel index
+	 * @param [in] iDFTCoeff    DFT coefficient index
+	 * @param [out] fReal	Real part
+	 * @param [out] fImag	Imaginary part
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 */
 	virtual int getDFTCoeff(int iRecordIndex, int iChannel, int iDFTCoeff, float& fReal, float& fImag) const=0;
 
@@ -95,7 +111,7 @@ public:
 	 * \param iChannel      Channel index
 	 * \param pfDest		Destination buffer (size >= 2*getNumDFTCoeffs())
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 */
 	virtual int getDFTCoeffs(int iRecordIndex, int iChannel, float* pfDest) const=0;
 };

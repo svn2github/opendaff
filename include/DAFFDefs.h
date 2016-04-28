@@ -68,7 +68,8 @@ typedef unsigned __int64 uint64_t;
 
 
 //! Content types
-enum {
+enum DAFF_CONTENT_TYPES
+{
 	DAFF_IMPULSE_RESPONSE=0,			//!< Impulse response (IR) in the time-domain
 	DAFF_MAGNITUDE_SPECTRUM=1,			//!< Magnitude spectrum defined at discrete frequencies
 	DAFF_PHASE_SPECTRUM=2,				//!< Phase spectrum defined at discrete frequencies
@@ -78,23 +79,26 @@ enum {
 
 
 //! Quantization modes
-enum {
-	DAFF_INT16=0,	//! 16-Bit signed integer
-	DAFF_INT24=1,	//! 24-Bit signed integer
-	DAFF_FLOAT32=2,	//! 32-Bit floating point
+enum DAFF_QUANTIZATIONS
+{
+	DAFF_INT16		=0,	//!@ 16-Bit signed integer
+	DAFF_INT24		=1,	//!@ 24-Bit signed integer
+	DAFF_FLOAT32	=2,	//!@ 32-Bit floating point
 };
 
 
-//! Views
-enum {
-	DAFF_DATA_VIEW=0,	//! Data-related view referring to data spherical coordinates (DSC)
-	DAFF_OBJECT_VIEW=1,	//! Object-related view referring to object spherical coordinates (OSC)
+//! Views on the data (special spherical coordinate system)
+enum DAFF_VIEWS
+{
+	DAFF_DATA_VIEW		=0,	//!@ Data-related view referring to data spherical coordinates (DSC)
+	DAFF_OBJECT_VIEW	=1,	//!@ Object-related view referring to object spherical coordinates (OSC)
 };
 
 
 //! Errorcodes
-enum {
-	DAFF_NO_ERROR=0,
+enum DAFF_ERROR 
+{
+	DAFF_NO_ERROR=0,						//!< No error = 0
 
 	DAFF_MODAL_ERROR=10001,					//!< Modal error (e.g. close a file that is not opened)
 	DAFF_FILE_CORRUPTED,					//!< File is broken
@@ -107,37 +111,40 @@ enum {
 //! Pure data class that covers version information
 class DAFF_API DAFFVersion {
 public:
-	int iVersionMajor;		// Major version (example: 1 for version 1.24)
-	int iVersionMinor;		// Minor version (example: 24 for version 1.24)
-	std::string sVersion;	// String of version (example: "1.24" for version 1.24)
+	int iVersionMajor;		//!@ Major version (example: 1 for version 1.7)
+	int iVersionMinor;		//!@ Minor version (example: 7 for version 1.7)
+	std::string sVersion;	//!@ String of version (example: "1.7" for version 1.7)
 };
 
 
 //! Pure data class that describes the points of a quad by their indices and coordinates
-class DAFF_API DAFFQuad {
+class DAFF_API DAFFQuad
+{
 public:
 	// Point indices
 	int iIndex1, iIndex2, iIndex3, iIndex4;
 };
 
 
-//! Data class for orientations in yaw-pitch-roll (YPR) angles
-class DAFF_API DAFFOrientationYPR {
+//! Data class for orientations in yaw-pitch-roll (YPR) angles (right-handed OpenGL coordinate system)
+class DAFF_API DAFFOrientationYPR
+{
 public:
-	float fYawAngle;		// Yaw angle (degrees)
-	float fPitchAngle;		// Pitch angle (degrees)
-	float fRollAngle;		// Roll angle (degrees)
+	float fYawAngle;		//!@ Yaw angle (degrees)
+	float fPitchAngle;		//!@ Pitch angle (degrees)
+	float fRollAngle;		//!@ Roll angle (degrees)
 
 	//! Default constructor
-	DAFFOrientationYPR()
-		: fYawAngle(0), fPitchAngle(0), fRollAngle(0) {}
+	inline DAFFOrientationYPR()
+		: fYawAngle(0), fPitchAngle(0), fRollAngle(0) {};
 
 	//! Initializing constructor
-	DAFFOrientationYPR(float fInitYawAngle, float fInitPitchAngle, float fInitRollAngle)
-		: fYawAngle(fInitYawAngle), fPitchAngle(fInitPitchAngle), fRollAngle(fInitRollAngle) {}
+	inline DAFFOrientationYPR(float fInitYawAngle, float fInitPitchAngle, float fInitRollAngle)
+		: fYawAngle(fInitYawAngle), fPitchAngle(fInitPitchAngle), fRollAngle(fInitRollAngle) {};
 
 	//! Return a string of the orientation
-	std::string toString() const {
+	inline std::string toString() const
+	{
 		std::stringstream ss;
 		// Note: \xF8 => Degree sign
 		ss << "( Y" << fYawAngle << "\xF8, P" << fPitchAngle << "\xF8, R" << fRollAngle << "\xF8 )";

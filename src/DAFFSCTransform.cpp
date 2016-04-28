@@ -19,9 +19,7 @@ void DAFFSCTransform::setOrientation(const DAFFOrientationYPR& orient) {
 	m_const.init(m_orient.fYawAngle, m_orient.fPitchAngle, m_orient.fRollAngle);
 }
 
-/*
-
-	Transformation functions
+/* Transformation functions
 
 	These transformations perform angular conversions between two spherical coordinate systems,
 	which are rotated against each other by yaw-pitch-roll convention. So basically what we do here,

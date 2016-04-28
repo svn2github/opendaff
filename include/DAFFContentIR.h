@@ -150,7 +150,7 @@ public:
 	 * for the given direction (record index) and channel and numerically adds them in the supplied
 	 * destination buffer. The method writes exactly as many filter coefficients
 	 * into the buffer as the effective filter is long. This length can be requested
-	 * using the \getEffectiveFilterBounds method. A copy of the entire filter in user
+	 * using the getEffectiveFilterBounds() method. A copy of the entire filter in user
 	 * code can be avoided using the add filter funcionality. Extensive use of 
 	 * record requests can be accelerated by this method. The method starts to write into the
 	 * destination buffer at position 0 (but not the effective filter offset).
