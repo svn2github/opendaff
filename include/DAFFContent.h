@@ -24,37 +24,59 @@ class DAFFMetadata;
 /**
  * This purely abstract class defines the common interface for DAFF content.
  * Special (non-common) attributes of content are defined in subinterfaces
- * (e.g. DAFFContentIR or DAFFContentMS).
+ * (e.g. #DAFFContentIR or #DAFFContentMS).
  *
  * The interface covers operations on the sphere grid, like
  * nearest neighbour search, cell determination, etc. as well
  * as spherical coordinate transformations.
  * 
- * \sa DAFFContentIR, DAFFContentMS
+ * @see DAFFContent 
+ * @see DAFFContentDFT
+ * @see DAFFContentIR
+ * @see DAFFContentMPS
+ * @see DAFFContentMS
+ * @see DAFFContentPS
+ *
  */
-class DAFF_API DAFFContent {
+class DAFF_API DAFFContent
+{
 public:
-	virtual ~DAFFContent() {};
+	inline virtual ~DAFFContent() {};
 
 	//! Returns the parent reader
+	/*
+	 * @return The pointer to parent reader
+	 */
 	virtual DAFFReader* getParent() const=0;
 
 	//! Returns the properties
+	/*
+	 * @return The const pointer to properties
+	 */
 	virtual const DAFFProperties* getProperties() const=0;
 
 	//! Returns the metadata of a record
 	/**
 	 * Note: The method always returns a valid DAFFMetadata, even if there is
 	 *       none specified in the file. Thereby we maintain a consistent 
-	 *       behaviour.
+	 *       behaviour. Metadata may therefore be empty.
+	 *
+	 * @param [in] iRecordIndex	The index of the record on regular spherical grid
+	 *
+	 * @return The const pointer to metadata
 	 */
-	virtual const DAFFMetadata* getRecordMetadata(int iRecordIndex) const=0;
+	virtual const DAFFMetadata* getRecordMetadata( int iRecordIndex ) const=0;
 
-	//! Determines the spherical coordinates of a record (grid point)
+	//! Determines the spherical coordinates of a record (grid point on spherical regular grid)
 	/**
-	 * Returns "0" if the record index is valid and a "-1" if invalid.
+	 * @param [in] iRecordIndex	The index of the record on regular spherical grid
+	 * @param [in] iVew			The view that should be used for the given pair of angles, one of #DAFF_VIEWS
+	 * @param [out] fAngle1		First angle that corresponds to this index (Phi or Alpha, depending on view)
+	 * @param [out] fAngle2		Second angle that corresponds to this index (Theta or Beta, depending on view)
+	 * 
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 */
-	virtual int getRecordCoords(int iRecordIndex, int iView, float& fAngle1, float& fAngle2) const=0;
+	virtual int getRecordCoords( int iRecordIndex, int iView, float& fAngle1, float& fAngle2 ) const=0;
 
 	//! Determine the nearest neighbour record and return its index
 	/**
@@ -64,11 +86,35 @@ public:
 	 *
 	 * Note: The method always returns a valid record index, even if the angular pair
 	 *       points outside the spherical grid (e.g. consider boundaries). Thereby
-	 *       we maintain a consistent behaviour. You can query if the point was within
+	 *       we maintain a consistent behaviour. You can check if the point was within
 	 *       the boundaries using the bOutOfBounds argument.
+	 *
+	 * @param [in] iVew				The view that should be used for the given pair of angles, one of #DAFF_VIEWS
+	 * @param [in] fAngle1			First angle (Phi or Alpha, depending on view)
+	 * @param [in] fAngle2			Second angle (Theta or Beta, depending on view)
+	 * @param [out] iRecordIndex	Index that corresponds to this pair of angles	 
 	 */
-	virtual void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex) const=0;
-	virtual void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex, bool& bOutOfBounds) const=0;
+	virtual void getNearestNeighbour( int iView, float fAngle1, float fAngle2, int& iRecordIndex ) const=0;
+
+	//! Determine the nearest neighbour record and return its index (with boundary validatsion)
+	/**
+	* This method takes a direction in form of an angular pair and searches the grid for
+	* the nearest neighbouring record (grid point). The distance measure is the angle
+	* on the great circle (spherical law of cosines).
+	*
+	* Note: The method always returns a valid record index, even if the angular pair
+	*       points outside the spherical grid (e.g. consider boundaries). Thereby
+	*       we maintain a consistent behaviour. You can check if the point was within
+	*       the boundaries using the bOutOfBounds argument.
+	*
+	* @param [in] iVew				The view that should be used for the given pair of angles, one of #DAFF_VIEWS
+	* @param [in] fAngle1			First angle (Phi or Alpha, depending on view)
+	* @param [in] fAngle2			Second angle (Theta or Beta, depending on view)
+	* @param [out] iRecordIndex		Index that corresponds to this pair of angles
+	* @param [out] bbOutOfBounds	Indicator if requested direction was out of bounds (true in this case)
+	*
+	*/
+	virtual void getNearestNeighbour( int iView, float fAngle1, float fAngle2, int& iRecordIndex, bool& bOutOfBounds ) const=0;
 
 	//! Determines the cell of a given direction on the sphere grid and delivers its surrounding record indices
 	/**
@@ -138,7 +184,7 @@ public:
 	 *     (4,1)
 	 *
 	 *		Anyway, using getCell out of the boundaries does not make that much sense. In case you run
-	 *		out of bounds xonsider using  getNearestNeighbour with boundary flag instead.
+	 *		out of bounds onsider using getNearestNeighbour with boundary flag instead.
 	 */
 	virtual void getCell(int iView, const float fAngle1, const float fAngle2, DAFFQuad& qIndices) const=0;
 

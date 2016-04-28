@@ -23,6 +23,7 @@ set( OPENDAFF_DAFFVIEWER_SOURCES
 	#"src/InfoDialog.h"
 	#"src/AboutDialog.cpp"
 	#"src/AboutDialog.h"
+	src/main.cpp
 	)
 add_executable( DAFFViewer ${OPENDAFF_DAFFVIEWER_SOURCES} )
 target_link_libraries( DAFFViewer DAFFViz DAFF ${FFTW_LIBRARIES} ${SNDFILE_LIBRARIES} ${VTK_LIBRARIES} Qt5::Widgets )
