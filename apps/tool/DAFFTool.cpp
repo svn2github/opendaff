@@ -389,7 +389,7 @@ int main_info(int argc, char* argv[]) {
 			pContentDFT = dynamic_cast<DAFFContentDFT*>(g_pDAFFReader->getContent());
 			printf("Samplerate:          %.1f Hz\n", pContentDFT->getSamplerate());
 			printf("Number of coefficients: %i\n", pContentDFT->getNumDFTCoeffs());
-			if (pContentDFT->isSymetric())
+			if (pContentDFT->isSymmetric())
 				printf("Spectrum is symmetric\n");
 			break;
 
@@ -866,7 +866,7 @@ int main_query(int argc, char* argv[]) {
 		 (cAngle2ViewFlag == 'B') )
 		 iView = DAFF_DATA_VIEW;
 	if (iView == -1) {
-		fprintf(stderr, "Error: Could not determine wheather the requested coordinates are of data or of object view perspective\n.");
+		fprintf(stderr, "Error: Could not determine whether the requested coordinates are of data or of object view perspective\n.");
 		printf("Use '%s query -h' for help\n", EXECUTABLE_NAME);
 		syntax();
 		return 255;

@@ -55,11 +55,11 @@ public:
 	 */
 	virtual int getNumDFTCoeffs() const=0;
 
-	//! Returns wheather the spectrum is complex-conjugated symmetric
+	//! Returns whether the spectrum is complex-conjugated symmetric
 	/**
 	  * @return True, if the DFT spectrum is complex-conjugated symmetric
 	  */
-	virtual bool isSymetric() const=0;
+	virtual bool isSymmetric() const=0;
 
 	//! Returns the correspondig sampling rate [in Hertz]
 	/**

@@ -720,7 +720,7 @@ void GetProperties(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 		mxSetField(pStruct, 0, "transformSize", mxCreateDoubleScalar( pContent->getTransformSize() ));
 		mxSetField(pStruct, 0, "numDFTCoeffs", mxCreateDoubleScalar( pContent->getNumDFTCoeffs() ));
-		mxSetField(pStruct, 0, "isSymetric", mxCreateLogicalScalar( pContent->isSymetric() ));
+		mxSetField(pStruct, 0, "isSymmetric", mxCreateLogicalScalar( pContent->isSymmetric() ));
 		mxSetField(pStruct, 0, "samplerate", mxCreateDoubleScalar( pContent->getSamplerate() ));
 		mxSetField(pStruct, 0, "frequencyBandwidth", mxCreateDoubleScalar( pContent->getFrequencyBandwidth() ));
 	}

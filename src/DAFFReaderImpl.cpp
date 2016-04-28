@@ -638,7 +638,7 @@ std::string DAFFReaderImpl::toString() const {
 		case DAFF_DFT_SPECTRUM:
 			pContentDFT = dynamic_cast<DAFFContentDFT*>(getContent());
 			ss << "Transform size: " << pContentDFT->getTransformSize() << std::endl;
-			ss << "Symmetric: " << ((pContentDFT->isSymetric()) ? "yes" : "no") << std::endl;
+			ss << "Symmetric: " << ((pContentDFT->isSymmetric()) ? "yes" : "no") << std::endl;
 			ss << "Samplerate: " << pContentDFT->getSamplerate() << std::endl;
 			break;
 	}
@@ -1348,7 +1348,8 @@ int DAFFReaderImpl::getNumDFTCoeffs() const {
 	return m_pContentHeaderDFT->iNumDFTCoeffs;
 }
 
-bool DAFFReaderImpl::isSymetric() const {
+bool DAFFReaderImpl::isSymmetric() const
+{
 	return (m_pContentHeaderDFT->iNumDFTCoeffs != m_pContentHeaderDFT->iTransformSize);
 }
 

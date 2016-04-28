@@ -217,7 +217,7 @@ public:
 
 	// -= Coverage =--------------------------------------
 
-	//! Indicates wheather the data covers the full alpha range [0&deg;, 360&deg;)
+	//! Indicates whether the data covers the full alpha range [0&deg;, 360&deg;)
 	inline virtual bool coversFullAlphaRange() const
 	{
 		// full range coverage is given only when alphastart == 0 and alphaend == 360
@@ -227,7 +227,7 @@ public:
 			return false;
 	};
 
-	//! Indicates wheather the data covers the full beta range [0&deg;, 180&deg;]
+	//! Indicates whether the data covers the full beta range [0&deg;, 180&deg;]
 	inline virtual bool coversFullBetaRange() const
 	{
 		// full range coverage is given only when betastart == 0 and betaend == 180
@@ -237,7 +237,7 @@ public:
 			return false;
 	};
 
-	//! Indicates wheather the data covers the full sphere
+	//! Indicates whether the data covers the full sphere
 	inline virtual bool coversFullSphere() const
 	{
 		return coversFullAlphaRange() && coversFullBetaRange();

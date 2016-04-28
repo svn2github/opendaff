@@ -129,7 +129,7 @@ public:
 
 	// --= File handling =--
 
-	//! Returns wheather a file is opened
+	//! Returns whether a file is opened
 	virtual bool isFileOpened() const=0;
 
 	//! Opens a DAFF file for reading

@@ -41,7 +41,7 @@ public:
 		// TODO: Simplify formula to integer arithmetic
 	};
 
-	inline bool isSymetric() const {
+	inline bool isSymmetric() const {
 		return true;
 	};
 

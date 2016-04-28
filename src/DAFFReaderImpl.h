@@ -118,7 +118,7 @@ public:
 
 	int getTransformSize() const;
 	int getNumDFTCoeffs() const;
-	bool isSymetric() const;
+	bool isSymmetric() const;
 	double getFrequencyBandwidth() const;
 	int getDFTCoeff(int iRecordIndex, int iChannel, int iDFTCoeff, float& fReal, float& fImag) const;
 	int getDFTCoeffs(int iRecordIndex, int iChannel, float* pfDest) const;
