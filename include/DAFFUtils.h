@@ -31,15 +31,15 @@ public:
 
 	//! Format a direction (angular pair) as a string canonically
 	/**
-	 * Format for data view directions [A => alpha, B => beta]:  (A123.1°, B123.167°)
-	 * Format for object view directions [P => phi, T => theta]: (P+123.1°, T-10.167°)
+	 * Format for data view directions [A => alpha, B => beta]:  (A123.1&deg;, B123.167&deg;)
+	 * Format for object view directions [P => phi, T => theta]: (P+123.1&deg;, T-10.167&deg;)
 	 */
 	static std::string StrDirection(int iView, double dAngle1Deg, double dAngle2Deg, int precision = 9, int leadingzeros = 3);
 
 	//! Format a direction (angular pair) as a string canonically and in more compact form
 	/**
-	 * Format for data view directions [A => alpha, B => beta]:  A123.1° B123.167°
-	 * Format for object view directions [P => phi, T => theta]: P+123.1° T-10.167°
+	 * Format for data view directions [A => alpha, B => beta]:  A123.1&deg; B123.167&deg;
+	 * Format for object view directions [P => phi, T => theta]: P+123.1&deg; T-10.167&deg;
 	 */
 	static std::string StrDirectionCompact(int iView, double dAngle1Deg, double dAngle2Deg, int precision = 9, int leadingzeros = 3);
 
@@ -63,8 +63,8 @@ public:
 	 * The methods normalizes directions regarding a spherical coordinate system (data|object)
 	 * and projects the angles into the following ranges:
 	 *
-	 * [DSC] alpha in [0°,360°), beta in [0°,180°]
-	 * [OSC] phi in (-180°,180°], elevation in [-90°,+90°]
+	 * [DSC] alpha in [0&deg;,360&deg;), beta in [0&deg;,180&deg;]
+	 * [OSC] phi in (-180&deg;,180&deg;], elevation in [-90&deg;,+90&deg;]
 	 *
 	 * The method defines canonical forms of directions, which
 	 * are more easy to interpret (by humans).

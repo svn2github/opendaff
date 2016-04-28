@@ -144,12 +144,12 @@ public:
 	 * an increase by alpha resolution of the alpha angle.
 	 * 
 	 * Let's discuss an example:
-	 * Requested direction: alpha =  2°, beta = 2°	object view coordinate system (front direction would be 0°,0°)
-	 * Resolution:			alpha = 10°, beta = 5°
-	 * Index1 -> alpha =  0°, beta = 0° (object view)
-	 * Index2 -> alpha =  0°, beta = 5° (object view)
-	 * Index3 -> alpha = 10°, beta = 5° (object view)
-	 * Index4 -> alpha = 10°, beta = 0° (object view)
+	 * Requested direction: alpha =  2&deg;, beta = 2&deg;	object view coordinate system (front direction would be 0&deg;,0&deg;)
+	 * Resolution:			alpha = 10&deg;, beta = 5&deg;
+	 * Index1 -> alpha =  0&deg;, beta = 0&deg; (object view)
+	 * Index2 -> alpha =  0&deg;, beta = 5&deg; (object view)
+	 * Index3 -> alpha = 10&deg;, beta = 5&deg; (object view)
+	 * Index4 -> alpha = 10&deg;, beta = 0&deg; (object view)
 	 *
 	 * Special cases
 	 *

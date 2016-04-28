@@ -34,7 +34,7 @@ class DAFFProperties;
  *
  *		Agreements
  * 
- * All angles in the DAFF Reader Interface and all angles in a daff file are in gradients [°]!
+ * All angles in the DAFF Reader Interface and all angles in a daff file are in gradients [&deg;]!
  * If not marked otherwise, we use right-hand rotation. 
  * The default coordinate system and it's cartesian representation:  * 
  *		- front is negative Z axis
@@ -46,26 +46,26 @@ class DAFFProperties;
  *
  * The default coordinate system and it's polar representation:
  * for data view:
- *		- alpha is the angle on horizontal plane beginning at front direction with 0°
- *		  and ends with 360° (not included) with right-hand rotation around X axis.
+ *		- alpha is the angle on horizontal plane beginning at front direction with 0&deg;
+ *		  and ends with 360&deg; (not included) with right-hand rotation around X axis.
  *		- beta is the angle on vertical plane beginning at south pole (down direction, south pole)
- *		  whith 0° and ends at 180° (included) (up direction, north pole) with left-hand rotation
+ *		  whith 0&deg; and ends at 180&deg; (included) (up direction, north pole) with left-hand rotation
  *		  around Y axis (or right-hand rotation around negative Y axis!).
- *		  The front direction is represented with 90°.
+ *		  The front direction is represented with 90&deg;.
  * for object view:
- *		- phi is the angle on horizontal plane beginning at -180° (not included) (back direction) 
- *		  and ends with +180° (included) (also back direction) in right-hand rotation around X axis.
- *		  The front direction is represented with 0°
- *		- beta is the angle on vertical plane beginning at down direction (south pole) with -90° (included)
- *		  and ends with +90° (up direction, north pole) (included) with right-hand rotation.
- *		  The front direction is represented with 0°.
+ *		- phi is the angle on horizontal plane beginning at -180&deg; (not included) (back direction) 
+ *		  and ends with +180&deg; (included) (also back direction) in right-hand rotation around X axis.
+ *		  The front direction is represented with 0&deg;
+ *		- beta is the angle on vertical plane beginning at down direction (south pole) with -90&deg; (included)
+ *		  and ends with +90&deg; (up direction, north pole) (included) with right-hand rotation.
+ *		  The front direction is represented with 0&deg;.
  *
  * The orientation of an object is defined by its yaw, pitch and roll rotation according to the specification
  * used in aerospace applications projected on our default coordinate system:
  *		- Yaw rotation is right-hand rotation around X axis
  *		- Pitch rotation is left-hand rotation around Y axis
  *		- Roll rotation is left-hand rotation around Z axis
- * An object with orientation (0°, 0°, 0°) has its front direction equally to our defined front direction.
+ * An object with orientation (0&deg;, 0&deg;, 0&deg;) has its front direction equally to our defined front direction.
  *
  *
  *		Coordinate systems

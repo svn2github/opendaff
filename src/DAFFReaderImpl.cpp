@@ -178,14 +178,14 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 	/*if (m_pMainHeader->fAlphaStart > m_pMainHeader->fAlphaEnd)
 		return DAFF_FILE_CORRUPTED; 
 		
-	this is now allowed, so we can define ranges which wrap over 0°
+	this is now allowed, so we can define ranges which wrap over 0&deg;
 		*/
 
-	// alpha start value must not be 360°
+	// alpha start value must not be 360&deg;
 	if ( (m_pMainHeader->fAlphaStart < 0.0f) || (m_pMainHeader->fAlphaStart >= 360.0f) )
 		return DAFF_FILE_CORRUPTED;
 
-	// alpha stop value may be 360° indicating that the full alpha range is covered.
+	// alpha stop value may be 360&deg; indicating that the full alpha range is covered.
 	if ( (m_pMainHeader->fAlphaEnd < 0.0f) || (m_pMainHeader->fAlphaEnd > 360.0f) )
 		return DAFF_FILE_CORRUPTED;
 
@@ -697,7 +697,7 @@ float DAFFReaderImpl::getAlphaSpan() const {
 	assert ( m_bFileOpened );
 	if (m_pMainHeader->fAlphaStart <= m_pMainHeader->fAlphaEnd)
 		return m_pMainHeader->fAlphaEnd - m_pMainHeader->fAlphaStart;
-	else // wrap around 0°
+	else // wrap around 0&deg;
 		return 360 - m_pMainHeader->fAlphaStart + m_pMainHeader->fAlphaEnd;
 }
 

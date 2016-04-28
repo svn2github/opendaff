@@ -189,14 +189,14 @@ void DAFFUtils::NormalizeDirection(int iView,
                                    const float fAngle1In, const float fAngle2In,
 								   float& fAngle1Out, float& fAngle2Out) {
 
-	const float EPSILON = 0.00001F;	// 10^-5 °
+	const float EPSILON = 0.00001F;	// 10^-5 &deg;
 
 	if (iView == DAFF_DATA_VIEW) {
 
 		/*
-		 *  - Alpha always within [0°, +360°)
-		 *  - Beta always within [0°, +180°]
-		 *  - At poles (beta=0°|beta=180°) default: alpha = 0
+		 *  - Alpha always within [0&deg;, +360&deg;)
+		 *  - Beta always within [0&deg;, +180&deg;]
+		 *  - At poles (beta=0&deg;|beta=180&deg;) default: alpha = 0
 		 */
 
 		float fAlpha = fAngle1In;
@@ -212,8 +212,8 @@ void DAFFUtils::NormalizeDirection(int iView,
 			fAlpha += 360.0f;
 
 		// Note: We use thresholds here to work on wrongly rounded angles also
-		if ((std::abs( fBeta ) <= EPSILON) ||		// Beta == 0°
-			(std::abs( fBeta-180.0f ) <= EPSILON))	// Beta == 180°
+		if ((std::abs( fBeta ) <= EPSILON) ||		// Beta == 0&deg;
+			(std::abs( fBeta-180.0f ) <= EPSILON))	// Beta == 180&deg;
 			fAlpha = 0.0f;
 
 		fAngle1Out = roundf(fAlpha*1000.0f);
@@ -226,9 +226,9 @@ void DAFFUtils::NormalizeDirection(int iView,
 
 	if (iView == DAFF_OBJECT_VIEW) {
 		/*
-		 *  - Azimuth always within (-180°, +180°]
-		 *  - Elevation always within [-90°, +90°]
-		 *  - At poles (elevation=+/-90°) default: azimuth = 0
+		 *  - Azimuth always within (-180&deg;, +180&deg;]
+		 *  - Elevation always within [-90&deg;, +90&deg;]
+		 *  - At poles (elevation=+/-90&deg;) default: azimuth = 0
 		 */
 
 		float fAzimuth = fAngle1In;
@@ -239,14 +239,14 @@ void DAFFUtils::NormalizeDirection(int iView,
 			fElevation = 180.0F - fElevation;
 		}
 
-		// Project azimuth angle into (-180°, +180°]
+		// Project azimuth angle into (-180&deg;, +180&deg;]
 		fAzimuth = fmodf(fAzimuth + 180.0F, 360.0F) - 180.0F;
 		if (fAzimuth == -180.0F) fAzimuth = +180.0F;
 
 		// Note: We use thresholds here to work on wrongly rounded angles also
-		if (std::abs(fElevation-90.0f) <= EPSILON)	// Elevation == 90°
+		if (std::abs(fElevation-90.0f) <= EPSILON)	// Elevation == 90&deg;
 			fElevation = 90.0f;
-		if (std::abs(fElevation+90.0f) <= EPSILON)	// Elevation == -90°
+		if (std::abs(fElevation+90.0f) <= EPSILON)	// Elevation == -90&deg;
 			fElevation = -90.0f;
 
 		fAngle1Out = roundf(fAzimuth*1000.0f);

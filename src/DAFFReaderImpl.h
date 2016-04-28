@@ -153,8 +153,8 @@ private:
 	DAFFOrientationYPR m_orientation;			//!@ Current orientation
 	DAFFOrientationYPR m_orientationDefault;	//!@ Default orientation
 
-	float m_fAlphaResolution;					//!@ Alpha resolution [°]
-	float m_fBetaResolution;					//!@ Beta resolution [°]
+	float m_fAlphaResolution;					//!@ Alpha resolution [&deg;]
+	float m_fBetaResolution;					//!@ Beta resolution [&deg;]
 	DAFFSCTransform m_tTrans;			 		//!@ Spherical coordinates transformer
 
 	//! Search for the first file block that matches the given ID

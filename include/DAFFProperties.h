@@ -91,10 +91,10 @@ public:
 
 	// -= Coverage =--------------------------------------
 
-	//! Indicates wheather the data covers the full alpha range [0°, 360°)
+	//! Indicates wheather the data covers the full alpha range [0&deg;, 360&deg;)
 	virtual bool coversFullAlphaRange() const=0;
 
-	//! Indicates wheather the data covers the full beta range [0°, 180°]
+	//! Indicates wheather the data covers the full beta range [0&deg;, 180&deg;]
 	virtual bool coversFullBetaRange() const=0;
 
 	//! Indicates wheather the data covers the full sphere

@@ -153,7 +153,7 @@ public:
 	{
 		if (m_fAlphaStart <= m_fAlphaEnd)
 			return m_fAlphaEnd - m_fAlphaStart;
-		else // wrap around 0°
+		else // wrap around 0&deg;
 			return 360 - m_fAlphaStart + m_fAlphaEnd;
 	};
 
@@ -217,7 +217,7 @@ public:
 
 	// -= Coverage =--------------------------------------
 
-	//! Indicates wheather the data covers the full alpha range [0°, 360°)
+	//! Indicates wheather the data covers the full alpha range [0&deg;, 360&deg;)
 	inline virtual bool coversFullAlphaRange() const
 	{
 		// full range coverage is given only when alphastart == 0 and alphaend == 360
@@ -227,7 +227,7 @@ public:
 			return false;
 	};
 
-	//! Indicates wheather the data covers the full beta range [0°, 180°]
+	//! Indicates wheather the data covers the full beta range [0&deg;, 180&deg;]
 	inline virtual bool coversFullBetaRange() const
 	{
 		// full range coverage is given only when betastart == 0 and betaend == 180

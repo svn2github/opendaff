@@ -49,7 +49,7 @@ private:
 	public:
 		double t1, t2, t3, t4, t5, t6, t7, t8, t9;
 
-		//! Initialize constants (Angles in degrees [°])
+		//! Initialize constants (Angles in degrees [&deg;])
 		void init( double yaw,  double pitch,  double roll);
 	};
 

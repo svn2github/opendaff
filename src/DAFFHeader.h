@@ -120,14 +120,14 @@ struct DAFFMainHeader
 	int32_t iElementsPerRecord;		//!@ Number of elements per records (number of taps/DFT coefficients)
 	int32_t iMetadataIndex;			//!@ Index of global metadata
 
-	int32_t iAlphaPoints;			//!@ Number of measurement points in alpha range [0°, 360°)
+	int32_t iAlphaPoints;			//!@ Number of measurement points in alpha range [0&deg;, 360&deg;)
 	float fAlphaStart, fAlphaEnd;	//!@ Alpha range boundaries
-	int32_t iBetaPoints;			//!@ Number of measurement points in beta range [0°, 180°]
+	int32_t iBetaPoints;			//!@ Number of measurement points in beta range [0&deg;, 180&deg;]
 	float fBetaStart, fBetaEnd;		//!@ Beta range boundaries
 	
-	float fOrientYaw;				//!@ Yaw angle of the orientation [°]
-	float fOrientPitch;				//!@ Pitch angle of the orientation [°]
-	float fOrientRoll;				//!@ Roll angle of the orientation [°]
+	float fOrientYaw;				//!@ Yaw angle of the orientation [&deg;]
+	float fOrientPitch;				//!@ Pitch angle of the orientation [&deg;]
+	float fOrientRoll;				//!@ Roll angle of the orientation [&deg;]
 
 #pragma pack(pop)
 
