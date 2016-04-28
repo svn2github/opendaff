@@ -29,14 +29,21 @@
  * The phase coefficients can be retrieved using the method getPhases.
  */
 
-class DAFF_API DAFFContentPS: public DAFFContent {
+class DAFF_API DAFFContentPS: public DAFFContent
+{
 public:
-	virtual ~DAFFContentPS() {};
+	inline virtual ~DAFFContentPS() {};
 
 	//! Returns the number of support points (frequencies)
+	/*
+	* @return Number of frequencies
+	*/
 	virtual int getNumFrequencies() const=0;
 
 	//! Retrieves the frequencies [in Hertz] at which values are defined
+	/*
+	 * @return Vector of frequencies
+	 */
 	virtual const std::vector<float>& getFrequencies() const=0;
 
 	// --= Data access =--
@@ -48,11 +55,11 @@ public:
 	 * as many coefficients as there are support frequencies. Their number can be determined
 	 * using the method getNumFrequencies.
 	 *
-	 * \param iRecordIndex  Record index (direction)
-	 * \param iChannel      Channel index
-	 * \param pfDest		Destination buffer (size >= number of frequencies)
+	 * \param [in] iRecordIndex  Record index (direction)
+	 * \param [in] iChannel      Channel index
+	 * \param [out] pfDest		Destination buffer (size >= number of frequencies)
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 */
 	virtual int getPhases(int iRecordIndex, int iChannel, float* pfDest) const=0;
 };

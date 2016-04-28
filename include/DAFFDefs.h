@@ -33,12 +33,6 @@
 #include <string>
 #include <sstream>
 
-/* +-----------------------------------+ *
- * |                                   | *
- * |   Global scope type definitions   | *
- * |                                   | *
- * +-----------------------------------+ */
-
 // Define necessary typedef from stdint.h for Microsoft compilers before Visual C++ 2010
 #if _MSC_VER < 1600
 
@@ -109,8 +103,8 @@ enum DAFF_ERROR
 
 
 //! Pure data class that covers version information
-class DAFF_API DAFFVersion {
-public:
+struct DAFF_API DAFFVersion
+{
 	int iVersionMajor;		//!@ Major version (example: 1 for version 1.7)
 	int iVersionMinor;		//!@ Minor version (example: 7 for version 1.7)
 	std::string sVersion;	//!@ String of version (example: "1.7" for version 1.7)
@@ -118,38 +112,59 @@ public:
 
 
 //! Pure data class that describes the points of a quad by their indices and coordinates
-class DAFF_API DAFFQuad
+struct DAFF_API DAFFQuad
 {
-public:
-	// Point indices
-	int iIndex1, iIndex2, iIndex3, iIndex4;
+	int iIndex1; //!@ First index point
+	int iIndex2; //!@ Second index point
+	int iIndex3; //!@ Third index point
+	int iIndex4; //!@ Fourth index point
 };
 
 
 //! Data class for orientations in yaw-pitch-roll (YPR) angles (right-handed OpenGL coordinate system)
+/**
+  * Yaw Pitch Roll angles define Euler angles using the OpenGL right-handed Cartesian coordinate system.
+  *		1. Yaw arount +Y
+  *		2. Pitch around +X
+  *		3. Roll around -Z
+  */
 class DAFF_API DAFFOrientationYPR
 {
 public:
-	float fYawAngle;		//!@ Yaw angle (degrees)
-	float fPitchAngle;		//!@ Pitch angle (degrees)
-	float fRollAngle;		//!@ Roll angle (degrees)
+	float fYawAngleDeg;		//!@ Yaw angle (degrees)
+	float fPitchAngleDeg;		//!@ Pitch angle (degrees)
+	float fRollAngleDeg;		//!@ Roll angle (degrees)
 
 	//! Default constructor
 	inline DAFFOrientationYPR()
-		: fYawAngle(0), fPitchAngle(0), fRollAngle(0) {};
+		: fYawAngleDeg(0)
+		, fPitchAngleDeg(0)
+		, fRollAngleDeg(0)
+	{};
 
 	//! Initializing constructor
-	inline DAFFOrientationYPR(float fInitYawAngle, float fInitPitchAngle, float fInitRollAngle)
-		: fYawAngle(fInitYawAngle), fPitchAngle(fInitPitchAngle), fRollAngle(fInitRollAngle) {};
+	/**
+	  * @param fInitYawAngleDeg	Initial yaw angle in degree
+	  * @param fInitPitchAngleDeg	Initial pitch angle in degree
+	  * @param fInitRollAngleDeg	Initial roll angle in degre
+	  */
+	inline DAFFOrientationYPR(float fInitYawAngleDeg, float fInitPitchAngleDeg, float fInitRollAngleDeg)
+		: fYawAngleDeg(fInitYawAngleDeg)
+		, fPitchAngleDeg(fInitPitchAngleDeg)
+		, fRollAngleDeg(fInitRollAngleDeg)
+	{};
 
 	//! Return a string of the orientation
+	/** 
+	  * @return Human readable string of orientation
+	  */
 	inline std::string toString() const
 	{
 		std::stringstream ss;
 		// Note: \xF8 => Degree sign
-		ss << "( Y" << fYawAngle << "\xF8, P" << fPitchAngle << "\xF8, R" << fRollAngle << "\xF8 )";
+		ss << "( Y" << fYawAngleDeg << "\xF8, P" << fPitchAngleDeg << "\xF8, R" << fRollAngleDeg << "\xF8 )";
 		return ss.str();
-	}
+	};
 };
 
 #endif // IW_DAFF_DEFS

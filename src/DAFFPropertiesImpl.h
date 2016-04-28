@@ -20,40 +20,43 @@
 #include <cstdlib>
 
 //! Implements the interface of DAFFProperties
-class DAFF_API DAFFPropertiesImpl : public DAFFProperties {
+class DAFF_API DAFFPropertiesImpl : public DAFFProperties
+{
 public:
 	// Default constructor
-	DAFFPropertiesImpl() 
-	: m_iFileFormatVersion(0), 
-	  m_iContentType(0),
-	  m_iQuantization(0),
-	  m_iNumChannels(0),
-	  m_iNumRecords(0),
-	  m_iAlphaPoints(0),
-	  m_fAlphaStart(0), 
-	  m_fAlphaEnd(0),
-	  m_fAlphaResolution(0),
-	  m_iBetaPoints(0),
-	  m_fBetaStart(0), 
-	  m_fBetaEnd(0),
-	  m_fBetaResolution(0),
-	  m_pOrientationDefault(0),
-	  m_pTrans(0)
-	{}
+	inline DAFFPropertiesImpl()
+		: m_iFileFormatVersion(0),
+		m_iContentType(0),
+		m_iQuantization(0),
+		m_iNumChannels(0),
+		m_iNumRecords(0),
+		m_iAlphaPoints(0),
+		m_fAlphaStart(0),
+		m_fAlphaEnd(0),
+		m_fAlphaResolution(0),
+		m_iBetaPoints(0),
+		m_fBetaStart(0),
+		m_fBetaEnd(0),
+		m_fBetaResolution(0),
+		m_pOrientationDefault(0),
+		m_pTrans(0)
+	{};
 
-	// Copy constructor
-	DAFFPropertiesImpl(const DAFFProperties* pProps)
+	//! Copy constructor
+	inline DAFFPropertiesImpl(const DAFFProperties* pProps)
 	{
 		assert( pProps != NULL );
 		*this = *pProps;
-	}
+	};
 
-	~DAFFPropertiesImpl() {
+	inline ~DAFFPropertiesImpl()
+	{
 		delete m_pOrientationDefault;
-	}
+	};
 		
-	// Assignment operator
-	DAFFPropertiesImpl& operator=(const DAFFProperties& oProps) {
+	//! Assignment operator
+	inline DAFFPropertiesImpl& operator=(const DAFFProperties& oProps)
+	{
 		m_iFileFormatVersion = oProps.getFileFormatVersion();
 		m_iContentType = oProps.getContentType();
 		m_iQuantization = oProps.getQuantization();
@@ -80,145 +83,165 @@ public:
 			m_vChannelLabels.push_back(oProps.getChannelLabel(i));
 
 		return *this;
-	}
-
-
+	};
 
 	// --= Interface "DAFFProperties" =--
 
-	virtual int getFileFormatVersion() const {
+	inline virtual int getFileFormatVersion() const
+	{
 		return m_iFileFormatVersion;
-	}
+	};
 
 	//! Returns the content type
-	virtual int getContentType() const {
+	inline virtual int getContentType() const
+	{
 		return m_iContentType;
-	}
+	};
 
 	//! Returns the quantization of the data elements
-	virtual int getQuantization() const {
+	inline virtual int getQuantization() const
+	{
 		return m_iQuantization;
-	}
+	};
 
 	//! Returns the number of channels
-	virtual int getNumberOfChannels() const {
+	inline virtual int getNumberOfChannels() const
+	{
 		return m_iNumChannels;
-	}
+	};
 
 	//! Returns the overall number of records
-	virtual int getNumberOfRecords() const {
+	inline virtual int getNumberOfRecords() const
+	{
 		return m_iNumRecords;
-	}
+	};
 
 	//! Returns the label of a channel
-	virtual std::string getChannelLabel(int iChannel) const {
+	inline virtual std::string getChannelLabel(int iChannel) const
+	{
 		return m_vChannelLabels[iChannel];
-	}
+	};
 
 	// -= Alpha angle =----------------------------------
 
 	// Returns the number of measurement points of the alpha range
-	virtual int getAlphaPoints() const {
+	inline virtual int getAlphaPoints() const
+	{
 		return m_iAlphaPoints;
-	}
+	};
 
 	// Returns the angular resolution of the alpha range
-	virtual float getAlphaResolution() const {
+	inline virtual float getAlphaResolution() const
+	{
 		return m_fAlphaResolution;
-	}
+	};
 
 	// Returns starting angle of the alpha range
-	virtual float getAlphaStart() const {
+	inline virtual float getAlphaStart() const
+	{
 		return m_fAlphaStart;
-	}
+	};
 
 	// Returns ending angle of the alpha range
-	virtual float getAlphaEnd() const {
+	inline virtual float getAlphaEnd() const
+	{
 		return m_fAlphaEnd;
-	}
+	};
 
 	// Returns the spanned alpha range
-	virtual float getAlphaSpan() const {
+	inline virtual float getAlphaSpan() const
+	{
 		if (m_fAlphaStart <= m_fAlphaEnd)
 			return m_fAlphaEnd - m_fAlphaStart;
 		else // wrap around 0°
 			return 360 - m_fAlphaStart + m_fAlphaEnd;
-	}
+	};
 
 	// -= Beta angle =----------------------------------
 
 	// Returns the number of measurement points of the beta range
-	virtual int getBetaPoints() const {
+	inline virtual int getBetaPoints() const
+	{
 		return m_iBetaPoints;
-	}
+	};
 
 	// Returns the angular resolution of the beta range
-	virtual float getBetaResolution() const {
+	inline virtual float getBetaResolution() const
+	{
 		return m_fBetaResolution;
-	}
+	};
 
 	// Returns starting angle of the beta range
-	virtual float getBetaStart() const {
+	inline virtual float getBetaStart() const
+	{
 		return m_fBetaStart;
-	}
+	};
 
 	// Returns ending angle of the beta range
-	virtual float getBetaEnd() const {
+	inline virtual float getBetaEnd() const
+	{
 		return m_fBetaEnd;
-	}
+	};
 
 	// Returns the spanned beta range
-	virtual float getBetaSpan() const {
+	inline virtual float getBetaSpan() const
+	{
 		return m_fAlphaEnd - m_fAlphaStart;
-	}
+	};
 
 	// -= Orientations =----------------------------------
 
 	//! Returns the default orientation as stored in the file
-	virtual void getDefaultOrientation(DAFFOrientationYPR& o) const {
+	inline virtual void getDefaultOrientation(DAFFOrientationYPR& o) const
+	{
 		o = *m_pOrientationDefault;
-	}
+	};
 
 	//! Sets/alters the default orientation manually
-	virtual void setDefaultOrientation() {
+	inline virtual void setDefaultOrientation()
+	{
 		m_pTrans->setOrientation(*m_pOrientationDefault);
-	}
+	};
 
 	//! Returns the current orientation of the object view
-	virtual void getOrientation(DAFFOrientationYPR& o) const {
+	inline virtual void getOrientation(DAFFOrientationYPR& o) const
+	{
 		m_pTrans->getOrientation(o);
-	}
+	};
 
 	//! Sets the current orientation of the object view
-	virtual void setOrientation(const DAFFOrientationYPR& o) {
+	inline virtual void setOrientation(const DAFFOrientationYPR& o)
+	{
 		m_pTrans->setOrientation(o);
-	}
+	};
 
 	// -= Coverage =--------------------------------------
 
 	//! Indicates wheather the data covers the full alpha range [0°, 360°)
-	virtual bool coversFullAlphaRange() const {
+	inline virtual bool coversFullAlphaRange() const
+	{
 		// full range coverage is given only when alphastart == 0 and alphaend == 360
 		if ((m_fAlphaStart == 0) && (m_fAlphaEnd == 360))
 			return true;
 		else
 			return false;
-	}
-
+	};
 
 	//! Indicates wheather the data covers the full beta range [0°, 180°]
-	virtual bool coversFullBetaRange() const {
+	inline virtual bool coversFullBetaRange() const
+	{
 		// full range coverage is given only when betastart == 0 and betaend == 180
 		if ((m_fBetaStart == 0) && (m_fBetaEnd == 180))
 			return true;
 		else
 			return false;
-	}
+	};
 
 	//! Indicates wheather the data covers the full sphere
-	virtual bool coversFullSphere() const {
+	inline virtual bool coversFullSphere() const
+	{
 		return coversFullAlphaRange() && coversFullBetaRange();
-	}
+	};
 
 	// --= Variables =--
 

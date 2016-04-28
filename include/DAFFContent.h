@@ -70,13 +70,13 @@ public:
 	//! Determines the spherical coordinates of a record (grid point on spherical regular grid)
 	/**
 	 * @param [in] iRecordIndex	The index of the record on regular spherical grid
-	 * @param [in] iVew			The view that should be used for the given pair of angles, one of #DAFF_VIEWS
-	 * @param [out] fAngle1		First angle that corresponds to this index (Phi or Alpha, depending on view)
-	 * @param [out] fAngle2		Second angle that corresponds to this index (Theta or Beta, depending on view)
+	 * @param [in] iView			The view that should be used for the given pair of angles, one of #DAFF_VIEWS
+	 * @param [out] fAngle1Deg		First angle that corresponds to this index (Phi or Alpha, depending on view)
+	 * @param [out] fAngle2Deg		Second angle that corresponds to this index (Theta or Beta, depending on view)
 	 * 
 	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 */
-	virtual int getRecordCoords( int iRecordIndex, int iView, float& fAngle1, float& fAngle2 ) const=0;
+	virtual int getRecordCoords( int iRecordIndex, int iView, float& fAngle1Deg, float& fAngle2Deg ) const=0;
 
 	//! Determine the nearest neighbour record and return its index
 	/**
@@ -89,12 +89,12 @@ public:
 	 *       we maintain a consistent behaviour. You can check if the point was within
 	 *       the boundaries using the bOutOfBounds argument.
 	 *
-	 * @param [in] iVew				The view that should be used for the given pair of angles, one of #DAFF_VIEWS
-	 * @param [in] fAngle1			First angle (Phi or Alpha, depending on view)
-	 * @param [in] fAngle2			Second angle (Theta or Beta, depending on view)
+	 * @param [in] iView				The view that should be used for the given pair of angles, one of #DAFF_VIEWS
+	 * @param [in] fAngle1Deg			First angle (Phi or Alpha, depending on view)
+	 * @param [in] fAngle2Deg			Second angle (Theta or Beta, depending on view)
 	 * @param [out] iRecordIndex	Index that corresponds to this pair of angles	 
 	 */
-	virtual void getNearestNeighbour( int iView, float fAngle1, float fAngle2, int& iRecordIndex ) const=0;
+	virtual void getNearestNeighbour( int iView, float fAngle1Deg, float fAngle2Deg, int& iRecordIndex ) const=0;
 
 	//! Determine the nearest neighbour record and return its index (with boundary validatsion)
 	/**
@@ -107,14 +107,14 @@ public:
 	*       we maintain a consistent behaviour. You can check if the point was within
 	*       the boundaries using the bOutOfBounds argument.
 	*
-	* @param [in] iVew				The view that should be used for the given pair of angles, one of #DAFF_VIEWS
-	* @param [in] fAngle1			First angle (Phi or Alpha, depending on view)
-	* @param [in] fAngle2			Second angle (Theta or Beta, depending on view)
+	* @param [in] iView				The view that should be used for the given pair of angles, one of #DAFF_VIEWS
+	* @param [in] fAngle1Deg			First angle (Phi or Alpha, depending on view)
+	* @param [in] fAngle2Deg			Second angle (Theta or Beta, depending on view)
 	* @param [out] iRecordIndex		Index that corresponds to this pair of angles
-	* @param [out] bbOutOfBounds	Indicator if requested direction was out of bounds (true in this case)
+	* @param [out] bOutOfBounds	Indicator if requested direction was out of bounds (true in this case)
 	*
 	*/
-	virtual void getNearestNeighbour( int iView, float fAngle1, float fAngle2, int& iRecordIndex, bool& bOutOfBounds ) const=0;
+	virtual void getNearestNeighbour( int iView, float fAngle1Deg, float fAngle2Deg, int& iRecordIndex, bool& bOutOfBounds ) const=0;
 
 	//! Determines the cell of a given direction on the sphere grid and delivers its surrounding record indices
 	/**
@@ -185,8 +185,13 @@ public:
 	 *
 	 *		Anyway, using getCell out of the boundaries does not make that much sense. In case you run
 	 *		out of bounds onsider using getNearestNeighbour with boundary flag instead.
+	 *
+	 * @param [in] iView	View, one of #DAFF_VIEWS
+	 * @param [in] fAngle1Deg	Angle of first value in degree
+	 * @param [in] fAngle2Deg	Angle of first value in degree
+	 * @param [out] qIndices		Quad struct with index values
 	 */
-	virtual void getCell(int iView, const float fAngle1, const float fAngle2, DAFFQuad& qIndices) const=0;
+	virtual void getCell(int iView, float fAngle1Deg, float fAngle2Deg, DAFFQuad& qIndices) const = 0;
 
 	// --= Coordinate transformations =--
 
@@ -196,15 +201,12 @@ public:
 	 * and transforms it into the equivalent direction expressed in object spherical coordinates (OSC)
 	 * as an angular pair (azimuth, elevation).
 	 *
-	 * \param fAlpha		Alpha angle in the DSC [degrees] (input)
-	 * \param fBeta			Beta angle in the DSC [degrees] (input)
-	 * \param fAzimuth		Azimuthal angle in the OSC [degrees] (output)
-	 * \param fElevation	Elevation angle in the OSC [degrees] (output)
+	 * \param [in] fAlphaDeg			Alpha angle in the DSC [degrees] (input)
+	 * \param [in] fBetaDeg			Beta angle in the DSC [degrees] (input)
+	 * \param [out] fAzimuthDeg		Azimuthal angle in the OSC [degrees] (output)
+	 * \param [out] fElevationDeg	Elevation angle in the OSC [degrees] (output)
 	 */
-	virtual void transformAnglesD2O(const float fAlpha,
-		                            const float fBeta,
-						            float& fAzimuth,
-							        float& fElevation) const=0;
+	virtual void transformAnglesD2O( float fAlphaDeg, float fBetaDeg, float& fAzimuthDeg, float& fElevationDeg ) const=0;
 
 	//! Transforms object spherical coordinates into data spherical coordinates
 	/**
@@ -212,15 +214,12 @@ public:
 	 * and transforms it into the equivalent direction expressed in data spherical coordinates (DSC)
 	 * as an angular pair (azimuth, elevation).
 	 *
-	 * \param fAzimuth		Azimuthal angle in the OSC [degrees] (input)
-	 * \param fElevation	Elevation angle in the OSC [degrees] (input)
-	 * \param fAlpha		Alpha angle in the DSC [degrees] (output)
-	 * \param fBeta			Beta angle in the DSC [degrees] (output)
+	 * \param [in] fAzimuthDeg		Azimuthal angle in the OSC [degrees] (input)
+	 * \param [in] fElevationDeg	Elevation angle in the OSC [degrees] (input)
+	 * \param [out] fAlphaDeg		Alpha angle in the DSC [degrees] (output)
+	 * \param [out] fBetaDeg		Beta angle in the DSC [degrees] (output)
 	 */
-	virtual void transformAnglesO2D(const float fAzimuth,
-		                            const float fElevation,
-						            float& fAlpha,
-							        float& fBeta) const=0;
+	virtual void transformAnglesO2D( float fAzimuthDeg, float fElevationDeg, float& fAlphaDeg, float& fBetaDeg) const=0;
 };
 
 #endif // IW_DAFF_CONTENT

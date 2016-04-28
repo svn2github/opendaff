@@ -19,7 +19,8 @@
 // Forward declarations
 class DAFFMetadataKey;
 
-class DAFFMetadataImpl : public DAFFMetadata {
+class DAFFMetadataImpl : public DAFFMetadata
+{
 public:
 	DAFFMetadataImpl();
 	~DAFFMetadataImpl();
@@ -47,13 +48,13 @@ private:
 
 	KeyMap m_mKeys;
 
-	// Insert a key into the keymap
+	//! Insert a key into the keymap
 	void insertKey(const std::string& sName, DAFFMetadataKey* pKey);
 
-	// Search for a key and return the pointer to it (NULL => key not found)
+	//! Search for a key and return the pointer to it (NULL => key not found)
 	const DAFFMetadataKey* findKey(const std::string& sKey) const;
 
-	// Delete functor for key pairs
+	//! Delete functor for key pairs
 	static void deleteMetadataKeyPair(const KeyPair& pKeyPair);
 };
 

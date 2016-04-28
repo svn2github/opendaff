@@ -203,9 +203,9 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 		return DAFF_FILE_CORRUPTED;
 
 	// Orientation
-	m_orientationDefault.fYawAngle = m_pMainHeader->fOrientYaw;
-	m_orientationDefault.fPitchAngle = m_pMainHeader->fOrientPitch;
-	m_orientationDefault.fRollAngle = m_pMainHeader->fOrientRoll;
+	m_orientationDefault.fYawAngleDeg = m_pMainHeader->fOrientYaw;
+	m_orientationDefault.fPitchAngleDeg = m_pMainHeader->fOrientPitch;
+	m_orientationDefault.fRollAngleDeg = m_pMainHeader->fOrientRoll;
 	m_tTrans.setOrientation(m_orientationDefault);
 
 	/*

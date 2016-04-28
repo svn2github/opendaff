@@ -32,14 +32,21 @@
  * with a real and imagninary part by getCoefficientsRI.
  */
 
-class DAFF_API DAFFContentMPS: public DAFFContent {
+class DAFF_API DAFFContentMPS: public DAFFContent
+{
 public:
-	virtual ~DAFFContentMPS() {};
+	inline virtual ~DAFFContentMPS() {};
 
 	//! Returns the number of support points (frequencies)
+	/*
+	* @return Number of frequencies
+	*/
 	virtual int getNumFrequencies() const=0;
 
 	//! Retrieves the frequencies [in Hertz] at which values are defined
+	/*
+	* @return Vector of frequencies
+	*/
 	virtual const std::vector<float>& getFrequencies() const=0;
 
 	//! Returns the overall greatest magnitude value
@@ -63,7 +70,7 @@ public:
 	 * \param iChannel      Channel index
 	 * \param pfDest		Destination buffer (size >= number of frequencies)
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 *
 	 * \note The magnitude values are factors (no decibel).
 	 */
@@ -74,12 +81,12 @@ public:
      * This method retrives the magnitude coefficient for the given direction (record index),
 	 * channel and frequency index. It stores the value in the supplied destination. 
 	 *
-	 * \param iRecordIndex  Record index (direction)
-	 * \param iChannel      Channel index
-	 * \param iFreqIndex    Frequency index
-	 * \param fMag			Magnuitude value
+	 * \param [in] iRecordIndex  Record index (direction)
+	 * \param [in] iChannel      Channel index
+	 * \param [in] iFreqIndex    Frequency index
+	 * \param [out] fMag			Magnuitude value
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 *
 	 * \note The magnitude value is a factor (no decibel).
 	 */
@@ -92,11 +99,11 @@ public:
 	 * as many coefficients as there are support frequencies. Their number can be determined
 	 * using the method getNumFrequencies.
 	 *
-	 * \param iRecordIndex  Record index (direction)
-	 * \param iChannel      Channel index
-	 * \param pfDest		Destination buffer (size >= number of frequencies)
+	 * \param [in] iRecordIndex  Record index (direction)
+	 * \param [in] iChannel      Channel index
+	 * \param [out] pfDest		Destination buffer (size >= number of frequencies)
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 */
 	virtual int getPhases(int iRecordIndex, int iChannel, float* pfDest) const=0;
 	
@@ -105,12 +112,12 @@ public:
      * This method retrives the phase coefficient for the given direction (record index),
 	 * channel and frequency index. It stores the value in the supplied destination. 
 	 *
-	 * \param iRecordIndex  Record index (direction)
-	 * \param iChannel      Channel index
-	 * \param iFreqIndex    Frequency index
-	 * \param fPhase		Phase value
+	 * \param [in] iRecordIndex  Record index (direction)
+	 * \param [in] iChannel      Channel index
+	 * \param [in] iFreqIndex    Frequency index
+	 * \param [out] fPhase		Phase value
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 *
 	 */
 	virtual int getPhase(int iRecordIndex, int iChannel, int iFreqIndex, float& fPhase) const=0;
@@ -126,11 +133,11 @@ public:
 	 *
 	 * The output storage scheme is: pfDest = (Mag[0], Ph[0], Mag[1], Ph[1], ...)
 	 *
-	 * \param iRecordIndex		Record index (direction)
-	 * \param iChannel			Channel index
-	 * \param pfDest			Destination buffer (size >= number of frequencies)
+	 * \param [in] iRecordIndex		Record index (direction)
+	 * \param [in] iChannel			Channel index
+	 * \param [out] pfDest			Destination buffer (size >= number of frequencies)
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 */
 	// TODO: Ausgabe Interleaved
 	virtual int getCoefficientsMP(int iRecordIndex, int iChannel, float* pfDest) const=0;
@@ -146,11 +153,11 @@ public:
 	 *
 	 * The output storage scheme is: pfDest = (Re[0], Im[0], Re[1], Im[1], ...)
 	 *
-	 * \param iRecordIndex		Record index (direction)
-	 * \param iChannel			Channel index
-	 * \param pfDest			Magnitudes destination buffer (size >= number of frequencies)
+	 * \param [in] iRecordIndex		Record index (direction)
+	 * \param [in] iChannel			Channel index
+	 * \param [out] pfDest			Magnitudes destination buffer (size >= number of frequencies)
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 */
 	// TODO: Ausgabe Interleaved
 	virtual int getCoefficientsRI(int iRecordIndex, int iChannel, float* pfDest) const=0;

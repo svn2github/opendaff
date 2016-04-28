@@ -115,7 +115,8 @@ class DAFFProperties;
  *
  */
 
-class DAFF_API DAFFReader {
+class DAFF_API DAFFReader
+{
 public:
 	//! Factory method
 	/**
@@ -124,7 +125,7 @@ public:
 	static DAFFReader* create();
 
 	//! Destructor
-	virtual inline ~DAFFReader() {};
+	inline virtual ~DAFFReader() {};
 
 	// --= File handling =--
 
@@ -136,13 +137,13 @@ public:
 	 * This method opens the given DAFF file for reading and
 	 * loads all of its data into the memory.
 	 *
-	 * \return Errorcode (0 => No error)
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 */
 	virtual int openFile(const std::string& sFilename)=0;
 
 	//! Closes an opened DAFF file
 	/**
-	 * \return Errorcode (0 => No error)
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 */
 	virtual void closeFile()=0;
 

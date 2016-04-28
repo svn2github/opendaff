@@ -641,18 +641,18 @@ void GetProperties(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	pValue = mxCreateDoubleMatrix(1, 3, mxREAL);
 	pdData = mxGetPr(pValue);
 	pProps->getOrientation(orient);
-	pdData[0] = orient.fYawAngle;
-	pdData[1] = orient.fPitchAngle;
-	pdData[2] = orient.fRollAngle;
+	pdData[0] = orient.fYawAngleDeg;
+	pdData[1] = orient.fPitchAngleDeg;
+	pdData[2] = orient.fRollAngleDeg;
 	mxSetField(pStruct, 0, "orientation", pValue);
 
 	// Default orientation
 	pValue = mxCreateDoubleMatrix(1, 3, mxREAL);
 	pdData = mxGetPr(pValue);
 	pProps->getDefaultOrientation(orient);
-	pdData[0] = orient.fYawAngle;
-	pdData[1] = orient.fPitchAngle;
-	pdData[2] = orient.fRollAngle;
+	pdData[0] = orient.fYawAngleDeg;
+	pdData[1] = orient.fPitchAngleDeg;
+	pdData[2] = orient.fRollAngleDeg;
 	mxSetField(pStruct, 0, "orientationDefault", pValue);
 
 	// Full sphere

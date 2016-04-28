@@ -29,14 +29,21 @@
  * The magnitude coefficients can be retrieved using the method getMagnitudes.
  */
 
-class DAFF_API DAFFContentMS: public DAFFContent {
+class DAFF_API DAFFContentMS: public DAFFContent
+{
 public:
-	virtual ~DAFFContentMS() {};
+	inline virtual ~DAFFContentMS() {};
 
 	//! Returns the number of support points (frequencies)
+	/*
+	* @return Number of frequencies
+	*/
 	virtual int getNumFrequencies() const=0;
 
 	//! Retrieves the frequencies [in Hertz] at which values are defined
+	/*
+	* @return Vector of frequencies
+	*/
 	virtual const std::vector<float>& getFrequencies() const=0;
 
 	//! Returns the overall greatest magnitude value
@@ -56,11 +63,11 @@ public:
 	 * as many coefficients as there are support frequencies. Their number can be determined
 	 * using the method getNumFrequencies.
 	 *
-	 * \param iRecordIndex  Record index (direction)
-	 * \param iChannel      Channel index
-	 * \param pfDest		Destination buffer (size >= number of frequencies)
+	 * \param [in] iRecordIndex  Record index (direction)
+	 * \param [in] iChannel      Channel index
+	 * \param [out] pfDest		Destination buffer (size >= number of frequencies)
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 *
 	 * \note The magnitude values are factors (no decibel).
 	 */
@@ -71,12 +78,12 @@ public:
      * This method retrives the magnitude coefficient for the given direction (record index),
 	 * channel and frequency index. It stores the value in the supplied destination. 
 	 *
-	 * \param iRecordIndex  Record index (direction)
-	 * \param iChannel      Channel index
-	 * \param iFreqIndex    Frequency index
-	 * \param fMag			Magnuitude value
+	 * \param [in] iRecordIndex  Record index (direction)
+	 * \param [in] iChannel      Channel index
+	 * \param [in] iFreqIndex    Frequency index
+	 * \param [out] fMag			Magnuitude value
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 *
 	 * \note The magnitude value is a factor (no decibel).
 	 */

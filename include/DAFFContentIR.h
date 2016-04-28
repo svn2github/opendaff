@@ -36,11 +36,15 @@
  * execution speed. For more details please refer to the manual.
  */
 
-class DAFF_API DAFFContentIR : public DAFFContent {
+class DAFF_API DAFFContentIR : public DAFFContent
+{
 public:
-	virtual ~DAFFContentIR() {};
+	inline virtual ~DAFFContentIR() {};
 
 	//! Returns the sampling rate [in Hertz]
+	/*
+	* @return Sampling rate
+	*/
 	virtual double getSamplerate() const=0;
 
 	// --= Basic data access =--
@@ -60,12 +64,12 @@ public:
 	 * destination buffer. The method writes exactly as many filter coefficients
 	 * into the buffer as the filter length.
 	 *
-	 * \param iRecordIndex  Record index (direction)
-	 * \param iChannel      Channel index
-	 * \param pfDest		Destination buffer (size >= filter length)
-	 * \param fGain			Gain factor (optional, default: 1)
+	 * \param [in] iRecordIndex  Record index (direction)
+	 * \param [in] iChannel      Channel index
+	 * \param [out] pfDest		Destination buffer (size >= filter length)
+	 * \param [in] fGain			Gain factor (optional, default: 1)
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 */
 	virtual int getFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const=0;
 
@@ -78,12 +82,12 @@ public:
 	 * code can be avoided using the add filter funcionality. Extensive use of 
 	 * record requests can be accelerated by this method.
 	 *
-	 * \param iRecordIndex  Record index (direction)
-	 * \param iChannel      Channel index
-	 * \param pfDest		Destination buffer (size >= filter length)
-	 * \param fGain			Gain factor (optional, default: 1)
+	 * \param [in] iRecordIndex  Record index (direction)
+	 * \param [in] iChannel      Channel index
+	 * \param [out] pfDest		Destination buffer (size >= filter length)
+	 * \param [in] fGain			Gain factor (optional, default: 1)
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 */
 	virtual int addFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const=0;
 
@@ -113,12 +117,12 @@ public:
 	 * This method retrieves the start (offset) and length of the effective filter zone
 	 * for the given direction (record index) and channel.
 	 *
-	 * \param iRecordIndex  Record index (direction) [in]
-	 * \param iChannel      Channel index [in]
-	 * \param iOffset		Effective filter offset [out]
-	 * \param iLength		Effective filter length [out]
+	 * \param [in] iRecordIndex  Record index (direction) [in]
+	 * \param [in] iChannel      Channel index [in]
+	 * \param [out] iOffset		Effective filter offset [out]
+	 * \param [out] iLength		Effective filter length [out]
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 *
 	 * \sa getEffectiveFilterCoeffs
 	 */
@@ -133,12 +137,12 @@ public:
 	 * using the method getEffectiveFilterBounds. The method starts to write into the
 	 * destination buffer at position 0 (but not the effective filter offset).
 	 *
-	 * \param iRecordIndex  Record index (direction)
-	 * \param iChannel      Channel index
-	 * \param pfDest		Destination buffer (size >= effective filter length)
-	 * \param fGain			Gain factor (optional, default: 1)
+	 * \param [in] iRecordIndex  Record index (direction)
+	 * \param [in] iChannel      Channel index
+	 * \param [out] pfDest		Destination buffer (size >= effective filter length)
+	 * \param [in] fGain			Gain factor (optional, default: 1)
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 *
 	 * \sa getEffectiveFilterBounds
 	 */
@@ -160,12 +164,16 @@ public:
 	 * \param pfDest		Destination buffer (size >= effective filter length)
 	 * \param fGain			Gain factor (optional, default: 1)
 	 *
-	 * \return 0 on success, errorcode otherwise
+	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 *
 	 * \sa getEffectiveFilterBounds
 	 */
 	virtual int addEffectiveFilterCoeffs(int iRecordIndex, int iChannel, float* pfDest, float fGain=1.0F) const=0;
 
+	//! Get overall peak value
+	/**
+	  * @return Overall peak value
+	  */
 	virtual float getOverallPeak()=0;
 };
 

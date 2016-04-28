@@ -77,11 +77,11 @@ public:
 	DAFFReader* getParent() const;
 	const DAFFMetadata* getRecordMetadata(int iRecordIndex) const;
 	int getRecordCoords(int iRecordIndex, int iView, float& fAngle1, float& fAngle2) const;
-	void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex) const;
-	void getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex, bool& bOutOfBounds) const;
-	void getCell(int iView, const float fAngle1, const float fAngle2, DAFFQuad& qIndices) const;
-	void transformAnglesD2O(const float fAlpha, const float fBeta, float& fAzimuth, float& fElevation) const;
-	void transformAnglesO2D(const float fAzimuth, const float fElevation, float& fAlpha, float& fBeta) const;
+	void getNearestNeighbour(int iView, float fAngle1Deg, float fAngle2Deg, int& iRecordIndex) const;
+	void getNearestNeighbour(int iView, float fAngle1Deg, float fAngle2Deg, int& iRecordIndex, bool& bOutOfBounds) const;
+	void getCell(int iView, float fAngle1, float fAngle2, DAFFQuad& qIndices) const;
+	void transformAnglesD2O(float fAlpha, float fBeta, float& fAzimuth, float& fElevation) const;
+	void transformAnglesO2D(float fAzimuth, float fElevation, float& fAlpha, float& fBeta) const;
 
 	// --= Interface "DAFFContentIR" =--
 
@@ -124,53 +124,54 @@ public:
 	int getDFTCoeffs(int iRecordIndex, int iChannel, float* pfDest) const;
 
 private:
-	bool m_bFileOpened;							// File state
-	std::string m_sFilename;					// Filename
-	FILE* m_file;								// File handle
-	DAFFFileHeader m_fileHeader;				// File header
-	DAFFFileBlockEntry* m_pFileBlockTable;		// File block table
-	DAFFMainHeader* m_pMainHeader;				// Main header
-	DAFFFileBlockEntry* m_pfbRDT;				// File block of the record descriptor table
-	DAFFFileBlockEntry* m_pfbData;				// File block of the record descriptor table
-	void* m_pContentHeader;						// Content related header (will become IR or MS)
-	void* m_pRecordDescBlock;					// Record descriptor block
-	void* m_pDataBlock;							// Record data block
-	int m_iRecordChannelDescSize;				// Size of a record channel descriptor (Bytes)
+	bool m_bFileOpened;							//!@ File state
+	std::string m_sFilename;					//!@ Filename
+	FILE* m_file;								//!@ File handle
+	DAFFFileHeader m_fileHeader;				//!@ File header
+	DAFFFileBlockEntry* m_pFileBlockTable;		//!@ File block table
+	DAFFMainHeader* m_pMainHeader;				//!@ Main header
+	DAFFFileBlockEntry* m_pfbRDT;				//!@ File block of the record descriptor table
+	DAFFFileBlockEntry* m_pfbData;				//!@ File block of the record descriptor table
+	void* m_pContentHeader;						//!@ Content related header (will become IR or MS)
+	void* m_pRecordDescBlock;					//!@ Record descriptor block
+	void* m_pDataBlock;							//!@ Record data block
+	int m_iRecordChannelDescSize;				//!@ Size of a record channel descriptor (Bytes)
 
-	DAFFContentHeaderIR* m_pContentHeaderIR;	// Access pointer for additional header for impulse response content
-	DAFFContentHeaderMS* m_pContentHeaderMS;	// Access pointer for additional header for magnitude spectrum content
-	DAFFContentHeaderPS* m_pContentHeaderPS;	// Access pointer for additional header for phase spectrum content
-	DAFFContentHeaderMPS* m_pContentHeaderMPS;	// Access pointer for additional header for magnitude-phase spectrum content
-	DAFFContentHeaderDFT* m_pContentHeaderDFT;	// Access pointer for additional header for discrete fourier-spectrum content
-	std::vector<float> m_vfFreqs;				// List of frequencies (magnitude spectra)
+	DAFFContentHeaderIR* m_pContentHeaderIR;	//!@ Access pointer for additional header for impulse response content
+	DAFFContentHeaderMS* m_pContentHeaderMS;	//!@ Access pointer for additional header for magnitude spectrum content
+	DAFFContentHeaderPS* m_pContentHeaderPS;	//!@ Access pointer for additional header for phase spectrum content
+	DAFFContentHeaderMPS* m_pContentHeaderMPS;	//!@ Access pointer for additional header for magnitude-phase spectrum content
+	DAFFContentHeaderDFT* m_pContentHeaderDFT;	//!@ Access pointer for additional header for discrete fourier-spectrum content
+	std::vector<float> m_vfFreqs;				//!@ List of frequencies (magnitude spectra)
 	
-	const DAFFMetadataImpl* m_pEmptyMetadata;	// Emptry metadata instance. getRecordMetadata() will return this as fallback
-	std::vector<DAFFMetadataImpl*> m_vpMetadata;// Metadata pointer
-	DAFFProperties* m_pProperties;				// Properties pointer
-	bool m_bOverallPeakInitialized;				// tells if fOverallPeak has already been initialized (lazy initialization)
-	float m_fOverallPeak;						// Peak value over all records and channels
+	const DAFFMetadataImpl* m_pEmptyMetadata;	//!@ Emptry metadata instance. getRecordMetadata() will return this as fallback
+	std::vector<DAFFMetadataImpl*> m_vpMetadata;//!@ Metadata pointer
+	DAFFProperties* m_pProperties;				//!@ Properties pointer
+	bool m_bOverallPeakInitialized;				//!@ tells if fOverallPeak has already been initialized (lazy initialization)
+	float m_fOverallPeak;						//!@ Peak value over all records and channels
 
-	DAFFOrientationYPR m_orientation;			// Current orientation
-	DAFFOrientationYPR m_orientationDefault;	// Default orientation
+	DAFFOrientationYPR m_orientation;			//!@ Current orientation
+	DAFFOrientationYPR m_orientationDefault;	//!@ Default orientation
 
-	float m_fAlphaResolution;					// Alpha resolution [°]
-	float m_fBetaResolution;					// Beta resolution [°]
-	DAFFSCTransform m_tTrans;			 		// Spherical coordinates transformer
+	float m_fAlphaResolution;					//!@ Alpha resolution [°]
+	float m_fBetaResolution;					//!@ Beta resolution [°]
+	DAFFSCTransform m_tTrans;			 		//!@ Spherical coordinates transformer
 
-	// Search for the first file block that matches the given ID
-	// (returns total number of matching file blocks)
+	//! Search for the first file block that matches the given ID
+	/* @return Total number of matching file blocks)
+	 */
 	int getFirstFileBlockByID(int iID, DAFFFileBlockEntry*& pfDest) const;
 
-	// Search for all file blocks with the given ID (returns the number of matches)
+	//! Search for all file blocks with the given ID (returns the number of matches)
 	int getFileBlocksByID(int iID, std::vector<DAFFFileBlockEntry*>& vpfDest) const;
 
-	// Returns the memory address of a record channel descriptor in the RDB
+	//! Returns the memory address of a record channel descriptor in the RDB
 	void* getRecordChannelDescPtr(int iRecord, int iChannel) const;
 
-	// Returns the memory address of a record metadata index in the RDB
+	//! Returns the memory address of a record metadata index in the RDB
 	int* getRecordMetadataIndexPtr(int iRecord) const;
 
-	// Clear up the instance, free resources revert to the uninitialized state
+	//! Clear up the instance, free resources revert to the uninitialized state
 	void tidyup();
 };
 

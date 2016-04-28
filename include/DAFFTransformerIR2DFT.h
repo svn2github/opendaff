@@ -1,40 +1,17 @@
 /*
- *  OpenDAFF - A free, open-source software package for directional audio data,
- *  OpenDAFF is distributed under the terms of the GNU Lesser Public License (LGPL)
- *
- *  Copyright (C) Institute of Technical Acoustics, RWTH Aachen University, 2009-2010
- *
- *  Visit the OpenDAFF homepage: http://www.opendaff.org
- *
- *
- *  --= License & warranty =--
- *
- *  OpenDAFF is free software, distributed under the terms of the
- *  GNU Lesser General Public License (LGPL) version 3.
- *  You can redistribute it and/or modify it under the terms of the
- *  GNU Lesser General Public License (LGPL) version 3,
- *  as published by the Free Software Foundation.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *  See the GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- *
- *  --= File information =--
- *
- *  File:		DAFFTransformerIR2DFT.h
- *  Purpose:	Transformer from impulse responses to Discrete Fourier spectra
- *  Version:    $Id: $
- *	Authors:	Frank Wefers (Frank.Wefers@akustik.rwth-aachen.de)
- *
- */
+* -------------------------------------------------------------------------------------
+*
+*  OpenDAFF - A free, open source software package for directional audio data
+*  OpenDAFF is distributed under the terms of the GNU Lesser Public License (LGPL)
+*
+*  Copyright (c) Institute of Technical Acoustics, RWTH Aachen University, 2009-2016
+*
+*  ------------------------------------------------------------------------------------
+*
+*/
 
-#ifndef __DAFFTRANSFORMER_IR2DFT_H__
-#define __DAFFTRANSFORMER_IR2DFT_H__
+#ifndef IW_DAFFTRANSFORMER_IR2DFT
+#define IW_DAFFTRANSFORMER_IR2DFT
 
 #include <DAFFDefs.h>
 #include <DAFFContentDFT.h>
@@ -42,7 +19,8 @@
 #include <cmath>
 
 //! Window functions
-enum {
+enum
+{
 	DAFF_WINDOW_NONE = 0,	//!< No windowing
 	DAFF_WINDOW_HANN,		//!< Hann window
 	// TODO: Add more by request ...
@@ -57,7 +35,8 @@ enum {
  * Additional parameters can be changed (e.g. window function).
  */
 
-class DAFF_API DAFFTransformerIR2DFT {
+class DAFF_API DAFFTransformerIR2DFT
+{
 public:
 	//! Default constructor
 	DAFFTransformerIR2DFT();
@@ -116,13 +95,13 @@ public:
 	void transform();
 
 private:
-	const DAFFContentIR* m_pInputContent;		// Assigned input data
-	DAFFContentDFT* m_pOutputContent;			// Transformed output data
-	int m_iWindowFunction;						// Window function
-	float* m_pfBuf;								// Buffer for transformed DFT spectra
-	int m_iNumDFTCoeffs;						// Number of symmetric DFT coefficients
-	int m_iElementSize;							// Size of transformed DFT spectrum (number of elements)
-	float m_fOverallMagnitudePeak;				// Maximum magnitude over all records/channels
+	const DAFFContentIR* m_pInputContent;		//!@ Assigned input data
+	DAFFContentDFT* m_pOutputContent;			//!@ output data
+	int m_iWindowFunction;						//!@ Window function
+	float* m_pfBuf;								//!@ Buffer for transformed DFT spectra
+	int m_iNumDFTCoeffs;						//!@ Number of symmetric DFT coefficients
+	int m_iElementSize;							//!@ Size of transformed DFT spectrum (number of elements)
+	float m_fOverallMagnitudePeak;				//!@ Maximum magnitude over all records/channels
 
 	// Called by inner content class
 	float getOverallMagnitudeMaximum() const;
@@ -132,4 +111,4 @@ private:
 	friend class DAFFContentDFTRealization;
 };
 
-#endif // __DAFFTRANSFORMER_IR2DFT_H__
+#endif // IW_DAFFTRANSFORMER_IR2DFT

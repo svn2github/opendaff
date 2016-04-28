@@ -15,10 +15,11 @@
 
 #include <DAFFDefs.h>
 
-class DAFF_API DAFFProperties {
+class DAFF_API DAFFProperties
+{
 public:
 	//! Destructor
-	virtual ~DAFFProperties() {};
+	inline virtual ~DAFFProperties() {};
 
 	// --= Properties =--
 

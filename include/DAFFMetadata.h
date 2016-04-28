@@ -29,7 +29,8 @@
  *       Other methods cause errors when they are called on keys of wrong datatype.
  *       (e.g. getKeyBool for a floating-point key)
  */
-class DAFF_API DAFFMetadata {
+class DAFF_API DAFFMetadata
+{
 public:
 	//! Metadata types
 	enum {
@@ -40,7 +41,7 @@ public:
 	};
 
 	//! Destructor
-	virtual ~DAFFMetadata() {};
+	inline virtual ~DAFFMetadata() {};
 
 	//! Returns if metadata does not contain any keys
 	virtual bool isEmpty() const=0;

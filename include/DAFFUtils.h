@@ -23,7 +23,8 @@
  * normalization functions.
  */
 
-class DAFF_API DAFFUtils {
+class DAFF_API DAFFUtils
+{
 public:
 	//! Get the library version
 	static void getLibraryVersion(DAFFVersion& version);
@@ -33,14 +34,14 @@ public:
 	 * Format for data view directions [A => alpha, B => beta]:  (A123.1°, B123.167°)
 	 * Format for object view directions [P => phi, T => theta]: (P+123.1°, T-10.167°)
 	 */
-	static std::string StrDirection(int iView, double dAngle1, double dAngle2, int precision=9, int leadingzeros=3);
+	static std::string StrDirection(int iView, double dAngle1Deg, double dAngle2Deg, int precision = 9, int leadingzeros = 3);
 
 	//! Format a direction (angular pair) as a string canonically and in more compact form
 	/**
 	 * Format for data view directions [A => alpha, B => beta]:  A123.1° B123.167°
 	 * Format for object view directions [P => phi, T => theta]: P+123.1° T-10.167°
 	 */
-	static std::string StrDirectionCompact(int iView, double dAngle1, double dAngle2, int precision=9, int leadingzeros=3);
+	static std::string StrDirectionCompact(int iView, double dAngle1Deg, double dAngle2Deg, int precision = 9, int leadingzeros = 3);
 
 	//! Return the string corresponding to an errorcode
 	static std::string StrError(int iErrorcode);
@@ -69,8 +70,8 @@ public:
 	 * are more easy to interpret (by humans).
 	 */
 	static void NormalizeDirection(int iView,
-		                           const float fAngle1In, const float fAngle2In,
-								   float& fAngle1Out, float& fAngle2Out);
+		float fAngle1DegIn, float fAngle2DegIn,
+		float& fAngle1DegOut, float& fAngle2DegOut);
 
 	//! Converts a single precision floating point into nice std::string
 	/**
@@ -85,9 +86,9 @@ public:
 	static std::string Double2StrNice(double d, int precision, bool showpos, int leadingzeros=0);
 
 private:
-	DAFFUtils() {}
-	DAFFUtils(const DAFFUtils& rhs) {}
-	~DAFFUtils() {}
+	inline DAFFUtils() {};
+	inline DAFFUtils(const DAFFUtils& rhs) {};
+	inline ~DAFFUtils() {};
 };
 
 #endif // IW_DAFF_UTILS

@@ -7,53 +7,58 @@
 #include <iomanip>
 #include <sstream>
 
-class DAFFMetadataKey {
+class DAFFMetadataKey
+{
 public:
 	int m_iType;
 
-	DAFFMetadataKey(int iType) : m_iType(iType) {
-		
-	}
+	inline DAFFMetadataKey(int iType) : m_iType(iType)
+	{};
 
-	virtual ~DAFFMetadataKey() {};
+	inline virtual ~DAFFMetadataKey() {};
 };
 
-class DAFFMetadataKeyBool : public DAFFMetadataKey {
+class DAFFMetadataKeyBool : public DAFFMetadataKey
+{
 public:
 	bool m_bValue;
 
-	DAFFMetadataKeyBool(bool bValue)
+	inline DAFFMetadataKeyBool(bool bValue)
 		: DAFFMetadataKey(DAFFMetadata::DAFF_BOOL), m_bValue(bValue) {};
 };
 
-class DAFFMetadataKeyInt : public DAFFMetadataKey {
+class DAFFMetadataKeyInt : public DAFFMetadataKey
+{
 public:
 	int m_iValue;
 
-	DAFFMetadataKeyInt(int iValue)
+	inline DAFFMetadataKeyInt(int iValue)
 		: DAFFMetadataKey(DAFFMetadata::DAFF_INT), m_iValue(iValue) {};
 };
 
-class DAFFMetadataKeyFloat : public DAFFMetadataKey {
+class DAFFMetadataKeyFloat : public DAFFMetadataKey
+{
 public:
 	double m_dValue;
 
-	DAFFMetadataKeyFloat(double dValue)
+	inline DAFFMetadataKeyFloat(double dValue)
 		: DAFFMetadataKey(DAFFMetadata::DAFF_FLOAT), m_dValue(dValue) {};
 
 };
 
-class DAFFMetadataKeyString : public DAFFMetadataKey {
+class DAFFMetadataKeyString : public DAFFMetadataKey
+{
 public:
 	std::string m_sValue;
 
-	DAFFMetadataKeyString(const std::string& sValue)
+	inline DAFFMetadataKeyString(const std::string& sValue)
 		: DAFFMetadataKey(DAFFMetadata::DAFF_STRING), m_sValue(sValue) {};
 };
 
 DAFFMetadataImpl::DAFFMetadataImpl() {}
 
-int DAFFMetadataImpl::load(void* pData, size_t &iBytesRead) { 
+int DAFFMetadataImpl::load(void* pData, size_t &iBytesRead)
+{ 
 	char* p = (char*) pData;
 
 	// Read the number of keys
@@ -67,7 +72,8 @@ int DAFFMetadataImpl::load(void* pData, size_t &iBytesRead) {
 	std::string sValue;
 
 	// Read the keys
-	for (int i=0; i<*piNumKeys; i++) {
+	for (int i=0; i<*piNumKeys; i++)
+	{
 		// Datatype
 		piDatatype = (int*) p;
 		DAFF::le2se_4byte(piDatatype, 1);
@@ -78,7 +84,8 @@ int DAFFMetadataImpl::load(void* pData, size_t &iBytesRead) {
 		p += sKey.length()+1;
 
 		// Value
-		switch (*piDatatype) {
+		switch (*piDatatype)
+		{
 		case DAFF_BOOL:
 			piValue = (int*) p;
 			DAFF::le2se_4byte(piValue, 1);
@@ -117,15 +124,17 @@ int DAFFMetadataImpl::load(void* pData, size_t &iBytesRead) {
 
 	iBytesRead = (size_t) (p - (char*)pData);
 	return 0;
-};
+}
 
-DAFFMetadataImpl::~DAFFMetadataImpl() {
+DAFFMetadataImpl::~DAFFMetadataImpl()
+{
 	// Delete all keys
 	std::for_each(m_mKeys.begin(), m_mKeys.end(), deleteMetadataKeyPair);
 	m_mKeys.clear();
-};
+}
 
-bool DAFFMetadataImpl::isEmpty() const {
+bool DAFFMetadataImpl::isEmpty() const
+{
 	return m_mKeys.empty();
 }
 
