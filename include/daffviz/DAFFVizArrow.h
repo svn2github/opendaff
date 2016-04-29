@@ -21,81 +21,83 @@ class vtkActor;
 class vtkArrowSource;
 class vtkPolyDataMapper;
 
-namespace DAFFViz {
+namespace DAFFViz
+{
 
-//! Simple arrow object node
-/**
- * This class derived from the scene graph node class creates an arrow from VTK.
- */
+	//! Simple arrow object node
+	/**
+	 * This class derived from the scene graph node class creates an arrow from VTK.
+	 */
 
-class DAFF_API Arrow : public DAFFViz::SGNode {
-public:
-	Arrow();
-	Arrow(double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution);
-	Arrow(DAFFViz::SGNode* pParentNode, double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution);
-	~Arrow();
+	class DAFF_API Arrow : public DAFFViz::SGNode
+	{
+	public:
+		Arrow();
+		Arrow(double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution);
+		Arrow(DAFFViz::SGNode* pParentNode, double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution);
+		~Arrow();
 
-	// --= object related methods =--
+		// --= object related methods =--
 
-	//! Tip length getter
-	double GetTipLength() const;
+		//! Tip length getter
+		double GetTipLength() const;
 
-	//! Tip length setter
-	void SetTipLength(double dLength);
+		//! Tip length setter
+		void SetTipLength(double dLength);
 
-	//! Tip radius getter
-	double GetTipRadius() const;
+		//! Tip radius getter
+		double GetTipRadius() const;
 
-	//! Tip radius setter
-	void SetTipRadius(double dRadius);
+		//! Tip radius setter
+		void SetTipRadius(double dRadius);
 
-	//! Tip resolution getter
-	int GetTipResolution() const;
+		//! Tip resolution getter
+		int GetTipResolution() const;
 
-	//! Tip resolution setter
-	void SetTipResolution(int iResolution);
+		//! Tip resolution setter
+		void SetTipResolution(int iResolution);
 
-	//! Shaft radius getter
-	double GetShaftRadius() const;
+		//! Shaft radius getter
+		double GetShaftRadius() const;
 
-	//! Shaft radius setter
-	void SetShaftRadius(double dRadius);
+		//! Shaft radius setter
+		void SetShaftRadius(double dRadius);
 
-	//! Shaft resolution getter
-	int GetShaftResolution() const;
+		//! Shaft resolution getter
+		int GetShaftResolution() const;
 
-	//! Shaft resolution setter
-	void SetShaftResolution(int iResolution);
+		//! Shaft resolution setter
+		void SetShaftResolution(int iResolution);
 
 
-	// --= general methods =--
+		// --= general methods =--
 
-	//! Color getter
-	void GetColor(double& r, double& g, double& b);
+		//! Color getter
+		void GetColor(double& r, double& g, double& b);
 
-	//! Color setter
-	void SetColor(const double r, const double g, const double b);
+		//! Color setter
+		void SetColor( double r, double g, double b);
 
-	//! Alpha getter
-	double GetAlpha() const;
+		//! Alpha getter
+		double GetAlpha() const;
 
-	//! Alpha setter
-	void SetAlpha(const double a);
+		//! Alpha setter
+		void SetAlpha( double a);
 
-	//! Set visibility
-	void SetVisible(const bool bVisible);
+		//! Set visibility
+		void SetVisible( bool bVisible);
 
-	//! Get visibility
-	bool IsVisible() const;
+		//! Get visibility
+		bool IsVisible() const;
 
-private:
-	vtkArrowSource*		m_pSource;
-	vtkPolyDataMapper*  m_pMapper;
-	vtkActor*			m_pActor;
+	private:
+		vtkArrowSource*		m_pSource;
+		vtkPolyDataMapper*  m_pMapper;
+		vtkActor*			m_pActor;
 
-	// The initializer generates dynamic objects like source, mapper, actor ...
-	void init();
-};
+		//! The initializer generates dynamic objects like source, mapper, actor ...
+		void init();
+	};
 
 } // End of namespace "DAFFViz"
 

@@ -37,13 +37,13 @@ namespace DAFFViz
 	class DAFF_API GlobalLock
 	{
 	public:
-		// Return the singleton instance
+		//! Return the singleton instance
 		static DAFFViz::GlobalLock* getInstance();
 	
-		// Lock
+		//! Lock globally
 		virtual void lock() =0;
 
-		// Unlock
+		//! Unlock globally
 		virtual void unlock() =0;
 
 	protected:
