@@ -76,8 +76,8 @@ int main() {
 			assert( (data[0] - floor(data[0])) == 0 );
 			int value = (int) data[0];
 
-			float alpha2 = (value % 1000);
-			float beta2 = (value / 1000);
+			float alpha2 = float(value % 1000);
+			float beta2 = (value / 1000.0f);
 
 			cout << "in (" << alpha << "," << beta << ") => out (" << alpha2 << "," << beta2 << ")" << endl;
 
