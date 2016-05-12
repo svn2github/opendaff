@@ -225,9 +225,9 @@ void CarpetPlot::UpdateProbe() {
 	return;
 }
 
-void CarpetPlot::SetProbeAngles(const double dX, const double dY) { m_dProbeX = dX; m_dProbeY = dY; }
+void CarpetPlot::SetProbeAngles(double dX, double dY) { m_dProbeX = dX; m_dProbeY = dY; }
 
-void CarpetPlot::SetProbeVisible(const bool bVisible) { 
+void CarpetPlot::SetProbeVisible(bool bVisible) { 
 	m_pProbe->SetVisibility(bVisible);
 	m_pLabel->SetVisibility(bVisible);
 }

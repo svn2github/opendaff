@@ -48,25 +48,25 @@ namespace DAFFViz
 		// --= Object related methods =--
 
 		//! Enables/Disables all graphical assistance
-		//void setAssistanceVisible(const bool bVisible);
+		//void setAssistanceVisible(bool bVisible);
 
 		//! Set axes visibility
 		bool GetAxesVisible() const;
 
 		//! Enables/Disables axes
-		void SetAxesVisible(const bool bVisible);
+		void SetAxesVisible(bool bVisible);
 
 		//! Set grid visibility
 		bool GetGridVisible() const;
 
 		//! Enables/Disables grid line visiblity
-		void SetGridVisible(const bool bVisible);
+		void SetGridVisible(bool bVisible);
 
 		//! Set grid visibility
 		bool GetLabelsVisible() const;
 
 		//! Enables/Disables grid line visiblity
-		void SetLabelsVisible(const bool bVisible);
+		void SetLabelsVisible(bool bVisible);
 
 		//! Set Length of axes arrows
 		void SetAxesLength(const double x, const double y, const double z);
@@ -75,13 +75,13 @@ namespace DAFFViz
 		double GetReferenceLevel() const;
 
 		//! Set probe level
-		void SetReferenceLevel(const double dLevel);
+		void SetReferenceLevel(double dLevel);
 
 		//! Get probe opacity
 		double GetReferenceOpacity() const;
 
 		//! Set probe opacity
-		void SetReferenceOpacity(const double dOpacity);
+		void SetReferenceOpacity(double dOpacity);
 
 
 		// --= General methods =--
@@ -90,7 +90,7 @@ namespace DAFFViz
 		bool getVisible() const;
 
 		//! Set visibility
-		void SetVisible(const bool bVisible);
+		void SetVisible(bool bVisible);
 
 
 		// --= Grid getter/setter =--

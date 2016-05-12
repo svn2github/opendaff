@@ -58,7 +58,7 @@ namespace DAFFViz
 		bool IsVisible() const;
 
 		//! Set visibility
-		void SetVisible(const bool bVisible);
+		void SetVisible( bool bVisible);
 
 
 		// --= object related methods =--

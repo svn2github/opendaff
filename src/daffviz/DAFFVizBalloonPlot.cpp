@@ -38,7 +38,7 @@ namespace DAFFViz {
 
 static float PI_F = acos(-1.0f);
 
-double grad2rad(const double dAngleGrad);
+double grad2rad(double dAngleGrad);
 
 BalloonPlot::BalloonPlot(SGNode* pParentNode, const DAFFContent* pContent)
 : SGNode(pParentNode),
@@ -438,9 +438,9 @@ void BalloonPlot::UpdateProbe() {
 
 	return;
 }
-void BalloonPlot::SetProbeAngles(const double dAlpha, const double dBeta) { m_dProbeAlpha = dAlpha; m_dProbeBeta = dBeta; }
+void BalloonPlot::SetProbeAngles(double dAlpha, double dBeta) { m_dProbeAlpha = dAlpha; m_dProbeBeta = dBeta; }
 
-void BalloonPlot::SetProbeVisible(const bool bVisible) { 
+void BalloonPlot::SetProbeVisible(bool bVisible) { 
 	m_pProbe->SetVisibility(bVisible);
 	m_pLabel->SetVisibility(bVisible);
 }

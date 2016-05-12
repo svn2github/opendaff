@@ -4,7 +4,8 @@
 int main(int, char**)
 {
 	DAFFViz::VTKDAFFVizWindow win;
-	DAFFViz::Grid node;
+
+	DAFFViz::SphericalCoordinateAssistant node;
 	win.SetSceneGraphRootNode(&node);
 	win.Start();
 

@@ -3,15 +3,16 @@
  
 #include <vtkSmartPointer.h> 
 #include <QMainWindow>
- 
+#include "VTKDAFFVizWindow.h"
+
 class Ui_DAFFVizQtVTKRenderWindow;
  
-class DAFFVizQtVTKRenderWindow : public QMainWindow
+class DAFFVizQtVTKRenderWindow : public QMainWindow, public DAFFViz::VTKDAFFVizWindow
 {
   Q_OBJECT
 public:
   DAFFVizQtVTKRenderWindow(); 
-  ~DAFFVizQtVTKRenderWindow() {};
+  inline ~DAFFVizQtVTKRenderWindow() {};
  
 public slots:
  

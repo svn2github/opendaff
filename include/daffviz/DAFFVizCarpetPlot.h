@@ -102,10 +102,10 @@ namespace DAFFViz
 		void DisableWarp();
 	
 		//! Set probe angles
-		void SetProbeAngles(const double dAlpha, const double dBeta);
+		void SetProbeAngles(double dAlpha, double dBeta);
 
 		//! Enables/disables probe
-		void SetProbeVisible(const bool bVisible);
+		void SetProbeVisible(bool bVisible);
 
 		//! Update probe nodes
 		void UpdateProbe();

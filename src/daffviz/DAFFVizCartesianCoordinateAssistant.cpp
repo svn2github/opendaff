@@ -405,7 +405,7 @@ bool CartesianCoordinateAssistant::GetAxesVisible() const {
 	return (m_pAxes.size()>0) ? m_pAxes[0]->IsVisible() : true;
 }
 
-void CartesianCoordinateAssistant::SetAxesVisible(const bool bVisible) {
+void CartesianCoordinateAssistant::SetAxesVisible(bool bVisible) {
 	for (int i=0; i<(int)m_pAxes.size(); i++)
 		m_pAxes[i]->SetVisible(bVisible);
 }
@@ -415,7 +415,7 @@ bool CartesianCoordinateAssistant::GetGridVisible() const {
 }
 
 
-void CartesianCoordinateAssistant::SetGridVisible(const bool bVisible) {
+void CartesianCoordinateAssistant::SetGridVisible(bool bVisible) {
 	if (bVisible) {
 		for (int i=0; i<(int)m_pGrid.size(); i++)
 			m_pGrid[i]->VisibilityOn();
@@ -430,14 +430,14 @@ void CartesianCoordinateAssistant::SetGridVisible(const bool bVisible) {
 }
 double CartesianCoordinateAssistant::GetReferenceLevel() const { return m_dReferenceLevel; }
 
-void CartesianCoordinateAssistant::SetReferenceLevel(const double dLevel) { 
+void CartesianCoordinateAssistant::SetReferenceLevel(double dLevel) { 
 	m_dReferenceLevel = dLevel; 
 	UpdateReference();
 }
 
 double CartesianCoordinateAssistant::GetReferenceOpacity() const { return m_dReferenceAlpha; }
 
-void CartesianCoordinateAssistant::SetReferenceOpacity(const double dOpacity) { 
+void CartesianCoordinateAssistant::SetReferenceOpacity(double dOpacity) { 
 	m_dReferenceAlpha = dOpacity;
 	UpdateReference();
 }
@@ -446,7 +446,7 @@ bool CartesianCoordinateAssistant::getVisible() const {
 	return GetAxesVisible() || GetGridVisible();
 }
 
-void CartesianCoordinateAssistant::SetVisible(const bool bVisible) {
+void CartesianCoordinateAssistant::SetVisible(bool bVisible) {
 	SetAxesVisible(bVisible);
 	SetGridVisible(bVisible);
 }

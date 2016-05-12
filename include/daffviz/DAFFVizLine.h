@@ -59,7 +59,7 @@ namespace DAFFViz
 		void SetAlpha(const double a);
 
 		//! Set visibility
-		void SetVisible(const bool bVisible);
+		void SetVisible(bool bVisible);
 
 		//! Get visibility
 		bool IsVisible() const;

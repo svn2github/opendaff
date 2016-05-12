@@ -135,6 +135,7 @@ namespace DAFFViz
 		void Start();
 
 	protected:
+
 		vtkRenderer* m_pRenderer;
 
 	private:
@@ -162,11 +163,11 @@ namespace DAFFViz
 
 		// --= VTK important things =--
 
-		vtkRenderWindow* m_pRenderWindow;
+		//vtkRenderWindow* m_pRenderWindow;
 		vtkCamera* m_pCamera;
 		int m_iCameraType;
 		vtkLight* m_pCameraLight;
-		vtkRenderWindowInteractor* m_pInteractor;
+		//vtkRenderWindowInteractor* m_pInteractor;
 
 		// Add light to scene
 		void AddLight(vtkLight* light);

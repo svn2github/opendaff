@@ -103,9 +103,10 @@ void Label::SetText(const std::string& s) {
 	DAFFVIZ_UNLOCK_VTK;
 }
 
-void Label::OnSetFollowerCamera(vtkCamera* pCamera) {
+void Label::OnSetFollowerCamera(vtkCamera* pCamera)
+{
 	DAFFVIZ_LOCK_VTK;
-	//m_pFollower->SetCamera(pCamera);
+	m_pFollower->SetCamera(pCamera);
 	DAFFVIZ_UNLOCK_VTK;
 
 	// Delegate

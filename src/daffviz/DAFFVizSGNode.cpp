@@ -18,7 +18,7 @@ namespace DAFFViz {
 
 static float PI_F = std::acos(-1.0f);
 
-double grad2rad(const double dAngleGrad) {
+double grad2rad(double dAngleGrad) {
 	return dAngleGrad * PI_F / 180.0F;
 }
 
@@ -37,14 +37,16 @@ SGNode::SGNode(DAFFViz::SGNode* pParentNode)
 	if (pParentNode) pParentNode->AddChildNode(this);
 }
 
-SGNode::~SGNode() {
+SGNode::~SGNode()
+{
 	// Disconnect from parent node
 	if (m_pParentNode) m_pParentNode->RemoveChildNode(this);
 
 	// Delete own subtree
 	// Important: delete has side-effects on the vector itself. Therefore we use the while construct.
 	//while (!m_vpChildNodes.empty()) delete m_vpChildNodes.front();
-	while (!m_vpChildNodes.empty()) delete m_vpChildNodes.front();
+	while (!m_vpChildNodes.empty()) 
+		delete m_vpChildNodes.front();
 
 	// Remove the node assembly
 	DAFFVIZ_LOCK_VTK;
@@ -433,7 +435,8 @@ void SGNode::RemoveAssembly(vtkAssembly* pAssembly) {
 	DAFFVIZ_UNLOCK_VTK;
 }
 
-void SGNode::OnSetFollowerCamera(vtkCamera* pCamera) {
+void SGNode::OnSetFollowerCamera(vtkCamera* pCamera)
+{
 	// Lock has to be applied in child nodes, so no lock here!
 	for (std::vector<SGNode*>::const_iterator cit=m_vpChildNodes.begin(); cit!=m_vpChildNodes.end(); ++cit)
 		(*cit)->OnSetFollowerCamera(pCamera);

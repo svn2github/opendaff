@@ -38,10 +38,10 @@ namespace DAFFViz
 		// --= object related methods =--
 		// TODO Jonas
 
-		//void SetLengthX(const double dLength);
+		//void SetLengthX(double dLength);
 		//double GetLengthX() const;
 
-		//void SetLengthY(const double dLength);
+		//void SetLengthY(double dLength);
 		//double GetLengthY() const;
 
 
@@ -60,7 +60,7 @@ namespace DAFFViz
 		void SetAlpha(const double a);
 
 		//! Visibility setter
-		void SetVisible(const bool bVisible);
+		void SetVisible(bool bVisible);
 
 		//! Visibility getter
 		bool IsVisible() const;

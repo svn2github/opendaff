@@ -424,14 +424,14 @@ void SphericalCoordinateAssistant::SetVisible(bool bVisible) {
 	}
 }
 
-void SphericalCoordinateAssistant::SetAxesVisible(const bool bVisible) {
+void SphericalCoordinateAssistant::SetAxesVisible(bool bVisible) {
 	m_pPoles->SetVisible(bVisible);
 }
-void SphericalCoordinateAssistant::SetViewUpVectorsVisible(const bool bVisible) {
+void SphericalCoordinateAssistant::SetViewUpVectorsVisible(bool bVisible) {
 	m_pViewUpVectors->SetVisible(bVisible);
 }
 
-void SphericalCoordinateAssistant::SetMeridiansVisible(const bool bVisible) {
+void SphericalCoordinateAssistant::SetMeridiansVisible(bool bVisible) {
 	if (bVisible)
 		for (int i=0; i<(int)m_pMeridians.size(); i++)
 			m_pMeridians[i]->VisibilityOn();
@@ -440,7 +440,7 @@ void SphericalCoordinateAssistant::SetMeridiansVisible(const bool bVisible) {
 			m_pMeridians[i]->VisibilityOff();
 }
 
-void SphericalCoordinateAssistant::SetGridVisible(const bool bVisible) {
+void SphericalCoordinateAssistant::SetGridVisible(bool bVisible) {
 	if (bVisible) {
 		for (int i=0; i<(int)m_pGrid.size(); i++)
 			m_pGrid[i]->VisibilityOn();
@@ -471,16 +471,16 @@ bool SphericalCoordinateAssistant::GetVisible() const {
 	return (GetAxesVisible() || GetGridVisible());
 }
 
-void SphericalCoordinateAssistant::SetEquatorVisible(const bool bVisible) {
+void SphericalCoordinateAssistant::SetEquatorVisible(bool bVisible) {
 	if (bVisible)
 		m_pEquator->VisibilityOn();
 	else
 		m_pEquator->VisibilityOff();
 }
 
-void SphericalCoordinateAssistant::SetReferenceLevel(const double dLevel){ m_dReferenceLevel = dLevel; }
+void SphericalCoordinateAssistant::SetReferenceLevel(double dLevel){ m_dReferenceLevel = dLevel; }
 
-void SphericalCoordinateAssistant::SetReferenceOpacity(const double dOpacity) { m_dReferenceOpacity = dOpacity; }
+void SphericalCoordinateAssistant::SetReferenceOpacity(double dOpacity) { m_dReferenceOpacity = dOpacity; }
 
 void SphericalCoordinateAssistant::SetMin(double min) { m_dMin = min; }
 	

@@ -43,33 +43,33 @@ namespace DAFFViz
 		// --= object related methods =--
 
 		//! Enables/Disables all graphical assistance
-		void SetAssistanceVisible(const bool bVisible);
+		void SetAssistanceVisible(bool bVisible);
 
 		//! Enables/Disables axes
-		void SetAxesVisible(const bool bVisible);
+		void SetAxesVisible(bool bVisible);
 
 		//! Enables/Disables view/up vector
-		void SetViewUpVectorsVisible(const bool bVisible);
+		void SetViewUpVectorsVisible(bool bVisible);
 
 		//! Enables/Disables meridians
-		void SetMeridiansVisible(const bool bVisible);
+		void SetMeridiansVisible(bool bVisible);
 
 		//! Enables/Disables equator
-		void SetEquatorVisible(const bool bVisible);
+		void SetEquatorVisible(bool bVisible);
 
 		//! Enables/Disables grid lines
-		void SetGridVisible(const bool bVisible);
+		void SetGridVisible(bool bVisible);
 
 		//! Set reference level
-		void SetReferenceLevel(const double dLevel);
+		void SetReferenceLevel(double dLevel);
 	
 		//! Set reference opacity
-		void SetReferenceOpacity(const double dOpacity);
+		void SetReferenceOpacity(double dOpacity);
 
 		// --= general methods =--
 
 		//! Set visibility
-		void SetVisible(const bool bVisible);
+		void SetVisible(bool bVisible);
 	
 		bool GetGridVisible() const;
 		bool GetAxesVisible() const;
