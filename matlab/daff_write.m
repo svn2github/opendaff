@@ -1,4 +1,4 @@
-1%
+%
 %  OpenDAFF
 %
 %  File:    daff_write.m
