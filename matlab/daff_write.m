@@ -304,13 +304,13 @@ function [] = daff_write( varargin )
     
     % Measurement distance
     if ~isfield(args, 'mdist')
-        fprintf('Assuming default measurement distance of 1.00 m');
+        fprintf('Assuming default measurement distance of 1m\n');
         args.mdist = 1;
     end 
        
     % Reference
     if ~isfield(args, 'reference')
-        fprintf('Setting reference to 1.0 (0 dB)');
+        fprintf('Setting reference to 1.0 (0 dB)\n');
         args.reference = 1;
     end 
     
