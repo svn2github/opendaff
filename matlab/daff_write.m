@@ -416,8 +416,8 @@ function [] = daff_write( varargin )
     props.eff_coeffs = 0;
     props.transformSize = 0;
     
-    % Generate a list of all input files
-    x = cell(args.alphapoints, args.betapoints, args.channels);
+    % Generate a list of all individual input data sets
+    x = cell( args.alphapoints, args.betapoints, args.channels );
     for b=1:args.betapoints
         beta = betastart + (b-1)*args.betares;
         
@@ -438,21 +438,21 @@ function [] = daff_write( varargin )
                 [data, samplerate, metadata] = args.datafunc(alpha, beta, args.basepath);
                 [channels, filterlength] = size(data);
 
-                if (class(data) ~= 'double')
-                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values') );
+                if( ~isa( class(data), 'double' ) )
+                    error( 'Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta );
                 end
                 
                 if isfield(props, 'samplerate')
                     if (samplerate ~= props.samplerate)
-                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Sampling rate does not match', alpha, beta) );
+                        error( 'Dataset (A%0.1f°, B%0.1f°): Sampling rate does not match', alpha, beta );
                     end
 
                     if (channels ~= args.channels)
-                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Number of channels does not match', alpha, beta) );
+                        error( 'Dataset (A%0.1f°, B%0.1f°): Number of channels does not match', alpha, beta );
                     end
 
                     if (filterlength ~= props.filterlength)
-                       error( sprintf('Dataset (A%0.1f°, B%0.1f°): Filter length does not match', alpha, beta) );
+                       error( 'Dataset (A%0.1f°, B%0.1f°): Filter length does not match', alpha, beta );
                     end
                 else
                     % Now set the global properties, if they have not been set yet
@@ -461,8 +461,8 @@ function [] = daff_write( varargin )
                     props.elementsPerRecord = filterlength;
 
                     % Check filter length for 16-byte alignment
-                    if (mod(filterlength, 4) ~= 0)
-                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Filter length is not a multiple of 4 (this is required for memory alignment)', alpha, beta) );
+                    if( mod( filterlength, 4 ) ~= 0 )
+                        error( 'Dataset (A%0.1f°, B%0.1f°): Filter length is not a multiple of 4 (this is required for memory alignment)', alpha, beta );
                     end
 
                     fprintf('Global properties: Sampling rate = %d Hz, filter length = %d\n',...
@@ -474,7 +474,7 @@ function [] = daff_write( varargin )
                 props.globalPeak = max([props.globalPeak peak]);
 
                 % Determine effective ranges of the filters
-                % Important: We use C-indexes here (starting with 0)
+                % Important: We use C++ style indexing here (starting with 0)
                 
                 if (zthreshold_value == 0)
                     % No efficient storage => Full impulse responses
@@ -514,14 +514,16 @@ function [] = daff_write( varargin )
                     props.maxEffectiveFilterLength = max(elengths);
                 end
                 
+                % Store infos for record in cell
                 for c=1:args.channels
-                    x{a,b,c} = struct('peak', peak, ...
-                                    'offset', offsets(c), ...
-                                    'elength', elengths(c), ...
-                                    'metadata', metadata, ...
-                                    'metadataIndex', 0); 
+                    x{a,b,c} = struct( 'peak', peak, ...
+                                       'offset', offsets(c), ...
+                                       'elength', elengths(c), ...
+                                       'metadata', metadata, ...
+                                       'metadataIndex', 0 ); 
                 end
-		write_metadatablock = write_metadatablock || ~isempty(metadata);
+                
+                write_metadatablock = write_metadatablock || ~isempty(metadata);
                             
                 % Discard the data
                 clear data;
@@ -575,7 +577,7 @@ function [] = daff_write( varargin )
 
                 % Important: Negative magnitudes are forbidden
                 if (min(min(data)) < 0)
-                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Contains negative magnitudes', alpha, beta) );
+                    error( 'Dataset (A%0.1f°, B%0.1f°): Contains negative magnitudes', alpha, beta );
                 end
                 
                 
@@ -865,7 +867,8 @@ function [] = daff_write( varargin )
     fwrite(fid, args.channels, 'int32');
     fwrite(fid, props.numRecords, 'int32');
     fwrite(fid, props.elementsPerRecord, 'int32');
-    fwrite(fid, args.mdist, 'float32');
+    %fwrite(fid, args.mdist, 'float32'); % WARNING this values is overwritten.
+    fwrite(fid, -1, 'int32');
 
     fwrite(fid, args.alphapoints, 'int32');
     fwrite(fid, alphastart, 'float32');
@@ -891,7 +894,7 @@ function [] = daff_write( varargin )
  
     if strcmp(args.content, 'IR') 
         fwrite(fid, props.samplerate, 'float32');
-        fwrite(fid, args.reference, 'float32');
+        %fwrite(fid, args.reference, 'float32'); %WARNING this field does not exist in 105 DAFF
         fwrite(fid, props.minFilterOffset, 'int32');
         fwrite(fid, props.maxEffectiveFilterLength, 'int32');
     end
@@ -988,17 +991,16 @@ function [] = daff_write( varargin )
                 alpha = alphastart + (a-1)*args.alphares;
                 
                 % Get the data (2nd time)
-                [data, samplerate] = args.datafunc(alpha, beta, args.basepath);
-                [channels, filterlength] = size(data);
+                [data, ~, ~] = args.datafunc(alpha, beta, args.basepath);
 
-                if (class(data) ~= 'double')
-                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values') );
+                if( ~isa(data, 'double' ) )
+                    error( 'Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta );
                 end
  
                 % Clipping check
                 peak = max(max(abs(data)));
                 if ((peak > 1) && (~args.quiet))
-                    warning( sprintf('Dataset (A%0.1f°, B%0.1f°): Clipping occured (peak %0.3f)', alpha, beta, peak) );
+                    warning( 'Dataset (A%0.1f°, B%0.1f°): Clipping occured (peak %0.3f)', alpha, beta, peak );
                 end
                    
                 for c=1:args.channels

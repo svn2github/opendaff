@@ -11,7 +11,7 @@ Visit the OpenDAFF homepage: http://www.opendaff.org
 
 ### File header
 
-Class: DAFFFileHeader
+Struct: DAFFFileHeader
 Static: yes
 Size: 2+4+4 = 10 bytes
 
@@ -25,7 +25,7 @@ Bytes | Type | Name | Notes
 
 Table of descriptors for the file blocks (like main header, content header, etc)
 
-Class: DAFFFileBlockEntry
+Struct: DAFFFileBlockEntry
 Static: no
 Size = (4+4+4) x NumFileBlocks
 
@@ -37,7 +37,7 @@ Bytes | Type | Name | Notes
 
 #### Main header
 
-Class: DAFFMainHeader
+Struct: DAFFMainHeader
 Static: yes
 Size: 15 x 4 = 60 bytes
 
@@ -48,7 +48,7 @@ Bytes | Type | Name | Notes
 4 bytes | integer | NumChannels |
 4 bytes | integer | NumRecords | Number of individual data sets
 4 bytes | integer | ElementsPerRecord |
-4 bytes | integer | MetadataIndex | Index of metadata set in metadata table for record data sets
+4 bytes | integer | MetadataIndex | Index of metadata set for general information
 4 bytes | integer | AlphaPoints |
 4 bytes | float | AlphaStart |
 4 bytes | float | fAlphaEnd |
@@ -64,7 +64,7 @@ Bytes | Type | Name | Notes
 
 ##### IR
 
-Class: DAFFContentHeaderIR
+Struct: DAFFContentHeaderIR
 Static: yes
 Size: 4 + 4 + 4 = 12 bytes
 
@@ -76,7 +76,7 @@ Bytes | Type | Name | Notes
 
 ##### MS
 
-Class: DAFFContentHeaderMS
+Struct: DAFFContentHeaderMS
 Static: yes
 Size: 4 + 4 = 8 bytes
 
@@ -87,7 +87,7 @@ Bytes | Type | Name | Notes
 
 ##### PS
 
-Class: DAFFContentHeaderMS
+Struct: DAFFContentHeaderMS
 Static: yes
 Size: 4 bytes
 
@@ -97,7 +97,7 @@ Bytes | Type | Name | Notes
 
 ##### MPS
 
-Class: DAFFContentHeaderMPS
+Struct: DAFFContentHeaderMPS
 Static: yes
 Size: 4 + 4 = 8 bytes
 
@@ -108,7 +108,7 @@ Bytes | Type | Name | Notes
 
 ##### DFT
 
-Class: DAFFContentHeaderDFT
+Struct: DAFFContentHeaderDFT
 Static: yes
 Size: 4 + 4 + 4 + 4 = 16 bytes
 
@@ -146,4 +146,10 @@ Bytes | Type | Name | Notes
 8 bytes | unsigned integer | DataOffset | 
 
 #### Data block
+
+Binary data depending on number and individual size of record data sets. Accessed via DataOffset.
+
+#### Metadata
+
+Binary data depending on number and size of metadata. Accessed via MetadataIndex.
 

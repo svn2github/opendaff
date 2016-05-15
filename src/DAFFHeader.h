@@ -270,8 +270,8 @@ struct DAFFRecordChannelDescDefault
 struct DAFFRecordChannelDescIR
 {
 #pragma pack(push,1)
-	int32_t iOffset;			//!@ Number of leading zeros
-	int32_t iLength;			//!@ Number of filter coefficients
+	int32_t iOffset;			//!@ ?
+	int32_t iLength;			//!@ ?
 	float fScaling;				//!@ Scaling factor (only used for integer quantization)
 	uint64_t ui64DataOffset;	//!@ Position inside the file where samples/coefficients reside
 #pragma pack(pop)
