@@ -16,6 +16,7 @@ Static: yes
 Size: 10 bytes
 
 2 bytes | 4 bytes | 4 bytes
+--- | --- | ---
 character | integer | integer
 Signature | FileFormatVersion | NumFileBlock
 
@@ -28,6 +29,7 @@ Static: yes
 Size: 20 bytes
 
 4 bytes | 8 bytes | 8 bytes
+--- | --- | ---
 integer | integer | integer
 ID | Offset | Size
 
@@ -38,6 +40,7 @@ Static: yes
 Size: 
 
 4 bytes | 4 bytes | 4 bytes | 4 bytes | 4 bytes | 4 bytes | 4 bytes | 4 bytes | 4 bytes | 4 bytes | 4 bytes | 4 bytes | 4 bytes | 4 bytes | 4 bytes
+--- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
 integer | integer | integer | integer | integer | integer | integer | float | float | integer | float | float | float | float | float
 ContentType | Quantization | NumChannels | NumRecords | ElementsPerRecord | MetadataIndex | AlphaPoints | AlphaStart| fAlphaEnd | BetaPoints | BetaStart | fBetaEnd | OrientYaw | OrientPitch | OrientRoll
 
