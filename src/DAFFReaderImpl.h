@@ -131,7 +131,7 @@ private:
 	DAFFMainHeader* m_pMainHeader;				//!@ Main header
 	DAFFFileBlockEntry* m_pFileBlockTable;		//!@ File block table
 	DAFFFileBlockEntry* m_pRecordDescriptorTable;				//!@ File block of the record descriptor table
-	DAFFFileBlockEntry* m_pfbData;				//!@ File block of the record data
+	DAFFFileBlockEntry* m_pDataFileBlock;				//!@ File block of the record data
 	void* m_pContentHeader;						//!@ Content related header (will become IR or MS)
 	void* m_pRecordDescriptorBlock;					//!@ Record descriptor block
 	void* m_pDataBlock;							//!@ Record data block
@@ -142,10 +142,10 @@ private:
 	DAFFContentHeaderPS* m_pContentHeaderPS;	//!@ Access pointer for additional header for phase spectrum content
 	DAFFContentHeaderMPS* m_pContentHeaderMPS;	//!@ Access pointer for additional header for magnitude-phase spectrum content
 	DAFFContentHeaderDFT* m_pContentHeaderDFT;	//!@ Access pointer for additional header for discrete fourier-spectrum content
-	std::vector<float> m_vfFreqs;				//!@ List of frequencies (magnitude spectra)
+	std::vector< float > m_vfFreqs;				//!@ List of frequencies (magnitude spectra)
 	
 	const DAFFMetadataImpl* m_pEmptyMetadata;	//!@ Empty metadata instance. getRecordMetadata() will return this as fallback
-	std::vector<DAFFMetadataImpl*> m_vpMetadata;//!@ Metadata pointer
+	std::vector< DAFFMetadataImpl* > m_vpMetadata;	//!@ Vector with pointers to metadata entries
 	DAFFProperties* m_pProperties;				//!@ Properties pointer
 	bool m_bOverallPeakInitialized;				//!@ tells if fOverallPeak has already been initialized (lazy initialization)
 	float m_fOverallPeak;						//!@ Peak value over all records and channels
@@ -160,13 +160,13 @@ private:
 	//! Search for the first file block that matches the given ID
 	/* @return Total number of matching file blocks)
 	 */
-	int getFirstFileBlockByID(int iID, DAFFFileBlockEntry*& pfDest) const;
+	int getFirstFileBlockByID( int iID, DAFFFileBlockEntry*& pfDest ) const;
 
 	//! Search for all file blocks with the given ID (returns the number of matches)
-	int getFileBlocksByID(int iID, std::vector<DAFFFileBlockEntry*>& vpfDest) const;
+	int getFileBlocksByID( int iID, std::vector< DAFFFileBlockEntry* >& vpfDest ) const;
 
 	//! Returns the memory address of a record channel descriptor in the RDB
-	void* getRecordChannelDescPtr(int iRecord, int iChannel) const;
+	void* getRecordChannelDescPtr( int iRecord, int iChannel ) const;
 
 	//! Returns the memory address of a record metadata index in the RDB
 	int* getRecordMetadataIndexPtr( int iRecord ) const;

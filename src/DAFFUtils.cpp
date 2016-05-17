@@ -179,7 +179,7 @@ std::string DAFFUtils::StrQuantizationType(int iQuantizationType) {
 
 	case DAFF_INT16:   return "16-bit signed integer";
 	case DAFF_INT24:   return "24-bit signed integer";
-	case DAFF_FLOAT32: return "32-bit float point";
+	case DAFF_FLOAT32: return "32-bit floating point";
 
 	default: return "Invalid";
 	}
