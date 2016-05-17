@@ -1,3 +1,7 @@
+%
+%  OpenDAFF
+%
+
 function [ c ] = daff_uprmul( a, b )
 %DAFF_UPRMUL Calculate next higher multiple 
     r = mod(a,b);

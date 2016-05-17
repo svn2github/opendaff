@@ -1,4 +1,4 @@
-function [ freqs, mags, metadata ] = dfOmniLP6dBMS( ~, ~, ~ )
+function [ freqs, mags, metadata ] = dfLowPass3dBMS( ~, ~, ~ )
 % Omnidirectional magnitude spectrum
            
     % Third-octave resolution
@@ -9,11 +9,10 @@ function [ freqs, mags, metadata ] = dfOmniLP6dBMS( ~, ~, ~ )
     channels = 1;
     mags = zeros(channels, length(freqs));
     metadata = [];
-    metadata = daff_metadata_addKey( metadata, 'Generator function', 'String', 'dfOmniLP6dBMS' );
     
     for c=1:channels
         for f=1:length(freqs)
-            mags(c,f) = 1/(2*f);
+            mags(c,f) = 1/f;
         end
     end   
 end

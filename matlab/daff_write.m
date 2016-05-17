@@ -1,12 +1,6 @@
 %
 %  OpenDAFF
 %
-%  File:    daff_write.m
-%  Purpose: Writer implementation for DAFF files
-%  Author:  Frank Wefers (Frank.Wefers@akustik.rwth-aachen.de)
-%
-%  $Id: daff_write.m,v 1.7 2010/03/08 14:32:41 stienen Exp $
-%
 
 function [] = daff_write( varargin )
 %DAFF_WRITE Create DAFF files
@@ -191,6 +185,8 @@ function [] = daff_write( varargin )
     end
     
     % More validation ;-)
+        
+    fprintf( 'Writing DAFF file ''%s'' ... \n', args.filename );
     
     % Content
     args.content = upper(args.content);
@@ -304,14 +300,14 @@ function [] = daff_write( varargin )
     
     % Measurement distance
     if ~isfield(args, 'mdist')
-        fprintf('Assuming default measurement distance of 1m\n');
+        fprintf(' * Assuming default measurement distance of 1m\n');
         args.mdist = 1;
     end 
        
     % Reference
     if ~isfield(args, 'reference')
-        fprintf('Setting reference to 1.0 (0 dB)\n');
-        args.reference = 1;
+        fprintf( ' * Setting reference value to 1.0 (0 dB)\n' );
+        args.reference = 1.0;
     end 
     
     % Quantization
@@ -359,7 +355,6 @@ function [] = daff_write( varargin )
 
     % Print a summary of the information
     
-    fprintf('--= Summary =--\n');
     fprintf('Content type:       \t%s\n', contentStr);
     fprintf('Num channels:       \t%d\n', args.channels);
     fprintf('Num alpha points:   \t%d\n', args.alphapoints);
@@ -1335,15 +1330,13 @@ function [] = daff_write( varargin )
     % -----------------------------------------------------
     
     % Some more information
-    fprintf('--= Summary =---------------------------------\n\n');
     fprintf('Content header size = %d bytes\n', ContentHeaderSize);
     fprintf('Record descriptor size = %d bytes\n', RecordDescSize);
     fprintf('Data size = %d bytes\n', DataSize);
     if (write_metadatablock > 0)
         fprintf('Metadata size = %d bytes\n', MetadataSize);
     end
-    fprintf('\n----------------------------------------------\n\n');
     
     % What we all been waiting for...
-    fprintf('DAFF file ''%s'' successfully written\n', args.filename);
+    fprintf( ' ... DAFF file ''%s'' successfully written.\n', args.filename );
 end

@@ -1,3 +1,7 @@
+%
+%  OpenDAFF
+%
+
 function [] = daff_write_metadata( fid, metadata )
 %DAFF_WRITE_METADATA Write a DAFF metadata block into DAFF binary file
     

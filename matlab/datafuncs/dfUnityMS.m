@@ -1,4 +1,4 @@
-function [ freqs, mags, metadata ] = dfOmniMS( ~, ~, ~ )
+function [ freqs, mags, metadata ] = dfUnityMS( ~, ~, ~ )
 % Omnidirectional magnitude spectrum
            
     % Third-octave resolution
@@ -9,7 +9,6 @@ function [ freqs, mags, metadata ] = dfOmniMS( ~, ~, ~ )
     channels = 1;
     mags = zeros(channels, length(freqs));
     metadata = [];
-    metadata = daff_metadata_addKey( metadata, 'Generator function', 'String', 'dfOmniMS' );
     
     for c=1:channels
         for f=1:length(freqs)

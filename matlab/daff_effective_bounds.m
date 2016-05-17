@@ -1,3 +1,7 @@
+%
+%  OpenDAFF
+%
+
 function [ lwr, upr ] = daff_effective_bounds( fcoeffs, threshold )
 %DAFF_EFFECTIVE_BOUNDS Find boundaries of effective 'zones' in impulses
 %responses (where filter coefficients are unequal zero)

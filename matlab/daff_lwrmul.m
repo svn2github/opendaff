@@ -1,3 +1,7 @@
+%
+%  OpenDAFF
+%
+
 function [ c ] = daff_lwrmul( a, b )
 %DAFF_LWRMUL Calculate next lower multiple 
     r = mod(a,b);
