@@ -128,12 +128,12 @@ private:
 	std::string m_sFilename;					//!@ Filename
 	FILE* m_file;								//!@ File handle
 	DAFFFileHeader m_fileHeader;				//!@ File header
-	DAFFFileBlockEntry* m_pFileBlockTable;		//!@ File block table
 	DAFFMainHeader* m_pMainHeader;				//!@ Main header
-	DAFFFileBlockEntry* m_pfbRDT;				//!@ File block of the record descriptor table
-	DAFFFileBlockEntry* m_pfbData;				//!@ File block of the record descriptor table
+	DAFFFileBlockEntry* m_pFileBlockTable;		//!@ File block table
+	DAFFFileBlockEntry* m_pRecordDescriptorTable;				//!@ File block of the record descriptor table
+	DAFFFileBlockEntry* m_pfbData;				//!@ File block of the record data
 	void* m_pContentHeader;						//!@ Content related header (will become IR or MS)
-	void* m_pRecordDescBlock;					//!@ Record descriptor block
+	void* m_pRecordDescriptorBlock;					//!@ Record descriptor block
 	void* m_pDataBlock;							//!@ Record data block
 	int m_iRecordChannelDescSize;				//!@ Size of a record channel descriptor (Bytes)
 
@@ -144,7 +144,7 @@ private:
 	DAFFContentHeaderDFT* m_pContentHeaderDFT;	//!@ Access pointer for additional header for discrete fourier-spectrum content
 	std::vector<float> m_vfFreqs;				//!@ List of frequencies (magnitude spectra)
 	
-	const DAFFMetadataImpl* m_pEmptyMetadata;	//!@ Emptry metadata instance. getRecordMetadata() will return this as fallback
+	const DAFFMetadataImpl* m_pEmptyMetadata;	//!@ Empty metadata instance. getRecordMetadata() will return this as fallback
 	std::vector<DAFFMetadataImpl*> m_vpMetadata;//!@ Metadata pointer
 	DAFFProperties* m_pProperties;				//!@ Properties pointer
 	bool m_bOverallPeakInitialized;				//!@ tells if fOverallPeak has already been initialized (lazy initialization)
@@ -169,7 +169,7 @@ private:
 	void* getRecordChannelDescPtr(int iRecord, int iChannel) const;
 
 	//! Returns the memory address of a record metadata index in the RDB
-	int* getRecordMetadataIndexPtr(int iRecord) const;
+	int* getRecordMetadataIndexPtr( int iRecord ) const;
 
 	//! Clear up the instance, free resources revert to the uninitialized state
 	void tidyup();

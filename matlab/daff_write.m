@@ -438,7 +438,7 @@ function [] = daff_write( varargin )
                 [data, samplerate, metadata] = args.datafunc(alpha, beta, args.basepath);
                 [channels, filterlength] = size(data);
 
-                if( ~isa( class(data), 'double' ) )
+                if( ~isa( data, 'double' ) )
                     error( 'Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta );
                 end
                 
@@ -1267,6 +1267,7 @@ function [] = daff_write( varargin )
                     fwrite(fid, x{a,b,c}.offset, 'int32');
                     fwrite(fid, x{a,b,c}.elength, 'int32');
                     fwrite(fid, x{a,b,c}.metadataIndex, 'int32'); 
+                    %fwrite( fid, 1.0, 'float32' ) % Scaling/gain to be applied after integer rounding (deprecated?)
                     fwrite(fid, x{a,b,c}.dataOffset, 'uint64');
     
                     % DEBUG: fprintf('Data offset alpha = %d, beta = %d, channel %d = %d\n', a, b, c, x{a,b}(c).dataOffset);

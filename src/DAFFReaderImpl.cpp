@@ -30,7 +30,7 @@ DAFFReaderImpl::DAFFReaderImpl()
   m_pFileBlockTable(NULL),
   m_pMainHeader(NULL),
   m_pContentHeader(NULL),
-  m_pRecordDescBlock(NULL),
+  m_pRecordDescriptorBlock(NULL),
   m_pDataBlock(NULL),
   m_bOverallPeakInitialized(false),
   m_fOverallPeak(0.0)
@@ -47,9 +47,11 @@ bool DAFFReaderImpl::isFileOpened() const {
 	return m_bFileOpened;
 }
 
-int DAFFReaderImpl::openFile(const std::string& sFilename) {
+int DAFFReaderImpl::openFile( const std::string& sFilename )
+{
 
-	if (m_bFileOpened) return DAFF_MODAL_ERROR;
+	if( m_bFileOpened )
+		return DAFF_MODAL_ERROR;
 
 	/*
 	 *  1st step: Load the file header and validate it for correctness
@@ -58,59 +60,66 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 	m_file = fopen( sFilename.c_str(), "rb" );
 	if (!m_file) return DAFF_FILE_NOT_FOUND;
 
-	if (fread(&m_fileHeader, 1, DAFF_FILE_HEADER_SIZE, m_file) != DAFF_FILE_HEADER_SIZE) {
+	if( fread( &m_fileHeader, 1, sizeof( DAFFFileHeader ), m_file ) != sizeof( DAFFFileHeader ) )
+	{
 		tidyup();
-		return DAFF_FILE_CORRUPTED;
+		return DAFF_FILE_INVALID;
 	}
 
 	m_fileHeader.fixEndianness();
 
 	// Check signature
-	if (! ((m_fileHeader.pcSignature[0] == 'F') && (m_fileHeader.pcSignature[1] == 'W'))) {
+	if (! ((m_fileHeader.pcSignature[0] == 'F') && (m_fileHeader.pcSignature[1] == 'W')))
+	{
 		// File is not an OpenDAFF database.
 		tidyup();
-		return DAFF_FILE_CORRUPTED;
+		return DAFF_FILE_INVALID;
 	}
 
 	// Check version
 	// [This implementation supports version number 0.105]
-	if (m_fileHeader.iFileFormatVersion != 105) {
+	if( m_fileHeader.iFileFormatVersion != 105 )
+	{
 		// Database version not supported
 		tidyup();
 		return DAFF_FILE_FORMAT_VERSION_UNSUPPORTED;
 	}
 
 	// Check file block entries
-	if (m_fileHeader.iNumFileBlocks <= 0) {
+	if( m_fileHeader.iNumFileBlocks <= 0 )
+	{
 		// There must be at least one block
 		tidyup();
-		return DAFF_FILE_CORRUPTED;
+		return DAFF_FILE_INVALID;
 	}
 
 	// Read the file block table
-	size_t iFileBlockTableSize = m_fileHeader.iNumFileBlocks * DAFF_FILE_BLOCK_ENTRY_SIZE;
-	m_pFileBlockTable = (DAFFFileBlockEntry*) DAFF::malloc_aligned16(iFileBlockTableSize);
-	if (fread(m_pFileBlockTable, 1, iFileBlockTableSize, m_file) != iFileBlockTableSize) {
+	size_t iFileBlockTableSize = m_fileHeader.iNumFileBlocks * sizeof( DAFFFileBlockEntry );
+	m_pFileBlockTable = ( DAFFFileBlockEntry* ) DAFF::malloc_aligned16( iFileBlockTableSize );
+	if( fread(m_pFileBlockTable, 1, iFileBlockTableSize, m_file) != iFileBlockTableSize )
+	{
 		tidyup();
-		return DAFF_FILE_CORRUPTED;
+		return DAFF_FILE_INVALID;
 	}
 
-	for (int i=0; i<m_fileHeader.iNumFileBlocks; i++)
+	for( int i=0; i<m_fileHeader.iNumFileBlocks; i++ )
 		m_pFileBlockTable[i].fixEndianness();
 
-	/*  DEBUG:
-	for (int i=0; i<m_fileHeader.iNumFileBlocks; i++)
-		printf("FILE BLOCK[%d] = { ID = 0x%04X, offset = %llu, size = %llu bytes }\n",
-		       i, m_pFileBlockTable[i].iID, m_pFileBlockTable[i].ui64Offset, m_pFileBlockTable[i].ui64Size);
-	*/
+	//*  DEBUG:
+	for( int i=0; i<m_fileHeader.iNumFileBlocks; i++ )
+		printf( "FILE BLOCK[%d] = { ID = 0x%04X, offset = %llu, size = %llu bytes }\n",
+		        i, m_pFileBlockTable[i].iID, m_pFileBlockTable[i].ui64Offset, m_pFileBlockTable[i].ui64Size );
+	//*/
 
 	// Check for correctness
-	for (int i=0; i<m_fileHeader.iNumFileBlocks; i++) {
+	for( int i=0; i<m_fileHeader.iNumFileBlocks; i++ )
+	{
 		// Note: IDs are not checked
-		if ((m_pFileBlockTable[i].ui64Offset < (DAFF_FILE_HEADER_SIZE + iFileBlockTableSize)) ||
-			(m_pFileBlockTable[i].ui64Size <= 0)) {
+		if( ( m_pFileBlockTable[ i ].ui64Offset < ( sizeof( DAFFFileHeader ) + iFileBlockTableSize ) ) ||
+			( m_pFileBlockTable[i].ui64Size <= 0 ) )
+		{
 			tidyup();
-			return DAFF_FILE_CORRUPTED;
+			return DAFF_FILE_INVALID;
 		}
 	}
 
@@ -120,22 +129,25 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 
 	// Search for the main header block
 	DAFFFileBlockEntry* pfbMainHeader;
-	if (getFirstFileBlockByID(FILEBLOCK_DAFF1_MAIN_HEADER, pfbMainHeader) != 1) {
+	if( getFirstFileBlockByID( FILEBLOCK_DAFF1_MAIN_HEADER_ID, pfbMainHeader) != 1 )
+	{
 		tidyup();
-		return DAFF_FILE_CORRUPTED;
+		return DAFF_FILE_INVALID;
 	}
 
-	m_pMainHeader = (DAFFMainHeader*) DAFF::malloc_aligned16(DAFF_MAIN_HEADER_SIZE);
-	fseek(m_file, (long) pfbMainHeader->ui64Offset, SEEK_SET);
-	if (fread(m_pMainHeader, 1, DAFF_MAIN_HEADER_SIZE, m_file) != DAFF_MAIN_HEADER_SIZE) {
+	m_pMainHeader = ( DAFFMainHeader* ) DAFF::malloc_aligned16( sizeof( DAFFMainHeader ) );
+	fseek(m_file, (long) pfbMainHeader->ui64Offset, SEEK_SET );
+	if( fread( m_pMainHeader, 1, sizeof( DAFFMainHeader ), m_file ) != sizeof( DAFFMainHeader ) )
+	{
 		tidyup();
-		return DAFF_FILE_CORRUPTED;
+		return DAFF_FILE_INVALID;
 	}
 
 	m_pMainHeader->fixEndianness();
 
 	// Content type
-	switch (m_pMainHeader->iContentType) {
+	switch (m_pMainHeader->iContentType)
+	{
 	case DAFF_IMPULSE_RESPONSE:
 	case DAFF_MAGNITUDE_SPECTRUM:
 	case DAFF_PHASE_SPECTRUM:
@@ -146,11 +158,12 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 	default:
 		// Invalid content type
 		tidyup();
-		return DAFF_FILE_CORRUPTED;
+		return DAFF_FILE_CONTENT_TYPE_UNKOWN;
 	};
 
 	// Quantization
-	switch (m_pMainHeader->iQuantization) {
+	switch (m_pMainHeader->iQuantization)
+	{
 	case DAFF_INT16:
 	case DAFF_INT24:
 	case DAFF_FLOAT32:
@@ -159,48 +172,41 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 	default:
 		// Invalid quantization
 		tidyup();
-		return DAFF_FILE_CORRUPTED;
+		return DAFF_FILE_QUANTIZATION_UNKOWN;
 	};
 
-	if (m_pMainHeader->iNumChannels < 1)
-		return DAFF_FILE_CORRUPTED;
+	if( m_pMainHeader->iNumChannels < 1 )
+		return DAFF_FILE_INVALID_MAIN_PARAMETER;
 
-	if (m_pMainHeader->iNumRecords < 1)
-		return DAFF_FILE_CORRUPTED;
+	if( m_pMainHeader->iNumRecords < 1 )
+		return DAFF_FILE_INVALID_MAIN_PARAMETER;
 
-	if (m_pMainHeader->iElementsPerRecord < 1)
-		return DAFF_FILE_CORRUPTED;
+	if( m_pMainHeader->iElementsPerRecord < 1 )
+		return DAFF_FILE_INVALID_MAIN_PARAMETER;
 
-	// Alpha angle validation
-	if (m_pMainHeader->iAlphaPoints < 1)
-		return DAFF_FILE_CORRUPTED;
-
-	/*if (m_pMainHeader->fAlphaStart > m_pMainHeader->fAlphaEnd)
-		return DAFF_FILE_CORRUPTED; 
-		
-	this is now allowed, so we can define ranges which wrap over 0&deg;
-		*/
+	if( m_pMainHeader->iAlphaPoints < 1 )
+		return DAFF_FILE_ALPHA_ANGLES_INVALID;
 
 	// alpha start value must not be 360&deg;
-	if ( (m_pMainHeader->fAlphaStart < 0.0f) || (m_pMainHeader->fAlphaStart >= 360.0f) )
-		return DAFF_FILE_CORRUPTED;
+	if( (m_pMainHeader->fAlphaStart < 0.0f) || (m_pMainHeader->fAlphaStart >= 360.0f) )
+		return DAFF_FILE_ALPHA_ANGLES_INVALID;
 
 	// alpha stop value may be 360&deg; indicating that the full alpha range is covered.
-	if ( (m_pMainHeader->fAlphaEnd < 0.0f) || (m_pMainHeader->fAlphaEnd > 360.0f) )
-		return DAFF_FILE_CORRUPTED;
+	if( (m_pMainHeader->fAlphaEnd < 0.0f) || (m_pMainHeader->fAlphaEnd > 360.0f) )
+		return DAFF_FILE_ALPHA_ANGLES_INVALID;
 
 	// Beta angle validation
-	if (m_pMainHeader->iBetaPoints < 1)
-		return DAFF_FILE_CORRUPTED;
+	if( m_pMainHeader->iBetaPoints < 1 )
+		return DAFF_FILE_BETA_ANGLES_INVALID;
 
-	if (m_pMainHeader->fBetaStart > m_pMainHeader->fBetaEnd)
-		return DAFF_FILE_CORRUPTED;
+	if( m_pMainHeader->fBetaStart > m_pMainHeader->fBetaEnd )
+		return DAFF_FILE_BETA_ANGLES_INVALID;
 
-	if ( (m_pMainHeader->fBetaStart < 0.0f) || (m_pMainHeader->fBetaStart > 180.0f) )
-		return DAFF_FILE_CORRUPTED;
+	if( (m_pMainHeader->fBetaStart < 0.0f) || (m_pMainHeader->fBetaStart > 180.0f) )
+		return DAFF_FILE_BETA_ANGLES_INVALID;
 
-	if ( (m_pMainHeader->fBetaEnd < 0.0f) || (m_pMainHeader->fBetaEnd > 180.0f) )
-		return DAFF_FILE_CORRUPTED;
+	if( (m_pMainHeader->fBetaEnd < 0.0f) || (m_pMainHeader->fBetaEnd > 180.0f) )
+		return DAFF_FILE_BETA_ANGLES_INVALID;
 
 	// Orientation
 	m_orientationDefault.fYawAngleDeg = m_pMainHeader->fOrientYaw;
@@ -209,39 +215,42 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 	m_tTrans.setOrientation(m_orientationDefault);
 
 	/*
-	 *  3nd step: Load the content header, validate it for correctness
+	 *  3rd step: Load the content header, validate it for correctness
 	 */
 
 	DAFFFileBlockEntry* pfbContentHeader;
-	if (getFirstFileBlockByID(FILEBLOCK_DAFF1_CONTENT_HEADER, pfbContentHeader) != 1) {
+	if( getFirstFileBlockByID( FILEBLOCK_DAFF1_CONTENT_HEADER_ID, pfbContentHeader ) != 1 )
+	{
 		tidyup();
 		return DAFF_FILE_CORRUPTED;
 	}
 
-	m_pContentHeader = (char*) DAFF::malloc_aligned16((size_t) pfbContentHeader->ui64Size);
-	fseek(m_file, (long) pfbContentHeader->ui64Offset, SEEK_SET);
-	if (fread(m_pContentHeader, 1, (size_t) pfbContentHeader->ui64Size, m_file) != (size_t) pfbContentHeader->ui64Size) {
+	m_pContentHeader = (char*) DAFF::malloc_aligned16( ( size_t ) pfbContentHeader->ui64Size );
+	fseek( m_file, (long) pfbContentHeader->ui64Offset, SEEK_SET );
+	if( fread(m_pContentHeader, 1, (size_t) pfbContentHeader->ui64Size, m_file) != (size_t) pfbContentHeader->ui64Size )
+	{
 		tidyup();
 		return DAFF_FILE_CORRUPTED;
 	}
 
 	float* pfFreqs=0;
 
-	switch (m_pMainHeader->iContentType) {
+	switch( m_pMainHeader->iContentType )
+	{
 	case DAFF_IMPULSE_RESPONSE:
 		m_pContentHeaderIR = static_cast<DAFFContentHeaderIR*>( m_pContentHeader );
 		m_pContentHeaderIR->fixEndianness();
 
-		if (m_pContentHeaderIR->fSamplerate < 0.0f)
-			return DAFF_FILE_CORRUPTED;
+		if( m_pContentHeaderIR->fSamplerate < 0.0f )
+			return DAFF_FILE_CONTENT_INVALID_PARAMETER;
 
-		if ( (m_pContentHeaderIR->iMaxEffectiveFilterLength < 0) ||
-			 (m_pContentHeaderIR->iMaxEffectiveFilterLength > m_pMainHeader->iElementsPerRecord) )
-			return DAFF_FILE_CORRUPTED;
+		if( ( m_pContentHeaderIR->iMaxEffectiveFilterLength < 0 ) ||
+			( m_pContentHeaderIR->iMaxEffectiveFilterLength > m_pMainHeader->iElementsPerRecord ) )
+			return DAFF_FILE_CONTENT_INVALID_PARAMETER;
 
-		if ( (m_pContentHeaderIR->iMinFilterOffset < 0) || 
-			 (m_pContentHeaderIR->iMinFilterOffset > m_pMainHeader->iElementsPerRecord) )
-			return DAFF_FILE_CORRUPTED;
+		if( ( m_pContentHeaderIR->iMinFilterOffset < 0 ) || 
+			( m_pContentHeaderIR->iMinFilterOffset > m_pMainHeader->iElementsPerRecord ) )
+			return DAFF_FILE_CONTENT_INVALID_PARAMETER;
 
 		break;
 
@@ -249,9 +258,8 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 		m_pContentHeaderMS = static_cast<DAFFContentHeaderMS*>( m_pContentHeader );
 		m_pContentHeaderMS->fixEndianness();
 
-
 		if (m_pContentHeaderMS->iNumFreqs <= 0)
-			return DAFF_FILE_CORRUPTED;
+			return DAFF_FILE_CONTENT_INVALID_PARAMETER;
 
 		pfFreqs = (float*) ((char*) m_pContentHeader + 8); 
 
@@ -260,7 +268,8 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 
 		// Load the (dynamically sized) frequency list
 		m_vfFreqs.resize(m_pContentHeaderMS->iNumFreqs);
-		for (int i=0; i<m_pContentHeaderMS->iNumFreqs; i++) m_vfFreqs[i] = pfFreqs[i];
+		for( int i=0; i<m_pContentHeaderMS->iNumFreqs; i++ )
+			m_vfFreqs[i] = pfFreqs[i];
 				
 		break;
 	
@@ -269,7 +278,7 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 		m_pContentHeaderPS->fixEndianness();
 
 		if (m_pContentHeaderPS->iNumFreqs <= 0)
-			return DAFF_FILE_CORRUPTED;
+			return DAFF_FILE_CONTENT_INVALID_PARAMETER;
 
 		pfFreqs = (float*) ((char*) m_pContentHeader + 8); 
 
@@ -287,7 +296,7 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 		m_pContentHeaderMPS->fixEndianness();
 
 		if (m_pContentHeaderMPS->iNumFreqs <= 0)
-			return DAFF_FILE_CORRUPTED;
+			return DAFF_FILE_CONTENT_INVALID_PARAMETER;
 
 		pfFreqs = (float*) ((char*) m_pContentHeader + 8); 
 
@@ -306,7 +315,7 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 
 		if ((m_pContentHeaderDFT->iNumDFTCoeffs != m_pContentHeaderDFT->iTransformSize) &&
 			(m_pContentHeaderDFT->iNumDFTCoeffs != floor(m_pContentHeaderDFT->iTransformSize/2.0)+1))
-			return DAFF_FILE_CORRUPTED;
+			return DAFF_FILE_CONTENT_INVALID_PARAMETER;
 				
 		break;
 	};
@@ -315,33 +324,38 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 	 *  4rd step: Load the record descriptor block
 	 */
 
-	if (getFirstFileBlockByID(FILEBLOCK_DAFF1_RECORD_DESC, m_pfbRDT) != 1) {
+	if( getFirstFileBlockByID( FILEBLOCK_DAFF1_RECORD_DESC_ID, m_pRecordDescriptorTable ) != 1 )
+	{
 		tidyup();
 		return DAFF_FILE_CORRUPTED;
 	}
 
-	m_pRecordDescBlock = (char*) DAFF::malloc_aligned16((size_t) m_pfbRDT->ui64Size);
-	fseek(m_file, (long) m_pfbRDT->ui64Offset, SEEK_SET);
-	if (fread(m_pRecordDescBlock, 1, (size_t) m_pfbRDT->ui64Size, m_file) != (size_t) m_pfbRDT->ui64Size) {
+	m_pRecordDescriptorBlock = (char*) DAFF::malloc_aligned16( (size_t) m_pRecordDescriptorTable->ui64Size );
+	fseek( m_file, (long) m_pRecordDescriptorTable->ui64Offset, SEEK_SET );
+	if( fread( m_pRecordDescriptorBlock, 1, (size_t) m_pRecordDescriptorTable->ui64Size, m_file ) != (size_t) m_pRecordDescriptorTable->ui64Size )
+	{
 		tidyup();
 		return DAFF_FILE_CORRUPTED;
 	}
 
 	// Set access pointer and fix the endianness
-	switch (m_pMainHeader->iContentType) {
+	switch( m_pMainHeader->iContentType )
+	{
 	case DAFF_IMPULSE_RESPONSE:
 		// A single IR record channel desc is 4+4+4+8 Byte = 20 Bytes
-		m_iRecordChannelDescSize = sizeof(DAFFRecordChannelDescIR);
+		m_iRecordChannelDescSize = sizeof( DAFFRecordChannelDescIR );
 		assert( m_iRecordChannelDescSize == 20 );
 
 		// Fix endianness for channel descriptors and metadata index
-		for (int i=0; i<m_pMainHeader->iNumRecords; i++) {
-			for (int c=0; c<m_pMainHeader->iNumChannels; c++) {
-				DAFFRecordChannelDescIR* pDesc = reinterpret_cast<DAFFRecordChannelDescIR*>( getRecordChannelDescPtr(i, c) );
+		for( int i=0; i<m_pMainHeader->iNumRecords; i++ )
+		{
+			for( int c=0; c<m_pMainHeader->iNumChannels; c++ )
+			{
+				DAFFRecordChannelDescIR* pDesc = reinterpret_cast< DAFFRecordChannelDescIR* >( getRecordChannelDescPtr( i, c ) );
 				pDesc->fixEndianness();
 			}
 
-			DAFF::le2se_4byte(getRecordMetadataIndexPtr(i), 1);
+			DAFF::le2se_4byte( getRecordMetadataIndexPtr( i ), 1 );
 		};
 
 		break;
@@ -351,17 +365,17 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
 	case DAFF_DFT_SPECTRUM:
 		// All other content use a default record channel desc (MS/PS/MPS/DFT) which is 8 Bytes
-		m_iRecordChannelDescSize = sizeof(DAFFRecordChannelDescDefault);
+		m_iRecordChannelDescSize = sizeof( DAFFRecordChannelDescDefault );
 		assert( m_iRecordChannelDescSize == 8 );
 
 		// Fix endianness for channel descriptors and metadata index
 		for (int i=0; i<m_pMainHeader->iNumRecords; i++) {
 			for (int c=0; c<m_pMainHeader->iNumChannels; c++) {
-				DAFFRecordChannelDescDefault* pDesc = reinterpret_cast<DAFFRecordChannelDescDefault*>( getRecordChannelDescPtr(i, c) );
+				DAFFRecordChannelDescDefault* pDesc = reinterpret_cast< DAFFRecordChannelDescDefault* >( getRecordChannelDescPtr( i, c ) );
 				pDesc->fixEndianness();
 			}
 
-			DAFF::le2se_4byte(getRecordMetadataIndexPtr(i), 1);
+			DAFF::le2se_4byte( getRecordMetadataIndexPtr( i ), 1 );
 		};
 
 		break;
@@ -372,7 +386,7 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 	 *  5th step: Load the record data
 	 */
 
-	if (getFirstFileBlockByID(FILEBLOCK_DAFF1_DATA, m_pfbData) != 1) {
+	if (getFirstFileBlockByID(FILEBLOCK_DAFF1_DATA_ID, m_pfbData) != 1) {
 		tidyup();
 		return DAFF_FILE_CORRUPTED;
 	}
@@ -405,7 +419,7 @@ int DAFFReaderImpl::openFile(const std::string& sFilename) {
 	 */
 
 	DAFFFileBlockEntry* pfbMetadata=0;
-	if (getFirstFileBlockByID(FILEBLOCK_DAFF1_METADATA, pfbMetadata) > 1) {
+	if (getFirstFileBlockByID(FILEBLOCK_DAFF1_METADATA_ID, pfbMetadata) > 1) {
 		tidyup();
 		return DAFF_FILE_CORRUPTED;
 	}
@@ -514,8 +528,8 @@ void DAFFReaderImpl::tidyup() {
 	DAFF::free_aligned16(m_pContentHeader);
 	m_pContentHeader = NULL;
 
-	DAFF::free_aligned16(m_pRecordDescBlock);
-	m_pRecordDescBlock = NULL;
+	DAFF::free_aligned16(m_pRecordDescriptorBlock);
+	m_pRecordDescriptorBlock = NULL;
 
 	DAFF::free_aligned16(m_pDataBlock);
 	m_pDataBlock = NULL;
@@ -788,7 +802,7 @@ void DAFFReaderImpl::getNearestNeighbour(int iView, float fAngle1, float fAngle2
 	getNearestNeighbour(iView, fAngle1, fAngle2, iRecordIndex, bDummy);
 }
 
-const DAFFMetadata* DAFFReaderImpl::getRecordMetadata(int iRecordIndex) const
+const DAFFMetadata* DAFFReaderImpl::getRecordMetadata( int iRecordIndex ) const
 {
 	assert( (iRecordIndex >= 0) && (iRecordIndex < m_pMainHeader->iNumRecords) );
 
@@ -799,7 +813,7 @@ const DAFFMetadata* DAFFReaderImpl::getRecordMetadata(int iRecordIndex) const
 
 	assert( (iMetadataIndex >= -1) && (iMetadataIndex < (int) m_vpMetadata.size()) );
 
-	if (iMetadataIndex == -1)
+	if( iMetadataIndex == -1 )
 		return m_pEmptyMetadata;
 	else
 		return m_vpMetadata[iMetadataIndex];
@@ -1048,8 +1062,8 @@ int DAFFReaderImpl::getEffectiveFilterBounds(int iRecordIndex, int iChannel, int
 		return DAFF_INVALID_INDEX;
 
 	DAFFRecordChannelDescIR* pDesc = reinterpret_cast<DAFFRecordChannelDescIR*>( getRecordChannelDescPtr(iRecordIndex, iChannel) );
-	iOffset = pDesc->iOffset;
-	iLength = pDesc->iLength;
+	iOffset = pDesc->iLeadingZeros;
+	iLength = pDesc->iElementLength;
 
 
 	return DAFF_NO_ERROR;
@@ -1073,21 +1087,21 @@ int DAFFReaderImpl::getEffectiveFilterCoeffs(int iRecordIndex, int iChannel, flo
 	// Data type conversion
 	switch (m_pMainHeader->iQuantization) {
 		case DAFF_INT16:
-			DAFF::stc_sint16_to_float(pfDest, (const short*) pData, pDesc->iLength, 1, 1, fGain * pDesc->fScaling);
+			DAFF::stc_sint16_to_float(pfDest, (const short*) pData, pDesc->iElementLength, 1, 1, fGain * pDesc->fScaling);
 			break;
 
 		case DAFF_INT24:
-			DAFF::stc_sint24_to_float(pfDest, pData, pDesc->iLength, 1, 1, fGain * pDesc->fScaling);
+			DAFF::stc_sint24_to_float(pfDest, pData, pDesc->iElementLength, 1, 1, fGain * pDesc->fScaling);
 			break;
 
 		case DAFF_FLOAT32:
 			if (fGain == 1)
 				// Direct copy
-				memcpy(pfDest, pData, pDesc->iLength*sizeof(float));
+				memcpy(pfDest, pData, pDesc->iElementLength*sizeof(float));
 			else {
 				// Copy with gain multiplication
 				float* pfData = (float*) pData;
-				for (int i=0; i<pDesc->iLength; i++)
+				for (int i=0; i<pDesc->iElementLength; i++)
 					pfDest[i] = pfData[i] * fGain;
 			}
 			break;
@@ -1114,16 +1128,16 @@ int DAFFReaderImpl::addEffectiveFilterCoeffs(int iRecordIndex, int iChannel, flo
 	// Data type conversion
 	switch (m_pMainHeader->iQuantization) {
 		case DAFF_INT16:
-			DAFF::stc_sint16_to_float_add(pfDest, (const short*) pData, pDesc->iLength, 1, 1, fGain * pDesc->fScaling);
+			DAFF::stc_sint16_to_float_add(pfDest, (const short*) pData, pDesc->iElementLength, 1, 1, fGain * pDesc->fScaling);
 			break;
 
 		case DAFF_INT24:
-			DAFF::stc_sint24_to_float_add(pfDest, pData, pDesc->iLength, 1, 1, fGain * pDesc->fScaling);
+			DAFF::stc_sint24_to_float_add(pfDest, pData, pDesc->iElementLength, 1, 1, fGain * pDesc->fScaling);
 			break;
 
 		case DAFF_FLOAT32:
 			float* pfData = (float*) pData;
-			for (int i=0; i<pDesc->iLength; i++)
+			for (int i=0; i<pDesc->iElementLength; i++)
 				pfDest[i] += pfData[i] * fGain;
 			break;
 	}
@@ -1390,20 +1404,22 @@ int DAFFReaderImpl::getDFTCoeffs(int iRecordIndex, int iChannel, float* pfDest) 
 	return DAFF_NO_ERROR;
 }
 
-void* DAFFReaderImpl::getRecordChannelDescPtr(int iRecord, int iChannel) const {
-	uint64_t uiOffset = iRecord*(m_pMainHeader->iNumChannels*m_iRecordChannelDescSize+4) + iChannel*m_iRecordChannelDescSize;
+void* DAFFReaderImpl::getRecordChannelDescPtr( int iRecord, int iChannel ) const
+{
+	// Relative to beginning of record descriptor block in bytes
+	uint64_t uiRecordDescriptorOffset = iRecord * ( m_pMainHeader->iNumChannels * m_iRecordChannelDescSize ) + iChannel * m_iRecordChannelDescSize;
 
 	// Check buffer overruns
-	assert(uiOffset < m_pfbRDT->ui64Size);
+	assert( uiRecordDescriptorOffset < m_pRecordDescriptorTable->ui64Size );
 
-	return ((char*) m_pRecordDescBlock) + uiOffset;
+	// Return absolute position in memory by using pointer of record descriptor block pointer
+	return ( ( char* ) m_pRecordDescriptorBlock ) + uiRecordDescriptorOffset;
 }
 
-int* DAFFReaderImpl::getRecordMetadataIndexPtr(int iRecord) const {
-	uint64_t uiOffset = iRecord*(m_pMainHeader->iNumChannels*m_iRecordChannelDescSize+4) + m_pMainHeader->iNumChannels*m_iRecordChannelDescSize;
+int* DAFFReaderImpl::getRecordMetadataIndexPtr( int iRecord ) const
+{
+	char* p = (char*)( getRecordChannelDescPtr( iRecord, 0 ) );
+	int* piMetaDataIndex = (int*)(p + 4);
 	
-	// Check buffer overruns
-	assert(uiOffset < m_pfbRDT->ui64Size);
-
-	return (int*)( ((char*) m_pRecordDescBlock) + uiOffset );
+	return piMetaDataIndex;
 }

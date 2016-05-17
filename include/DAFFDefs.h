@@ -94,10 +94,17 @@ enum DAFF_ERROR
 {
 	DAFF_NO_ERROR=0,						//!< No error = 0
 
-	DAFF_MODAL_ERROR=10001,					//!< Modal error (e.g. close a file that is not opened)
-	DAFF_FILE_CORRUPTED,					//!< File is broken
+	DAFF_MODAL_ERROR = 10001,				//!< Modal error (e.g. close a file that is not opened)
+	DAFF_FILE_INVALID,						//!< Invalid DAFF file, i.e. wrong signature
+	DAFF_FILE_INVALID_MAIN_PARAMETER,		//!< File has invalid main header parameter (num channels, etc)
+	DAFF_FILE_CONTENT_TYPE_UNKOWN,			//!< File has unkown content type (IR, MS, DFT, etc)
+	DAFF_FILE_ALPHA_ANGLES_INVALID,			//!< Invalid alpha angles or range problem
+	DAFF_FILE_BETA_ANGLES_INVALID,			//!< Invalid beta angles or range problem
+	DAFF_FILE_QUANTIZATION_UNKOWN,			//!< Data uses unrecognized or wrong quantization
 	DAFF_FILE_FORMAT_VERSION_UNSUPPORTED,	//!< File format version is not supported by this library version
+	DAFF_FILE_CONTENT_INVALID_PARAMETER,	//!< Content parameter invalid (sampling rate, num supporting frequencies, etc)
 	DAFF_FILE_NOT_FOUND,					//!< File not found
+	DAFF_FILE_CORRUPTED,					//!< Data reading error of an otherwise valid DAFF file
 	DAFF_INVALID_INDEX,						//!< Invalid index (e.g. record index)
 };
 

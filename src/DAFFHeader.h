@@ -37,19 +37,19 @@
    +---------------------------------------------------+ */
 
 //! DAFF Version 1: Main header
-static const int FILEBLOCK_DAFF1_MAIN_HEADER    = 0x0001;
+static const int FILEBLOCK_DAFF1_MAIN_HEADER_ID    = 0x0001;
 
 //! DAFF Version 1: Content header
-static const int FILEBLOCK_DAFF1_CONTENT_HEADER = 0x0002;
+static const int FILEBLOCK_DAFF1_CONTENT_HEADER_ID = 0x0002;
 
 //! DAFF Version 1: Record descriptor block
-static const int FILEBLOCK_DAFF1_RECORD_DESC    = 0x0003;
+static const int FILEBLOCK_DAFF1_RECORD_DESC_ID    = 0x0003;
 
 //! DAFF Version 1: Data block
-static const int FILEBLOCK_DAFF1_DATA           = 0x0004;
+static const int FILEBLOCK_DAFF1_DATA_ID           = 0x0004;
 
 //! DAFF Version 1: Metadata block
-static const int FILEBLOCK_DAFF1_METADATA       = 0x0005;
+static const int FILEBLOCK_DAFF1_METADATA_ID       = 0x0005;
 
 
 /* +---------------------------------------------------+
@@ -78,8 +78,6 @@ struct DAFFFileHeader
 	};
 } DAFF_PACK_ATTR;
 
-//! Daff file header size (static)
-const size_t DAFF_FILE_HEADER_SIZE = sizeof(DAFFFileHeader);
 
 //! A file block entry
 struct DAFFFileBlockEntry
@@ -98,10 +96,6 @@ struct DAFFFileBlockEntry
 		DAFF::le2se_8byte(&ui64Size, 1);
 	};
 } DAFF_PACK_ATTR;
-
-//! Daff file block entry size (static)
-const size_t DAFF_FILE_BLOCK_ENTRY_SIZE = sizeof(DAFFFileBlockEntry);
-
 
 /* +---------------------------------------------------+
    |                                                   |
@@ -153,9 +147,6 @@ struct DAFFMainHeader
 		DAFF::le2se_4byte(&fOrientRoll, 1);
 	};
 } DAFF_PACK_ATTR;
-
-//! DAFF main header size (static)
-const size_t DAFF_MAIN_HEADER_SIZE = sizeof(DAFFMainHeader);
 
 //! DAFF file format content header for impulse responses
 struct DAFFContentHeaderIR
@@ -270,17 +261,17 @@ struct DAFFRecordChannelDescDefault
 struct DAFFRecordChannelDescIR
 {
 #pragma pack(push,1)
-	int32_t iOffset;			//!@ ?
-	int32_t iLength;			//!@ ?
+	int32_t iLeadingZeros;		//!@ Offset of actual data within impulse response (leading zeros that are not included in DAFF data)
+	int32_t iElementLength;		//!@ Number of data values (length of element of record channel for a single channel, only)
 	float fScaling;				//!@ Scaling factor (only used for integer quantization)
-	uint64_t ui64DataOffset;	//!@ Position inside the file where samples/coefficients reside
+	uint64_t ui64DataOffset;	//!@ Position inside the file where samples/coefficients reside (in bytes)
 #pragma pack(pop)
 
 	//! Convert the little-endian file format into the systems endianness
 	inline void fixEndianness()
 	{
-		DAFF::le2se_4byte(&iOffset, 1);
-		DAFF::le2se_4byte(&iLength, 1);
+		DAFF::le2se_4byte(&iLeadingZeros, 1);
+		DAFF::le2se_4byte(&iElementLength, 1);
 		DAFF::le2se_4byte(&fScaling, 1);
 		DAFF::le2se_8byte(&ui64DataOffset, 1);
 	};
