@@ -34,18 +34,26 @@ int exportIR(DAFFContentIR* pContentIR, int iRecordIndex, const std::string& sFi
 	SF_INFO sfOutFileInfo;
 
 	std::string sOutfileQuantization;
-	switch (pContentIR->getProperties()->getQuantization()) {
+	switch( pContentIR->getProperties()->getQuantization() )
+	{
 		case DAFF_INT16:
 			sfOutFileInfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
-			sOutfileQuantization = DAFFUtils::StrQuantizationType(DAFF_INT16);
+			sOutfileQuantization = DAFFUtils::StrQuantizationType( DAFF_INT16 );
+			break;
 
 		case DAFF_INT24:
 			sfOutFileInfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_24;
-			sOutfileQuantization = DAFFUtils::StrQuantizationType(DAFF_INT24);
+			sOutfileQuantization = DAFFUtils::StrQuantizationType( DAFF_INT24 );
+			break;
+
+		case DAFF_FLOAT32:
+			sfOutFileInfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
+			sOutfileQuantization = DAFFUtils::StrQuantizationType( DAFF_FLOAT32 );
+			break;
 
 		default:
-			sfOutFileInfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_32;
-			sOutfileQuantization = "32-bit signed integer";
+			fprintf( stderr, "Error: Failed to write output file \"%s\", unrecognized quantization.\n", sFilename.c_str() );
+			return 255;
 	}
 
 	sfOutFileInfo.channels = iChannels;

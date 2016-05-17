@@ -105,11 +105,11 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 	for( int i=0; i<m_fileHeader.iNumFileBlocks; i++ )
 		m_pFileBlockTable[i].fixEndianness();
 
-	//*  DEBUG:
+	/*  DEBUG:
 	for( int i=0; i<m_fileHeader.iNumFileBlocks; i++ )
 		printf( "FILE BLOCK[%d] = { ID = 0x%04X, offset = %llu, size = %llu bytes }\n",
 		        i, m_pFileBlockTable[i].iID, m_pFileBlockTable[i].ui64Offset, m_pFileBlockTable[i].ui64Size );
-	//*/
+	*/
 
 	// Check for correctness
 	for( int i=0; i<m_fileHeader.iNumFileBlocks; i++ )
