@@ -203,19 +203,34 @@ void SphericalCoordinateAssistant::init() {
 	UpdateGrid();
 }
 
-SphericalCoordinateAssistant::~SphericalCoordinateAssistant() {
+SphericalCoordinateAssistant::~SphericalCoordinateAssistant()
+{
 	RemoveActor(m_pReferenceActor);
 	RemoveActor(m_pEquator);
 
-	for(int i=0; i<(int)m_pGrid.size(); i++) {
+	for( size_t i=0; i<m_pGrid.size(); i++ )
+	{
 		RemoveActor(m_pGrid.at(i));
 	}
 	m_pGrid.clear();
 
-	for(int i=0; i<(int)m_pLabels.size(); i++) {
+	for( size_t i=0; i<m_pLabels.size(); i++ )
+	{
 		RemoveActor(m_pLabels.at(i));
 	}
 	m_pLabels.clear();
+
+	for( size_t i = 0; i < m_pMeridians.size(); i++ )
+	{
+		RemoveActor( m_pMeridians.at( i ) );
+	}
+	m_pMeridians.clear();
+	for( size_t i = 0; i < m_pCircles.size(); i++ )
+	{
+		RemoveActor( m_pCircles.at( i ) );
+	}
+	m_pCircles.clear();
+
 }
 
 void SphericalCoordinateAssistant::UpdateGrid() {

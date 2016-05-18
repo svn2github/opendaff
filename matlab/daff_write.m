@@ -473,10 +473,10 @@ function [] = daff_write( varargin )
                 
                 if (zthreshold_value == 0)
                     % No efficient storage => Full impulse responses
-                    offsets = zeros(1, args.channels);
+                    eoffsets = zeros(1, args.channels);
                     elengths = ones(1, args.channels)*filterlength;
                 else
-                    offsets = zeros(1, args.channels);
+                    eoffsets = zeros(1, args.channels);
                     elengths = ones(1, args.channels)*filterlength;
                     
                     % Determine the effective bounds
@@ -485,13 +485,13 @@ function [] = daff_write( varargin )
                         
                         if (lwr == -1)
                             % No bounds. Store everything.
-                            offsets(c) = 0;
+                            eoffsets(c) = 0;
                             elengths(c) = filterlength;
                         else
                             % Keep the offset and length a modulo of 4 (16-byte alignment)
                             % (Note: lwr-1 => switch from Matlab indexing to C-indexing)
                             elen = upr-lwr+1;
-                            offsets(c) = daff_lwrmul(lwr-1, 4);
+                            eoffsets(c) = daff_lwrmul(lwr-1, 4);
                             elengths(c) = daff_uprmul(elen, 4);
                         end
                     end
@@ -502,17 +502,17 @@ function [] = daff_write( varargin )
                 
                 % Update filter offsets and effective lengths
                 if isfield(props, 'minFilterOffset')
-                    props.minFilterOffset = min([props.minFilterOffset min(offsets)]);
+                    props.minFilterOffset = min([props.minFilterOffset min(eoffsets)]);
                     props.maxEffectiveFilterLength = max([props.maxEffectiveFilterLength max(elengths)]);
                 else
-                    props.minFilterOffset = min(offsets);
+                    props.minFilterOffset = min(eoffsets);
                     props.maxEffectiveFilterLength = max(elengths);
                 end
                 
                 % Store infos for record in cell
                 for c=1:args.channels
                     x{a,b,c} = struct( 'peak', peak, ...
-                                       'offset', offsets(c), ...
+                                       'eoffset', eoffsets(c), ...
                                        'elength', elengths(c), ...
                                        'metadata', metadata, ...
                                        'metadataIndex', 0 ); 
@@ -790,8 +790,8 @@ function [] = daff_write( varargin )
     % |                                                |
     % +------------------------------------------------+
       
-    % Current version = 0.105
-    FileFormatVersion = 0105;
+    % Current version = 1.7
+    FileFormatVersion = 0170;
     
     % Important! 'l' -> little endian (DAFF files are always little endian)
     fid = fopen(args.filename, 'wb', 'l'); 
@@ -1004,7 +1004,7 @@ function [] = daff_write( varargin )
                     x{a,b,c}.dataOffset = ftell(fid) - DataOffset;
                     
                     % Effective boundaries (Matlab indices)
-                    i1 = x{a,b,c}.offset + 1;
+                    i1 = x{a,b,c}.eoffset + 1;
                     i2 = i1 + x{a,b,c}.elength - 1;
                     
                     switch args.quantization
@@ -1259,11 +1259,10 @@ function [] = daff_write( varargin )
 
             for a=1:points
                 for c=1:args.channels
-                    fwrite(fid, x{a,b,c}.offset, 'int32');
-                    fwrite(fid, x{a,b,c}.elength, 'int32');
-                    fwrite(fid, x{a,b,c}.metadataIndex, 'int32'); 
-                    %fwrite( fid, 1.0, 'float32' ) % Scaling/gain to be applied after integer rounding (deprecated?)
+                    fwrite(fid, x{a,b,c}.metadataIndex, 'int32');
                     fwrite(fid, x{a,b,c}.dataOffset, 'uint64');
+                    fwrite(fid, x{a,b,c}.eoffset, 'int32');
+                    fwrite(fid, x{a,b,c}.elength, 'int32');
     
                     % DEBUG: fprintf('Data offset alpha = %d, beta = %d, channel %d = %d\n', a, b, c, x{a,b}(c).dataOffset);
                 end

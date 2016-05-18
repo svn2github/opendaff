@@ -9,7 +9,7 @@ using namespace std;
 
 int main( int, char** )
 {
-	string sInputFilePath = "../../../matlab/ExampleShortDiracOmni.ir.daff";
+	string sInputFilePath = "../../../matlab/ExampleFigureOfEightSide.ms.daff";
 
 	int iDAFFERROR = DAFF_NO_ERROR;
 	DAFFReader* pReader = DAFFReader::create();
@@ -42,8 +42,8 @@ int main( int, char** )
 	pReader->closeFile();
 		
 
-	//DAFFViz::SphericalCoordinateAssistant oSCA;
-	//oRootNode.AddChildNode( &oSCA );
+	DAFFViz::SphericalCoordinateAssistant oSCA;
+	oRootNode.AddChildNode( &oSCA );
 
 	DAFFViz::VTKDAFFVizWindow win;
 	win.SetSceneGraphRootNode( pContentNode );

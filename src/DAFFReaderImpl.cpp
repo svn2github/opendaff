@@ -77,8 +77,8 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 	}
 
 	// Check version
-	// [This implementation supports version number 0.105]
-	if( m_fileHeader.iFileFormatVersion != 105 )
+	// [This implementation supports version number 1.7]
+	if( m_fileHeader.iFileFormatVersion != 170 )
 	{
 		// Database version not supported
 		tidyup();
@@ -366,11 +366,12 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 	case DAFF_DFT_SPECTRUM:
 		// All other content use a default record channel desc (MS/PS/MPS/DFT) which is 8 Bytes
 		m_iRecordChannelDescSize = sizeof( DAFFRecordChannelDescDefault );
-		assert( m_iRecordChannelDescSize == 8 );
 
 		// Fix endianness for channel descriptors and metadata index
-		for (int i=0; i<m_pMainHeader->iNumRecords; i++) {
-			for (int c=0; c<m_pMainHeader->iNumChannels; c++) {
+		for( int i=0; i<m_pMainHeader->iNumRecords; i++ )
+		{
+			for( int c=0; c<m_pMainHeader->iNumChannels; c++ )
+			{
 				DAFFRecordChannelDescDefault* pDesc = reinterpret_cast< DAFFRecordChannelDescDefault* >( getRecordChannelDescPtr( i, c ) );
 				pDesc->fixEndianness();
 			}
@@ -1269,16 +1270,17 @@ int DAFFReaderImpl::getMagnitude(int iRecordIndex, int iChannel, int iFreqIndex,
 		 (iFreqIndex < 0) || (iFreqIndex >= m_pContentHeaderMS->iNumFreqs) )
 		return DAFF_INVALID_INDEX;
 
-	DAFFRecordChannelDescDefault* pDesc = reinterpret_cast<DAFFRecordChannelDescDefault*>( getRecordChannelDescPtr(iRecordIndex, iChannel) );
-	float* pfSrc=0;
+	DAFFRecordChannelDescDefault* pDesc = reinterpret_cast<DAFFRecordChannelDescDefault*>( getRecordChannelDescPtr( iRecordIndex, iChannel) );
+	float* pfSrc = NULL;
 
-	switch (m_pMainHeader->iContentType) {
+	switch( m_pMainHeader->iContentType )
+	{
 		case DAFF_MAGNITUDE_SPECTRUM:
-			pfSrc = reinterpret_cast<float*>( reinterpret_cast<char*>(m_pDataBlock) + pDesc->ui64DataOffset );
+			pfSrc = reinterpret_cast< float* >( reinterpret_cast< char* >( m_pDataBlock ) + pDesc->ui64DataOffset );
 			fMag = pfSrc[iFreqIndex];
 			break;
 		case DAFF_MAGNITUDE_PHASE_SPECTRUM:
-			pfSrc = reinterpret_cast<float*>( reinterpret_cast<char*>(m_pDataBlock) + pDesc->ui64DataOffset );
+			pfSrc = reinterpret_cast< float* >( reinterpret_cast< char* >( m_pDataBlock ) + pDesc->ui64DataOffset );
 			fMag = pfSrc[2*iFreqIndex];
 			break;
 		default:
@@ -1446,13 +1448,14 @@ void* DAFFReaderImpl::getRecordChannelDescPtr( int iRecord, int iChannel ) const
 	assert( uiRecordDescriptorOffset < m_pRecordDescriptorTable->ui64Size );
 
 	// Return absolute position in memory by using pointer of record descriptor block pointer
-	return ( ( char* ) m_pRecordDescriptorBlock ) + uiRecordDescriptorOffset;
+	void* pPtr = ( ( char* ) m_pRecordDescriptorBlock ) + uiRecordDescriptorOffset;
+	return pPtr;
 }
 
 int* DAFFReaderImpl::getRecordMetadataIndexPtr( int iRecord ) const
 {
 	char* p = (char*)( getRecordChannelDescPtr( iRecord, 0 ) );
-	int* piMetaDataIndex = (int*)( p + sizeof( int32_t ) + sizeof( int32_t ) ); // Index is at third position of descriptor struct
+	int* piMetaDataIndex = (int*)( p ); // Index is at first position of descriptor struct
 	
 	return piMetaDataIndex;
 }

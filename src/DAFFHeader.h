@@ -247,13 +247,15 @@ struct DAFFContentHeaderDFT
 struct DAFFRecordChannelDescDefault
 {
 #pragma pack(push,1)
+	int32_t iMetaDataIndex;		//!@ Index in metadata table (C-style indexing: beginning with 0)
 	uint64_t ui64DataOffset;	//!@ Position inside the file where samples/coefficients reside
 #pragma pack(pop)
 
 	//! Convert the little-endian file format into the systems endianness
 	inline void fixEndianness()
 	{
-		DAFF::le2se_8byte(&ui64DataOffset, 1);
+		DAFF::le2se_4byte( &iMetaDataIndex, 1 );
+		DAFF::le2se_8byte( &ui64DataOffset, 1 );
 	};
 } DAFF_PACK_ATTR;
 
@@ -261,19 +263,19 @@ struct DAFFRecordChannelDescDefault
 struct DAFFRecordChannelDescIR
 {
 #pragma pack(push,1)
-	int32_t iLeadingZeros;		//!@ Offset of actual data within impulse response (leading zeros that are not included in DAFF data)
-	int32_t iElementLength;		//!@ Number of data values (length of element of record channel for a single channel, only)
 	int32_t iMetaDataIndex;		//!@ Index in metadata table (C-style indexing: beginning with 0)
 	uint64_t ui64DataOffset;	//!@ Position inside the file where samples/coefficients reside (in bytes)
+	int32_t iLeadingZeros;		//!@ Offset of actual data within impulse response (leading zeros that are not included in DAFF data)
+	int32_t iElementLength;		//!@ Number of data values (length of element of record channel for a single channel, only)
 #pragma pack(pop)
 
 	//! Convert the little-endian file format into the systems endianness
 	inline void fixEndianness()
 	{
-		DAFF::le2se_4byte( &iLeadingZeros, 1 );
-		DAFF::le2se_4byte( &iElementLength, 1 );
 		DAFF::le2se_4byte( &iMetaDataIndex, 1 );
 		DAFF::le2se_8byte( &ui64DataOffset, 1 );
+		DAFF::le2se_4byte( &iLeadingZeros, 1 );
+		DAFF::le2se_4byte( &iElementLength, 1 );
 	};
 } DAFF_PACK_ATTR;
 
