@@ -12,6 +12,7 @@
 #include <vtkRenderer.h>
 #include <vtkWindowToImageFilter.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkSmartPointer.h>
 
 // STL includes
 #include <math.h>
@@ -22,16 +23,17 @@ namespace DAFFViz
 
 	VTKDAFFVizWindow::VTKDAFFVizWindow()
 	 {
-		m_pRenderer = vtkRenderer::New();
-		m_pRenderWindow = vtkRenderWindow::New();
-		m_pRenderWindow->AddRenderer(m_pRenderer);
+		vtkSmartPointer<vtkRenderer> pRenderer = vtkRenderer::New();
+		m_pRenderer = pRenderer;
+		m_pRenderWindow = vtkSmartPointer< vtkRenderWindow >( vtkRenderWindow::New() );
+		m_pRenderWindow->AddRenderer( m_pRenderer );
 
 		m_pRenderWindow->LineSmoothingOn();
 
-		m_pCameraLight = vtkLight::New();
+		m_pCameraLight = vtkSmartPointer<vtkLight>( vtkLight::New() );
 		m_pCameraLight->SetLightTypeToCameraLight();
 
-		m_pRenderer->AddLight(m_pCameraLight);
+		m_pRenderer->AddLight( m_pCameraLight );
 
 		m_bCameraLight = true;
 
@@ -41,7 +43,7 @@ namespace DAFFViz
 
 		m_pCamera = m_pRenderer->GetActiveCamera();
 
-		m_pInteractor = vtkRenderWindowInteractor::New();
+		m_pInteractor = vtkSmartPointer<vtkRenderWindowInteractor>( vtkRenderWindowInteractor::New() );
 		m_pInteractor->SetRenderWindow( m_pRenderWindow );
 	
 		m_bInteractionLeftBtn = false;
@@ -92,7 +94,8 @@ namespace DAFFViz
 	{
 		DAFFVIZ_LOCK_VTK;
 		m_pRenderer->RemoveAllViewProps();
-		if (node != NULL) {
+		if( node != NULL )
+		{
 			m_pRenderer->AddActor( ( vtkProp* ) node->GetNodeAssembly() );
 		
 			// Set this frame's camera as the follower object

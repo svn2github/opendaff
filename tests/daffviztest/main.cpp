@@ -9,7 +9,7 @@ using namespace std;
 
 int main( int, char** )
 {
-	string sInputFilePath = "../../../matlab/ExampleFigureOfEightSide.ms.daff";
+	string sInputFilePath = "../../../matlab/ExampleUnityLowerHemisphere.ms.daff";
 
 	int iDAFFERROR = DAFF_NO_ERROR;
 	DAFFReader* pReader = DAFFReader::create();
@@ -21,7 +21,6 @@ int main( int, char** )
 	else
 		cout << "Sucessfully opened DAFF file '" << sInputFilePath << "'" << endl;
 
-	DAFFViz::SGNode oRootNode;
 	DAFFViz::SGNode* pContentNode = NULL;
 
 	if( pReader->getContentType() == DAFF_IMPULSE_RESPONSE )
@@ -40,17 +39,11 @@ int main( int, char** )
 	}
 
 	pReader->closeFile();
-		
-
-	DAFFViz::SphericalCoordinateAssistant oSCA;
-	oRootNode.AddChildNode( &oSCA );
-
+	
 	DAFFViz::VTKDAFFVizWindow win;
 	win.SetSceneGraphRootNode( pContentNode );
 	win.Start();
-	win.SetSceneGraphRootNode( NULL );
-	
-	oRootNode.RemoveChildNode( pContentNode );
+
 	delete pContentNode;
 
 	return 0;
