@@ -26,30 +26,34 @@ class DAFFContentIR;
 
 namespace DAFFViz
 {
-
-	//! Simple directivity object node
+	//! Simple carpet plot object node
 	/**
-	 * This class derived from the scene graph node class creates a directivity.
+	 * This class derived from the scene graph node class creates a carpet plot visualization.
 	 */
 
-	class DAFF_API CarpetPlot : public DAFFViz::SGNode {
+	class DAFF_API CarpetPlot : public DAFFViz::SGNode
+	{
 	public:
-		enum {
+		enum
+		{
 			SCALING_LINEAR=0,
 			SCALING_DECIBEL
 		};
-		enum {
+
+		enum
+		{
 			BETA_FIXED=0,
 			ALPHA_FIXED
 		};
-		enum {
+
+		enum
+		{
 			MODE_SURFACE=0,
 			MODE_WIREFRAME,
 			MODE_POINT
 		};
 
-
-		CarpetPlot(const DAFFContentIR* pContentIR);
+		CarpetPlot( const DAFFContentIR* pContentIR );
 		virtual ~CarpetPlot();
 
 		// --= Object related methods =--

@@ -88,14 +88,15 @@ namespace DAFFViz
 		m_pInteractor->Start();	
 	}
 
-	void VTKDAFFVizWindow::SetSceneGraphRootNode(DAFFViz::SGNode* node) {
+	void VTKDAFFVizWindow::SetSceneGraphRootNode( DAFFViz::SGNode* node )
+	{
 		DAFFVIZ_LOCK_VTK;
 		m_pRenderer->RemoveAllViewProps();
 		if (node != NULL) {
-			m_pRenderer->AddActor((vtkProp*) node->GetNodeAssembly());
+			m_pRenderer->AddActor( ( vtkProp* ) node->GetNodeAssembly() );
 		
 			// Set this frame's camera as the follower object
-			node->OnSetFollowerCamera(m_pCamera);
+			node->OnSetFollowerCamera( m_pCamera );
 		}
 
 		m_pRenderer->ResetCameraClippingRange();

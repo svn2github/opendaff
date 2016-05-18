@@ -64,11 +64,11 @@ typedef unsigned __int64 uint64_t;
 //! Content types
 enum DAFF_CONTENT_TYPES
 {
-	DAFF_IMPULSE_RESPONSE=0,			//!< Impulse response (IR) in the time-domain
-	DAFF_MAGNITUDE_SPECTRUM=1,			//!< Magnitude spectrum defined at discrete frequencies
-	DAFF_PHASE_SPECTRUM=2,				//!< Phase spectrum defined at discrete frequencies
-	DAFF_MAGNITUDE_PHASE_SPECTRUM=3,	//!< Magnitude-phase spectrum defined at discrete frequencies
-	DAFF_DFT_SPECTRUM=4					//!< Discrete Fourier spectrum in the frequency-domain
+	DAFF_IMPULSE_RESPONSE			=0,	//!@ Impulse response (IR) in the time-domain
+	DAFF_MAGNITUDE_SPECTRUM			=1,	//!@ Magnitude spectrum defined at discrete frequencies
+	DAFF_PHASE_SPECTRUM				=2,	//!@ Phase spectrum defined at discrete frequencies
+	DAFF_MAGNITUDE_PHASE_SPECTRUM	=3,	//!@ Magnitude-phase spectrum defined at discrete frequencies
+	DAFF_DFT_SPECTRUM				=4,	//!@ Discrete Fourier spectrum in the frequency-domain
 };
 
 
@@ -92,20 +92,20 @@ enum DAFF_VIEWS
 //! Errorcodes
 enum DAFF_ERROR 
 {
-	DAFF_NO_ERROR=0,						//!< No error = 0
+	DAFF_NO_ERROR		=0,					//!@ No error = 0
 
-	DAFF_MODAL_ERROR = 10001,				//!< Modal error (e.g. close a file that is not opened)
-	DAFF_FILE_INVALID,						//!< Invalid DAFF file, i.e. wrong signature
-	DAFF_FILE_INVALID_MAIN_PARAMETER,		//!< File has invalid main header parameter (num channels, etc)
-	DAFF_FILE_CONTENT_TYPE_UNKOWN,			//!< File has unkown content type (IR, MS, DFT, etc)
-	DAFF_FILE_ALPHA_ANGLES_INVALID,			//!< Invalid alpha angles or range problem
-	DAFF_FILE_BETA_ANGLES_INVALID,			//!< Invalid beta angles or range problem
-	DAFF_FILE_QUANTIZATION_UNKOWN,			//!< Data uses unrecognized or wrong quantization
-	DAFF_FILE_FORMAT_VERSION_UNSUPPORTED,	//!< File format version is not supported by this library version
-	DAFF_FILE_CONTENT_INVALID_PARAMETER,	//!< Content parameter invalid (sampling rate, num supporting frequencies, etc)
-	DAFF_FILE_NOT_FOUND,					//!< File not found
-	DAFF_FILE_CORRUPTED,					//!< Data reading error of an otherwise valid DAFF file
-	DAFF_INVALID_INDEX,						//!< Invalid index (e.g. record index)
+	DAFF_MODAL_ERROR	= 10001,			//!@ Modal error (e.g. close a file that is not opened)
+	DAFF_FILE_INVALID,						//!@ Invalid DAFF file, i.e. wrong signature
+	DAFF_FILE_INVALID_MAIN_PARAMETER,		//!@ File has invalid main header parameter (num channels, etc)
+	DAFF_FILE_CONTENT_TYPE_UNKOWN,			//!@ File has unkown content type (IR, MS, DFT, etc)
+	DAFF_FILE_ALPHA_ANGLES_INVALID,			//!@ Invalid alpha angles or range problem
+	DAFF_FILE_BETA_ANGLES_INVALID,			//!@ Invalid beta angles or range problem
+	DAFF_FILE_QUANTIZATION_UNKOWN,			//!@ Data uses unrecognized or wrong quantization
+	DAFF_FILE_FORMAT_VERSION_UNSUPPORTED,	//!@ File format version is not supported by this library version
+	DAFF_FILE_CONTENT_INVALID_PARAMETER,	//!@ Content parameter invalid (sampling rate, num supporting frequencies, etc)
+	DAFF_FILE_NOT_FOUND,					//!@ File not found
+	DAFF_FILE_CORRUPTED,					//!@ Data reading error of an otherwise valid DAFF file
+	DAFF_INVALID_INDEX,						//!@ Invalid index (e.g. record index)
 };
 
 

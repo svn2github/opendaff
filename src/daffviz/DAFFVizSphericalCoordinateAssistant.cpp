@@ -500,7 +500,7 @@ double SphericalCoordinateAssistant::GetPhiResolution() const { return 360/m_dSc
 
 void SphericalCoordinateAssistant::OnSetFollowerCamera(vtkCamera* pCamera)
 {
-	DAFFVIZ_LOCK_VTK;
+	//DAFFVIZ_LOCK_VTK;
 	for (int i=0; i < (int)m_pCircles.size(); i++) {
 		m_pCircles[i]->SetCamera(pCamera);
 	}
@@ -508,7 +508,7 @@ void SphericalCoordinateAssistant::OnSetFollowerCamera(vtkCamera* pCamera)
 		m_pLabels[i]->SetCamera(pCamera);
 	}
 	m_pCamera = pCamera;
-	DAFFVIZ_UNLOCK_VTK;
+	//DAFFVIZ_UNLOCK_VTK;
 
 	// Delegate
 	SGNode::OnSetFollowerCamera(pCamera);

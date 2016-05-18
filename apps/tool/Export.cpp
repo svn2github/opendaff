@@ -59,13 +59,15 @@ int exportIR(DAFFContentIR* pContentIR, int iRecordIndex, const std::string& sFi
 	sfOutFileInfo.channels = iChannels;
 	sfOutFileInfo.samplerate = (int) pContentIR->getSamplerate();
 
-	if (!(pSndOutFile = sf_open(sFilename.c_str(), SFM_WRITE, &sfOutFileInfo))) {
-		fprintf(stderr, "Error: Could not open file \"%s\" for writing\n", sFilename.c_str());
+	if( !( pSndOutFile = sf_open( sFilename.c_str(), SFM_WRITE, &sfOutFileInfo ) ) )
+	{
+		fprintf( stderr, "Error: Could not open file \"%s\" for writing\n", sFilename.c_str() );
 		delete[] pfDataInterleaved;
 		return 255;
 	}
 
-	if (sf_writef_float(pSndOutFile, pfDataInterleaved, iFilterLength) != iFilterLength) {
+	if( sf_writef_float( pSndOutFile, pfDataInterleaved, iFilterLength ) != iFilterLength )
+	{
 		fprintf(stderr, "Error: Failed to write output file \"%s\"\n", sFilename.c_str());
 		sf_close(pSndOutFile);
 		delete[] pfDataInterleaved;

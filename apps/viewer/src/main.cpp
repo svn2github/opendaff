@@ -41,7 +41,6 @@
 
 int main( int argc, char* argv[] )
 {
-
-	std::cout << "DAFFViewer not proted from FOX to Qt yet." << std::endl;
+	std::cout << "DAFFViewer not ported from FOX to Qt yet." << std::endl;
 	return 0;
 }

@@ -14,7 +14,7 @@
 #endif // _MSC_VER
 
 
-void DAFFUtils::getLibraryVersion(DAFFVersion& version)
+void DAFFUtils::getLibraryVersion( DAFFVersion& version )
 {
 	// Version 0.1
 	version.iVersionMajor = 0;
@@ -23,7 +23,8 @@ void DAFFUtils::getLibraryVersion(DAFFVersion& version)
 }
 
 // Helper function: Convert float => std::string (fixed format, but without trailing zeros)
-std::string DAFFUtils::Float2StrNice(float f, int precision, bool showpos, int leadingzeros) {
+std::string DAFFUtils::Float2StrNice( float f, int precision, bool showpos, int leadingzeros )
+{
 	// First convert to fixed format (with enough digits)
 	std::stringstream ss;
 	if (showpos) ss << (f < 0.0f ? "-" : "+");
@@ -44,7 +45,8 @@ std::string DAFFUtils::Float2StrNice(float f, int precision, bool showpos, int l
 }
 
 // Helper function: Convert double => std::string (fixed format, but without trailing zeros)
-std::string DAFFUtils::Double2StrNice(double d, int precision, bool showpos, int leadingzeros) {
+std::string DAFFUtils::Double2StrNice( double d, int precision, bool showpos, int leadingzeros )
+{
 	// First convert to fixed format (with enough digits)
 	std::stringstream ss;
 	if (showpos) ss << (d < 0.0f ? "-" : "+");
@@ -64,7 +66,8 @@ std::string DAFFUtils::Double2StrNice(double d, int precision, bool showpos, int
 	return s.substr(0, n);
 }
 
-std::string DAFFUtils::StrDirection(int iView, double dAngle1, double dAngle2, int precision, int leadingzeros) {
+std::string DAFFUtils::StrDirection( int iView, double dAngle1, double dAngle2, int precision, int leadingzeros )
+{
 	std::stringstream ss;
 
 	switch (iView) {
@@ -91,7 +94,8 @@ std::string DAFFUtils::StrDirection(int iView, double dAngle1, double dAngle2, i
 	return "";
 }
 
-std::string DAFFUtils::StrDirectionCompact(int iView, double dAngle1, double dAngle2, int precision, int leadingzeros) {
+std::string DAFFUtils::StrDirectionCompact( int iView, double dAngle1, double dAngle2, int precision, int leadingzeros )
+{
 	std::stringstream ss;
 
 	switch (iView) {
@@ -118,16 +122,34 @@ std::string DAFFUtils::StrDirectionCompact(int iView, double dAngle1, double dAn
 	return "";
 }
 
-std::string DAFFUtils::StrError(int iErrorcode)
+std::string DAFFUtils::StrError( int iErrorcode )
 {
-	switch (iErrorcode)
+	switch( iErrorcode )
 	{
-
-	case DAFF_MODAL_ERROR: return "Modal error";
-	case DAFF_FILE_CORRUPTED: return "File corrupted";
-	case DAFF_FILE_FORMAT_VERSION_UNSUPPORTED: return "File format version unsupported";
-	case DAFF_FILE_NOT_FOUND: return "File not found";
-	case DAFF_INVALID_INDEX: return "Invalid index";
+	case DAFF_MODAL_ERROR: 
+		return "Modal error";
+	case DAFF_FILE_CORRUPTED: 
+		return "File corrupted";
+	case DAFF_FILE_FORMAT_VERSION_UNSUPPORTED:
+		return "File format version not supported";
+	case DAFF_FILE_NOT_FOUND:
+		return "File not found";
+	case DAFF_INVALID_INDEX:
+		return "Invalid index";
+	case DAFF_FILE_INVALID_MAIN_PARAMETER:
+		return "Invalid main header parameter (num channels, etc. )";
+	case DAFF_FILE_INVALID:
+		return "Invalid file (wrong signature, etc.)";
+	case DAFF_FILE_CONTENT_TYPE_UNKOWN:
+		return "File has unkown content type (IR, MS, DFT, etc)";
+	case DAFF_FILE_ALPHA_ANGLES_INVALID:
+		return "Invalid alpha angles or range problem";
+	case DAFF_FILE_BETA_ANGLES_INVALID:
+		return "Invalid beta angles or range problem";
+	case DAFF_FILE_QUANTIZATION_UNKOWN:
+		return "Data uses unrecognized or wrong quantization";
+	case DAFF_FILE_CONTENT_INVALID_PARAMETER:
+		return "Content parameter invalid (sampling rate, num supporting frequencies, etc)";
 
 	default:
 		{
@@ -138,9 +160,10 @@ std::string DAFFUtils::StrError(int iErrorcode)
 	}
 }
 
-std::string DAFFUtils::StrContentType(int iContentType) {
-	switch (iContentType) {
-
+std::string DAFFUtils::StrContentType( int iContentType )
+{
+	switch( iContentType )
+	{
 	case DAFF_IMPULSE_RESPONSE:				return "Impulse response";
 	case DAFF_MAGNITUDE_SPECTRUM:			return "Magnitude spectrum";
 	case DAFF_PHASE_SPECTRUM:				return "Phase spectrum";
@@ -150,9 +173,10 @@ std::string DAFFUtils::StrContentType(int iContentType) {
 	}
 }
 
-std::string DAFFUtils::StrShortContentType(int iContentType) {
-	switch (iContentType) {
-
+std::string DAFFUtils::StrShortContentType( int iContentType )
+{
+	switch (iContentType)
+	{
 	case DAFF_IMPULSE_RESPONSE:				return "ir";
 	case DAFF_MAGNITUDE_SPECTRUM:			return "ms";
 	case DAFF_PHASE_SPECTRUM:				return "ps";
@@ -162,7 +186,8 @@ std::string DAFFUtils::StrShortContentType(int iContentType) {
 	}
 }
 
-std::string DAFFUtils::StrMetadataKeyType(int iKeyType) {
+std::string DAFFUtils::StrMetadataKeyType( int iKeyType )
+{
 	switch (iKeyType) {
 
 	case DAFFMetadata::DAFF_BOOL:   return "Boolean";
@@ -174,7 +199,8 @@ std::string DAFFUtils::StrMetadataKeyType(int iKeyType) {
 	}
 }
 
-std::string DAFFUtils::StrQuantizationType(int iQuantizationType) {
+std::string DAFFUtils::StrQuantizationType( int iQuantizationType )
+{
 	switch (iQuantizationType) {
 
 	case DAFF_INT16:   return "16-bit signed integer";
@@ -185,13 +211,12 @@ std::string DAFFUtils::StrQuantizationType(int iQuantizationType) {
 	}
 }
 
-void DAFFUtils::NormalizeDirection(int iView,
-                                   const float fAngle1In, const float fAngle2In,
-								   float& fAngle1Out, float& fAngle2Out) {
-
+void DAFFUtils::NormalizeDirection( int iView, float fAngle1In, float fAngle2In, float& fAngle1Out, float& fAngle2Out )
+{
 	const float EPSILON = 0.00001F;	// 10^-5 &deg;
 
-	if (iView == DAFF_DATA_VIEW) {
+	if( iView == DAFF_DATA_VIEW )
+	{
 
 		/*
 		 *  - Alpha always within [0&deg;, +360&deg;)
@@ -224,7 +249,8 @@ void DAFFUtils::NormalizeDirection(int iView,
 		return;
 	}
 
-	if (iView == DAFF_OBJECT_VIEW) {
+	if( iView == DAFF_OBJECT_VIEW )
+	{
 		/*
 		 *  - Azimuth always within (-180&deg;, +180&deg;]
 		 *  - Elevation always within [-90&deg;, +90&deg;]

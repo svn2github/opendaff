@@ -580,40 +580,47 @@ int DAFFReaderImpl::getFileBlocksByID(int iID, std::vector<DAFFFileBlockEntry*>&
 	return (int) vpfDest.size();
 }
 
-std::string DAFFReaderImpl::getFilename() const {
+std::string DAFFReaderImpl::getFilename() const
+{
 	assert( m_bFileOpened );
 	return m_sFilename;
 }
 
-int DAFFReaderImpl::getFileFormatVersion() const {
+int DAFFReaderImpl::getFileFormatVersion() const
+{
 	assert( m_bFileOpened );
 	return m_fileHeader.iFileFormatVersion;
 }
 
-int DAFFReaderImpl::getContentType() const {
+int DAFFReaderImpl::getContentType() const
+{
 	assert( m_bFileOpened );
 	return m_pMainHeader->iContentType;
 }
 
-DAFFContent* DAFFReaderImpl::getContent() const {
+DAFFContent* DAFFReaderImpl::getContent() const
+{
 	assert( m_bFileOpened );
 	// Logical constness here!
 	// TODO: Bad cast
-	return (DAFFContentIR*) this;
+	return ( DAFFContentIR* ) this;
 }
 
-const DAFFMetadata* DAFFReaderImpl::getMetadata() const {
+const DAFFMetadata* DAFFReaderImpl::getMetadata() const
+{
 	assert( m_bFileOpened );
 	return m_vpMetadata[0];
 }
 
-DAFFProperties* DAFFReaderImpl::getProperties() const {
+DAFFProperties* DAFFReaderImpl::getProperties() const
+{
 	assert( m_bFileOpened );
 	// TODO: Fixme
-	return (DAFFProperties*) this;
+	return ( DAFFProperties* ) this;
 }
 
-std::string DAFFReaderImpl::toString() const {
+std::string DAFFReaderImpl::toString() const
+{
 	assert( m_bFileOpened );
 	
 	std::stringstream ss;

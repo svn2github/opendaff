@@ -126,17 +126,16 @@ CarpetPlot::CarpetPlot(const DAFFContentIR* pContentIR)
 	normals->Delete();
 }
 
-CarpetPlot::~CarpetPlot() {
-	// TODO: check for memory leaks ... no deletion in constructor?!
-	// Error: remaining  actors in assembly, must be removed here from parent node!!
-
-	RemoveActor(m_pLabel);
-	RemoveActor(m_pProbe);
-	RemoveActor(m_pPlotActor);
+CarpetPlot::~CarpetPlot()
+{
+	RemoveActor( m_pLabel );
+	RemoveActor( m_pProbe );
+	RemoveActor( m_pPlotActor );
 }
 
 
-void CarpetPlot::init() {
+void CarpetPlot::init()
+{
 
 	const DAFFProperties* pProps = m_pContentIR->getProperties();
 
