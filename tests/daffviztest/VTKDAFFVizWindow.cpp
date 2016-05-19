@@ -13,6 +13,8 @@
 #include <vtkWindowToImageFilter.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
+#include <vtkProp.h>
+#include <vtkAssembly.h>
 
 // STL includes
 #include <math.h>
@@ -22,9 +24,11 @@ namespace DAFFViz
 {
 
 	VTKDAFFVizWindow::VTKDAFFVizWindow()
-	 {
-		vtkSmartPointer<vtkRenderer> pRenderer = vtkRenderer::New();
-		m_pRenderer = pRenderer;
+	{
+		/*
+		m_pRenderer = vtkSmartPointer< vtkRenderer > ::New();
+		m_pRenderer->SetBackground( 0.1f, 0.1f, 1.0f );
+
 		m_pRenderWindow = vtkSmartPointer< vtkRenderWindow >( vtkRenderWindow::New() );
 		m_pRenderWindow->AddRenderer( m_pRenderer );
 
@@ -43,7 +47,7 @@ namespace DAFFViz
 
 		m_pCamera = m_pRenderer->GetActiveCamera();
 
-		m_pInteractor = vtkSmartPointer<vtkRenderWindowInteractor>( vtkRenderWindowInteractor::New() );
+		m_pInteractor = vtkSmartPointer< vtkRenderWindowInteractor >( vtkRenderWindowInteractor::New() );
 		m_pInteractor->SetRenderWindow( m_pRenderWindow );
 	
 		m_bInteractionLeftBtn = false;
@@ -52,6 +56,7 @@ namespace DAFFViz
 
 		m_dLastRootX = 0;
 		m_dLastRootY = 0;
+		*/
 	}
 
 	VTKDAFFVizWindow::~VTKDAFFVizWindow()
@@ -63,30 +68,18 @@ namespace DAFFViz
 
 		// Poll until render end is indicated
 		bool bFinished;
-		do {
+		do
+		{
 			m_mxRenderCount.lock();
 			bFinished = !m_bRenderInProgress;
 			m_mxRenderCount.unlock();
 		} while (!bFinished);
-
-		if (m_pInteractor)
-			m_pInteractor->Delete();
-
-		if (m_pCameraLight != NULL)
-			m_pCameraLight->Delete();
-		if (m_pRenderer != NULL)
-			m_pRenderer->Delete();
-
-		/* causes vtk error
-		if (m_pRenderWindow != NULL)
-			m_pRenderWindow->Delete();
-		*/
 	}
 
 	void VTKDAFFVizWindow::Start()
 	{
 		m_pRenderWindow->Render();
-		m_pRenderWindow->Start();
+		//m_pRenderWindow->Start();
 		m_pInteractor->Start();	
 	}
 
@@ -96,7 +89,8 @@ namespace DAFFViz
 		m_pRenderer->RemoveAllViewProps();
 		if( node != NULL )
 		{
-			m_pRenderer->AddActor( ( vtkProp* ) node->GetNodeAssembly() );
+			vtkSmartPointer< vtkAssembly > pA = node->GetNodeAssembly();
+			m_pRenderer->AddActor( pA );
 		
 			// Set this frame's camera as the follower object
 			node->OnSetFollowerCamera( m_pCamera );
@@ -120,17 +114,20 @@ namespace DAFFViz
 
 	// --= Screen =-- //
 
-	void VTKDAFFVizWindow::SetBackground( double red,  double green,  double blue) {
+	void VTKDAFFVizWindow::SetBackground( double red, double green, double blue )
+	{
 		DAFFVIZ_LOCK_VTK;
-		m_pRenderer->SetBackground(red, green, blue);
+		m_pRenderer->SetBackground( red, green, blue );
 		DAFFVIZ_UNLOCK_VTK;
 	}
 
-	void VTKDAFFVizWindow::GetBackground(double &red, double &green, double &blue) const {
-		m_pRenderer->GetBackground(red, green, blue);
+	void VTKDAFFVizWindow::GetBackground( double &red, double &green, double &blue ) const
+	{
+		m_pRenderer->GetBackground( red, green, blue );
 	}
 
-	void VTKDAFFVizWindow::SaveScreenshot(const std::string& sFilename) {
+	void VTKDAFFVizWindow::SaveScreenshot( const std::string& sFilename )
+	{
 		if (!m_pRenderWindow) return;
 
 		DAFFVIZ_LOCK_VTK;
@@ -138,11 +135,11 @@ namespace DAFFViz
 		DAFFVIZ_UNLOCK_VTK;
 
 		// Window to image filter
-		vtkWindowToImageFilter* screenshot = vtkWindowToImageFilter::New();
+		vtkSmartPointer< vtkWindowToImageFilter > screenshot = vtkSmartPointer< vtkWindowToImageFilter >::New();
 		screenshot->SetInput(m_pRenderWindow);
 
 		// PNG exporter
-		vtkPNGWriter* pngwriter = vtkPNGWriter::New();
+		vtkSmartPointer< vtkPNGWriter > pngwriter = vtkSmartPointer< vtkPNGWriter >::New();
 		pngwriter->SetFileName(sFilename.c_str());
 		pngwriter->SetInputData(screenshot->GetOutput());
 		pngwriter->Write();
@@ -150,7 +147,8 @@ namespace DAFFViz
 
 	// --= Camera =--
 
-	void VTKDAFFVizWindow::SetCameraPosition( double x,  double y,  double z ) {
+	void VTKDAFFVizWindow::SetCameraPosition( double x,  double y,  double z )
+	{
 		DAFFVIZ_LOCK_VTK;
 
 		m_pCamera->SetPosition(x, y, z);
@@ -159,11 +157,13 @@ namespace DAFFViz
 		DAFFVIZ_UNLOCK_VTK;
 	}
 
-	void VTKDAFFVizWindow::GetCameraPosition(double& x, double& y, double& z) const {
+	void VTKDAFFVizWindow::GetCameraPosition( double& x, double& y, double& z ) const
+	{
 		m_pCamera->GetPosition(x, y, z);
 	}
 
-	void VTKDAFFVizWindow::SetCameraFocalPoint( double x,  double y,  double z ) {
+	void VTKDAFFVizWindow::SetCameraFocalPoint( double x,  double y,  double z )
+	{
 		DAFFVIZ_LOCK_VTK;
 
 		m_pCamera->SetFocalPoint(x, y, z);
@@ -172,15 +172,15 @@ namespace DAFFViz
 		DAFFVIZ_UNLOCK_VTK;
 	}
 
-	void VTKDAFFVizWindow::GetCameraFocalPoint(double& x, double& y, double& z) const
+	void VTKDAFFVizWindow::GetCameraFocalPoint( double& x, double& y, double& z ) const
 	{
 		m_pCamera->GetFocalPoint(x, y, z);
 	}
 
-	void VTKDAFFVizWindow::DollyCamera( double dDolly)
+	void VTKDAFFVizWindow::DollyCamera( double dDolly )
 	{
 
-		if (m_pCamera->GetParallelProjection())
+		if( m_pCamera->GetParallelProjection() )
 			m_pCamera->Zoom(dDolly);
 		else
 			m_pCamera->Dolly(dDolly);
@@ -204,12 +204,13 @@ namespace DAFFViz
 		m_pCamera->SetParallelProjection(0);
 	}
 
-	void VTKDAFFVizWindow::SetCameraType( int iType)
+	void VTKDAFFVizWindow::SetCameraType( int iType )
 	{
 		DAFFVIZ_LOCK_VTK;
 
 		// Reset if no type
-		if (iType <= 0) {
+		if( iType <= 0 )
+		{
 			m_pCamera->SetPosition(10, 10, 10);
 			m_pCamera->SetParallelProjection(0);
 
@@ -222,11 +223,13 @@ namespace DAFFViz
 		m_iCameraType = iType;
 		m_pCamera->SetParallelProjection(1);
 
-		if (iType == CAMERA_TOP) {
+		if( iType == CAMERA_TOP )
+		{
 			m_pCamera->SetPosition(0, 20, 0);
 			m_pCamera->SetFocalPoint(0.001, 0, 0);
 		}
-		if (iType == CAMERA_BOTTOM) {
+		if( iType == CAMERA_BOTTOM )
+		{
 			m_pCamera->SetPosition(0, -20, 0);
 			m_pCamera->SetFocalPoint(0, 0, 0);
 		}
@@ -256,8 +259,8 @@ namespace DAFFViz
 
 	void VTKDAFFVizWindow::SetFollowerTarget()
 	{
-		if (m_pSceneRootNode != NULL)
-			m_pSceneRootNode->OnSetFollowerCamera(m_pCamera);
+		if( m_pSceneRootNode != NULL )
+			m_pSceneRootNode->OnSetFollowerCamera( m_pCamera );
 	}
 
 
@@ -279,7 +282,8 @@ namespace DAFFViz
 
 	void VTKDAFFVizWindow::SetCameraLightOn()
 	{
-		if (m_bCameraLight == true) return;
+		if( m_bCameraLight == true )
+			return;
 		m_pCameraLight->SwitchOn();
 	}
 

@@ -72,23 +72,25 @@ m_pProbeLabel(0)
 	init();
 }
 
-BalloonPlot::~BalloonPlot() {
-	RemoveActor(m_pPlotActor);
-	RemoveActor(m_pLabel);
-	RemoveActor(m_pProbe);
+BalloonPlot::~BalloonPlot()
+{
+	RemoveActor( m_pPlotActor );
+	RemoveActor( m_pLabel );
+	RemoveActor( m_pProbe );
 }
 
-void BalloonPlot::init() {
-
+void BalloonPlot::init()
+{
 	const DAFFProperties* pProps = m_pContent->getProperties();
 
-	switch (pProps->getContentType()) {
+	switch( pProps->getContentType() )
+	{
 	case DAFF_DFT_SPECTRUM:
-		m_iNumFrequencies = dynamic_cast<const DAFFContentDFT*>( m_pContent )->getNumDFTCoeffs();
+		m_iNumFrequencies = dynamic_cast< const DAFFContentDFT* >( m_pContent )->getNumDFTCoeffs();
 		break;
 
 	case DAFF_MAGNITUDE_SPECTRUM:
-		m_iNumFrequencies = dynamic_cast<const DAFFContentMS*>( m_pContent )->getNumFrequencies();
+		m_iNumFrequencies = dynamic_cast< const DAFFContentMS* >( m_pContent )->getNumFrequencies();
 		break;
 	}
 

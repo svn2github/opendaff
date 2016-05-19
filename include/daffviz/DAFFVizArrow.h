@@ -33,8 +33,8 @@ namespace DAFFViz
 	{
 	public:
 		Arrow();
-		Arrow(double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution);
-		Arrow(DAFFViz::SGNode* pParentNode, double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution);
+		Arrow( double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution );
+		Arrow( DAFFViz::SGNode* pParentNode, double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution );
 		~Arrow();
 
 		// --= object related methods =--
@@ -91,9 +91,9 @@ namespace DAFFViz
 		bool IsVisible() const;
 
 	private:
-		vtkArrowSource*		m_pSource;
-		vtkPolyDataMapper*  m_pMapper;
-		vtkActor*			m_pActor;
+		vtkSmartPointer< vtkArrowSource >		m_pSource;
+		vtkSmartPointer< vtkPolyDataMapper >	m_pMapper;
+		vtkSmartPointer< vtkActor >				m_pActor;
 
 		//! The initializer generates dynamic objects like source, mapper, actor ...
 		void init();

@@ -9,7 +9,7 @@ using namespace std;
 
 int main( int, char** )
 {
-	string sInputFilePath = "../../../matlab/ExampleUnityLowerHemisphere.ms.daff";
+	string sInputFilePath = "../../../matlab/ExampleShortDiracOmni.ir.daff";
 
 	int iDAFFERROR = DAFF_NO_ERROR;
 	DAFFReader* pReader = DAFFReader::create();
@@ -27,6 +27,7 @@ int main( int, char** )
 	{
 		DAFFContentIR* pContent = dynamic_cast< DAFFContentIR* >( pReader->getContent() );
 		pContentNode = new DAFFViz::CarpetPlot( pContent );
+		//DAFFViz::CarpetPlot oCarpet( pContent );
 	}
 	else if( pReader->getContentType() == DAFF_MAGNITUDE_SPECTRUM )
 	{
@@ -39,12 +40,22 @@ int main( int, char** )
 	}
 
 	pReader->closeFile();
+
+	/*
+	DAFFViz::SGNode oRootNode;	
+	DAFFViz::Arrow arrow;
+	oRootNode.AddChildNode( &arrow );
+	*/
 	
-	DAFFViz::VTKDAFFVizWindow win;
-	win.SetSceneGraphRootNode( pContentNode );
-	win.Start();
+	DAFFViz::VTKDAFFVizWindow* win = NULL;
+	//win = new DAFFViz::VTKDAFFVizWindow;
+	//win.SetSceneGraphRootNode( pContentNode );
+	//win.Start();
 
 	delete pContentNode;
 
+	delete win;
+
+	
 	return 0;
 }

@@ -14,6 +14,7 @@
 #define IW_DAFF_CARPETPLOT
 
 #include <daffviz/DAFFVizSGNode.h>
+#include <vtkSmartPointer.h>
 
 // Forward declarations
 class vtkActor;
@@ -117,19 +118,19 @@ namespace DAFFViz
 	private:
 
 		const DAFFContentIR* m_pContentIR;
-		vtkWarpScalar* m_pWarp;
-		vtkPolyDataMapper* m_pMapper;
-		vtkActor* m_pPlotActor;
-		vtkPolyData* m_pPlotPolydata;
+		vtkSmartPointer< vtkWarpScalar > m_pWarp;
+		vtkSmartPointer< vtkPolyDataMapper > m_pMapper;
+		vtkSmartPointer< vtkActor > m_pPlotActor;
+		vtkSmartPointer< vtkPolyData > m_pPlotPolydata;
 		float m_fAngle;
 		int m_iScaling;
 		int m_iFixedAngle;
 		float m_dMin, m_dMax; // linear factors!
 		int m_iChannel;
 		bool m_bWarp;
-		vtkActor* m_pProbe;
-		vtkVectorText *m_pProbeLabel;
-		vtkActor* m_pLabel;
+		vtkSmartPointer< vtkActor > m_pProbe;
+		vtkSmartPointer< vtkVectorText > m_pProbeLabel;
+		vtkSmartPointer< vtkActor > m_pLabel;
 		float m_dProbeX, m_dProbeY;
 
 		// The initializer generates dynamic objects like source, mapper, actor ...

@@ -10,13 +10,19 @@
 namespace DAFFViz {
 
 Arrow::Arrow()
-: SGNode(), m_pSource(NULL), m_pMapper(NULL), m_pActor(NULL)
+: SGNode()
+, m_pSource(NULL)
+, m_pMapper(NULL)
+, m_pActor(NULL)
 {
 	init();
 }
 
 Arrow::Arrow(double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution)
-: SGNode(), m_pSource(NULL), m_pMapper(NULL), m_pActor(NULL)
+: SGNode()
+, m_pSource(NULL)
+, m_pMapper(NULL)
+, m_pActor(NULL)
 {
 	init();
 	m_pSource->SetTipLength(dTipLength);
@@ -24,39 +30,40 @@ Arrow::Arrow(double dTipLength, double dTipRadius, int iTipResolution, double dS
 	m_pSource->SetTipResolution(iTipResolution);
 	m_pSource->SetShaftRadius(dShaftRadius);
 	m_pSource->SetShaftResolution(iShaftResolution);
+	m_pSource->Update();
 }
 
 Arrow::Arrow(DAFFViz::SGNode* pParentNode, double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution)
-: SGNode(pParentNode), m_pSource(NULL), m_pMapper(NULL), m_pActor(NULL)
+: SGNode(pParentNode)
+, m_pSource(NULL)
+, m_pMapper(NULL)
+, m_pActor(NULL)
 {
 	init();
 	m_pSource->SetTipLength(dTipLength);
 	m_pSource->SetTipRadius(dTipRadius);
 	m_pSource->SetTipResolution(iTipResolution);
 	m_pSource->SetShaftRadius(dShaftRadius);
-	m_pSource->SetShaftResolution(iShaftResolution);
+	m_pSource->SetShaftResolution( iShaftResolution );
+	m_pSource->Update();
 }
 
-Arrow::~Arrow() {
+Arrow::~Arrow()
+{
 	RemoveActor(m_pActor);
-
-	m_pSource->Delete();
-	m_pMapper->Delete();
-
-	m_pActor->GlobalWarningDisplayOff();
-	m_pActor->Delete();
 }
 
-void Arrow::init() {
-	m_pSource = vtkArrowSource::New();
+void Arrow::init()
+{
+	m_pSource = vtkSmartPointer< vtkArrowSource >::New();
 
-	vtkPolyDataNormals* normals = vtkPolyDataNormals::New();
-	normals->SetInputConnection(m_pSource->GetOutputPort());
+	vtkSmartPointer< vtkPolyDataNormals > normals = vtkSmartPointer< vtkPolyDataNormals >::New();
+	normals->SetInputConnection( m_pSource->GetOutputPort() );
 	
-	m_pMapper = vtkPolyDataMapper::New();
+	m_pMapper = vtkSmartPointer< vtkPolyDataMapper >::New();
 	m_pMapper->SetInputData(normals->GetOutput());
 
-	m_pActor = vtkActor::New();
+	m_pActor = vtkSmartPointer< vtkActor >::New();
 	m_pActor->SetMapper(m_pMapper);
 
 	m_pActor->GetProperty()->SetInterpolationToGouraud();
@@ -69,7 +76,8 @@ void Arrow::init() {
 
 // --= object related methods =--
 
-double Arrow::GetTipLength() const {
+double Arrow::GetTipLength() const
+{
 	return m_pSource->GetTipLength();
 }
 

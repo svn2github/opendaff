@@ -17,6 +17,9 @@
 #include <DAFFDefs.h>
 #include <vector>
 
+// VTK includes
+#include <vtkSmartPointer.h>
+
 // Forward declarations
 class vtkActor;
 class vtkAssembly;
@@ -72,7 +75,7 @@ namespace DAFFViz
 		 *
 		 * @param [in] pParentNode Parent scene graph node of this child
 		 */
-		SGNode(DAFFViz::SGNode* pParentNode);
+		SGNode( DAFFViz::SGNode* pParentNode );
 
 		//! Destructor
 		/**
@@ -143,7 +146,7 @@ namespace DAFFViz
 		/**
 		* @param [out] vpChildren Vector of pointers to child nodes
 		*/
-		void GetChildNodes(std::vector<DAFFViz::SGNode*>& vpChildren);
+		void GetChildNodes( std::vector<DAFFViz::SGNode*>& vpChildren );
 
 		//! Appends a single child node
 		/**
@@ -339,7 +342,7 @@ namespace DAFFViz
 		 *
 		 * @param [in] pActor Pointer to VTK actor
 		 */
-		void AddActor(vtkActor* pActor);
+		void AddActor( vtkSmartPointer< vtkActor > pActor );
 	
 		//! Remove a VTK actor from the assembly of the node
 		/**
@@ -347,7 +350,7 @@ namespace DAFFViz
 		 *
 		 * @param [in] pActor Pointer to VTK actor
 		 */
-		void RemoveActor(vtkActor* pActor);
+		void RemoveActor( vtkSmartPointer< vtkActor > pActor );
 	
 		//! Add a VTK assembly to the node
 		/**
@@ -355,7 +358,7 @@ namespace DAFFViz
 		 *
 		 * @param [in] pAssembly Pointer to VTK assembly
 		 */
-		void AddAssembly(vtkAssembly* pAssembly);
+		void AddAssembly( vtkSmartPointer< vtkAssembly > pAssembly );
 
 		//! Release an assembly from the assembly of the node
 		/**
@@ -363,7 +366,7 @@ namespace DAFFViz
 		 *
 		 * @param [in] pAssembly Pointer to VTK assembly
 		 */
-		void RemoveAssembly(vtkAssembly* pAssembly);
+		void RemoveAssembly( vtkSmartPointer< vtkAssembly > pAssembly );
 
 		// --= Event handlers =--
 
@@ -372,28 +375,28 @@ namespace DAFFViz
 		 *
 		 * @param [in] pCamera VTK camera followers shall face
 		 */
-		virtual void OnSetFollowerCamera(vtkCamera* pCamera);
+		virtual void OnSetFollowerCamera( vtkSmartPointer< vtkCamera > pCamera );
 
 	private:
-		DAFFViz::SGNode*				 m_pParentNode;	//!@ Parent scene graph node (NULL => root node)
-		std::vector<DAFFViz::SGNode*> m_vpChildNodes;	//!@ Scene graph child nodes list
-		vtkAssembly*				 m_pNodeAssembly;	//!@ Internal VTK assembly of the node
+		DAFFViz::SGNode*				m_pParentNode;		//!@ Parent scene graph node (NULL => root node)
+		std::vector< DAFFViz::SGNode* >	m_vpChildNodes;		//!@ Scene graph child nodes list
+		vtkSmartPointer< vtkAssembly >	m_pNodeAssembly;	//!@ Internal VTK assembly of the node
 
 		bool _debug; //!@ Debug switch for internal use only
 
 		// --= Uncopyable =--
 
 		//! [Deny for all] Copy constructor
-		inline SGNode(const SGNode&) {};
+		inline SGNode( const SGNode& ) {};
 
 		//! [Deny for all] Assignment operator
-		inline SGNode& operator=(const SGNode&) { return *this; };
+		inline SGNode& operator=( const SGNode& ) { return *this; };
 
 		//! [Only friends] Returns the assembly of this node
 		/**
 		 * @return VTK assembly pointer
 		 */
-		vtkAssembly* GetNodeAssembly();
+		vtkSmartPointer< vtkAssembly > GetNodeAssembly();
 	
 		// The display class needs access to the node assembly
 		friend class VTKDAFFVizWindow;

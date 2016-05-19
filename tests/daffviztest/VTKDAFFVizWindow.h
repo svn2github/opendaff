@@ -32,7 +32,8 @@ namespace DAFFViz
 	public:
 
 		//! Camera type
-		enum {
+		enum
+		{
 			CAMERA_NONE = 0,
 			CAMERA_TOP,
 			CAMERA_BOTTOM,
@@ -46,16 +47,16 @@ namespace DAFFViz
 		VTKDAFFVizWindow();
 
 		//! Destructor
-		~VTKDAFFVizWindow();
+		virtual ~VTKDAFFVizWindow();
 
 		//! Set the root node which shall represent the scene to be rendered
 		/**
 		* Tell the scene with which assembly node he shall begin to draw.
 		*/
-		void SetSceneGraphRootNode(DAFFViz::SGNode* node);
+		void SetSceneGraphRootNode( DAFFViz::SGNode* node );
 		
 		//! Save a Screenshot to File
-		void SaveScreenshot(const std::string& sFilename);
+		void SaveScreenshot( const std::string& sFilename );
 
 		// --= VTK methods =--
 
@@ -80,7 +81,7 @@ namespace DAFFViz
 		// --= Camera =--
 
 		//! Get camera object
-		vtkCamera* getCamera();
+		vtkSmartPointer< vtkCamera > getCamera();
 
 		//! Set camera position
 		void SetCameraPosition(double x, double y, double z);
@@ -135,7 +136,7 @@ namespace DAFFViz
 		void Start();
 
 	protected:
-		vtkRenderer* m_pRenderer;
+		vtkSmartPointer< vtkRenderer > m_pRenderer;
 
 	private:
 		// Update interval [milliseconds]
@@ -162,17 +163,17 @@ namespace DAFFViz
 
 		// --= VTK important things =--
 
-		vtkRenderWindow* m_pRenderWindow;
-		vtkCamera* m_pCamera;
+		vtkSmartPointer< vtkRenderWindow > m_pRenderWindow;
+		vtkSmartPointer< vtkCamera > m_pCamera;
 		int m_iCameraType;
-		vtkLight* m_pCameraLight;
-		vtkRenderWindowInteractor* m_pInteractor;
+		vtkSmartPointer< vtkLight > m_pCameraLight;
+		vtkSmartPointer< vtkRenderWindowInteractor > m_pInteractor;
 
 		// Add light to scene
-		void AddLight(vtkLight* light);
+		void AddLight( vtkLight* light );
 
 		// Remove light from scene
-		void RemoveLight(vtkLight* light);
+		void RemoveLight( vtkLight* light );
 
 		// Internal method that performs the rendering of the visuals
 		// and resets the update counter.
