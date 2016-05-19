@@ -48,14 +48,12 @@ int main( int, char** )
 	*/
 	
 	DAFFViz::VTKDAFFVizWindow* win = NULL;
-	//win = new DAFFViz::VTKDAFFVizWindow;
-	//win.SetSceneGraphRootNode( pContentNode );
-	//win.Start();
+	win = new DAFFViz::VTKDAFFVizWindow;
+	win->SetSceneGraphRootNode( pContentNode );
+	win->Start();
+	delete win;
 
 	delete pContentNode;
 
-	delete win;
-
-	
 	return 0;
 }

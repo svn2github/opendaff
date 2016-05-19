@@ -25,16 +25,15 @@ namespace DAFFViz
 
 	VTKDAFFVizWindow::VTKDAFFVizWindow()
 	{
-		/*
 		m_pRenderer = vtkSmartPointer< vtkRenderer > ::New();
 		m_pRenderer->SetBackground( 0.1f, 0.1f, 1.0f );
 
-		m_pRenderWindow = vtkSmartPointer< vtkRenderWindow >( vtkRenderWindow::New() );
+		m_pRenderWindow = vtkSmartPointer< vtkRenderWindow >::New();
 		m_pRenderWindow->AddRenderer( m_pRenderer );
 
 		m_pRenderWindow->LineSmoothingOn();
 
-		m_pCameraLight = vtkSmartPointer<vtkLight>( vtkLight::New() );
+		m_pCameraLight = vtkSmartPointer<vtkLight >::New();
 		m_pCameraLight->SetLightTypeToCameraLight();
 
 		m_pRenderer->AddLight( m_pCameraLight );
@@ -47,7 +46,7 @@ namespace DAFFViz
 
 		m_pCamera = m_pRenderer->GetActiveCamera();
 
-		m_pInteractor = vtkSmartPointer< vtkRenderWindowInteractor >( vtkRenderWindowInteractor::New() );
+		m_pInteractor = vtkSmartPointer< vtkRenderWindowInteractor >::New();
 		m_pInteractor->SetRenderWindow( m_pRenderWindow );
 	
 		m_bInteractionLeftBtn = false;
@@ -56,7 +55,6 @@ namespace DAFFViz
 
 		m_dLastRootX = 0;
 		m_dLastRootY = 0;
-		*/
 	}
 
 	VTKDAFFVizWindow::~VTKDAFFVizWindow()
