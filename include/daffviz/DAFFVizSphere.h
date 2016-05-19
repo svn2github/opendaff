@@ -68,9 +68,9 @@ namespace DAFFViz
 		bool IsVisible() const;
 
 	private:
-		vtkSphereSource*	m_pSource;
-		vtkPolyDataMapper*  m_pMapper;
-		vtkActor*			m_pActor;
+		vtkSmartPointer< vtkSphereSource >	m_pSource;
+		vtkSmartPointer< vtkPolyDataMapper >  m_pMapper;
+		vtkSmartPointer< vtkActor >			m_pActor;
 
 		// The initializer generates dynamic objects like source, mapper, actor ...
 		void init();

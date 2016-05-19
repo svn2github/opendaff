@@ -194,10 +194,11 @@ namespace DAFFViz
 
 	void CarpetPlot::UpdateProbe()
 	{
-		if (!m_pProbe)
+		if( !m_pProbe )
 			return;
+
 		// Apply new transformation
-		assert (m_pContentIR != 0);
+		assert( m_pContentIR != 0 );
 		double val=0;
 		int i;
 		std::ostringstream s;

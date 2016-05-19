@@ -5,6 +5,7 @@
 #include <vtkSphereSource.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
+#include "vtkPolyDataNormals.h"
 
 namespace DAFFViz {
 
@@ -20,41 +21,42 @@ Sphere::Sphere(double dRadius, int iPhiResolution, int iThetaResolution)
 	init();
 	m_pSource->SetRadius(dRadius);
 	m_pSource->SetPhiResolution(iPhiResolution);
-	m_pSource->SetThetaResolution(iThetaResolution);
+	m_pSource->SetThetaResolution( iThetaResolution );
+	m_pSource->Update();
 }
 
-Sphere::Sphere(DAFFViz::SGNode* pParentNode, double dRadius, int iPhiResolution, int iThetaResolution)
-: SGNode(pParentNode), m_pSource(NULL), m_pMapper(NULL), m_pActor(NULL)
+Sphere::Sphere( DAFFViz::SGNode* pParentNode, double dRadius, int iPhiResolution, int iThetaResolution )
+: SGNode(pParentNode)
+, m_pSource(NULL)
+, m_pMapper(NULL)
+, m_pActor(NULL)
 {
 	init();
 	m_pSource->SetRadius(dRadius);
 	m_pSource->SetPhiResolution(iPhiResolution);
 	m_pSource->SetThetaResolution(iThetaResolution);
+	m_pSource->Update();
 }
 
-Sphere::~Sphere() {
-	RemoveActor(m_pActor);
-
-	m_pSource->Delete();
-	m_pMapper->Delete();
-
-	m_pActor->GlobalWarningDisplayOff();
-	m_pActor->Delete();
+Sphere::~Sphere()
+{
+	RemoveActor( m_pActor );
 }
 
-void Sphere::init() {
-	m_pSource = vtkSphereSource::New();
-	
-	m_pMapper = vtkPolyDataMapper::New();
-	m_pMapper->SetInputData(m_pSource->GetOutput());
+void Sphere::init()
+{
+	m_pSource = vtkSmartPointer< vtkSphereSource >::New();
 
-	m_pActor = vtkActor::New();
-	m_pActor->SetMapper(m_pMapper);
+	m_pMapper = vtkSmartPointer< vtkPolyDataMapper >::New();
+	m_pMapper->SetInputConnection( m_pSource->GetOutputPort() );
 
-	m_pActor->GetProperty()->SetDiffuse(0.9);
-	m_pActor->GetProperty()->SetAmbient(0.4);
+	m_pActor = vtkSmartPointer< vtkActor >::New();
+	m_pActor->SetMapper( m_pMapper );
 
-	AddActor(m_pActor);
+	m_pActor->GetProperty()->SetDiffuse( 0.9 );
+	m_pActor->GetProperty()->SetAmbient( 0.4 );
+
+	AddActor( m_pActor );
 }
 
 

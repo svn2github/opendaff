@@ -74,7 +74,7 @@ int main( int, char** )
 	pAssembly->AddPart( actor2 );
 	pAssembly->RotateY( -45 );
 
-	//renderer->AddActor( pAssembly );
+	renderer->AddActor( pAssembly );
 	renderer->SetBackground( 1, 0, 1 );
 
 

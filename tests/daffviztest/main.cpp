@@ -41,17 +41,35 @@ int main( int, char** )
 
 	pReader->closeFile();
 
-	/*
-	DAFFViz::SGNode oRootNode;	
+	DAFFViz::SGNode oRootNode;
+
+	oRootNode.AddChildNode( pContentNode );
+
 	DAFFViz::Arrow arrow;
+	arrow.SetScale( 2, 1, 0.3f );
 	oRootNode.AddChildNode( &arrow );
-	*/
+	oRootNode.SetOrientationYPR( 13, -13, 25 );
+
+	//DAFFViz::CartesianCoordinateAssistant cca;
+	//oRootNode.AddChildNode( &cca );
+
+	DAFFViz::SphericalCoordinateAssistant sca;
+	sca.SetAxesVisible( true );
+	sca.SetEquatorVisible( true );
+	sca.SetGridVisible( true );
+	sca.SetMeridiansVisible( true );
+	sca.SetViewUpVectorsVisible( true );
 	
-	DAFFViz::VTKDAFFVizWindow* win = NULL;
-	win = new DAFFViz::VTKDAFFVizWindow;
-	win->SetSceneGraphRootNode( pContentNode );
-	win->Start();
-	delete win;
+	oRootNode.AddChildNode( &sca );
+
+	DAFFViz::Grid grid, grid2;
+	oRootNode.AddChildNode( &grid );
+	oRootNode.AddChildNode( &grid2 );
+	grid2.SetPosition( 0, .2, 0 );
+
+	DAFFViz::VTKDAFFVizWindow win;
+	win.SetSceneGraphRootNode( &oRootNode );
+	win.Start();
 
 	delete pContentNode;
 

@@ -35,7 +35,7 @@ namespace DAFFViz
 	{
 	public:
 		//! Constructor
-		SphericalCoordinateAssistant(double dMin=0, double dMax=1, double dPrec=.1, double dScaleRes=36);
+		SphericalCoordinateAssistant( double dMin = 0, double dMax = 1, double dPrec = .1, double dScaleRes = 36 );
 
 		//! Desctructor
 		~SphericalCoordinateAssistant();
@@ -93,16 +93,16 @@ namespace DAFFViz
 
 		SGNode* m_pViewUpVectors;
 		SGNode* m_pPoles;
-		std::vector<vtkActor*> m_pMeridians;
-		std::vector<vtkActor*> m_pGrid;
-		std::vector<vtkFollower*> m_pCircles;
-		std::vector<vtkFollower*> m_pLabels;
-		vtkActor* m_pEquator;
+		std::vector< vtkSmartPointer< vtkActor > > m_pMeridians;
+		std::vector< vtkSmartPointer< vtkActor > > m_pGrid;
+		std::vector< vtkSmartPointer< vtkFollower > > m_pCircles;
+		std::vector< vtkSmartPointer< vtkFollower > > m_pLabels;
+		vtkSmartPointer< vtkActor > m_pEquator;
 		SGNode* m_pAngleAxes;
 		double m_dMin, m_dMax, m_dPrecision, m_dScaleRes, m_dReferenceLevel, m_dReferenceOpacity;
-		vtkCamera* m_pCamera;
-		vtkActor* m_pReferenceActor;
-		vtkSphereSource* m_pSphere;
+		vtkSmartPointer< vtkCamera > m_pCamera;
+		vtkSmartPointer< vtkActor > m_pReferenceActor;
+		vtkSmartPointer< vtkSphereSource > m_pSphere;
 
 		//! Initialize objects
 		void init();

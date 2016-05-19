@@ -31,7 +31,8 @@ SphericalCoordinateAssistant::SphericalCoordinateAssistant(double dMin, double d
 	init();
 }
 
-void SphericalCoordinateAssistant::init() {
+void SphericalCoordinateAssistant::init()
+{
 	// View (yellow) and up vector (white)
 	m_pViewUpVectors = new SGNode(this);
 	Arrow* view = new Arrow(m_pViewUpVectors, 0.15, 0.06, 36, 0.02, 36);
@@ -61,21 +62,22 @@ void SphericalCoordinateAssistant::init() {
 	// Meridians and Equator
 	int res = 18*3;
 
-	vtkPoints* prime_meridian = vtkPoints::New();
-	vtkPoints* meridian90 = vtkPoints::New();
-	vtkPoints* meridian180 = vtkPoints::New();
-	vtkPoints* meridian270 = vtkPoints::New();
+	vtkSmartPointer< vtkPoints > prime_meridian = vtkSmartPointer< vtkPoints >::New();
+	vtkSmartPointer< vtkPoints > meridian90 = vtkSmartPointer< vtkPoints >::New();
+	vtkSmartPointer< vtkPoints > meridian180 = vtkSmartPointer< vtkPoints >::New();
+	vtkSmartPointer< vtkPoints > meridian270 = vtkSmartPointer< vtkPoints >::New();
 
 	prime_meridian->SetNumberOfPoints(res+1);
 	meridian90->SetNumberOfPoints(res+1);
 	meridian180->SetNumberOfPoints(res+1);
 	meridian270->SetNumberOfPoints(res+1);
 	
-	vtkPolyLine* polyline = vtkPolyLine::New();
+	vtkSmartPointer< vtkPolyLine > polyline = vtkSmartPointer< vtkPolyLine >::New();
 	polyline->GetPointIds()->SetNumberOfIds(res+1);
 
 	float fAngleRad;
-	for (int i=0; i<res+1;i++) {
+	for( int i = 0; i < res + 1; i++ )
+	{
 		fAngleRad = i * PI_F / res;
 		prime_meridian->InsertPoint(i, 0, -cos(fAngleRad), sin(fAngleRad));
 		meridian90->InsertPoint(i, sin(fAngleRad), -cos(fAngleRad), 0);
@@ -85,17 +87,17 @@ void SphericalCoordinateAssistant::init() {
 	}
 
 	// Prime meridian
-	vtkCellArray* cells = vtkCellArray::New();
+	vtkSmartPointer< vtkCellArray > cells = vtkSmartPointer< vtkCellArray >::New();
 	cells->InsertNextCell(polyline);
 
-	vtkPolyData* polydata = vtkPolyData::New();
+	vtkSmartPointer< vtkPolyData > polydata = vtkSmartPointer< vtkPolyData >::New();
 	polydata->SetPoints(prime_meridian);
 	polydata->SetLines(cells);
 	
-	vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+	vtkSmartPointer< vtkPolyDataMapper > mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
 	mapper->SetInputData(polydata);
 
-	vtkActor* actor = vtkActor::New();
+	vtkSmartPointer< vtkActor > actor = vtkSmartPointer< vtkActor >::New();
 	actor->SetMapper(mapper);
 
 	actor->GetProperty()->SetOpacity(0.4);
@@ -104,14 +106,14 @@ void SphericalCoordinateAssistant::init() {
 	m_pMeridians.push_back(actor);
 	
 	// 90 degree meridian
-	polydata = vtkPolyData::New();
+	polydata = vtkSmartPointer< vtkPolyData >::New();
 	polydata->SetPoints(meridian90);
 	polydata->SetLines(cells);
 
-	mapper = vtkPolyDataMapper::New();
+	mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
 	mapper->SetInputData(polydata);
 	
-	actor = vtkActor::New();
+	actor = vtkSmartPointer< vtkActor >::New();
 	actor->SetMapper(mapper);
 
 	actor->GetProperty()->SetOpacity(0.2);
@@ -120,14 +122,14 @@ void SphericalCoordinateAssistant::init() {
 	m_pMeridians.push_back(actor);
 
 	// 180 degree meridian
-	polydata = vtkPolyData::New();
+	polydata = vtkSmartPointer< vtkPolyData >::New();
 	polydata->SetPoints(meridian180);
 	polydata->SetLines(cells);
 
-	mapper = vtkPolyDataMapper::New();
+	mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
 	mapper->SetInputData(polydata);
 	
-	actor = vtkActor::New();
+	actor = vtkSmartPointer< vtkActor >::New();
 	actor->SetMapper(mapper);
 
 	actor->GetProperty()->SetOpacity(0.2);
@@ -136,14 +138,14 @@ void SphericalCoordinateAssistant::init() {
 	m_pMeridians.push_back(actor);
 
 	// 270 degree meridian
-	polydata = vtkPolyData::New();
+	polydata = vtkSmartPointer< vtkPolyData >::New();
 	polydata->SetPoints(meridian270);
 	polydata->SetLines(cells);
 
-	mapper = vtkPolyDataMapper::New();
+	mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
 	mapper->SetInputData(polydata);
 	
-	actor = vtkActor::New();
+	actor = vtkSmartPointer< vtkActor >::New();
 	actor->SetMapper(mapper);
 
 	actor->GetProperty()->SetOpacity(0.2);
@@ -152,10 +154,10 @@ void SphericalCoordinateAssistant::init() {
 	m_pMeridians.push_back(actor);
 
 	// Equator
-	vtkPoints* equator = vtkPoints::New();
+	vtkSmartPointer< vtkPoints > equator = vtkSmartPointer< vtkPoints >::New();
 	equator->SetNumberOfPoints(2*res);
 
-	polyline = vtkPolyLine::New();
+	polyline = vtkSmartPointer< vtkPolyLine >::New();
 	polyline->GetPointIds()->SetNumberOfIds(2*res);
 
 	for (int i=0; i<2*res;i++) {
@@ -164,17 +166,17 @@ void SphericalCoordinateAssistant::init() {
 		polyline->GetPointIds()->SetId(i, i);
 	}
 
-	cells = vtkCellArray::New();
+	cells = vtkSmartPointer< vtkCellArray >::New();
 	cells->InsertNextCell(polyline);
 
-	polydata = vtkPolyData::New();
-	polydata->SetPoints(equator);
+	polydata = vtkSmartPointer< vtkPolyData >::New();
+	polydata->SetPoints( equator );
 	polydata->SetLines(cells);
 	
-	mapper = vtkPolyDataMapper::New();
+	mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
 	mapper->SetInputData(polydata);
 
-	m_pEquator = vtkActor::New();
+	m_pEquator = vtkSmartPointer< vtkActor >::New();
 	m_pEquator->SetMapper(mapper);
 
 	m_pEquator->GetProperty()->SetOpacity(0.4);
@@ -184,20 +186,20 @@ void SphericalCoordinateAssistant::init() {
 	// Reference
 
 	// create a reference sphere
-	m_pSphere = vtkSphereSource::New();
+	m_pSphere = vtkSmartPointer< vtkSphereSource >::New();
 	m_pSphere->SetRadius(0);
 	m_pSphere->SetThetaResolution(res);
 	m_pSphere->SetPhiResolution(res); 
 
 	// Create a mapper and actor
-	mapper = vtkPolyDataMapper::New();
+	mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
 	mapper->SetInputData(m_pSphere->GetOutput());
 
-	m_pReferenceActor = vtkActor::New();
+	m_pReferenceActor = vtkSmartPointer< vtkActor >::New();
 	m_pReferenceActor->SetMapper(mapper);
 	m_pReferenceActor->GetProperty()->SetOpacity(0.0);
 
-	AddActor(m_pReferenceActor);
+	AddActor( m_pReferenceActor );
 
 	// Grid
 	UpdateGrid();
@@ -256,21 +258,21 @@ void SphericalCoordinateAssistant::UpdateGrid() {
 	m_pLabels.clear();
 
 	// create new grid
-	vtkCellArray* cells;
-	vtkPolyData* polydata;
-	vtkPolyLine* polyline;
-	vtkFollower* actor;
-	vtkPolyDataMapper* mapper;
-	vtkVectorText* pLabel;
+	vtkSmartPointer< vtkCellArray> cells;
+	vtkSmartPointer< vtkPolyData> polydata;
+	vtkSmartPointer< vtkPolyLine> polyline;
+	vtkSmartPointer< vtkFollower> actor;
+	vtkSmartPointer< vtkPolyDataMapper> mapper;
+	vtkSmartPointer< vtkVectorText> pLabel;
 
 	double min = ceil(m_dMin/m_dPrecision)*m_dPrecision; // inner gridline
 	double max = floor(m_dMax/m_dPrecision)*m_dPrecision; // outter gridline
 	//int gridRes = (max-min)/m_dPrecision; // total number of gridlines
 	for (double f=min; f<=m_dMax; f+=m_dPrecision) {
-		vtkPoints* gridLine = vtkPoints::New();
+		vtkSmartPointer< vtkPoints> gridLine = vtkSmartPointer< vtkPoints>::New();
 		gridLine->SetNumberOfPoints(2*res);
 
-		polyline = vtkPolyLine::New();
+		polyline = vtkSmartPointer< vtkPolyLine>::New();
 		polyline->GetPointIds()->SetNumberOfIds(2*res);
 
 		double factor = (f-m_dMin)/(m_dMax-m_dMin);
@@ -281,17 +283,17 @@ void SphericalCoordinateAssistant::UpdateGrid() {
 			polyline->GetPointIds()->SetId(i, i);
 		}
 
-		cells = vtkCellArray::New();
+		cells = vtkSmartPointer< vtkCellArray>::New();
 		cells->InsertNextCell(polyline);
 
-		polydata = vtkPolyData::New();
+		polydata = vtkSmartPointer< vtkPolyData>::New();
 		polydata->SetPoints(gridLine);
 		polydata->SetLines(cells);
 
-		mapper = vtkPolyDataMapper::New();
+		mapper = vtkSmartPointer< vtkPolyDataMapper>::New();
 		mapper->SetInputData(polydata);
 
-		actor = vtkFollower::New();
+		actor = vtkSmartPointer< vtkFollower>::New();
 		actor->SetMapper(mapper);
 		actor->RotateX(90);
 		if (m_pCamera != 0) 
@@ -304,15 +306,15 @@ void SphericalCoordinateAssistant::UpdateGrid() {
 		m_pCircles.push_back(actor);
 		
 		// label
-		pLabel = vtkVectorText::New();
+		pLabel = vtkSmartPointer< vtkVectorText>::New();
 		std::ostringstream s;
 		s << f;
 		pLabel->SetText(s.str().c_str());
 				
-		mapper = vtkPolyDataMapper::New();
+		mapper = vtkSmartPointer< vtkPolyDataMapper>::New();
 		mapper->SetInputConnection(pLabel->GetOutputPort());
 
-		actor = vtkFollower::New();
+		actor = vtkSmartPointer< vtkFollower>::New();
 		actor->SetMapper(mapper);
 		actor->SetScale(0.025);
 		actor->SetPosition(0.02, factor+.01, 0);
@@ -327,47 +329,47 @@ void SphericalCoordinateAssistant::UpdateGrid() {
 
 	// Scale
 	
-	vtkPoints* scale = vtkPoints::New();
+	vtkSmartPointer< vtkPoints> scale = vtkSmartPointer< vtkPoints>::New();
 	scale->SetNumberOfPoints(6*m_dScaleRes);
 
-	cells = vtkCellArray::New();
-	vtkLine* line;
+	cells = vtkSmartPointer< vtkCellArray>::New();
+	vtkSmartPointer< vtkLine > line;
 
 	for (int i=0; i<m_dScaleRes;i++) {		
 		fAngleRad = i * 2*PI_F / m_dScaleRes;
-		if (fmod((double)i / m_dScaleRes, .25) == 0.0) // skip  0° 90° 180° 270° lines
+		if( fmod( ( double ) i / m_dScaleRes, .25 ) == 0.0 ) // skip  0° 90° 180° 270° lines
 			continue;
 		// equator
 		scale->InsertPoint(6*i, 0.975*sin(fAngleRad), 0, -0.975*cos(fAngleRad));
 		scale->InsertPoint(6*i+1, 1.025*sin(fAngleRad), 0, -1.025*cos(fAngleRad));
-		line = vtkLine::New();
+		line = vtkSmartPointer< vtkLine>::New();
 		line->GetPointIds()->SetId(0,6*i);
 		line->GetPointIds()->SetId(1,6*i+1);
 		cells->InsertNextCell(line);
 		// prime meridian
 		scale->InsertPoint(6*i+2, 0, -0.975*cos(fAngleRad), 0.975*sin(fAngleRad));
 		scale->InsertPoint(6*i+3, 0, -1.025*cos(fAngleRad), 1.025*sin(fAngleRad));
-		line = vtkLine::New();
+		line = vtkSmartPointer< vtkLine>::New();
 		line->GetPointIds()->SetId(0,6*i+2);
 		line->GetPointIds()->SetId(1,6*i+3);
 		cells->InsertNextCell(line);
 		// meridian 90 degree
 		scale->InsertPoint(6*i+4, 0.975*sin(fAngleRad), -0.975*cos(fAngleRad), 0);
 		scale->InsertPoint(6*i+5, 1.025*sin(fAngleRad), -1.025*cos(fAngleRad), 0);
-		line = vtkLine::New();
+		line = vtkSmartPointer< vtkLine>::New();
 		line->GetPointIds()->SetId(0,6*i+4);
 		line->GetPointIds()->SetId(1,6*i+5);
 		cells->InsertNextCell(line);
 	}
 
-	polydata = vtkPolyData::New();
+	polydata = vtkSmartPointer< vtkPolyData>::New();
 	polydata->SetPoints(scale);
 	polydata->SetLines(cells);
 	
-	mapper = vtkPolyDataMapper::New();
+	mapper = vtkSmartPointer< vtkPolyDataMapper>::New();
 	mapper->SetInputData(polydata);
 
-	actor = vtkFollower::New();
+	actor = vtkSmartPointer< vtkFollower>::New();
 	actor->SetMapper(mapper);
 
 	actor->GetProperty()->SetOpacity(0.2);
@@ -377,29 +379,30 @@ void SphericalCoordinateAssistant::UpdateGrid() {
 
 	
 	// draw thicker 0° 90° 180° 270° lines
-	scale = vtkPoints::New();
+	scale = vtkSmartPointer< vtkPoints >::New();
 	scale->SetNumberOfPoints(8);
 
-	cells = vtkCellArray::New();
+	cells = vtkSmartPointer< vtkCellArray>::New();
 
-	for (int i=0; i<4;i++) {
-		line = vtkLine::New();
+	for( int i = 0; i < 4; i++ )
+	{
+		line = vtkSmartPointer< vtkLine>::New();
 		fAngleRad = i * 2*PI_F / 4;
-		scale->InsertPoint(2*i, .975*sin(fAngleRad), 0, -.975*cos(fAngleRad));
-		scale->InsertPoint(2*i+1, 1.075*sin(fAngleRad), 0, -1.075*cos(fAngleRad));
+		scale->InsertPoint( 2 * i, .975*sin( fAngleRad ), 0, -.975*cos( fAngleRad ) );
+		scale->InsertPoint( 2 * i + 1, 1.075*sin( fAngleRad ), 0, -1.075*cos( fAngleRad ) );
 		line->GetPointIds()->SetId(0,2*i);
 		line->GetPointIds()->SetId(1,2*i+1);
 		cells->InsertNextCell(line);
 	}
 
-	polydata = vtkPolyData::New();
+	polydata = vtkSmartPointer< vtkPolyData>::New();
 	polydata->SetPoints(scale);
 	polydata->SetLines(cells);
 	
-	mapper = vtkPolyDataMapper::New();
+	mapper = vtkSmartPointer< vtkPolyDataMapper>::New();
 	mapper->SetInputData(polydata);
 
-	actor = vtkFollower::New();
+	actor = vtkSmartPointer< vtkFollower>::New();
 	actor->SetMapper(mapper);
 
 	actor->GetProperty()->SetOpacity(0.4);
