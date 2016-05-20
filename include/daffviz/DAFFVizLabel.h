@@ -29,51 +29,52 @@ namespace DAFFViz
 
 	//! Simple arrow object node
 	/**
-	 * This class derived from the scene graph node class creates an arrow from VTK.
+	 * This class derived from the scene graph node class creates a text label from VTK.
 	 */
 
-	class DAFF_API Label : public DAFFViz::SGNode {
+	class DAFF_API Label : public DAFFViz::SGNode
+	{
 	public:
 		Label();
-		Label(SGNode* pNode);
-		Label(SGNode* pNode, std::string sText);
+		Label( SGNode* pNode );
+		Label( SGNode* pNode, std::string sText );
 		~Label();
 
 
 		// --= general methods =--
 
 		//! Color getter
-		void GetColor(double& r, double& g, double& b) const;
+		void GetColor( double& r, double& g, double& b ) const;
 
 		//! Color setter
-		void SetColor(const double r, const double g, const double b);
+		void SetColor( double r,  double g,  double b );
 
 		//! Alpha getter
 		double GetAlpha() const;
 
 		//! Alpha setter
-		void SetAlpha(const double a);
+		void SetAlpha( double a );
 
 		//! Get visibility
 		bool IsVisible() const;
 
 		//! Set visibility
-		void SetVisible( bool bVisible);
+		void SetVisible( bool bVisible );
 
 
 		// --= object related methods =--
 
 		//! Label text setter
-		void SetText(const std::string& sText);
+		void SetText( const std::string& sText );
 
 		//! Label text getter
 		std::string GetText() const;
 
 	private:
-		vtkVectorText*		m_pLabelText;
-		vtkPolyDataMapper*  m_pMapper;
-		vtkFollower*		m_pFollower;
-		vtkActor*			m_pActor;
+		vtkSmartPointer< vtkVectorText >		m_pLabelText;
+		vtkSmartPointer< vtkPolyDataMapper >  m_pMapper;
+		vtkSmartPointer< vtkFollower >		m_pFollower;
+		vtkSmartPointer< vtkActor >			m_pActor;
 
 		std::string			m_sText;
 
@@ -82,7 +83,7 @@ namespace DAFFViz
 	
 		// --= object related methods =--
 
-		virtual void OnSetFollowerCamera(vtkCamera* pCamera);
+		virtual void OnSetFollowerCamera( vtkSmartPointer< vtkCamera > pCamera );
 
 		friend class Frame;
 	};

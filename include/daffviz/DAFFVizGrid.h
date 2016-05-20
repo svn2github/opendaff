@@ -33,18 +33,18 @@ namespace DAFFViz
 	class DAFF_API Grid : public DAFFViz::SGNode
 	{
 	public:
-		Grid(DAFFViz::SGNode* pParentNode, unsigned int iCellsX=10, unsigned int iCellsZ=10);
-		Grid(unsigned int iCellsX=10, unsigned int iCellsZ=10);
+		Grid( DAFFViz::SGNode* pParentNode, unsigned int iCellsX = 10, unsigned int iCellsZ = 10 );
+		Grid( unsigned int iCellsX = 10, unsigned int iCellsZ = 10 );
 		~Grid();
 
 		//! Set visibility
-		void SetVisible(bool bVisible);
+		void SetVisible( bool bVisible );
 
 		//! Get visibility
 		bool IsVisible() const;
 	
 	private:
-		vtkActor* m_pActorGrid;
+		vtkSmartPointer< vtkActor > m_pActorGrid;
 
 		int m_iCellsX;
 		int m_iCellsZ;

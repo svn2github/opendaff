@@ -9,7 +9,19 @@
 #include <vtkTriangle.h>
 #include <vtkCellArray.h>
 #include <vtkPolyData.h>
-#include "vtkAssembly.h"
+#include <vtkAssembly.h>
+#include <vtkActor.h>
+#include <vtkDoubleArray.h>
+#include <vtkPointData.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkSmartPointer.h>
+#include <vtkSphereSource.h>
+#include <vtkWarpScalar.h>
+#include <vtkMath.h>
 
 /* The source code has been taken from the vtk.org/Wiki:
 	1. http://www.vtk.org/Wiki/VTK/Examples/Cxx/GeometricObjects/Arrow
@@ -74,9 +86,55 @@ int main( int, char** )
 	pAssembly->AddPart( actor2 );
 	pAssembly->RotateY( -45 );
 
+
+	{
+		// Create a sphere
+		vtkSmartPointer<vtkSphereSource> sphereSource =
+			vtkSmartPointer<vtkSphereSource>::New();
+		sphereSource->Update();
+
+		// Create Scalars
+		vtkSmartPointer<vtkDoubleArray> scalars =
+			vtkSmartPointer<vtkDoubleArray>::New();
+		int numberOfPoints = sphereSource->GetOutput()->GetNumberOfPoints();
+		scalars->SetNumberOfTuples( numberOfPoints );
+
+		vtkMath::RandomSeed( 8775070 ); // for reproducibility
+		for( vtkIdType i = 0; i < numberOfPoints; ++i )
+		{
+			scalars->SetTuple1( i, vtkMath::Random( 0.0, 1.0 / 7.0 ) );
+		}
+
+		sphereSource->GetOutput()->GetPointData()->SetScalars( scalars );
+
+		vtkSmartPointer<vtkWarpScalar> warpScalar =
+			vtkSmartPointer<vtkWarpScalar>::New();
+		warpScalar->SetInputConnection( sphereSource->GetOutputPort() );
+		warpScalar->SetScaleFactor( 1 ); // use the scalars themselves
+
+		// Required for SetNormal to have an effect
+		warpScalar->UseNormalOn();
+		warpScalar->SetNormal( 0, 0, 1 );
+
+		warpScalar->Update();
+
+		// Create a mapper and actor
+		vtkSmartPointer<vtkPolyDataMapper> mapper =
+			vtkSmartPointer<vtkPolyDataMapper>::New();
+		mapper->SetInputConnection( warpScalar->GetOutputPort() );
+
+		vtkSmartPointer<vtkActor> actor =
+			vtkSmartPointer<vtkActor>::New();
+		actor->SetMapper( mapper );
+		pAssembly->AddPart( actor );
+
+
+	}
+
+	// ---
+
 	renderer->AddActor( pAssembly );
 	renderer->SetBackground( 1, 0, 1 );
-
 
 	renderWindow->Render();
 	renderWindowInteractor->Start();

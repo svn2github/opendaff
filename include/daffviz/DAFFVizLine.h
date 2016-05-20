@@ -28,20 +28,21 @@ namespace DAFFViz
 	 * This class derived from the scene graph node class creates a line from VTK.
 	 */
 
-	class DAFF_API Line : public DAFFViz::SGNode {
+	class DAFF_API Line : public DAFFViz::SGNode
+	{
 	public:
 		Line();
-		Line(double x1, double y1, double z1, double x2, double y2, double z2);
-		Line(DAFFViz::SGNode* pParentNode, double x1, double y1, double z1, double x2, double y2, double z2);
+		Line( double x1, double y1, double z1, double x2, double y2, double z2 );
+		Line( DAFFViz::SGNode* pParentNode, double x1, double y1, double z1, double x2, double y2, double z2 );
 		~Line();
 
 		// --= object related methods =--
 
-		void GetPoint1(double& x, double& y, double& z) const;
-		void SetPoint1(double x, double y, double z);
+		void GetPoint1( double& x, double& y, double& z ) const;
+		void SetPoint1( double x, double y, double z );
 
-		void GetPoint2(double& x, double& y, double& z) const;
-		void SetPoint2(double x, double y, double z);
+		void GetPoint2( double& x, double& y, double& z ) const;
+		void SetPoint2( double x, double y, double z );
 
 
 		// --= general methods =--
@@ -50,7 +51,7 @@ namespace DAFFViz
 		void GetColor(double& r, double& g, double& b);
 
 		//! Color setter
-		void SetColor(const double r, const double g, const double b);
+		void SetColor( double r, double g, double b );
 
 		//! Alpha getter
 		double GetAlpha() const;
@@ -59,15 +60,15 @@ namespace DAFFViz
 		void SetAlpha(const double a);
 
 		//! Set visibility
-		void SetVisible(bool bVisible);
+		void SetVisible( bool bVisible );
 
 		//! Get visibility
 		bool IsVisible() const;
 
 	private:
-		vtkLineSource*		m_pSource;
-		vtkPolyDataMapper*  m_pMapper;
-		vtkActor*			m_pActor;
+		vtkSmartPointer< vtkLineSource >		m_pSource;
+		vtkSmartPointer< vtkPolyDataMapper >	m_pMapper;
+		vtkSmartPointer< vtkActor >				m_pActor;
 
 		// The initializer generates dynamic objects like source, mapper, actor ...
 		void init();

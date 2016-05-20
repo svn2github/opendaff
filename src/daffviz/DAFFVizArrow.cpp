@@ -18,7 +18,7 @@ namespace DAFFViz
 		init();
 	}
 
-	Arrow::Arrow(double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution)
+	Arrow::Arrow( double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution )
 	: SGNode()
 	, m_pSource(NULL)
 	, m_pMapper(NULL)

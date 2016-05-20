@@ -56,12 +56,30 @@ namespace DAFFViz
 
 		m_pPlotPolydata = vtkSmartPointer< vtkPolyData >::New();
 
+		m_pMapper = vtkSmartPointer< vtkPolyDataMapper >::New();
+
+		m_pPlotActor = vtkSmartPointer<vtkActor>::New();
+		m_pPlotActor->SetMapper( m_pMapper );
+		m_pPlotActor->GetProperty()->SetInterpolationToGouraud();
+
+		AddActor( m_pPlotActor );
+
 		vtkSmartPointer< vtkPolyDataNormals > normals = vtkSmartPointer< vtkPolyDataNormals >::New();
 		normals->SetInputData( m_pPlotPolydata );
 
 		m_pWarp = vtkSmartPointer< vtkWarpScalar >::New();
-		m_pWarp->SetInputData(normals->GetOutput());
-		m_pWarp->UseNormalOff();
+		//m_pWarp->SetInputData( m_pPlotPolydata );
+		m_pWarp->SetInputData( normals->GetOutput() );
+		//m_pWarp->UseNormalOff();
+		m_pWarp->Update();
+
+		m_pMapper->SetInputData( m_pPlotPolydata );
+		//m_pMapper->SetInputData( m_pWarp->GetPolyDataOutput() );
+		//EnableWarp();
+		//DisableWarp();
+
+		// Add the geometry and topology to the polydata		
+		init();
 
 		// create a default lookup table and invert it, so that high values have red color
 		vtkSmartPointer< vtkLookupTable > lut = vtkSmartPointer< vtkLookupTable>::New();
@@ -72,35 +90,24 @@ namespace DAFFViz
 		for( int i = 0; i < 256; i++ )
 			lut->SetTableValue( i, refLut->GetTableValue( 255 - i ) );
 
-		m_pMapper = vtkSmartPointer< vtkPolyDataMapper >::New();
-		m_pMapper->SetLookupTable(lut);
-
-		EnableWarp();
-		//DisableWarp();
-
-		m_pPlotActor = vtkSmartPointer< vtkActor >::New();
-		m_pPlotActor->SetMapper( m_pMapper );
-
-		m_pPlotActor->GetProperty()->SetInterpolationToGouraud();
-
-		AddActor( m_pPlotActor );
-	
+		m_pMapper->SetLookupTable( lut );
+			
 		// --- Probe ---
 
-		vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
-		points->SetNumberOfPoints(2);
-		points->InsertPoint(0, 0,0,0);
-		points->InsertPoint(1, 0,1,0);
+		vtkSmartPointer< vtkPoints > pointsProbe = vtkSmartPointer< vtkPoints >::New();
+		pointsProbe->SetNumberOfPoints( 2 );
+		pointsProbe->InsertPoint( 0, 0, 0, 0 );
+		pointsProbe->InsertPoint( 1, 0, 1, 0 );
 
-		vtkSmartPointer< vtkCellArray > cells = vtkSmartPointer< vtkCellArray >::New();
+		vtkSmartPointer< vtkCellArray > cellsProbe = vtkSmartPointer< vtkCellArray >::New();
 		vtkSmartPointer< vtkLine > line = vtkSmartPointer< vtkLine >::New();
 		line->GetPointIds()->SetId(0,0);
 		line->GetPointIds()->SetId(1,1);
-		cells->InsertNextCell(line);
+		cellsProbe->InsertNextCell( line );
 	
 		vtkSmartPointer< vtkPolyData > polydata = vtkSmartPointer< vtkPolyData >::New();
-		polydata->SetPoints(points);
-		polydata->SetLines(cells);
+		polydata->SetPoints( pointsProbe );
+		polydata->SetLines( cellsProbe );
 
 		// Create a mapper and actor
 		vtkSmartPointer< vtkPolyDataMapper > mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
@@ -129,8 +136,7 @@ namespace DAFFViz
 		m_pLabel->VisibilityOff();
 
 		AddActor( m_pLabel );
-
-		init();
+		
 	}
 
 	CarpetPlot::~CarpetPlot()
@@ -146,9 +152,6 @@ namespace DAFFViz
 
 		// --= carpet grid points and faces =--
 
-		vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
-		vtkSmartPointer< vtkCellArray > cells = vtkSmartPointer< vtkCellArray >::New();
-	
 		int iNumPointsX, iIndexMaxX;
 		if( m_iFixedAngle == BETA_FIXED )
 		{
@@ -167,7 +170,8 @@ namespace DAFFViz
 		int iNumPointsY = m_pContentIR->getFilterLength();
 
 		vtkIdType quadface[ 4 ];
-
+		vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
+		vtkSmartPointer< vtkCellArray > cells = vtkSmartPointer< vtkCellArray >::New();
 		for( int i = 0; i < iIndexMaxX; i++ )
 		{
 			for( int j = 0; j < iNumPointsY; j++ )
@@ -182,14 +186,18 @@ namespace DAFFViz
 						assert( ( quadface[ k ] >= 0 ) && ( quadface[ k ] < iIndexMaxX*iNumPointsY ) );
 					cells->InsertNextCell( 4, quadface );
 				}
-				points->InsertPoint( i*iNumPointsY + j, 2.0f*( float ) i / ( iNumPointsX ) -1.0f, 0, 2.0f*( float ) j / ( iNumPointsY ) -1.0f );
+				vtkIdType iPointiD = i*iNumPointsY + j;
+				double dX = 2.0f * double( i ) / double( iNumPointsX ) - 1.0f;
+				double dY = 0.0f;
+				double dZ = 2.0f * double( j ) / double( iNumPointsY ) - 1.0f;
+				points->InsertPoint( iPointiD, dX, dY, dZ );
 			}
 		}
 
 		m_pPlotPolydata->SetPoints( points );
 		m_pPlotPolydata->SetPolys( cells );
-		SetScalars();
 
+		SetScalars();		
 	}
 
 	void CarpetPlot::UpdateProbe()
@@ -341,6 +349,13 @@ namespace DAFFViz
 		updatePlotOffset();
 	}
 
+	void CarpetPlot::DisableWarp()
+	{
+		m_pMapper->SetInputData( m_pPlotPolydata );
+		m_bWarp = false;
+		updatePlotOffset();
+	}
+
 	void CarpetPlot::updatePlotOffset()
 	{
 		if( m_pPlotActor )
@@ -355,12 +370,6 @@ namespace DAFFViz
 				m_pPlotActor->SetPosition( 0, 0, 0 );
 	}
 
-	void CarpetPlot::DisableWarp()
-	{
-		m_pMapper->SetInputData( m_pPlotPolydata );
-		m_bWarp = false;
-		updatePlotOffset();
-	}
 
 	void CarpetPlot::SetScalars()
 	{
@@ -368,8 +377,9 @@ namespace DAFFViz
 		assert( m_pContentIR != NULL);
 		assert( m_dMin < m_dMax );
 
-		vtkSmartPointer< vtkFloatArray > pIRArray = vtkSmartPointer< vtkFloatArray >::New();
-		float* coeffs = new float[ m_pContentIR->getFilterLength() ];
+		vtkSmartPointer< vtkFloatArray > pIRWarpArray = vtkSmartPointer< vtkFloatArray >::New();
+		pIRWarpArray->SetName( "DAFFIRWarpData" );
+		std::vector< float > vCoeffs( m_pContentIR->getFilterLength() );
 		if( m_iFixedAngle == BETA_FIXED )
 		{
 			int iNumPoints = m_pContentIR->getProperties()->getAlphaPoints();
@@ -380,14 +390,14 @@ namespace DAFFViz
 				// Pull filter coefficients
 				int index=0;
 				m_pContentIR->getNearestNeighbour( DAFF_DATA_VIEW, ( float ) i / ( float ) iNumPoints*fRange + fStart, m_fAngle, index );
-				m_pContentIR->getFilterCoeffs( index, m_iChannel, coeffs );
+				m_pContentIR->getFilterCoeffs( index, m_iChannel, &vCoeffs[0] );
 				float coeff=0.0f;
 				for( int j = 0; j < m_pContentIR->getFilterLength(); j++ )
 				{
-					coeff = coeffs[j];
+					coeff = vCoeffs[j];
 
 					// Check weather decibel scaling is activated
-					if( m_iScaling == SCALING_DECIBEL || false )
+					if( m_iScaling == SCALING_DECIBEL )
 					{
 						// CAVE: we take absolut value instead of square
 						coeff = ( float ) factor2decibel( ( double ) fabs( coeff ) );
@@ -414,7 +424,7 @@ namespace DAFFViz
 						coeff = ( coeff - m_dMin ) / ( m_dMax - m_dMin );
 					}
 					// store value in array
-					pIRArray->InsertNextTuple1( coeff );
+					pIRWarpArray->InsertNextTuple1( coeff );
 				}
 			}
 		}
@@ -428,14 +438,14 @@ namespace DAFFViz
 				// Pull filter coefficients
 				int index=0;
 				m_pContentIR->getNearestNeighbour( DAFF_DATA_VIEW, m_fAngle, ( float ) i / ( float ) iNumPoints*fRange + fStart, index );
-				m_pContentIR->getFilterCoeffs(index, m_iChannel, coeffs);
+				m_pContentIR->getFilterCoeffs( index, m_iChannel, &vCoeffs[ 0 ] );
 				float coeff=0.0f;
 				for( int j = 0; j < m_pContentIR->getFilterLength(); j++ )
 				{
-					coeff = coeffs[j];
+					coeff = vCoeffs[j];
 
 					// Check weather decibel scaling is activated
-					if( m_iScaling == SCALING_DECIBEL || false )
+					if( m_iScaling == SCALING_DECIBEL )
 					{
 						// CAVE: we take absolut value instead of square
 						coeff = ( float ) factor2decibel( ( double ) fabs( coeff ) );
@@ -462,17 +472,18 @@ namespace DAFFViz
 						coeff = ( coeff - m_dMin ) / ( m_dMax - m_dMin );
 					}
 					// store value in array
-					pIRArray->InsertNextTuple1( coeff );
+					pIRWarpArray->InsertNextTuple1( coeff );
 				}
 			}
 		}
 
 		// Assign scalars to points
-		m_pPlotPolydata->GetPointData()->SetScalars( pIRArray );
+		m_pPlotPolydata->GetPointData()->SetScalars( pIRWarpArray );
+
 		// move plot down so it fits to the axes
 		updatePlotOffset();
 		UpdateProbe();
-		delete[] coeffs;
+
 		return;
 	}
 

@@ -35,13 +35,8 @@ namespace DAFFViz
 	class DAFF_API CartesianCoordinateAssistant : public SGNode
 	{
 	public:
-		//! Constructor
-		CartesianCoordinateAssistant(SGNode* pParentNode, double LengthX = 1.0f, double LengthY = 1.0f, double LengthZ = 1.0f);
-	
-		//! Constructor
-		CartesianCoordinateAssistant(double LengthX = 1.0f, double LengthY = 1.0f, double LengthZ = 1.0f);
-
-		//! Destructor
+		CartesianCoordinateAssistant( SGNode* pParentNode, double LengthX = 1.0f, double LengthY = 1.0f, double LengthZ = 1.0f );
+		CartesianCoordinateAssistant( double LengthX = 1.0f, double LengthY = 1.0f, double LengthZ = 1.0f );
 		~CartesianCoordinateAssistant();
 
 
@@ -54,13 +49,13 @@ namespace DAFFViz
 		bool GetAxesVisible() const;
 
 		//! Enables/Disables axes
-		void SetAxesVisible(bool bVisible);
+		void SetAxesVisible( bool bVisible );
 
 		//! Set grid visibility
 		bool GetGridVisible() const;
 
 		//! Enables/Disables grid line visiblity
-		void SetGridVisible(bool bVisible);
+		void SetGridVisible( bool bVisible );
 
 		//! Set grid visibility
 		bool GetLabelsVisible() const;
@@ -69,19 +64,19 @@ namespace DAFFViz
 		void SetLabelsVisible(bool bVisible);
 
 		//! Set Length of axes arrows
-		void SetAxesLength(const double x, const double y, const double z);
+		void SetAxesLength( double x, double y, double z );
 
 		//! Get probe level
 		double GetReferenceLevel() const;
 
 		//! Set probe level
-		void SetReferenceLevel(double dLevel);
+		void SetReferenceLevel( double dLevel );
 
 		//! Get probe opacity
 		double GetReferenceOpacity() const;
 
 		//! Set probe opacity
-		void SetReferenceOpacity(double dOpacity);
+		void SetReferenceOpacity( double dOpacity );
 
 
 		// --= General methods =--
@@ -90,7 +85,7 @@ namespace DAFFViz
 		bool getVisible() const;
 
 		//! Set visibility
-		void SetVisible(bool bVisible);
+		void SetVisible( bool bVisible );
 
 
 		// --= Grid getter/setter =--
@@ -99,61 +94,61 @@ namespace DAFFViz
 		double GetMinX() const;
 
 		//! Minimum value setter for X-axis
-		void SetMinX(double);
+		void SetMinX( double dMin );
 
 		//! Maximum value getter for X-axis
 		double GetMaxX() const;
 
 		//! Maximum value setter for X-axis
-		void SetMaxX(double);
+		void SetMaxX( double dMax );
 
 		//! Minimum value getter for Y-axis
 		double GetMinY() const;
 
 		//! Minimum value setter for Y-axis
-		void SetMinY(double);
+		void SetMinY( double dMin );
 
 		//! Maximum value getter for Y-axis
 		double GetMaxY() const;
 
 		//! Maximum value setter for Y-axis
-		void SetMaxY(double);
+		void SetMaxY( double dMax );
 
 		//! Minimum value getter for Z-axis
 		double GetMinZ() const;
 
 		//! Minimum value setter for Z-axis
-		void SetMinZ(double);
+		void SetMinZ( double dMin );
 
 		//! Maximum value getter for Z-axis
 		double GetMaxZ() const;
 
 		//! Maximum value setter for Z-axis
-		void SetMaxZ(double);
+		void SetMaxZ( double dMax );
 
 		//! Resolution getter for X-axis
 		double GetResolutionX() const;
 
 		//! Resolution setter for X-axis
-		void SetResolutionX(double);
+		void SetResolutionX( double dRes );
 
 		//! Resolution getter for Y-axis
 		double GetResolutionY() const;
 
 		//! Resolution setter for Y-axis
-		void SetResolutionY(double);
+		void SetResolutionY( double dRes );
 
 		//! Resolution getter for Z-axis
 		double GetResolutionZ() const;
 
 		//! Resolution setter for Z-axis
-		void SetResolutionZ(double);
+		void SetResolutionZ( double dRes );
 
 		//! Offset level getter, at which value the XZ plane intersects with the Y-axis
 		double GetOffsetY() const;
 
 		//! Offset level setter, at which value the XZ plane intersects with the Y-axis
-		void SetOffsetY(double); 
+		void SetOffsetY( double dOffset );
 
 		//! Update axes node
 		void UpdateAxes();
@@ -165,10 +160,10 @@ namespace DAFFViz
 		void UpdateReference();
 
 	private:
-		std::vector<vtkActor*> m_pGrid;
-		std::vector<vtkActor*> m_pLabels;
-		std::vector<SGNode*> m_pAxes;
-		vtkActor* m_pReferenceActor;
+		std::vector< vtkSmartPointer< vtkActor > > m_pGrid;
+		std::vector<vtkSmartPointer< vtkActor > > m_pLabels;
+		std::vector< SGNode* > m_pAxes;
+		vtkSmartPointer< vtkActor > m_pReferenceActor;
 	
 		double m_dMinX;
 		double m_dMaxX;

@@ -50,8 +50,8 @@ int main( int, char** )
 	oRootNode.AddChildNode( &arrow );
 	oRootNode.SetOrientationYPR( 13, -13, 25 );
 
-	//DAFFViz::CartesianCoordinateAssistant cca;
-	//oRootNode.AddChildNode( &cca );
+	DAFFViz::CartesianCoordinateAssistant cca;
+	oRootNode.AddChildNode( &cca );
 
 	DAFFViz::SphericalCoordinateAssistant sca;
 	sca.SetAxesVisible( true );
@@ -66,6 +66,13 @@ int main( int, char** )
 	oRootNode.AddChildNode( &grid );
 	oRootNode.AddChildNode( &grid2 );
 	grid2.SetPosition( 0, .2, 0 );
+
+	DAFFViz::Sphere oSphere;
+	oRootNode.AddChildNode( &oSphere );
+
+	DAFFViz::Label oTextLabel;
+	oTextLabel.SetText( "This is the DAFFVizTest test." );
+	oRootNode.AddChildNode( &oTextLabel );
 
 	DAFFViz::VTKDAFFVizWindow win;
 	win.SetSceneGraphRootNode( &oRootNode );

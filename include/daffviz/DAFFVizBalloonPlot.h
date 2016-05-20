@@ -33,21 +33,24 @@ namespace DAFFViz
 	 * This class derived from the scene graph node class creates a directivity.
 	 */
 
-	class DAFF_API BalloonPlot : public DAFFViz::SGNode{
+	class DAFF_API BalloonPlot : public DAFFViz::SGNode
+	{
 	public:
-		enum {
+		enum
+		{
 			SCALING_LINEAR=0,
 			SCALING_DECIBEL
 		};
 
-		enum {
+		enum
+		{
 			MODE_SURFACE=0,
 			MODE_WIREFRAME,
 			MODE_POINT
 		};
 
-		BalloonPlot(SGNode* pParentNode, const DAFFContent* pContent);
-		BalloonPlot(const DAFFContent* pContent);
+		BalloonPlot( SGNode* pParentNode, const DAFFContent* pContent );
+		BalloonPlot( const DAFFContent* pContent );
 		virtual ~BalloonPlot();
 
 		// --= Object related methods =--
@@ -56,13 +59,13 @@ namespace DAFFViz
 		int GetSelectedFrequency() const;
 
 		//! Sets the currently selected frequency index
-		void SetSelectedFrequency(int iFreqIndex);
+		void SetSelectedFrequency( int iFreqIndex );
 
 		//! Get scaling (SCALING_LINEAR | SCALING_DECIBEL)
 		int GetScaling() const;
 
 		//! Set scaling (SCALING_LINEAR | SCALING_DECIBEL)
-		void SetScaling(int iScaling);
+		void SetScaling( int iScaling );
 
 		//! Set minimum of data range (in dB or absolute values depending on currently used scaling)
 		double GetRangeMin() const;
@@ -71,19 +74,19 @@ namespace DAFFViz
 		double GetRangeMax() const;
 
 		//! Set data range (in dB or absolute values depending on currently used scaling)
-		void SetRange(double dMin, double dMax);
+		void SetRange( double dMin, double dMax );
 
 		//! Set whether scalars should be used to color the model
-		void SetScalarVisibility(bool bVisible);
+		void SetScalarVisibility( bool bVisible );
 
 		//! Get whether scalars should be used to color the model
 		int GetScalarVisibility();
 
 		//! Set display mode (MODE_SURFACE | MODE_WIREFRAME | MODE_POINT)
-		void SetDisplayMode(int iMode);
+		void SetDisplayMode( int iMode );
 
 		//! Set active channel
-		void SetChannel(int iChannel);
+		void SetChannel( int iChannel );
 
 		//! get active channel
 		int GetChannel();
@@ -94,33 +97,33 @@ namespace DAFFViz
 		void DisableWarp();
 
 		//! set whether the phase should be used for coloring. If not, the magnitude will be used.
-		void SetUsePhaseAsColor(bool bUse);
+		void SetUsePhaseAsColor( bool bUse );
 	
 		//! Set probe angles
-		void SetProbeAngles(double dAlpha, double dBeta);
+		void SetProbeAngles( double dAlpha, double dBeta );
 
 		//! Enables/disables probe
-		void SetProbeVisible(bool bVisible);
+		void SetProbeVisible( bool bVisible );
 
 		//! Update probe nodes
 		void UpdateProbe();
 	private:
 
 		const DAFFContent* m_pContent;
-		vtkWarpScalar* m_pWarp;
-		vtkPolyDataMapper* m_pMapper;
-		vtkActor* m_pPlotActor;
-		vtkPolyData* m_pPlotPolydata;
-		vtkDoubleArray* m_pNormals;
+		vtkSmartPointer< vtkWarpScalar > m_pWarp;
+		vtkSmartPointer< vtkPolyDataMapper > m_pMapper;
+		vtkSmartPointer< vtkActor > m_pPlotActor;
+		vtkSmartPointer< vtkPolyData > m_pPlotPolydata;
+		vtkSmartPointer< vtkDoubleArray > m_pNormals;
 		int m_iFrequency;
 		int m_iNumFrequencies;
 		int m_iScaling;
 		float m_dMin, m_dMax, m_dProbeAlpha, m_dProbeBeta; // linear factors!
 		int m_iChannel;
 		bool m_bWarp, m_bUsePhaseAsColor;
-		vtkActor* m_pProbe;
-		vtkVectorText *m_pProbeLabel;
-		vtkActor* m_pLabel;
+		vtkSmartPointer< vtkActor > m_pProbe;
+		vtkSmartPointer< vtkVectorText > m_pProbeLabel;
+		vtkSmartPointer< vtkActor > m_pLabel;
 
 		// The initializer generates dynamic objects like source, mapper, actor ...
 		void init();
@@ -129,13 +132,13 @@ namespace DAFFViz
 		void SetScalars();
 
 		// Convert orientation (phi, theta) into cartesian coordiates (x,y,z)
-		void sph2cart(double phi, double theta, double& x, double& y, double& z);
+		void sph2cart( double phi, double theta, double& x, double& y, double& z );
 
 		// Convert a linear value into decibel
-		double factor2decibel(double x) const;
+		double factor2decibel( double x ) const;
 	
 		// Convert decibel to linear value
-		double decibel2factor(double x) const;
+		double decibel2factor( double x ) const;
 	};
 
 } // End of namespace "DAFFViz"

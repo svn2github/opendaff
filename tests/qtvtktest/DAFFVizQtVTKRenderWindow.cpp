@@ -12,12 +12,9 @@ DAFFVizQtVTKRenderWindow::DAFFVizQtVTKRenderWindow()
 {
   this->ui = new Ui_DAFFVizQtVTKRenderWindow;
   this->ui->setupUi(this);
-
-
-
-  this->ui->qvtkWidget->GetRenderWindow()->AddRenderer(m_pRenderer);
+  //this->ui->qvtkWidget->GetRenderWindow()->AddRenderer(m_pRenderer);
  
-  connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
+  //connect( this->ui->actionExit, SIGNAL( triggered() ), this, SLOT( slotExit() ) );
  
 }
  
