@@ -1,6 +1,5 @@
 #include <QApplication>
 #include "DAFFVizQtVTKRenderWindow.h"
-#include <daffviz/DAFFVizSphericalCoordinateAssistant.h>
 
 int main( int argc, char** argv )
 {

@@ -60,9 +60,9 @@ using namespace std;
 #define PROGRAM_NAME "DAFFTool"
 #define PROGRAM_BLANK "        "
 #define EXECUTABLE_NAME "dafftool"
-#define VERSION "0.105"
+#define VERSION "v1.7"
 #define SYNTAX "MODE [OPTIONS] FILENAME"
-#define COPYRIGHT_YEARS "2008-2011"
+#define COPYRIGHT_YEARS "2008-2016"
 #define SEPARATOR "-------------------------------------------------------------------"
 
 // Access rights when creating directories with Posix 'mkdir'
@@ -149,7 +149,7 @@ void help() {
 	printf("  %s is a swiss army knife for DAFF directional audio files\n", PROGRAM_NAME);
 	printf("  %s is a part of the OpenDAFF software package\n\n", PROGRAM_NAME);
 	printf("  (c) Copyright Institute for Technical Acoustics (ITA),\n");
-	printf("                RWTH Aachen University, Germany, %s\n\n", COPYRIGHT_YEARS);
+	printf("                RWTH Aachen University, Germany, %s\n\n", COPYRIGHT_YEARS );
 	printf("%s\n\n\n", SEPARATOR);
 
 	printf("Syntax:  \t%s %s\n", EXECUTABLE_NAME, SYNTAX);
@@ -167,10 +167,7 @@ void help() {
 	printf("         \t%s dump hrir.daff\n", EXECUTABLE_NAME);
 	printf("         \t%s query loudspeaker.daff P10 T-84\n\n\n", EXECUTABLE_NAME);
 
-	printf("Version: \tThis is %s %s\n\n", PROGRAM_NAME, VERSION);
-
-	printf("Authors: \tFrank Wefers (fwe@akustik.rwth-aachen.de),\n");
-	printf("         \tJonas Stienen (jst@akustik.rwth-aachen.de)\n\n\n");
+	printf( "Version: \tThis is %s %s\n\n", PROGRAM_NAME, VERSION );
 
 	printf("%s\n\n", SEPARATOR);
 	printf("  You can find more information in the OpenDAFF User Guide\n");

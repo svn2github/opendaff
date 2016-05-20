@@ -25,17 +25,17 @@
 #include <daffviz/DAFFVizSphericalCoordinateAssistant.h>
 
 namespace Ui {
-class DAFFVizQtWindow;
+	class QtDAFFVizTestWindow;
 }
 
-class DAFFVizQtWindow : public QMainWindow
+class QtDAFFVizTestWindow : public QMainWindow
 {
     Q_OBJECT
 
 
 public:
-    explicit DAFFVizQtWindow(QWidget *parent = 0);
-    ~DAFFVizQtWindow();
+	explicit QtDAFFVizTestWindow( QWidget *parent = 0 );
+	~QtDAFFVizTestWindow();
 
 public slots:
 
@@ -48,11 +48,11 @@ private slots:
 	void on_lineEditTheta_returnPressed();
 
 private:
-    Ui::DAFFVizQtWindow *ui;
+	Ui::QtDAFFVizTestWindow *ui;
 	DAFFReader *reader;
 	DAFFViz::SGNode *node, *nodeCarpet;
 	vtkSmartPointer<vtkRenderer> renderer, rendererPlot;
-	vtkCamera *camera;
+	vtkSmartPointer< vtkCamera >camera;
 	vtkSmartPointer<vtkContextView> view;
 	vtkSmartPointer<vtkTable> table;
 	vtkSmartPointer<vtkFloatArray> dataX, dataY;

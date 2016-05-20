@@ -63,8 +63,12 @@ namespace DAFFViz
 		m_pActor = vtkSmartPointer< vtkActor >::New();
 		m_pActor->SetMapper( m_pMapper );
 
-		AddActor( m_pActor );
-	}
+	m_pActor->GetProperty()->SetInterpolationToGouraud();
+	m_pActor->GetProperty()->SetDiffuse(0.9);
+	m_pActor->GetProperty()->SetAmbient(0.4);
+
+	AddActor(m_pActor);
+}
 
 	// --= object related methods =--
 
