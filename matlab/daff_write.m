@@ -31,7 +31,7 @@ function [] = daff_write( varargin )
 %
 %  -- Optional --
 %
-%  basepath     char        Base path for all input files (default: none)
+%  userdata     cell        User data that is passed to data function (default: empty cell array)
 %  metadata     struct      Metadata information (see daff_metadata_addKey)
 %
 %  alpharange   vector-2    Range of alpha-angles
@@ -66,13 +66,13 @@ function [] = daff_write( varargin )
     floatvecarg = {'alpharange', 'betarange', 'orient'};
              
     % Options with string parameters
-    strarg = {'filename', 'basepath', 'content', 'quantization'};
+    strarg = {'filename', 'content', 'quantization'};
       
     % Options without an argument
     nonarg = {'quiet'};
     
     % Options with one argument
-    onearg = [boolarg ingzarg floatarg pfloatarg floatvecarg strarg 'datafunc' 'metadata'];
+    onearg = [ boolarg ingzarg floatarg pfloatarg floatvecarg strarg 'datafunc' 'metadata' 'userdata' ];
     
     % Required options
     reqarg = {'filename', 'content', 'datafunc', 'channels', 'orient'};    
@@ -349,8 +349,11 @@ function [] = daff_write( varargin )
         zthreshold_value = 10^(args.zthreshold/20);    
     end
     
-    % Default value for base path
-    if ~isfield(args, 'basepath'), args.basepath = ''; end;
+    % Default value for user data is an empty cell
+    if ~isfield( args, 'userdata' )
+		args.userdata = cell();
+	end;
+	
     % DEBUG: disp( args );
 
     % Print a summary of the information
@@ -430,7 +433,7 @@ function [] = daff_write( varargin )
             
             if strcmp(args.content, 'IR') 
                 % Get the data
-                [data, samplerate, metadata] = args.datafunc(alpha, beta, args.basepath);
+                [data, samplerate, metadata] = args.datafunc(alpha, beta, args.userdata);
                 [channels, filterlength] = size(data);
 
                 if( ~isa( data, 'double' ) )
@@ -529,7 +532,7 @@ function [] = daff_write( varargin )
             
             if strcmp(args.content, 'MS') 
                 % Get the data
-                [freqs, data, metadata] = args.datafunc(alpha, beta, args.basepath);
+                [ freqs, data, metadata ] = args.datafunc( alpha, beta, args.userdata );
                 [channels, numfreqs] = size(data);
 
                 if (class(data) ~= 'double')
@@ -596,7 +599,7 @@ function [] = daff_write( varargin )
             
             if strcmp(args.content, 'PS') 
                 % Get the data
-                [freqs, data, metadata] = args.datafunc(alpha, beta, args.basepath);
+                [ freqs, data, metadata ] = args.datafunc( alpha, beta, args.userdata );
                 [channels, numfreqs] = size(data);
 
                 if (class(data) ~= 'double')
@@ -654,7 +657,7 @@ function [] = daff_write( varargin )
             
             if strcmp(args.content, 'MPS') 
                 % Get the data
-                [freqs, data, metadata] = args.datafunc(alpha, beta, args.basepath);
+                [ freqs, data, metadata ] = args.datafunc( alpha, beta, args.userdata );
                 [channels, numfreqs] = size(data);
 
                 if (class(data) ~= 'double')
@@ -709,8 +712,8 @@ function [] = daff_write( varargin )
             
             if strcmp(args.content, 'DFT') 
                 % Get the data
-                [data, sampleRate, isSymetric, metadata] = args.datafunc(alpha, beta, args.basepath);
-                [channels, numDFTCoeffs] = size(data);
+                [ data, sampleRate, isSymetric, metadata ] = args.datafunc( alpha, beta, args.userdata );
+                [ channels, numDFTCoeffs ] = size( data );
 
                 if (class(data) ~= 'double')
                     error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta) );
@@ -725,9 +728,9 @@ function [] = daff_write( varargin )
                     error( sprintf('Dataset (A%0.1f°, B%0.1f°): third parameter isSymetric must be logical', alpha, beta));
                 end
                 
-                if isfield(props, 'samplerate')
-                    if (sampleRate ~= props.sampleRate)
-                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Sample rate does not match', alpha, beta));
+                if isfield( props, 'samplerate' )
+                    if ( sampleRate ~= props.sampleRate )
+                        error( sprintf( 'Dataset (A%0.1f°, B%0.1f°): Sample rate does not match', alpha, beta ) );
                     end
                 end
                 
@@ -986,9 +989,9 @@ function [] = daff_write( varargin )
                 alpha = alphastart + (a-1)*args.alphares;
                 
                 % Get the data (2nd time)
-                [data, ~, ~] = args.datafunc(alpha, beta, args.basepath);
+                [ data, ~, ~ ] = args.datafunc( alpha, beta, args.userdata );
 
-                if( ~isa(data, 'double' ) )
+                if( ~isa( data, 'double' ) )
                     error( 'Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta );
                 end
  
@@ -1042,7 +1045,7 @@ function [] = daff_write( varargin )
                 alpha = alphastart + (a-1)*args.alphares;
                 
                 % Get the data (2nd time)
-                [freqs, data] = args.datafunc(alpha, beta, args.basepath);
+                [ freqs, data ] = args.datafunc( alpha, beta, args.userdata );
                 [channels, numfreqs] = size(data);
 
                 if (class(data) ~= 'double')
@@ -1085,7 +1088,7 @@ function [] = daff_write( varargin )
                 alpha = alphastart + (a-1)*args.alphares;
                 
                 % Get the data (2nd time)
-                [freqs, data] = args.datafunc(alpha, beta, args.basepath);
+                [ freqs, data ] = args.datafunc( alpha, beta, args.userdata );
                 [channels, numfreqs] = size(data);
 
                 if (class(data) ~= 'double')
@@ -1121,8 +1124,8 @@ function [] = daff_write( varargin )
                 alpha = alphastart + (a-1)*args.alphares;
                 
                 % Get the data (2nd time)
-                [freqs, data] = args.datafunc(alpha, beta, args.basepath);
-                [channels, numfreqs] = size(data);
+                [ freqs, data ] = args.datafunc( alpha, beta, args.userdata );
+                [ channels, numfreqs ] = size( data );
 
                 if (class(data) ~= 'double')
                     error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values') );
@@ -1161,8 +1164,8 @@ function [] = daff_write( varargin )
                 alpha = alphastart + (a-1)*args.alphares;
                 
                 % Get the data (2nd time)
-                [data] = args.datafunc(alpha, beta, args.basepath);
-                [channels, numfreqs] = size(data);
+                [ data ] = args.datafunc( alpha, beta, args.userdata );
+                [ channels, numfreqs ] = size( data );
 
                 if (class(data) ~= 'double')
                     error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values') );

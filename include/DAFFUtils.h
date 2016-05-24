@@ -85,7 +85,7 @@ public:
 
 private:
 	inline DAFFUtils() {};
-	inline DAFFUtils( const DAFFUtils& rhs ) {};
+	inline DAFFUtils( const DAFFUtils& ) {};
 	inline ~DAFFUtils() {};
 };
 
