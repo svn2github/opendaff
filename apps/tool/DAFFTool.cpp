@@ -340,11 +340,11 @@ int main_info(int argc, char* argv[]) {
 	const DAFFProperties* pProps = g_pDAFFReader->getProperties();
 	DAFFOrientationYPR o;
 	g_pDAFFReader->getProperties()->getOrientation(o);
-	float fVersion = g_pDAFFReader->getFileFormatVersion() / 1000.0F;
+	int iVersion = int( g_pDAFFReader->getFileFormatVersion() );
 
 	printf("\n--= Properties =--\n\n");
 
-	printf("File format version: %s\n", DAFFUtils::Float2StrNice(fVersion, 3, false).c_str());
+	printf("File format version: %d\n", iVersion, 3 );
 	printf("Content type:        %s\n", DAFFUtils::StrContentType( pProps->getContentType() ).c_str());
 	printf("Quantization:        %s\n\n", DAFFUtils::StrQuantizationType( pProps->getQuantization() ).c_str());
 	printf("Number of channels:  %i\n", pProps->getNumberOfChannels());
