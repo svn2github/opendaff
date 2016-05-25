@@ -135,10 +135,10 @@ namespace DAFFViz
 		void sph2cart( double phi, double theta, double& x, double& y, double& z );
 
 		// Convert a linear value into decibel
-		double factor2decibel( double x ) const;
+		float FactorToDecibel( float x ) const;
 	
 		// Convert decibel to linear value
-		double decibel2factor( double x ) const;
+		float DecibelToFactor( float x ) const;
 	};
 
 } // End of namespace "DAFFViz"

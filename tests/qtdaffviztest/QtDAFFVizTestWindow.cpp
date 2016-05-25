@@ -93,10 +93,9 @@ void QtDAFFVizTestWindow::on_actionOpen_triggered()
 		nodeCarpet->AddChildNode(carpetPlot);
 		//rendererPlot->AddActor(nodeCarpet->GetNodeAssembly());
 	}
-
-	else if (contentType == DAFF_MAGNITUDE_SPECTRUM)
+	else
 	{
-		balloonPlot = new DAFFViz::BalloonPlot(node, reader->getContent());
+		balloonPlot = new DAFFViz::BalloonPlot( node, reader->getContent() );
 		//renderer->AddActor(node->GetNodeAssembly());
 		ui->textBrowser_2->append("current frequency index: ");
 		ui->textBrowser_2->append(QString::fromStdString(std::to_string(balloonPlot->GetSelectedFrequency())));

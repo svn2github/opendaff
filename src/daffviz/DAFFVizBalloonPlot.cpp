@@ -46,7 +46,7 @@ namespace DAFFViz
 	m_pContent(pContent), 
 	m_iFrequency(0),
 	m_iNumFrequencies(0), 
-	m_iScaling(SCALING_LINEAR),
+	m_iScaling( SCALING_DECIBEL ),
 	m_dMin(0.0), m_dMax(1.0),
 	m_iChannel(0),
 	m_bWarp(true), m_pNormals(0),
@@ -62,7 +62,7 @@ namespace DAFFViz
 	m_pContent(pContent), 
 	m_iFrequency(0),
 	m_iNumFrequencies(0), 
-	m_iScaling(SCALING_LINEAR),
+	m_iScaling( SCALING_DECIBEL ),
 	m_dMin(0.0), m_dMax(1.0),
 	m_iChannel(0),
 	m_bWarp(true), m_pNormals(0),
@@ -424,7 +424,7 @@ namespace DAFFViz
 			}
 			if( m_iScaling == SCALING_DECIBEL )
 			{
-				fMag = factor2decibel(fMag);
+				fMag = FactorToDecibel(fMag);
 				s << "Real: " << fReal << ", Imag: " << fImag << "\n Mag: " << fMag << "db, Phase:" << fPhase;
 			} else
 				s << "Real: " << fReal << ", Imag: " << fImag << "\n Mag: " << fMag << ", Phase:" << fPhase;
@@ -435,7 +435,7 @@ namespace DAFFViz
 			pContentMS->getMagnitude(i, m_iChannel, m_iFrequency, fMag);
 			if( m_iScaling == SCALING_DECIBEL )
 			{
-				fMag = factor2decibel(fMag);
+				fMag = FactorToDecibel(fMag);
 				s << fMag << "db";
 			} else
 				s << fMag;
@@ -447,7 +447,7 @@ namespace DAFFViz
 			pContentMPS->getPhase( i, m_iChannel, m_iFrequency, fPhase );
 			if( m_iScaling == SCALING_DECIBEL )
 			{
-				fMag = factor2decibel(fMag);
+				fMag = FactorToDecibel(fMag);
 				s << "Mag: " << fMag << "db, Phase: " << fPhase;
 			} else
 				s << "Mag: " << fMag << ", Phase: " << fPhase;
@@ -490,16 +490,19 @@ namespace DAFFViz
 		return m_iScaling;
 	}
 
-	void BalloonPlot::SetRange(double dMin, double dMax) {
+	void BalloonPlot::SetRange(double dMin, double dMax)
+	{
 		assert( m_pContent != NULL);
 		assert( dMin < dMax );
 		if (m_iScaling == SCALING_LINEAR) {
 			// Convert from linear to decibel
 			m_dMin = dMin;
 			m_dMax = dMax;
-		} else { 
-			m_dMin = decibel2factor(dMin);
-			m_dMax = decibel2factor(dMax);
+		}
+		else
+		{ 
+			m_dMin = DecibelToFactor(dMin);
+			m_dMax = DecibelToFactor(dMax);
 		}
 		SetScalars();
 	}
@@ -508,14 +511,14 @@ namespace DAFFViz
 		if (m_iScaling == SCALING_LINEAR) {
 			return m_dMin;
 		} else 
-			return factor2decibel(m_dMin);
+			return FactorToDecibel(m_dMin);
 	}
 
 	double BalloonPlot::GetRangeMax() const {
 		if (m_iScaling == SCALING_LINEAR) {
 			return m_dMax;
 		} else 
-			return factor2decibel(m_dMax);
+			return FactorToDecibel(m_dMax);
 	}
 
 	void BalloonPlot::EnableWarp() {
@@ -560,7 +563,10 @@ namespace DAFFViz
 		pMagArray->SetName("magnitudes");
 		vtkSmartPointer< vtkFloatArray > pPhArray = vtkSmartPointer< vtkFloatArray >::New();
 		pPhArray->SetName("phases");
-		float fMag = 0.0f, fPhase = 0.0f;
+
+		float fMag = 0.0f;
+		float fPhase = 0.0f;
+		
 		for( int i = 0; i < m_pContent->getProperties()->getNumberOfRecords(); i++ )
 		{
 			// Get the magnitude value
@@ -593,13 +599,15 @@ namespace DAFFViz
 			}
 
 			// Check weather decibel scaling is activated
-			if (m_iScaling == SCALING_DECIBEL || false) {
-				fMag = (float) factor2decibel((double) fMag);
+			if( m_iScaling == SCALING_DECIBEL )
+			{
+				float fAbsoluteMax = pContentDFT->getOverallMagnitudeMaximum();
+				fMag = FactorToDecibel( fMag / fAbsoluteMax );
 		
 				// Decibel boundaries
 				//float DECIBEL_DELTA = 30; // FIXME: should not be hard coded -> GUI
-				float DECIBEL_LOWER = factor2decibel(m_dMin);
-				float DECIBEL_UPPER = factor2decibel(m_dMax);
+				float DECIBEL_LOWER = FactorToDecibel(m_dMin);
+				float DECIBEL_UPPER = FactorToDecibel(m_dMax);
 
 				// Limit the lower boundary
 				fMag = std::max(fMag, DECIBEL_LOWER);
@@ -635,15 +643,18 @@ namespace DAFFViz
 		z = -sin( ( theta + 90 )*PI_F / 180.0 ) * cos( phi*PI_F / 180.0 );
 	}
 
-	double BalloonPlot::factor2decibel( double x ) const
+	float BalloonPlot::FactorToDecibel( float x ) const
 	{
 		assert( x >= 0 );
+
 		// Lower boundary is -100 dB
-		if (x <= 0.0000000001) return -100;
-		return 10*log(x)/log((double) 10);
+		if( x <= 0.0000000001 ) 
+			return -100.0f;
+
+		return 10.0f * log( x ) / log( 10.0f );
 	}
 
-	double BalloonPlot::decibel2factor( double x ) const
+	float BalloonPlot::DecibelToFactor( float x ) const
 	{
 		return pow(10.0, .1*x);
 	}
