@@ -8,40 +8,46 @@
 
 #include <DAFF.h>
 
-MainWindowDAFFViewer::MainWindowDAFFViewer(QWidget *parent, QString sPath ) :
-    QMainWindow(parent),
-    ui(new Ui::DAFFViewer)
+MainWindowDAFFViewer::MainWindowDAFFViewer( QWidget *parent, QString sPath )
+  : QMainWindow( parent )
+  , ui( new Ui::DAFFViewer )
+  , m_pDAFFReader( DAFFReader::create() )
 {
     ui->setupUi(this);
+    showMaximized();
 
-    DAFFReader* m_pDAFFReader = DAFFReader::create();
+    QSizePolicy qsp3DDAFFWidget(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    qsp3DDAFFWidget.setVerticalStretch(66);
 
-    QFileInfo oPassedFile( sPath );
-    int iError = DAFF_NO_ERROR;
-    if( ( iError =  m_pDAFFReader->openFile( oPassedFile.absoluteFilePath().toStdString() ) != DAFF_NO_ERROR ) )
-    {
-        QErrorMessage qe;
-        QString sErrors = "DAFF error while opening passed file '" + oPassedFile.fileName() + "': " + QString( DAFFUtils::StrError( iError ).c_str() );
-        qe.showMessage( sErrors );
-    }
-    else
-    {
-        // SIGNAL EVENT FILE OPENED
-    }
+    QSizePolicy qsp2DDAFFWidget(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    qsp2DDAFFWidget.setVerticalStretch(33);
+
+    ui->mdiArea->setSizePolicy( qsp3DDAFFWidget );
+    ui->mdiArea_2->setSizePolicy( qsp2DDAFFWidget );
+
+    //connect( this, SIGNAL( readDAFF(DAFFReader*)),ui->groupBox,SLOT(on_readDAFF(DAFFReader*)) );
+    //connect(ui->horizontalSlider, SIGNAL(valueChanged(int)),ui->spinBox,SLOT(setValue(int)) );
+
 }
 
 MainWindowDAFFViewer::~MainWindowDAFFViewer()
 {
+    m_qSettings.setValue( "geometry", saveGeometry() );
+    m_qSettings.setValue( "windowState", saveState() );
+
     delete ui;
+
+    if( m_pDAFFReader->isFileOpened() )
+        m_pDAFFReader->closeFile();
+
+    delete m_pDAFFReader;
 }
 
 void MainWindowDAFFViewer::on_actionOpen_triggered()
 {
-
-    QSettings settings;
-
     QString sAppDir = QApplication::applicationDirPath().left(1);
-    QString sOpenDialogLastDirectory = settings.value( "OpenDialogLastDirectory", sAppDir ).toString();
+    QString sOpenDialogLastDirectory = m_qSettings.value( "OpenDialogLastDirectory", sAppDir ).toString();
+    QStringList lHistory = m_qSettings.value( "OpenFileHistory" ).toStringList();
 
     QDir oOpenDialogLastDirectory( sOpenDialogLastDirectory );
     if( oOpenDialogLastDirectory.exists() == false )
@@ -51,17 +57,35 @@ void MainWindowDAFFViewer::on_actionOpen_triggered()
     fd.setNameFilter( "DAFF files (*.daff)" );
     fd.setViewMode( QFileDialog::Detail );
     fd.setFileMode( QFileDialog::ExistingFile );
+    fd.setHistory( lHistory );
     fd.setDirectory( oOpenDialogLastDirectory.absolutePath() );
     if( fd.exec() )
     {
         QStringList lDAFFFiles = fd.selectedFiles();
-
-        if( lDAFFFiles.empty() == false)
-            std::cout << lDAFFFiles[0].toStdString() << std::endl;
+        if( lDAFFFiles.empty() == false )
+            OpenDAFFFile( lDAFFFiles[0] );
     }
 }
 
 void MainWindowDAFFViewer::on_actionQuit_triggered()
 {
     close();
+}
+
+void MainWindowDAFFViewer::OpenDAFFFile( QString sPath, bool bQuiet )
+{
+    if( m_pDAFFReader->isFileOpened() )
+        m_pDAFFReader->closeFile();
+
+    QFileInfo oPassedFile( sPath );
+    int iError = DAFF_NO_ERROR;
+    if( !bQuiet && ( iError =  m_pDAFFReader->openFile( oPassedFile.absoluteFilePath().toStdString() ) != DAFF_NO_ERROR ) )
+    {
+        QErrorMessage qe;
+        QString sErrors = "DAFF error while opening passed file '" + oPassedFile.fileName() + "': " + QString( DAFFUtils::StrError( iError ).c_str() );
+        qe.showMessage( sErrors );
+        return;
+    }
+
+    emit readDAFF( m_pDAFFReader );
 }

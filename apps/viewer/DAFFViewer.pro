@@ -16,7 +16,8 @@ SOURCES += src/main.cpp \
     src/mainwindowdaffviewer.cpp
 
 HEADERS  += \
-    src/mainwindowdaffviewer.h
+    src/mainwindowdaffviewer.h \
+    src/daffreadergroupbox.h
 
 FORMS    += \
     ui/mainwindowdaffviewer.ui
