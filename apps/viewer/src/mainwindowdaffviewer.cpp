@@ -16,18 +16,7 @@ MainWindowDAFFViewer::MainWindowDAFFViewer( QWidget *parent, QString sPath )
     ui->setupUi(this);
     showMaximized();
 
-    QSizePolicy qsp3DDAFFWidget(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    qsp3DDAFFWidget.setVerticalStretch(66);
-
-    QSizePolicy qsp2DDAFFWidget(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    qsp2DDAFFWidget.setVerticalStretch(33);
-
-    ui->mdiArea->setSizePolicy( qsp3DDAFFWidget );
-    ui->mdiArea_2->setSizePolicy( qsp2DDAFFWidget );
-
-    //connect( this, SIGNAL( readDAFF(DAFFReader*)),ui->groupBox,SLOT(on_readDAFF(DAFFReader*)) );
-    //connect(ui->horizontalSlider, SIGNAL(valueChanged(int)),ui->spinBox,SLOT(setValue(int)) );
-
+    connect( this, SIGNAL( readDAFF(const DAFFReader*)),ui->groupBox,SLOT(on_readDAFF(const DAFFReader*)) );
 }
 
 MainWindowDAFFViewer::~MainWindowDAFFViewer()

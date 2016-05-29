@@ -38,16 +38,22 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,0,6">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QVBoxLayout" name="DAFFFileInfo">
         <item>
          <widget class="DAFFReaderGroupBox" name="groupBox">
+          <property name="minimumSize">
+           <size>
+            <width>400</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
-            <width>310</width>
+            <width>16777215</width>
             <height>16777215</height>
            </size>
           </property>
@@ -77,7 +83,7 @@
             <number>20</number>
            </property>
            <item row="1" column="0">
-            <widget class="QLabel" name="label">
+            <widget class="QLabel" name="labelFileName">
              <property name="styleSheet">
               <string notr="true"/>
              </property>
@@ -87,35 +93,35 @@
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QLineEdit" name="lineEdit">
+            <widget class="QLineEdit" name="lineEditFileName">
              <property name="enabled">
               <bool>false</bool>
              </property>
             </widget>
            </item>
            <item row="2" column="0">
-            <widget class="QLabel" name="label_2">
+            <widget class="QLabel" name="labelVersion">
              <property name="text">
               <string>Version</string>
              </property>
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="QLineEdit" name="lineEdit_2">
+            <widget class="QLineEdit" name="lineEditVersion">
              <property name="enabled">
               <bool>false</bool>
              </property>
             </widget>
            </item>
            <item row="3" column="0">
-            <widget class="QLabel" name="label_3">
+            <widget class="QLabel" name="labelContentType">
              <property name="text">
               <string>Content type</string>
              </property>
             </widget>
            </item>
            <item row="3" column="1">
-            <widget class="QLineEdit" name="lineEdit_3">
+            <widget class="QLineEdit" name="lineEditContentType">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -132,10 +138,35 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton">
-          <property name="text">
-           <string>Metadata</string>
+         <widget class="QScrollArea" name="scrollArea">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
           </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>386</width>
+             <height>1018</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="DAFFMetadataTableView" name="tableView">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>1000</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
         <item>
@@ -177,7 +208,7 @@
        </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <layout class="QVBoxLayout" name="DAFFVisualization" stretch="0,2,0,1">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
@@ -197,10 +228,37 @@
          </layout>
         </item>
         <item>
-         <widget class="QMdiArea" name="mdiArea"/>
+         <widget class="QDAFFVTKFrame" name="frame">
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
         </item>
         <item>
-         <widget class="QMdiArea" name="mdiArea_2"/>
+         <widget class="Line" name="line_3">
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="lineWidth">
+           <number>3</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="frame_2">
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -232,12 +290,15 @@
     <string>Open</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+O</string>
+    <string>O</string>
    </property>
   </action>
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Esc</string>
    </property>
   </action>
  </widget>
@@ -247,6 +308,17 @@
    <class>DAFFReaderGroupBox</class>
    <extends>QGroupBox</extends>
    <header>daffreadergroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DAFFMetadataTableView</class>
+   <extends>QTableView</extends>
+   <header>daffmetadatatableview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QDAFFVTKFrame</class>
+   <extends>QFrame</extends>
+   <header>qdaffvtkframe.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

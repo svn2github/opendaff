@@ -16,14 +16,11 @@ include_directories( "${SNDFILE_INCLUDE_DIR}" )
 
 set( OPENDAFF_DAFFVIEWER_SOURCES
 	"res/Resources.h"
-	#"src/AboutDialog.cpp"
-	#"src/AboutDialog.h"
-	#"src/Globals.h"
-	#"src/InfoDialog.h"
-	#"src/AboutDialog.cpp"
-	#"src/AboutDialog.h"
-	src/main.cpp
-	src/mainwindowdaffviewer.cpp
+	"src/main.cpp"
+	"src/mainwindowdaffviewer.cpp"
+	"src/daffmetadatatableview.h"
+	"src/daffreadergroupbox.h"
+	"src/QDAFFVTKFrame.h"
 	)
 
 # Add ui include for VS2012
