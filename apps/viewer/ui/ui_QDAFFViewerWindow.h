@@ -1,13 +1,13 @@
 /********************************************************************************
-** Form generated from reading UI file 'mainwindowdaffviewer.ui'
+** Form generated from reading UI file 'QDAFFViewerWindow.ui'
 **
 ** Created by: Qt User Interface Compiler version 5.6.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef UI_MAINWINDOWDAFFVIEWER_H
-#define UI_MAINWINDOWDAFFVIEWER_H
+#ifndef UI_QDAFFVIEWERWINDOW_H
+#define UI_QDAFFVIEWERWINDOW_H
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
@@ -21,7 +21,6 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMdiArea>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
@@ -30,9 +29,9 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include "daffmetadatatableview.h"
-#include "daffreadergroupbox.h"
-#include "qdaffvtkwidget.h"
+#include "QDAFFMetadataTable.h"
+#include "QDAFFHeaderGroupBox.h"
+#include "QDAFFVTKWidget.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -71,7 +70,7 @@ public:
     QFrame *line_3;
     QFrame *frame_2;
     QGridLayout *gridLayout;
-    QMdiArea *mdiArea;
+    QWidget *widget_2;
     QMenuBar *DAFFMenuBar;
     QMenu *menuFile;
     QStatusBar *statusBar;
@@ -235,7 +234,7 @@ public:
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
         widget = new QDAFFVTKWidget(frame);
         widget->setObjectName(QStringLiteral("widget"));
-        widget->setMinimumSize(QSize(400, 0));
+        widget->setMinimumSize(QSize(400, 300));
         widget->setStyleSheet(QStringLiteral("background-color: rgb(255, 170, 0);"));
 
         gridLayout_2->addWidget(widget, 0, 0, 1, 1);
@@ -260,10 +259,11 @@ public:
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        mdiArea = new QMdiArea(frame_2);
-        mdiArea->setObjectName(QStringLiteral("mdiArea"));
+        widget_2 = new QWidget(frame_2);
+        widget_2->setObjectName(QStringLiteral("widget_2"));
+        widget_2->setMinimumSize(QSize(0, 300));
 
-        gridLayout->addWidget(mdiArea, 0, 0, 1, 1);
+        gridLayout->addWidget(widget_2, 0, 0, 1, 1);
 
 
         DAFFVisualization->addWidget(frame_2);

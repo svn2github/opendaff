@@ -1,15 +1,15 @@
-#include "mainwindowdaffviewer.h"
-#include "ui_mainwindowdaffviewer.h"
+#include "QDAFFViewerWindow.h"
+#include <ui_QDAFFViewerWindow.h>
 #include "QDAFFVTKWidget.h"
 
-#include <qfiledialog.h>
+#include <QFileDialog>
 #include <qsettings.h>
 #include <iostream>
 #include <qerrormessage.h>
 
 #include <DAFF.h>
 
-MainWindowDAFFViewer::MainWindowDAFFViewer( QWidget *parent, QString sPath )
+QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
   : QMainWindow( parent )
   , ui( new Ui::DAFFViewer )
   , m_pDAFFReader( DAFFReader::create() )
@@ -20,7 +20,7 @@ MainWindowDAFFViewer::MainWindowDAFFViewer( QWidget *parent, QString sPath )
     connect( this, SIGNAL( readDAFF(const DAFFReader*)),ui->groupBox,SLOT(on_readDAFF(const DAFFReader*)) );
 }
 
-MainWindowDAFFViewer::~MainWindowDAFFViewer()
+QDAFFViewerWindow::~QDAFFViewerWindow()
 {
     m_qSettings.setValue( "geometry", saveGeometry() );
     m_qSettings.setValue( "windowState", saveState() );
@@ -33,7 +33,7 @@ MainWindowDAFFViewer::~MainWindowDAFFViewer()
     delete m_pDAFFReader;
 }
 
-void MainWindowDAFFViewer::on_actionOpen_triggered()
+void QDAFFViewerWindow::on_actionOpen_triggered()
 {
     QString sAppDir = QApplication::applicationDirPath().left(1);
     QString sOpenDialogLastDirectory = m_qSettings.value( "OpenDialogLastDirectory", sAppDir ).toString();
@@ -57,12 +57,12 @@ void MainWindowDAFFViewer::on_actionOpen_triggered()
     }
 }
 
-void MainWindowDAFFViewer::on_actionQuit_triggered()
+void QDAFFViewerWindow::on_actionQuit_triggered()
 {
     close();
 }
 
-void MainWindowDAFFViewer::OpenDAFFFile( QString sPath, bool bQuiet )
+void QDAFFViewerWindow::OpenDAFFFile( QString sPath, bool bQuiet )
 {
     if( m_pDAFFReader->isFileOpened() )
         m_pDAFFReader->closeFile();

@@ -1,8 +1,8 @@
-#ifndef MAINWINDOWTEST2_H
-#define MAINWINDOWTEST2_H
+#ifndef QDAFFVIEWERWINDOW_H
+#define QDAFFVIEWERWINDOW_H
 
 #include <QMainWindow>
-#include <qsettings.h>
+#include <QSettings>
 
 class DAFFReader;
 
@@ -10,13 +10,13 @@ namespace Ui {
 class DAFFViewer;
 }
 
-class MainWindowDAFFViewer : public QMainWindow
+class QDAFFViewerWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindowDAFFViewer(QWidget *parent = 0, QString sPath = "" );
-    ~MainWindowDAFFViewer();
+    explicit QDAFFViewerWindow(QWidget *parent = 0, QString sPath = "" );
+    ~QDAFFViewerWindow();
 
     void OpenDAFFFile( QString sPath, bool bQuiet = false );
 
@@ -36,4 +36,4 @@ private:
     DAFFReader* m_pDAFFReader;
 };
 
-#endif // MAINWINDOWTEST2_H
+#endif // QDAFFVIEWERWINDOW_H

@@ -1,4 +1,4 @@
-#include "mainwindowdaffviewer.h"
+#include "QDAFFViewerWindow.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     if( argc == 2 )
         sPath = argv[1];
 
-    MainWindowDAFFViewer w( NULL, sPath );
+    QDAFFViewerWindow w( NULL, sPath );
     w.show();
 
     return a.exec();

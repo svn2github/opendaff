@@ -15,17 +15,18 @@ include_directories( "${FFTW_INCLUDE_DIR}" )
 include_directories( "${SNDFILE_INCLUDE_DIR}" )
 
 set( OPENDAFF_DAFFVIEWER_SOURCES
-	"res/Resources.h"
-	"src/main.cpp"
-	"src/mainwindowdaffviewer.cpp"
-	"src/daffmetadatatableview.h"
-	"src/daffreadergroupbox.h"
-	"src/QDAFFVTKFrame.h"
+	"res/DAFFViewerRes.h"
+	"src/DAFFViewer.cpp"
+	"src/QDAFFViewerWindow.cpp"
+	"src/QDAFFViewerWindow.h"
+	"src/QDAFFHeaderGroupBox.h"
+	"src/QDAFFMetadataTable.h"
+	"src/QDAFFVTKWidget.h"
 	)
 
 # Add ui include for VS2012
 if( MSVC )
-	list( APPEND OPENDAFF_DAFFVIEWER_SOURCES "ui/ui_mainwindowdaffviewer.h" )
+	list( APPEND OPENDAFF_DAFFVIEWER_SOURCES "ui/ui_QDAFFViewerWindow.h" )
 	include_directories( "ui" )
 endif( MSVC )
 
