@@ -150,7 +150,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>386</width>
+             <width>383</width>
              <height>1018</height>
             </rect>
            </property>
@@ -208,9 +208,9 @@
        </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="DAFFVisualization" stretch="0,2,0,1">
+       <layout class="QVBoxLayout" name="DAFFVisualization" stretch="0,1,0,1">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <layout class="QHBoxLayout" name="horizontalLayout_ChannelSwitcher">
           <item>
            <widget class="QPushButton" name="pushButton_3">
             <property name="text">
@@ -228,13 +228,28 @@
          </layout>
         </item>
         <item>
-         <widget class="QDAFFVTKFrame" name="frame">
+         <widget class="QFrame" name="frame">
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
+          <layout class="QGridLayout" name="gridLayout_2" columnstretch="1">
+           <item row="0" column="0">
+            <widget class="QDAFFVTKWidget" name="widget" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>400</width>
+               <height>225</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(255, 170, 0);</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
         <item>
@@ -258,6 +273,18 @@
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QMdiArea" name="mdiArea">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>225</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>
@@ -316,9 +343,9 @@
    <header>daffmetadatatableview.h</header>
   </customwidget>
   <customwidget>
-   <class>QDAFFVTKFrame</class>
-   <extends>QFrame</extends>
-   <header>qdaffvtkframe.h</header>
+   <class>QDAFFVTKWidget</class>
+   <extends>QWidget</extends>
+   <header>qdaffvtkwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

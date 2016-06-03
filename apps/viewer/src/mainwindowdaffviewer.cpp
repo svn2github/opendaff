@@ -1,5 +1,6 @@
 #include "mainwindowdaffviewer.h"
 #include "ui_mainwindowdaffviewer.h"
+#include "QDAFFVTKWidget.h"
 
 #include <qfiledialog.h>
 #include <qsettings.h>

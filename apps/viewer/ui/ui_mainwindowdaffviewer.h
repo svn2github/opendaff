@@ -15,11 +15,13 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QFrame>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMdiArea>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
@@ -30,7 +32,7 @@
 #include <QtWidgets/QWidget>
 #include "daffmetadatatableview.h"
 #include "daffreadergroupbox.h"
-#include "qdaffvtkframe.h"
+#include "qdaffvtkwidget.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -60,12 +62,16 @@ public:
     QSpacerItem *verticalSpacer;
     QFrame *line_2;
     QVBoxLayout *DAFFVisualization;
-    QHBoxLayout *horizontalLayout_3;
+    QHBoxLayout *horizontalLayout_ChannelSwitcher;
     QPushButton *pushButton_3;
     QPushButton *pushButton_4;
-    QDAFFVTKFrame *frame;
+    QFrame *frame;
+    QGridLayout *gridLayout_2;
+    QDAFFVTKWidget *widget;
     QFrame *line_3;
     QFrame *frame_2;
+    QGridLayout *gridLayout;
+    QMdiArea *mdiArea;
     QMenuBar *DAFFMenuBar;
     QMenu *menuFile;
     QStatusBar *statusBar;
@@ -164,7 +170,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 386, 1018));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 383, 1018));
         verticalLayout = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
@@ -203,26 +209,38 @@ public:
         DAFFVisualization = new QVBoxLayout();
         DAFFVisualization->setSpacing(6);
         DAFFVisualization->setObjectName(QStringLiteral("DAFFVisualization"));
-        horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setSpacing(6);
-        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        horizontalLayout_ChannelSwitcher = new QHBoxLayout();
+        horizontalLayout_ChannelSwitcher->setSpacing(6);
+        horizontalLayout_ChannelSwitcher->setObjectName(QStringLiteral("horizontalLayout_ChannelSwitcher"));
         pushButton_3 = new QPushButton(DAFFCentralWidget);
         pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
 
-        horizontalLayout_3->addWidget(pushButton_3);
+        horizontalLayout_ChannelSwitcher->addWidget(pushButton_3);
 
         pushButton_4 = new QPushButton(DAFFCentralWidget);
         pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
 
-        horizontalLayout_3->addWidget(pushButton_4);
+        horizontalLayout_ChannelSwitcher->addWidget(pushButton_4);
 
 
-        DAFFVisualization->addLayout(horizontalLayout_3);
+        DAFFVisualization->addLayout(horizontalLayout_ChannelSwitcher);
 
-        frame = new QDAFFVTKFrame(DAFFCentralWidget);
+        frame = new QFrame(DAFFCentralWidget);
         frame->setObjectName(QStringLiteral("frame"));
         frame->setFrameShape(QFrame::StyledPanel);
         frame->setFrameShadow(QFrame::Raised);
+        gridLayout_2 = new QGridLayout(frame);
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setContentsMargins(11, 11, 11, 11);
+        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        widget = new QDAFFVTKWidget(frame);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setMinimumSize(QSize(400, 0));
+        widget->setStyleSheet(QStringLiteral("background-color: rgb(255, 170, 0);"));
+
+        gridLayout_2->addWidget(widget, 0, 0, 1, 1);
+
+        gridLayout_2->setColumnStretch(0, 1);
 
         DAFFVisualization->addWidget(frame);
 
@@ -238,10 +256,19 @@ public:
         frame_2->setObjectName(QStringLiteral("frame_2"));
         frame_2->setFrameShape(QFrame::StyledPanel);
         frame_2->setFrameShadow(QFrame::Raised);
+        gridLayout = new QGridLayout(frame_2);
+        gridLayout->setSpacing(6);
+        gridLayout->setContentsMargins(11, 11, 11, 11);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        mdiArea = new QMdiArea(frame_2);
+        mdiArea->setObjectName(QStringLiteral("mdiArea"));
+
+        gridLayout->addWidget(mdiArea, 0, 0, 1, 1);
+
 
         DAFFVisualization->addWidget(frame_2);
 
-        DAFFVisualization->setStretch(1, 2);
+        DAFFVisualization->setStretch(1, 1);
         DAFFVisualization->setStretch(3, 1);
 
         horizontalLayout->addLayout(DAFFVisualization);

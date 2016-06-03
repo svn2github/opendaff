@@ -25,6 +25,7 @@ class vtkActor;
 class vtkAssembly;
 class vtkCamera;
 class QtDAFFVizTestWindow;
+class QDAFFVTKWidget;
 
 namespace DAFFViz
 {
@@ -401,7 +402,7 @@ namespace DAFFViz
 	
 		// The display class needs access to the node assembly
 		friend class VTKDAFFVizWindow;
-		friend class QtDAFFWidget;
+		friend class QDAFFVTKWidget;
 		friend class QtDAFFVizTestWindow;
 	};
 

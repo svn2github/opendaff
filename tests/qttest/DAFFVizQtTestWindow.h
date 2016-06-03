@@ -39,14 +39,14 @@ public:
 
 public slots:
 
-private slots:
-
-    void on_actionQuit_triggered();
+private slots :
+void on_actionQuit_triggered();
+/*
 	void on_actionOpen_triggered();
 	void on_lineEditFrequency_returnPressed();
 	void on_lineEditPhi_returnPressed();
 	void on_lineEditTheta_returnPressed();
-
+*/
 private:
     Ui::DAFFVizQtWindow *ui;
 	DAFFReader *reader;
