@@ -24,6 +24,8 @@ HEADERS  += \
 FORMS    += \
     ui/QDAFFViewerWindow.ui
 
+INCLUDEPATH += src
+
 # OpenDAFF
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../win32-x64.vc12/lib/ -lDAFF -lDAFFViz
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../win32-x64.vc12/lib/ -lDAFFD -lDAFFVizD

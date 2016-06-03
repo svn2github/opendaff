@@ -1,10 +1,11 @@
 #ifndef QDAFFVTKWIDGET_H
 #define QDAFFVTKWIDGET_H
 
+#include <QObject>
 #include <QVTKWidget.h>
+
 #include <DAFF.h>
 #include <DAFFViz/DAFFViz.h>
-#include <DAFFViz/DAFFVizSGNode.h>
 
 #include <vtkAssembly.h>
 #include <vtkRenderer.h>
@@ -15,26 +16,18 @@
 
 class QDAFFVTKWidget : public QVTKWidget
 {
+    Q_OBJECT
+
 public:
 	inline QDAFFVTKWidget( QWidget *parent = Q_NULLPTR )
 		: QVTKWidget( parent )
 		, m_pRenderer( NULL )
 		, m_pSGRootNode( NULL )
 		, m_pSCA( NULL )
+		, m_pDAFFContentBalloon( NULL )
     {
-
-        /* Sphere
-        vtkSmartPointer<vtkSphereSource> sphereSource = vtkSmartPointer<vtkSphereSource>::New();
-        sphereSource->Update();
-        vtkSmartPointer<vtkPolyDataMapper> sphereMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-        sphereMapper->SetInputConnection(sphereSource->GetOutputPort());
-        vtkSmartPointer<vtkActor> sphereActor = vtkSmartPointer<vtkActor>::New();
-        sphereActor->SetMapper(sphereMapper);
-*/
-
 		m_pSGRootNode = new DAFFViz::SGNode();
-		m_pSCA = new DAFFViz::SphericalCoordinateAssistant();
-		m_pSGRootNode->AddChildNode( m_pSCA );
+		m_pSCA = new DAFFViz::SphericalCoordinateAssistant( m_pSGRootNode );
 
 		m_pRenderer = vtkSmartPointer< vtkRenderer >::New();
 		m_pRenderer->AddActor( m_pSGRootNode->GetNodeAssembly() );
@@ -44,21 +37,39 @@ public:
 
 	inline ~QDAFFVTKWidget()
 	{
+
+		if( m_pDAFFContentBalloon )
+			delete m_pDAFFContentBalloon;
+		if( m_pSCA )
+			delete m_pSCA;
+
 		m_pRenderer->RemoveActor( m_pSGRootNode->GetNodeAssembly() );
-		m_pSGRootNode->RemoveChildNode( m_pSCA );
 		delete m_pSGRootNode;
-		delete m_pSCA;
 	}
 
 private:
     vtkSmartPointer< vtkRenderer > m_pRenderer;
 	DAFFViz::SGNode* m_pSGRootNode;
 	DAFFViz::SphericalCoordinateAssistant* m_pSCA;
+	DAFFViz::BalloonPlot* m_pDAFFContentBalloon;
+
 public slots:
+
     inline void on_readDAFF( const DAFFReader* pReader )
     {
-        std::cout << pReader->toString() << std::endl;
+        std::cout << "!" << std::endl;
+		// Clear current balloon node
+		if( m_pDAFFContentBalloon )
+		{
+			m_pSGRootNode->RemoveChildNode( m_pDAFFContentBalloon );
+			delete m_pDAFFContentBalloon;
+			m_pDAFFContentBalloon = NULL;
+		}
 
+		if( pReader == nullptr )
+			return;
+
+		m_pDAFFContentBalloon = new DAFFViz::BalloonPlot( m_pSGRootNode, pReader->getContent() );
     }
 };
 

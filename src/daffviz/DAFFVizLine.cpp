@@ -5,6 +5,7 @@
 #include <vtkLineSource.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
+#include <vtkSmartPointer.h>
 
 namespace DAFFViz
 {

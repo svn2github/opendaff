@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>512</height>
+    <height>747</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -18,9 +18,6 @@
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
-  </property>
-  <property name="styleSheet">
-   <string notr="true">background-color: rgb(255, 255, 255);</string>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonIconOnly</enum>
@@ -40,11 +37,11 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,0,6">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,6">
       <item>
        <layout class="QVBoxLayout" name="DAFFFileInfo">
         <item>
-         <widget class="DAFFReaderGroupBox" name="groupBox">
+         <widget class="QDAFFHeaderGroupBox" name="DAFFHeader_GroupBox">
           <property name="minimumSize">
            <size>
             <width>400</width>
@@ -156,7 +153,7 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
             <item>
-             <widget class="DAFFMetadataTableView" name="tableView">
+             <widget class="QDAFFMetadataTableView" name="tableView">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -192,23 +189,7 @@
        </layout>
       </item>
       <item>
-       <widget class="Line" name="line_2">
-        <property name="frameShadow">
-         <enum>QFrame::Plain</enum>
-        </property>
-        <property name="lineWidth">
-         <number>3</number>
-        </property>
-        <property name="midLineWidth">
-         <number>0</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="DAFFVisualization" stretch="0,1,0,1">
+       <layout class="QVBoxLayout" name="DAFFVisualization" stretch="0,1,1">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_ChannelSwitcher">
           <item>
@@ -237,7 +218,7 @@
           </property>
           <layout class="QGridLayout" name="gridLayout_2" columnstretch="1">
            <item row="0" column="0">
-            <widget class="QDAFFVTKWidget" name="widget" native="true">
+            <widget class="QDAFFVTKWidget" name="DAFF3DPlot_VTKWidget" native="true">
              <property name="minimumSize">
               <size>
                <width>400</width>
@@ -245,24 +226,11 @@
               </size>
              </property>
              <property name="styleSheet">
-              <string notr="true">background-color: rgb(255, 170, 0);</string>
+              <string notr="true">background-color: rgb(0, 0, 0);</string>
              </property>
             </widget>
            </item>
           </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="line_3">
-          <property name="frameShadow">
-           <enum>QFrame::Plain</enum>
-          </property>
-          <property name="lineWidth">
-           <number>3</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
          </widget>
         </item>
         <item>
@@ -281,6 +249,9 @@
                <width>0</width>
                <height>300</height>
               </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(255, 255, 255);</string>
              </property>
             </widget>
            </item>
@@ -332,20 +303,20 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>DAFFReaderGroupBox</class>
+   <class>QDAFFHeaderGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>daffreadergroupbox.h</header>
+   <header>QDAFFHeaderGroupBox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>DAFFMetadataTableView</class>
+   <class>QDAFFMetadataTableView</class>
    <extends>QTableView</extends>
-   <header>daffmetadatatableview.h</header>
+   <header>QDAFFMetadataTable.h</header>
   </customwidget>
   <customwidget>
    <class>QDAFFVTKWidget</class>
    <extends>QWidget</extends>
-   <header>qdaffvtkwidget.h</header>
+   <header>QDAFFVTKWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

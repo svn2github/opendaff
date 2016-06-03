@@ -49,10 +49,8 @@ namespace DAFFViz
 	m_iScaling( SCALING_DECIBEL ),
 	m_dMin(0.0), m_dMax(1.0),
 	m_iChannel(0),
-	m_bWarp(true), m_pNormals(0),
-	m_bUsePhaseAsColor(false),
-	m_pProbe(0),
-	m_pProbeLabel(0)
+	m_bWarp(true),
+	m_bUsePhaseAsColor(false)
 	{
 		init();
 	}
@@ -65,10 +63,8 @@ namespace DAFFViz
 	m_iScaling( SCALING_DECIBEL ),
 	m_dMin(0.0), m_dMax(1.0),
 	m_iChannel(0),
-	m_bWarp(true), m_pNormals(0),
-	m_bUsePhaseAsColor(false),
-	m_pProbe(0),
-	m_pProbeLabel(0)
+	m_bWarp(true)
+	, m_bUsePhaseAsColor(false)
 	{
 		init();
 	}
@@ -82,6 +78,7 @@ namespace DAFFViz
 
 	void BalloonPlot::init()
 	{
+
 		const DAFFProperties* pProps = m_pContent->getProperties();
 
 		switch( pProps->getContentType() )
@@ -98,6 +95,7 @@ namespace DAFFViz
 		bool bSouthPole = pProps->getBetaStart() == 0;
 		bool bNorthPole = pProps->getBetaEnd() == 180;
 		bool bAzimuthWrap = (pProps->getAlphaStart() == 0) && (pProps->getAlphaEnd() == 360);
+
 
 
 		// --= Sphere grid =--
@@ -242,46 +240,43 @@ namespace DAFFViz
 		m_pMapper = vtkSmartPointer< vtkPolyDataMapper >::New();
 		m_pMapper->SetScalarModeToUsePointFieldData();
 	
-		if (m_bWarp)
+		if( m_bWarp )
 			EnableWarp();
 		else 
 			DisableWarp();
 	
-		SetUsePhaseAsColor(m_bUsePhaseAsColor);
+		SetUsePhaseAsColor( m_bUsePhaseAsColor );
 
 		m_pPlotActor = vtkSmartPointer< vtkActor >::New();
-		m_pPlotActor->SetMapper(m_pMapper);
+		m_pPlotActor->SetMapper( m_pMapper );
 	
 		m_pPlotActor->GetProperty()->SetInterpolationToGouraud();
 
 		AddActor( m_pPlotActor );
-	
+		
 		// Probe
-		/*m_pProbe = new SGNode(this);
-		Line *line = new Line(m_pProbe,0,0,0,0,-1,0);
-		Label label = new Label(m_pProbe, "test");*/
 
-		points = vtkSmartPointer< vtkPoints >::New();
-		points->SetNumberOfPoints(2);
-		points->InsertPoint(0, 0,0,0);
-		points->InsertPoint(1, 0,-1,0);
+		vtkSmartPointer< vtkPoints > points2 = vtkSmartPointer< vtkPoints >::New();
+		points2->SetNumberOfPoints( 2 );
+		points2->InsertPoint( 0, 0, 0, 0 );
+		points2->InsertPoint( 1, 0, -1, 0 );
 
-		cells = vtkSmartPointer< vtkCellArray >::New();
+		vtkSmartPointer< vtkCellArray >cells2 = vtkSmartPointer< vtkCellArray >::New();
 		vtkSmartPointer< vtkLine > line = vtkSmartPointer< vtkLine >::New();
 		line->GetPointIds()->SetId(0,0);
 		line->GetPointIds()->SetId(1,1);
-		cells->InsertNextCell(line);
+		cells2->InsertNextCell( line );
 	
 		vtkSmartPointer< vtkPolyData > polydata = vtkSmartPointer< vtkPolyData >::New();
-		polydata->SetPoints(points);
-		polydata->SetLines(cells);
+		polydata->SetPoints( points2 );
+		polydata->SetLines( cells2 );
 
 		// Create a mapper and actor
 		vtkSmartPointer< vtkPolyDataMapper > mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
 		mapper->SetInputData( polydata );
 
 		m_pProbe = vtkSmartPointer< vtkActor >::New();
-		m_pProbe->SetMapper(mapper);
+		m_pProbe->SetMapper( mapper );
 		m_pProbe->VisibilityOff();
 
 		AddActor(m_pProbe);
@@ -290,20 +285,20 @@ namespace DAFFViz
 		m_pProbeLabel = vtkSmartPointer< vtkVectorText >::New();
 		std::ostringstream s;
 		s << "test";
-		m_pProbeLabel->SetText(s.str().c_str());
+		m_pProbeLabel->SetText( s.str().c_str() );
 	
-		mapper = vtkPolyDataMapper::New();
-		mapper->AddInputConnection(m_pProbeLabel->GetOutputPort());
+		vtkSmartPointer< vtkPolyDataMapper >mapper2 = vtkSmartPointer< vtkPolyDataMapper >::New();
+		mapper2->AddInputConnection( m_pProbeLabel->GetOutputPort() );
 	
 		m_pLabel = vtkSmartPointer< vtkFollower >::New();
-		m_pLabel->SetMapper(mapper);
+		m_pLabel->SetMapper( mapper2 );
 		m_pLabel->SetScale(0.03);
 		m_pLabel->SetPosition(0.02, -1.01, 0);
 		m_pLabel->SetOrientation(-90,0,-90);
 		m_pLabel->GetProperty()->SetOpacity(0.8);
 		m_pLabel->VisibilityOff();
 
-		AddActor(m_pLabel);
+		AddActor( m_pLabel );
 	
 	}
 
@@ -521,14 +516,16 @@ namespace DAFFViz
 			return FactorToDecibel(m_dMax);
 	}
 
-	void BalloonPlot::EnableWarp() {
-		m_pPlotPolydata->GetPointData()->SetNormals(m_pNormals);
-		m_pMapper->SetInputConnection(m_pWarp->GetOutputPort());
+	void BalloonPlot::EnableWarp()
+	{
+		m_pPlotPolydata->GetPointData()->SetNormals( m_pNormals );
+		m_pMapper->SetInputConnection( m_pWarp->GetOutputPort() );
 		m_bWarp = true;
 	}
 
-	void BalloonPlot::DisableWarp() {
-		m_pPlotPolydata->GetPointData()->SetNormals(0);
+	void BalloonPlot::DisableWarp()
+	{
+		m_pPlotPolydata->GetPointData()->SetNormals( 0 );
 		m_pMapper->SetInputData( m_pPlotPolydata );
 		m_bWarp = false;
 	}
@@ -587,6 +584,32 @@ namespace DAFFViz
 					else
 						fPhase = HALF_PI_F;
 				}
+
+				// Check weather decibel scaling is activated
+				if( m_iScaling == SCALING_DECIBEL )
+				{
+					float fAbsoluteMax = pContentDFT->getOverallMagnitudeMaximum();
+					fMag = FactorToDecibel( fMag / fAbsoluteMax );
+
+					// Decibel boundaries
+					//float DECIBEL_DELTA = 30; // FIXME: should not be hard coded -> GUI
+					float DECIBEL_LOWER = FactorToDecibel( m_dMin );
+					float DECIBEL_UPPER = FactorToDecibel( m_dMax );
+
+					// Limit the lower boundary
+					fMag = std::max( fMag, DECIBEL_LOWER );
+					fMag = std::min( fMag, DECIBEL_UPPER );
+
+					// Normalize the range into the interval [0,1]
+					fMag = 1 / ( DECIBEL_UPPER - DECIBEL_LOWER )*fMag + DECIBEL_LOWER / ( DECIBEL_LOWER - DECIBEL_UPPER );
+				}
+				else {
+					fMag = std::max( fMag, m_dMin );
+					fMag = std::min( fMag, m_dMax );
+					// Normalize the range into the interval [0,1]
+					fMag = ( fMag - m_dMin ) / ( m_dMax - m_dMin );
+				}
+
 			}
 
 			if (pContentMS) {
@@ -596,30 +619,6 @@ namespace DAFFViz
 			if (pContentMPS) {
 				pContentMPS->getMagnitude(i, m_iChannel, m_iFrequency, fMag);
 				pContentMPS->getPhase(i, m_iChannel, m_iFrequency, fPhase);
-			}
-
-			// Check weather decibel scaling is activated
-			if( m_iScaling == SCALING_DECIBEL )
-			{
-				float fAbsoluteMax = pContentDFT->getOverallMagnitudeMaximum();
-				fMag = FactorToDecibel( fMag / fAbsoluteMax );
-		
-				// Decibel boundaries
-				//float DECIBEL_DELTA = 30; // FIXME: should not be hard coded -> GUI
-				float DECIBEL_LOWER = FactorToDecibel(m_dMin);
-				float DECIBEL_UPPER = FactorToDecibel(m_dMax);
-
-				// Limit the lower boundary
-				fMag = std::max(fMag, DECIBEL_LOWER);
-				fMag = std::min(fMag, DECIBEL_UPPER);
-
-				// Normalize the range into the interval [0,1]
-				fMag = 1/(DECIBEL_UPPER-DECIBEL_LOWER)*fMag + DECIBEL_LOWER/(DECIBEL_LOWER-DECIBEL_UPPER);
-			} else {
-				fMag = std::max(fMag, m_dMin);
-				fMag = std::min(fMag, m_dMax);
-				// Normalize the range into the interval [0,1]
-				fMag = (fMag-m_dMin)/(m_dMax-m_dMin);
 			}
 
 			// Store (inverted) value into scalars array

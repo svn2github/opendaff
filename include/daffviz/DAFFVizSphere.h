@@ -28,12 +28,13 @@ namespace DAFFViz
 	 * This class derived from the scene graph node class creates a sphere from VTK.
 	 */
 
-	class DAFF_API Sphere : public DAFFViz::SGNode {
+	class DAFF_API Sphere : public DAFFViz::SGNode
+	{
 	public:
 		Sphere();
 		Sphere(double dRadius, int iPhiResolution, int iThetaResolution);
 		Sphere(DAFFViz::SGNode* pParentNode, double dRadius, int iPhiResolution, int iThetaResolution);
-		~Sphere();
+		virtual ~Sphere();
 
 		// --= object related methods =--
 

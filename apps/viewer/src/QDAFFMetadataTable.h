@@ -1,16 +1,18 @@
-#ifndef DAFFMetadataTableView_H
-#define DAFFMetadataTableView_H
+#ifndef QDAFFMETADATATABLE_H
+#define QDAFFMETADATATABLE_H
 
 #include <QTableView>
+
 #include <DAFF.h>
+
 #include <iostream>
 
-class DAFFMetadataTableView : public QTableView
+class QDAFFMetadataTableView : public QTableView
 {
     Q_OBJECT
 
 public:
-	inline DAFFMetadataTableView( QWidget *parent = Q_NULLPTR )
+	inline QDAFFMetadataTableView( QWidget *parent = Q_NULLPTR )
                 : QTableView( parent )
     {
     }
@@ -18,8 +20,8 @@ public:
 public slots:
     inline void on_readDAFF( const DAFFReader* pReader )
     {
-
+        std::cout << "Metadata reder: " << pReader->getFilename() << std::endl;
     }
 };
 
-#endif // DAFFMetadataTableView_H
+#endif // QDAFFMETADATATABLE_H

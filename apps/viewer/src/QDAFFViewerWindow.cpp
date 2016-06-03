@@ -17,7 +17,12 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
     ui->setupUi(this);
     showMaximized();
 
-    connect( this, SIGNAL( readDAFF(const DAFFReader*)),ui->groupBox,SLOT(on_readDAFF(const DAFFReader*)) );
+    connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->DAFFHeader_GroupBox, SLOT( on_readDAFF( const DAFFReader* ) ) );
+    connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->DAFF3DPlot_VTKWidget, SLOT( on_readDAFF( const DAFFReader* ) ) );
+    connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->tableView, SLOT( on_readDAFF( const DAFFReader* ) ) );
+
+	if( sPath.isEmpty() == false )
+		OpenDAFFFile( sPath, true );
 }
 
 QDAFFViewerWindow::~QDAFFViewerWindow()
@@ -69,13 +74,16 @@ void QDAFFViewerWindow::OpenDAFFFile( QString sPath, bool bQuiet )
 
     QFileInfo oPassedFile( sPath );
     int iError = DAFF_NO_ERROR;
-    if( !bQuiet && ( iError =  m_pDAFFReader->openFile( oPassedFile.absoluteFilePath().toStdString() ) != DAFF_NO_ERROR ) )
-    {
-        QErrorMessage qe;
-        QString sErrors = "DAFF error while opening passed file '" + oPassedFile.fileName() + "': " + QString( DAFFUtils::StrError( iError ).c_str() );
-        qe.showMessage( sErrors );
+    if( ( iError = m_pDAFFReader->openFile( oPassedFile.absoluteFilePath().toStdString() ) != DAFF_NO_ERROR ) )
+	{
+		QErrorMessage qe;
+		QString sErrors = "DAFF error while opening passed file '" + oPassedFile.fileName() + "': " + QString( DAFFUtils::StrError( iError ).c_str() );
+		if( !bQuiet )
+			qe.showMessage( sErrors );
         return;
     }
-
-    emit readDAFF( m_pDAFFReader );
+	else
+	{
+		emit readDAFF( m_pDAFFReader );
+	}
 }

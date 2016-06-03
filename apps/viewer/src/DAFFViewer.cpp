@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QString sPath = "C:/dev/ExternalLibs/OpenDAFF/opendaff-v1.7/opendaff_withcred/matlab/ExampleUnityUpperHemisphere.ms.daff";
+    QString sPath = "D://Users//stienen//dev//ExternalLibs//OpenDAFF//opendaff-1.7_withcred//matlab//ExampleFigureOfEightFront.ms.daff";
     if( argc == 2 )
         sPath = argv[1];
 

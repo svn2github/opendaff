@@ -35,10 +35,11 @@ namespace DAFFViz
 	{
 	public:
 		//! Constructor
+		SphericalCoordinateAssistant( SGNode* m_pParent, double dMin = 0, double dMax = 1, double dPrec = .1, double dScaleRes = 36 );
 		SphericalCoordinateAssistant( double dMin = 0, double dMax = 1, double dPrec = .1, double dScaleRes = 36 );
 
 		//! Desctructor
-		~SphericalCoordinateAssistant();
+		virtual ~SphericalCoordinateAssistant();
 
 		// --= object related methods =--
 

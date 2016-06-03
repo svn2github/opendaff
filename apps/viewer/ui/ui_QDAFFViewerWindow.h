@@ -29,8 +29,8 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include "QDAFFMetadataTable.h"
 #include "QDAFFHeaderGroupBox.h"
+#include "QDAFFMetadataTable.h"
 #include "QDAFFVTKWidget.h"
 
 QT_BEGIN_NAMESPACE
@@ -44,7 +44,7 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QHBoxLayout *horizontalLayout;
     QVBoxLayout *DAFFFileInfo;
-    DAFFReaderGroupBox *groupBox;
+    QDAFFHeaderGroupBox *DAFFHeader_GroupBox;
     QFormLayout *formLayout_2;
     QLabel *labelFileName;
     QLineEdit *lineEditFileName;
@@ -56,18 +56,16 @@ public:
     QScrollArea *scrollArea;
     QWidget *scrollAreaWidgetContents;
     QVBoxLayout *verticalLayout;
-    DAFFMetadataTableView *tableView;
+    QDAFFMetadataTableView *tableView;
     QPushButton *pushButton_2;
     QSpacerItem *verticalSpacer;
-    QFrame *line_2;
     QVBoxLayout *DAFFVisualization;
     QHBoxLayout *horizontalLayout_ChannelSwitcher;
     QPushButton *pushButton_3;
     QPushButton *pushButton_4;
     QFrame *frame;
     QGridLayout *gridLayout_2;
-    QDAFFVTKWidget *widget;
-    QFrame *line_3;
+    QDAFFVTKWidget *DAFF3DPlot_VTKWidget;
     QFrame *frame_2;
     QGridLayout *gridLayout;
     QWidget *widget_2;
@@ -79,10 +77,9 @@ public:
     {
         if (DAFFViewer->objectName().isEmpty())
             DAFFViewer->setObjectName(QStringLiteral("DAFFViewer"));
-        DAFFViewer->resize(1024, 512);
+        DAFFViewer->resize(1024, 747);
         DAFFViewer->setAcceptDrops(true);
         DAFFViewer->setAutoFillBackground(false);
-        DAFFViewer->setStyleSheet(QStringLiteral("background-color: rgb(255, 255, 255);"));
         DAFFViewer->setToolButtonStyle(Qt::ToolButtonIconOnly);
         DAFFViewer->setTabShape(QTabWidget::Rounded);
         actionOpen = new QAction(DAFFViewer);
@@ -107,54 +104,54 @@ public:
         DAFFFileInfo = new QVBoxLayout();
         DAFFFileInfo->setSpacing(6);
         DAFFFileInfo->setObjectName(QStringLiteral("DAFFFileInfo"));
-        groupBox = new DAFFReaderGroupBox(DAFFCentralWidget);
-        groupBox->setObjectName(QStringLiteral("groupBox"));
-        groupBox->setMinimumSize(QSize(400, 0));
-        groupBox->setMaximumSize(QSize(16777215, 16777215));
-        groupBox->setStyleSheet(QStringLiteral(""));
-        formLayout_2 = new QFormLayout(groupBox);
+        DAFFHeader_GroupBox = new QDAFFHeaderGroupBox(DAFFCentralWidget);
+        DAFFHeader_GroupBox->setObjectName(QStringLiteral("DAFFHeader_GroupBox"));
+        DAFFHeader_GroupBox->setMinimumSize(QSize(400, 0));
+        DAFFHeader_GroupBox->setMaximumSize(QSize(16777215, 16777215));
+        DAFFHeader_GroupBox->setStyleSheet(QStringLiteral(""));
+        formLayout_2 = new QFormLayout(DAFFHeader_GroupBox);
         formLayout_2->setSpacing(6);
         formLayout_2->setContentsMargins(11, 11, 11, 11);
         formLayout_2->setObjectName(QStringLiteral("formLayout_2"));
         formLayout_2->setHorizontalSpacing(12);
         formLayout_2->setVerticalSpacing(12);
         formLayout_2->setContentsMargins(20, 20, 20, 20);
-        labelFileName = new QLabel(groupBox);
+        labelFileName = new QLabel(DAFFHeader_GroupBox);
         labelFileName->setObjectName(QStringLiteral("labelFileName"));
         labelFileName->setStyleSheet(QStringLiteral(""));
 
         formLayout_2->setWidget(1, QFormLayout::LabelRole, labelFileName);
 
-        lineEditFileName = new QLineEdit(groupBox);
+        lineEditFileName = new QLineEdit(DAFFHeader_GroupBox);
         lineEditFileName->setObjectName(QStringLiteral("lineEditFileName"));
         lineEditFileName->setEnabled(false);
 
         formLayout_2->setWidget(1, QFormLayout::FieldRole, lineEditFileName);
 
-        labelVersion = new QLabel(groupBox);
+        labelVersion = new QLabel(DAFFHeader_GroupBox);
         labelVersion->setObjectName(QStringLiteral("labelVersion"));
 
         formLayout_2->setWidget(2, QFormLayout::LabelRole, labelVersion);
 
-        lineEditVersion = new QLineEdit(groupBox);
+        lineEditVersion = new QLineEdit(DAFFHeader_GroupBox);
         lineEditVersion->setObjectName(QStringLiteral("lineEditVersion"));
         lineEditVersion->setEnabled(false);
 
         formLayout_2->setWidget(2, QFormLayout::FieldRole, lineEditVersion);
 
-        labelContentType = new QLabel(groupBox);
+        labelContentType = new QLabel(DAFFHeader_GroupBox);
         labelContentType->setObjectName(QStringLiteral("labelContentType"));
 
         formLayout_2->setWidget(3, QFormLayout::LabelRole, labelContentType);
 
-        lineEditContentType = new QLineEdit(groupBox);
+        lineEditContentType = new QLineEdit(DAFFHeader_GroupBox);
         lineEditContentType->setObjectName(QStringLiteral("lineEditContentType"));
         lineEditContentType->setEnabled(false);
 
         formLayout_2->setWidget(3, QFormLayout::FieldRole, lineEditContentType);
 
 
-        DAFFFileInfo->addWidget(groupBox);
+        DAFFFileInfo->addWidget(DAFFHeader_GroupBox);
 
         line = new QFrame(DAFFCentralWidget);
         line->setObjectName(QStringLiteral("line"));
@@ -174,7 +171,7 @@ public:
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        tableView = new DAFFMetadataTableView(scrollAreaWidgetContents);
+        tableView = new QDAFFMetadataTableView(scrollAreaWidgetContents);
         tableView->setObjectName(QStringLiteral("tableView"));
         tableView->setMinimumSize(QSize(0, 1000));
 
@@ -195,15 +192,6 @@ public:
 
 
         horizontalLayout->addLayout(DAFFFileInfo);
-
-        line_2 = new QFrame(DAFFCentralWidget);
-        line_2->setObjectName(QStringLiteral("line_2"));
-        line_2->setFrameShadow(QFrame::Plain);
-        line_2->setLineWidth(3);
-        line_2->setMidLineWidth(0);
-        line_2->setFrameShape(QFrame::VLine);
-
-        horizontalLayout->addWidget(line_2);
 
         DAFFVisualization = new QVBoxLayout();
         DAFFVisualization->setSpacing(6);
@@ -232,24 +220,16 @@ public:
         gridLayout_2->setSpacing(6);
         gridLayout_2->setContentsMargins(11, 11, 11, 11);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        widget = new QDAFFVTKWidget(frame);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setMinimumSize(QSize(400, 300));
-        widget->setStyleSheet(QStringLiteral("background-color: rgb(255, 170, 0);"));
+        DAFF3DPlot_VTKWidget = new QDAFFVTKWidget(frame);
+        DAFF3DPlot_VTKWidget->setObjectName(QStringLiteral("DAFF3DPlot_VTKWidget"));
+        DAFF3DPlot_VTKWidget->setMinimumSize(QSize(400, 300));
+        DAFF3DPlot_VTKWidget->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
 
-        gridLayout_2->addWidget(widget, 0, 0, 1, 1);
+        gridLayout_2->addWidget(DAFF3DPlot_VTKWidget, 0, 0, 1, 1);
 
         gridLayout_2->setColumnStretch(0, 1);
 
         DAFFVisualization->addWidget(frame);
-
-        line_3 = new QFrame(DAFFCentralWidget);
-        line_3->setObjectName(QStringLiteral("line_3"));
-        line_3->setFrameShadow(QFrame::Plain);
-        line_3->setLineWidth(3);
-        line_3->setFrameShape(QFrame::HLine);
-
-        DAFFVisualization->addWidget(line_3);
 
         frame_2 = new QFrame(DAFFCentralWidget);
         frame_2->setObjectName(QStringLiteral("frame_2"));
@@ -262,6 +242,7 @@ public:
         widget_2 = new QWidget(frame_2);
         widget_2->setObjectName(QStringLiteral("widget_2"));
         widget_2->setMinimumSize(QSize(0, 300));
+        widget_2->setStyleSheet(QStringLiteral("background-color: rgb(255, 255, 255);"));
 
         gridLayout->addWidget(widget_2, 0, 0, 1, 1);
 
@@ -269,12 +250,12 @@ public:
         DAFFVisualization->addWidget(frame_2);
 
         DAFFVisualization->setStretch(1, 1);
-        DAFFVisualization->setStretch(3, 1);
+        DAFFVisualization->setStretch(2, 1);
 
         horizontalLayout->addLayout(DAFFVisualization);
 
         horizontalLayout->setStretch(0, 3);
-        horizontalLayout->setStretch(2, 6);
+        horizontalLayout->setStretch(1, 6);
 
         horizontalLayout_2->addLayout(horizontalLayout);
 
@@ -305,7 +286,7 @@ public:
         actionOpen->setShortcut(QApplication::translate("DAFFViewer", "O", 0));
         actionQuit->setText(QApplication::translate("DAFFViewer", "Quit", 0));
         actionQuit->setShortcut(QApplication::translate("DAFFViewer", "Esc", 0));
-        groupBox->setTitle(QApplication::translate("DAFFViewer", "DAFF Reader ", 0));
+        DAFFHeader_GroupBox->setTitle(QApplication::translate("DAFFViewer", "DAFF Reader ", 0));
         labelFileName->setText(QApplication::translate("DAFFViewer", "File name", 0));
         labelVersion->setText(QApplication::translate("DAFFViewer", "Version", 0));
         labelContentType->setText(QApplication::translate("DAFFViewer", "Content type", 0));
@@ -323,4 +304,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // UI_MAINWINDOWDAFFVIEWER_H
+#endif // UI_QDAFFVIEWERWINDOW_H

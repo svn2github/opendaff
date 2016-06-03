@@ -47,7 +47,6 @@ namespace DAFFViz
 
 		// Delete own subtree
 		// Important: delete has side-effects on the vector itself. Therefore we use the while construct.
-		//while (!m_vpChildNodes.empty()) delete m_vpChildNodes.front();
 		while( !m_vpChildNodes.empty() )
 			delete m_vpChildNodes.front();
 

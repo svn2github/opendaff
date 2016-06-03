@@ -1,24 +1,26 @@
-#ifndef DAFFREADERGROUPBOX_H
-#define DAFFREADERGROUPBOX_H
+#ifndef QDAFFHEADERGROUPBOX_H
+#define QDAFFHEADERGROUPBOX_H
 
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QFileInfo>
+
 #include <DAFF.h>
+
 #include <iostream>
 
-class DAFFReaderGroupBox : public QGroupBox
+class QDAFFHeaderGroupBox : public QGroupBox
 {
     Q_OBJECT
 
 public:
-    inline DAFFReaderGroupBox(QWidget *parent = Q_NULLPTR)
+    inline QDAFFHeaderGroupBox(QWidget *parent = Q_NULLPTR)
         : QGroupBox(parent)
     {
 
     }
 
-    inline DAFFReaderGroupBox(const QString &title, QWidget *parent = Q_NULLPTR)
+    inline QDAFFHeaderGroupBox(const QString &title, QWidget *parent = Q_NULLPTR)
         : QGroupBox( title, parent) {}
 
 public slots:
@@ -47,4 +49,4 @@ public slots:
     }
 };
 
-#endif // DAFFREADERGROUPBOX_H
+#endif // QDAFFHEADERGROUPBOX_H

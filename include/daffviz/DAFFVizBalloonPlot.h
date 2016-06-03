@@ -15,6 +15,8 @@
 
 #include <daffviz/DAFFVizSGNode.h>
 
+#include <vtkSmartPointer.h>
+
 // Forward declarations
 class vtkActor;
 class vtkPolyData;
