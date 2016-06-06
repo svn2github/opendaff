@@ -1,4 +1,3 @@
-
 #include <daffviz/DAFFVizSGNode.h>
 
 #include <daffviz/DAFFVizGlobalLock.h>

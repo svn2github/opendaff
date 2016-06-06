@@ -101,7 +101,7 @@ void QtDAFFVizTestWindow::on_actionOpen_triggered()
 		ui->textBrowser_2->append(QString::fromStdString(std::to_string(balloonPlot->GetSelectedFrequency())));
 
 		drawGraph();
-	}	
+	}
 	ui->textFileInfo->clear();
 	ui->textFileInfo->append("opened File ");
 	ui->textFileInfo->append(fileName);

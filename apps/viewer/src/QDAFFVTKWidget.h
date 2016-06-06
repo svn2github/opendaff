@@ -1,3 +1,14 @@
+/*
+ * -------------------------------------------------------------------------------------
+ *
+ *  OpenDAFF - A free, open source software package for directional audio data
+ *  Copyright 2016 Institute of Technical Acoustics, RWTH Aachen University
+ *  OpenDAFF is distributed under the Apache License Version 2.0.
+ *
+ *  ------------------------------------------------------------------------------------
+ *
+ */
+
 #ifndef QDAFFVTKWIDGET_H
 #define QDAFFVTKWIDGET_H
 

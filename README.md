@@ -1,20 +1,31 @@
 
 # OpenDAFF - A free, open source software package for directional audio data
 
-OpenDAFF is distributed under the terms of the GNU Lesser Public License (LGPL) with an exception for static linking permission.
-
-Copyright (c) Institute of Technical Acoustics, RWTH Aachen University, 2009-2016
+OpenDAFF is a free and open source software package for directional audio content like directivities of sound sources (e.g. loudspeakers, musical instruments) and sound receivers (e.g. microphones, head-related transfer functions, HRIRs/HRTFs).
+OpenDAFF enables a simple exchange, representation and efficient storage of such directional representations in form of a single DAFF file (*.DAFF).
+Under the term software package, OpenDAFF unites the DAFF file format conventions, a C++ software library for reading DAFF files, a C++ visualization library using VTK and QtWidgets and extensive Matlab scripts for writing DAFF files.
+The package is complemented by tools like a graphical viewer application (called DAFFViewer) and a command-line utility (called DAFFTool). 
+	
 Visit the OpenDAFF homepage: http://www.opendaff.org
 
 
-## License and warranty notes
+## License
 
-OpenDAFF is free software, distributed under the terms of the GNU Lesser General Public License (LGPL) version 3. You can redistribute it and/or modify it under the terms of the GNU Lesser General Public License (LGPL) version 3, as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-See the GNU General Public License for more details.
+Copyright 2016 Institute of Technical Acoustics, RWTH Aachen University
 
-You should have received a copy of the GNU General Public License
-along with this program. If not, see http://www.gnu.org/licenses.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use the OpenDAFF software package except in compliance with the License.
+You may obtain a copy of the License at
 
+<http://www.apache.org/licenses/LICENSE-2.0>
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+You should also have received a [copy of the License](LICENSE.md) with the OpenDAFF software package.
 
 ## Quick build guide for Linux developers
 
