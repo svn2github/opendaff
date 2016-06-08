@@ -58,7 +58,8 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 	 */
 
 	m_file = fopen( sFilename.c_str(), "rb" );
-	if (!m_file) return DAFF_FILE_NOT_FOUND;
+	if( !m_file )
+		return DAFF_FILE_NOT_FOUND;
 
 	if( fread( &m_fileHeader, 1, sizeof( DAFFFileHeader ), m_file ) != sizeof( DAFFFileHeader ) )
 	{

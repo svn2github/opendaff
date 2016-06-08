@@ -22,8 +22,10 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
     connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->tableView_Metadata, SLOT( on_readDAFF( const DAFFReader* ) ) );
     connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->tableView_Properties, SLOT( on_readDAFF( const DAFFReader* ) ) );
 
+	ui->DAFFStatusBar->showMessage( QString( "No DAFF file loaded." ) );
+
 	if( sPath.isEmpty() == false )
-		OpenDAFFFile( sPath, true );
+		OpenDAFFFile( sPath, false );
 }
 
 QDAFFViewerWindow::~QDAFFViewerWindow()
@@ -41,7 +43,7 @@ QDAFFViewerWindow::~QDAFFViewerWindow()
 
 void QDAFFViewerWindow::on_actionOpen_triggered()
 {
-    QString sAppDir = QApplication::applicationDirPath().left(1);
+	QString sAppDir = QApplication::applicationDirPath().left( 1 );
     QString sOpenDialogLastDirectory = m_qSettings.value( "OpenDialogLastDirectory", sAppDir ).toString();
     QStringList lHistory = m_qSettings.value( "OpenFileHistory" ).toStringList();
 
@@ -75,16 +77,22 @@ void QDAFFViewerWindow::OpenDAFFFile( QString sPath, bool bQuiet )
 
     QFileInfo oPassedFile( sPath );
     int iError = DAFF_NO_ERROR;
-    if( ( iError = m_pDAFFReader->openFile( oPassedFile.absoluteFilePath().toStdString() ) != DAFF_NO_ERROR ) )
+    if( ( iError = m_pDAFFReader->openFile( oPassedFile.absoluteFilePath().toStdString() ) ) != DAFF_NO_ERROR )
 	{
 		QErrorMessage qe;
-		QString sErrors = "DAFF error while opening passed file '" + oPassedFile.fileName() + "': " + QString( DAFFUtils::StrError( iError ).c_str() );
+		QString sError = "Could not open requested file '" + oPassedFile.fileName() + "': " + QString( DAFFUtils::StrError( iError ).c_str() );
+		qe.showMessage( sError );
 		if( !bQuiet )
-			qe.showMessage( sErrors );
+			qe.exec();
+
+		ui->DAFFStatusBar->showMessage( sError );
+
         return;
     }
 	else
 	{
+		QString sMsg = QString( "DAFF file '" + oPassedFile.fileName() + "' sucessfully loaded." );
+		ui->DAFFStatusBar->showMessage( sMsg );
 		emit readDAFF( m_pDAFFReader );
 	}
 }

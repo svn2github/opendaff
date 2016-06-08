@@ -26,7 +26,7 @@ class QDAFFViewerWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit QDAFFViewerWindow(QWidget *parent = 0, QString sPath = "" );
+	explicit QDAFFViewerWindow( QWidget *parent = 0, QString sPath = "" );
     ~QDAFFViewerWindow();
 
     void OpenDAFFFile( QString sPath, bool bQuiet = false );
