@@ -34,24 +34,51 @@
 namespace DAFFViz
 {
 	CarpetPlot::CarpetPlot( const DAFFContentIR* pContentIR )
-		: SGNode(), m_pContentIR( pContentIR )
-	, m_fAngle(0.0f)
-	, m_iScaling(SCALING_LINEAR)
-	, m_dMin(-1.0)
-	, m_dMax(1.0)
-	, m_iFixedAngle(0)
-	, m_pPlotPolydata(0)
-	, m_pMapper(0)
-	, m_pWarp(0)
-	, m_pPlotActor(0)
-	, m_iChannel(0)
-	, m_bWarp(true)
-	, m_pProbe(0)
-	, m_pLabel(0)
-	, m_dProbeX(0)
-	, m_dProbeY(0)
+		: SGNode()
+		, m_pContentIR( pContentIR )
+		, m_fAngle( 0.0f )
+		, m_iScaling( SCALING_LINEAR )
+		, m_dMin( -1.0 )
+		, m_dMax( 1.0 )
+		, m_iFixedAngle( 0 )
+		, m_pPlotPolydata( 0 )
+		, m_pMapper( 0 )
+		, m_pWarp( 0 )
+		, m_pPlotActor( 0 )
+		, m_iChannel( 0 )
+		, m_bWarp( true )
+		, m_pProbe( 0 )
+		, m_pLabel( 0 )
+		, m_dProbeX( 0 )
+		, m_dProbeY( 0 )
 	{
+		Init();
+	}
 
+	CarpetPlot::CarpetPlot( SGNode* pParent, const DAFFContentIR* pContentIR )
+		: SGNode( pParent )
+		, m_pContentIR( pContentIR )
+		, m_fAngle( 0.0f )
+		, m_iScaling( SCALING_LINEAR )
+		, m_dMin( -1.0 )
+		, m_dMax( 1.0 )
+		, m_iFixedAngle( 0 )
+		, m_pPlotPolydata( 0 )
+		, m_pMapper( 0 )
+		, m_pWarp( 0 )
+		, m_pPlotActor( 0 )
+		, m_iChannel( 0 )
+		, m_bWarp( true )
+		, m_pProbe( 0 )
+		, m_pLabel( 0 )
+		, m_dProbeX( 0 )
+		, m_dProbeY( 0 )
+	{
+		Init();
+	}
+
+	void CarpetPlot::Init()
+	{
 		// --- Carpet plot ---
 
 		m_pPlotPolydata = vtkSmartPointer< vtkPolyData >::New();
@@ -79,7 +106,7 @@ namespace DAFFViz
 		//DisableWarp();
 
 		// Add the geometry and topology to the polydata		
-		init();
+		InitCarpetMesh();
 
 		// create a default lookup table and invert it, so that high values have red color
 		vtkSmartPointer< vtkLookupTable > lut = vtkSmartPointer< vtkLookupTable>::New();
@@ -135,8 +162,7 @@ namespace DAFFViz
 		m_pLabel->GetProperty()->SetOpacity(0.8);
 		m_pLabel->VisibilityOff();
 
-		AddActor( m_pLabel );
-		
+		AddActor( m_pLabel );		
 	}
 
 	CarpetPlot::~CarpetPlot()
@@ -146,7 +172,7 @@ namespace DAFFViz
 		RemoveActor( m_pProbe );
 	}
 
-	void CarpetPlot::init()
+	void CarpetPlot::InitCarpetMesh()
 	{
 		const DAFFProperties* pProps = m_pContentIR->getProperties();
 
@@ -286,7 +312,7 @@ namespace DAFFViz
 	{
 		m_iFixedAngle = iFixedAngle;
 	
-		init();
+		InitCarpetMesh();
 	}
 
 	int CarpetPlot::getFixedAngle() {

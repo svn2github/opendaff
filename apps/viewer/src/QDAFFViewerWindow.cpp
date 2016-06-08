@@ -17,9 +17,10 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
     ui->setupUi(this);
     showMaximized();
 
-    connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->DAFFHeader_GroupBox, SLOT( on_readDAFF( const DAFFReader* ) ) );
+    connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->groupBox_Reader, SLOT( on_readDAFF( const DAFFReader* ) ) );
     connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->DAFF3DPlot_VTKWidget, SLOT( on_readDAFF( const DAFFReader* ) ) );
-    connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->tableView, SLOT( on_readDAFF( const DAFFReader* ) ) );
+    connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->tableView_Metadata, SLOT( on_readDAFF( const DAFFReader* ) ) );
+    connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->tableView_Properties, SLOT( on_readDAFF( const DAFFReader* ) ) );
 
 	if( sPath.isEmpty() == false )
 		OpenDAFFFile( sPath, true );

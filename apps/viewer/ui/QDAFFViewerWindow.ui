@@ -39,9 +39,9 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,6">
       <item>
-       <layout class="QVBoxLayout" name="DAFFFileInfo">
+       <layout class="QVBoxLayout" name="layout_StaticInfo" stretch="0,1,1">
         <item>
-         <widget class="QDAFFHeaderGroupBox" name="DAFFHeader_GroupBox">
+         <widget class="QDAFFHeaderGroupBox" name="groupBox_Reader">
           <property name="minimumSize">
            <size>
             <width>400</width>
@@ -128,79 +128,57 @@
          </widget>
         </item>
         <item>
-         <widget class="Line" name="line">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+         <widget class="QGroupBox" name="groupBox_Metadata">
+          <property name="title">
+           <string>DAFF Metadata</string>
           </property>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QDAFFMetadataTableView" name="tableView_Metadata">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
         <item>
-         <widget class="QScrollArea" name="scrollArea">
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
+         <widget class="QGroupBox" name="groupBox_Properties">
+          <property name="title">
+           <string>DAFF Properties</string>
           </property>
-          <property name="widgetResizable">
-           <bool>true</bool>
-          </property>
-          <widget class="QWidget" name="scrollAreaWidgetContents">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>383</width>
-             <height>1018</height>
-            </rect>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout">
-            <item>
-             <widget class="QDAFFMetadataTableView" name="tableView">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>1000</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QDAFFPropertiesTableView" name="tableView_Properties"/>
+           </item>
+          </layout>
          </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_2">
-          <property name="text">
-           <string>Properties</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="DAFFVisualization" stretch="0,1,1">
+       <layout class="QVBoxLayout" name="layout_Visualization" stretch="0,1,1">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_ChannelSwitcher">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
           <item>
-           <widget class="QPushButton" name="pushButton_3">
+           <widget class="QPushButton" name="pushButton_Channel1">
             <property name="text">
              <string>Channel 1</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_4">
+           <widget class="QPushButton" name="pushButton_Channel2">
             <property name="text">
              <string>Channel 2</string>
             </property>
@@ -209,7 +187,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QFrame" name="frame">
+         <widget class="QFrame" name="frame_3DPlot">
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
           </property>
@@ -234,7 +212,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QFrame" name="frame_2">
+         <widget class="QFrame" name="frame_2DPlot">
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
           </property>
@@ -243,7 +221,7 @@
           </property>
           <layout class="QGridLayout" name="gridLayout">
            <item row="0" column="0">
-            <widget class="QWidget" name="widget_2" native="true">
+            <widget class="QDAFF2DPlot" name="DAFF2DPlot_Frame">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -282,7 +260,7 @@
    </widget>
    <addaction name="menuFile"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QStatusBar" name="DAFFStatusBar"/>
   <action name="actionOpen">
    <property name="text">
     <string>Open</string>
@@ -318,6 +296,17 @@
    <extends>QWidget</extends>
    <header>QDAFFVTKWidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QDAFF2DPlot</class>
+   <extends>QFrame</extends>
+   <header>QDAFF2DPlot.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QDAFFPropertiesTableView</class>
+   <extends>QTableView</extends>
+   <header>QDAFFPropertiesTable.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

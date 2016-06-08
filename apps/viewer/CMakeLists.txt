@@ -21,7 +21,9 @@ set( OPENDAFF_DAFFVIEWER_SOURCES
 	"src/QDAFFViewerWindow.h"
 	"src/QDAFFHeaderGroupBox.h"
 	"src/QDAFFMetadataTable.h"
+	"src/QDAFFPropertiesTable.h"
 	"src/QDAFFVTKWidget.h"
+	"src/QDAFF2DPlot.h"
 	)
 
 # Add ui include for VS2012

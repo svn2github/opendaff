@@ -36,9 +36,13 @@ public:
 		, m_pSGRootNode( NULL )
 		, m_pSCA( NULL )
 		, m_pDAFFContentBalloon( NULL )
+		, m_pCCA( NULL )
+		, m_pDAFFContentCarpet( NULL )
     {
 		m_pSGRootNode = new DAFFViz::SGNode();
 		m_pSCA = new DAFFViz::SphericalCoordinateAssistant( m_pSGRootNode );
+		m_pSGRootNode->SetOrientationYPR( 150, 0, 0 );
+		m_pCCA = new DAFFViz::CartesianCoordinateAssistant(  ); // causes dark VTK widget if added ...
 
 		m_pRenderer = vtkSmartPointer< vtkRenderer >::New();
 		m_pRenderer->AddActor( m_pSGRootNode->GetNodeAssembly() );
@@ -48,11 +52,14 @@ public:
 
 	inline ~QDAFFVTKWidget()
 	{
-
 		if( m_pDAFFContentBalloon )
 			delete m_pDAFFContentBalloon;
 		if( m_pSCA )
 			delete m_pSCA;
+		if( m_pDAFFContentCarpet )
+			delete m_pDAFFContentCarpet;
+		if( m_pCCA )
+			delete m_pCCA;
 
 		m_pRenderer->RemoveActor( m_pSGRootNode->GetNodeAssembly() );
 		delete m_pSGRootNode;
@@ -63,24 +70,54 @@ private:
 	DAFFViz::SGNode* m_pSGRootNode;
 	DAFFViz::SphericalCoordinateAssistant* m_pSCA;
 	DAFFViz::BalloonPlot* m_pDAFFContentBalloon;
+	DAFFViz::CartesianCoordinateAssistant* m_pCCA;
+	DAFFViz::CarpetPlot* m_pDAFFContentCarpet;
 
 public slots:
 
     inline void on_readDAFF( const DAFFReader* pReader )
-    {
-        std::cout << "!" << std::endl;
+	{
 		// Clear current balloon node
 		if( m_pDAFFContentBalloon )
 		{
 			m_pSGRootNode->RemoveChildNode( m_pDAFFContentBalloon );
 			delete m_pDAFFContentBalloon;
 			m_pDAFFContentBalloon = NULL;
+			m_pSCA->SetVisible( false );
+		}
+
+		// Clear current carpet plot
+		if( m_pDAFFContentCarpet )
+		{
+			m_pSGRootNode->RemoveChildNode( m_pDAFFContentCarpet );
+			delete m_pDAFFContentCarpet;
+			m_pDAFFContentCarpet = NULL;
+			m_pCCA->SetVisible( false );
+			m_pSCA->SetVisible( true ); // default
 		}
 
 		if( pReader == nullptr )
 			return;
 
-		m_pDAFFContentBalloon = new DAFFViz::BalloonPlot( m_pSGRootNode, pReader->getContent() );
+		switch( pReader->getContentType() )
+		{
+		case DAFF_IMPULSE_RESPONSE:
+		{
+			DAFFContentIR* pContentIR = static_cast< DAFFContentIR* >( pReader->getContent() );
+			m_pDAFFContentCarpet = new DAFFViz::CarpetPlot( m_pSGRootNode, pContentIR );
+			m_pSCA->SetVisible( false );
+			m_pCCA->SetVisible( true );
+			break;
+		}
+		case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+		case DAFF_MAGNITUDE_SPECTRUM:
+		case DAFF_DFT_SPECTRUM:
+		case DAFF_PHASE_SPECTRUM:
+			m_pDAFFContentBalloon = new DAFFViz::BalloonPlot( m_pSGRootNode, pReader->getContent() );
+			m_pSCA->SetVisible( true );
+			break;
+		}
+
     }
 };
 

@@ -14,6 +14,7 @@
 
 #include <DAFFDefs.h>
 
+//! Properties of a DAFF file that uses regular sphere grids (or parts of a regular grid)
 class DAFF_API DAFFProperties
 {
 public:
@@ -23,22 +24,37 @@ public:
 	// --= Properties =--
 
 	//! Returns the DAFF version of the file format
+	/**
+	  * \return File format version number (i.e. 170)
+	  */
 	virtual int getFileFormatVersion() const=0;
 
 	//! Returns the content type
+	/**
+	  * \return Content type, one of @DAFF_CONTENT_TYPES
+	  */
 	virtual int getContentType() const=0;
 
 	//! Returns the quantization of the data elements
+	/**
+	  * \return Sample quantization, one of @DAFF_QUANTIZATIONS
+	  */
 	virtual int getQuantization() const=0;
 
 	//! Returns the number of channels
+	/**
+	  * \return Number of chanels
+	  */
 	virtual int getNumberOfChannels() const=0;
 
 	//! Returns the overall number of records
+	/**
+	  * \return Total number of data records (multi channel data sets)
+	  */
 	virtual int getNumberOfRecords() const=0;
 
 	//! Returns the label of a channel
-	virtual std::string getChannelLabel(int iChannel) const=0;
+	virtual std::string getChannelLabel( int iChannel ) const = 0;
 
 	// -= Alpha angle =----------------------------------
 
@@ -77,16 +93,16 @@ public:
 	// -= Orientations =----------------------------------
 
 	//! Returns the default orientation as stored in the file
-	virtual void getDefaultOrientation(DAFFOrientationYPR& o) const=0;
+	virtual void getDefaultOrientation( DAFFOrientationYPR& o ) const = 0;
 
 	//! Sets/alters the default orientation manually
 	virtual void setDefaultOrientation()=0;
 
 	//! Returns the current orientation of the object view
-	virtual void getOrientation(DAFFOrientationYPR& o) const=0;
+	virtual void getOrientation( DAFFOrientationYPR& o ) const = 0;
 
 	//! Sets the current orientation of the object view
-	virtual void setOrientation(const DAFFOrientationYPR& o)=0;
+	virtual void setOrientation( const DAFFOrientationYPR& o ) = 0;
 
 	// -= Coverage =--------------------------------------
 

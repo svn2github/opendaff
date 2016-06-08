@@ -42,6 +42,24 @@ public:
 	//! Destructor
 	inline virtual ~DAFFMetadata() {};
 
+	//! Returns a string describing the key type
+	static inline std::string GetKeyTypeString( int iType )
+	{
+		switch( iType )
+		{
+		case DAFFMetadata::DAFF_STRING:
+			return "String";
+		case DAFFMetadata::DAFF_BOOL:
+			return "Bool";
+		case DAFFMetadata::DAFF_FLOAT:
+			return "Float";
+		case DAFFMetadata::DAFF_INT:
+			return "Integer";
+		default:
+			return "Unkown";
+		}
+	};
+
 	//! Returns if metadata does not contain any keys
 	virtual bool isEmpty() const=0;
 

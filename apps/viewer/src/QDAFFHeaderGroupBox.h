@@ -37,8 +37,6 @@ public:
 public slots:
     inline void on_readDAFF( const DAFFReader* pReader )
     {
-        std::cout << pReader->toString() << std::endl;
-
        QLineEdit* pLE = this->findChild<QLineEdit*>( "lineEditFileName" );
        if( pLE )
        {
@@ -54,8 +52,8 @@ public slots:
        pLE = this->findChild<QLineEdit*>( "lineEditContentType" );
        if( pLE )
        {
-           pLE->setText( QString::fromStdString( DAFFUtils::StrShortContentType( pReader->getContentType() ) ) );
-           pLE->setToolTip( QString::fromStdString( DAFFUtils::StrContentType( pReader->getContentType() ) ) );
+		   pLE->setText( QString::fromStdString( DAFFUtils::StrContentType( pReader->getContentType() ) ) );
+           pLE->setToolTip( QString::fromStdString( DAFFUtils::StrShortContentType( pReader->getContentType() ) ) );
        }
     }
 };

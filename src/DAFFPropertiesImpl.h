@@ -185,7 +185,7 @@ public:
 	// Returns the spanned beta range
 	inline virtual float getBetaSpan() const
 	{
-		return m_fAlphaEnd - m_fAlphaStart;
+		return m_fBetaEnd - m_fBetaStart;
 	};
 
 	// -= Orientations =----------------------------------

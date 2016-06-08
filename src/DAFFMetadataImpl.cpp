@@ -148,9 +148,9 @@ void DAFFMetadataImpl::getKeys(std::vector< std::string >& vsKeyList) const {
 		vsKeyList.push_back(cit->first);
 }
 
-int DAFFMetadataImpl::getKeyType(const std::string& sKey) const {
-	const DAFFMetadataKey* pKey = findKey(sKey);
-	return (pKey != NULL ? pKey->m_iType : -1);
+int DAFFMetadataImpl::getKeyType( const std::string& sKey ) const {
+	const DAFFMetadataKey* pKey = findKey( sKey );
+	return ( pKey != NULL ? pKey->m_iType : -1 );
 }
 
 std::string DAFFMetadataImpl::getKeyString(const std::string& sKey) const {

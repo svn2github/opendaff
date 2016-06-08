@@ -53,6 +53,7 @@ namespace DAFFViz
 			MODE_POINT
 		};
 
+		CarpetPlot( SGNode* pParent, const DAFFContentIR* pContentIR );
 		CarpetPlot( const DAFFContentIR* pContentIR );
 		virtual ~CarpetPlot();
 
@@ -132,8 +133,11 @@ namespace DAFFViz
 		vtkSmartPointer< vtkActor > m_pLabel;
 		float m_dProbeX, m_dProbeY;
 
+		//! Initialize 3D objects
+		void Init();
+
 		// The initializer generates dynamic objects like source, mapper, actor ...
-		void init();
+		void InitCarpetMesh();
 
 		// Update scalars (e.g. when selected angle changed)
 		void SetScalars();
