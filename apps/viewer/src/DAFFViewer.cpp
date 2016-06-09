@@ -30,13 +30,17 @@
 #include "QDAFFViewerWindow.h"
 #include <QApplication>
 
-int main(int argc, char *argv[])
+int main( int argc, char *argv[] )
 {
-    QApplication a(argc, argv);
+	QApplication a( argc, argv );
 
+	QCoreApplication::setOrganizationName( "OpenDAFF" );
+	QCoreApplication::setOrganizationDomain( "opendaff.org" );
+	QCoreApplication::setApplicationName( "DAFFViewer" );
+	
     QString sPath;
-    if( argc == 2 )
-        sPath = argv[1];
+	if( argc == 2 )
+		sPath = argv[ 1 ];
 
     QDAFFViewerWindow w( NULL, sPath );
     w.show();

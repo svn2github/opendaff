@@ -22,6 +22,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
+#include <vtkCamera.h>
 
 #include <iostream>
 
@@ -41,12 +42,14 @@ public:
     {
 		m_pSGRootNode = new DAFFViz::SGNode();
 		m_pSCA = new DAFFViz::SphericalCoordinateAssistant( m_pSGRootNode );
-		m_pSGRootNode->SetOrientationYPR( 150, 0, 0 );
-		m_pCCA = new DAFFViz::CartesianCoordinateAssistant(  ); // causes dark VTK widget if added ...
+		m_pCCA = new DAFFViz::CartesianCoordinateAssistant(  ); // causes dark VTK widget if added to SGNode ... why?
 
 		m_pRenderer = vtkSmartPointer< vtkRenderer >::New();
 		m_pRenderer->AddActor( m_pSGRootNode->GetNodeAssembly() );
 
+		m_pSGRootNode->OnSetFollowerCamera( m_pRenderer->GetActiveCamera() );
+		m_pRenderer->GetActiveCamera()->SetPosition( 3, 3, -3 );
+		
 		GetRenderWindow()->AddRenderer( m_pRenderer );
     }
 

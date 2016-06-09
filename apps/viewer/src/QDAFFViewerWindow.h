@@ -36,6 +36,17 @@ private slots:
 
     void on_actionQuit_triggered();
 
+    void on_actionClose_triggered();
+
+    void on_actionOpenDAFFWebsite_triggered();
+
+    void on_actionCreate_triggered();
+
+    void on_actionAboutOpenDAFF_triggered();
+
+    void on_actionAboutDAFFViewer_triggered();
+
+    void on_actionDownload_triggered();
 
 signals:
     void readDAFF( const DAFFReader* );

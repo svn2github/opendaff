@@ -256,14 +256,36 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionClose"/>
     <addaction name="actionQuit"/>
    </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+    <addaction name="actionAboutDAFFViewer"/>
+    <addaction name="actionAboutOpenDAFF"/>
+    <addaction name="actionOpenDAFFWebsite"/>
+   </widget>
+   <widget class="QMenu" name="menuContent">
+    <property name="title">
+     <string>Content</string>
+    </property>
+    <addaction name="actionDownload"/>
+    <addaction name="actionCreate"/>
+    <addaction name="separator"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuContent"/>
+   <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="DAFFStatusBar"/>
   <action name="actionOpen">
    <property name="text">
     <string>Open</string>
+   </property>
+   <property name="toolTip">
+    <string>Open a DAFF fike</string>
    </property>
    <property name="shortcut">
     <string>O</string>
@@ -273,8 +295,77 @@
    <property name="text">
     <string>Quit</string>
    </property>
+   <property name="toolTip">
+    <string>Quit DAFFViewer application</string>
+   </property>
    <property name="shortcut">
     <string>Esc</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="toolTip">
+    <string>Close current DAFF file</string>
+   </property>
+   <property name="shortcut">
+    <string>C</string>
+   </property>
+  </action>
+  <action name="actionOpenDAFFWebsite">
+   <property name="text">
+    <string>OpenDAFF project website</string>
+   </property>
+   <property name="toolTip">
+    <string>Open the OpenDAFF project website</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
+  </action>
+  <action name="actionAboutOpenDAFF">
+   <property name="text">
+    <string>About OpenDAFF</string>
+   </property>
+   <property name="toolTip">
+    <string>Show information about the OpenDAFF project</string>
+   </property>
+   <property name="shortcut">
+    <string>A, O</string>
+   </property>
+  </action>
+  <action name="actionAboutDAFFViewer">
+   <property name="text">
+    <string>About DAFFViewer</string>
+   </property>
+   <property name="toolTip">
+    <string>Show information about the DAFFViewer application</string>
+   </property>
+   <property name="shortcut">
+    <string>A, D</string>
+   </property>
+  </action>
+  <action name="actionDownload">
+   <property name="text">
+    <string>Download</string>
+   </property>
+   <property name="toolTip">
+    <string>Download DAFF content online</string>
+   </property>
+   <property name="shortcut">
+    <string>D</string>
+   </property>
+  </action>
+  <action name="actionCreate">
+   <property name="text">
+    <string>Create</string>
+   </property>
+   <property name="toolTip">
+    <string>Create or generate your own DAFF content</string>
+   </property>
+   <property name="shortcut">
+    <string>N</string>
    </property>
   </action>
  </widget>

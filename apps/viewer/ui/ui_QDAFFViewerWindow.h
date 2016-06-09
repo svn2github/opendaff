@@ -41,6 +41,12 @@ class Ui_DAFFViewer
 public:
     QAction *actionOpen;
     QAction *actionQuit;
+    QAction *actionClose;
+    QAction *actionOpenDAFFWebsite;
+    QAction *actionAboutOpenDAFF;
+    QAction *actionAboutDAFFViewer;
+    QAction *actionDownload;
+    QAction *actionCreate;
     QWidget *DAFFCentralWidget;
     QHBoxLayout *horizontalLayout_2;
     QHBoxLayout *horizontalLayout;
@@ -71,6 +77,8 @@ public:
     QDAFF2DPlot *DAFF2DPlot_Frame;
     QMenuBar *DAFFMenuBar;
     QMenu *menuFile;
+    QMenu *menuAbout;
+    QMenu *menuContent;
     QStatusBar *DAFFStatusBar;
 
     void setupUi(QMainWindow *DAFFViewer)
@@ -86,6 +94,18 @@ public:
         actionOpen->setObjectName(QStringLiteral("actionOpen"));
         actionQuit = new QAction(DAFFViewer);
         actionQuit->setObjectName(QStringLiteral("actionQuit"));
+        actionClose = new QAction(DAFFViewer);
+        actionClose->setObjectName(QStringLiteral("actionClose"));
+        actionOpenDAFFWebsite = new QAction(DAFFViewer);
+        actionOpenDAFFWebsite->setObjectName(QStringLiteral("actionOpenDAFFWebsite"));
+        actionAboutOpenDAFF = new QAction(DAFFViewer);
+        actionAboutOpenDAFF->setObjectName(QStringLiteral("actionAboutOpenDAFF"));
+        actionAboutDAFFViewer = new QAction(DAFFViewer);
+        actionAboutDAFFViewer->setObjectName(QStringLiteral("actionAboutDAFFViewer"));
+        actionDownload = new QAction(DAFFViewer);
+        actionDownload->setObjectName(QStringLiteral("actionDownload"));
+        actionCreate = new QAction(DAFFViewer);
+        actionCreate->setObjectName(QStringLiteral("actionCreate"));
         DAFFCentralWidget = new QWidget(DAFFViewer);
         DAFFCentralWidget->setObjectName(QStringLiteral("DAFFCentralWidget"));
         DAFFCentralWidget->setEnabled(true);
@@ -260,14 +280,27 @@ public:
         DAFFMenuBar->setGeometry(QRect(0, 0, 1024, 21));
         menuFile = new QMenu(DAFFMenuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
+        menuAbout = new QMenu(DAFFMenuBar);
+        menuAbout->setObjectName(QStringLiteral("menuAbout"));
+        menuContent = new QMenu(DAFFMenuBar);
+        menuContent->setObjectName(QStringLiteral("menuContent"));
         DAFFViewer->setMenuBar(DAFFMenuBar);
         DAFFStatusBar = new QStatusBar(DAFFViewer);
         DAFFStatusBar->setObjectName(QStringLiteral("DAFFStatusBar"));
         DAFFViewer->setStatusBar(DAFFStatusBar);
 
         DAFFMenuBar->addAction(menuFile->menuAction());
+        DAFFMenuBar->addAction(menuContent->menuAction());
+        DAFFMenuBar->addAction(menuAbout->menuAction());
         menuFile->addAction(actionOpen);
+        menuFile->addAction(actionClose);
         menuFile->addAction(actionQuit);
+        menuAbout->addAction(actionAboutDAFFViewer);
+        menuAbout->addAction(actionAboutOpenDAFF);
+        menuAbout->addAction(actionOpenDAFFWebsite);
+        menuContent->addAction(actionDownload);
+        menuContent->addAction(actionCreate);
+        menuContent->addSeparator();
 
         retranslateUi(DAFFViewer);
 
@@ -278,9 +311,45 @@ public:
     {
         DAFFViewer->setWindowTitle(QApplication::translate("DAFFViewer", "DAFFViewer", 0));
         actionOpen->setText(QApplication::translate("DAFFViewer", "Open", 0));
+#ifndef QT_NO_TOOLTIP
+        actionOpen->setToolTip(QApplication::translate("DAFFViewer", "Open a DAFF fike", 0));
+#endif // QT_NO_TOOLTIP
         actionOpen->setShortcut(QApplication::translate("DAFFViewer", "O", 0));
         actionQuit->setText(QApplication::translate("DAFFViewer", "Quit", 0));
+#ifndef QT_NO_TOOLTIP
+        actionQuit->setToolTip(QApplication::translate("DAFFViewer", "Quit DAFFViewer application", 0));
+#endif // QT_NO_TOOLTIP
         actionQuit->setShortcut(QApplication::translate("DAFFViewer", "Esc", 0));
+        actionClose->setText(QApplication::translate("DAFFViewer", "Close", 0));
+#ifndef QT_NO_TOOLTIP
+        actionClose->setToolTip(QApplication::translate("DAFFViewer", "Close current DAFF file", 0));
+#endif // QT_NO_TOOLTIP
+        actionClose->setShortcut(QApplication::translate("DAFFViewer", "C", 0));
+        actionOpenDAFFWebsite->setText(QApplication::translate("DAFFViewer", "OpenDAFF project website", 0));
+#ifndef QT_NO_TOOLTIP
+        actionOpenDAFFWebsite->setToolTip(QApplication::translate("DAFFViewer", "Open the OpenDAFF project website", 0));
+#endif // QT_NO_TOOLTIP
+        actionOpenDAFFWebsite->setShortcut(QApplication::translate("DAFFViewer", "F1", 0));
+        actionAboutOpenDAFF->setText(QApplication::translate("DAFFViewer", "About OpenDAFF", 0));
+#ifndef QT_NO_TOOLTIP
+        actionAboutOpenDAFF->setToolTip(QApplication::translate("DAFFViewer", "Show information about the OpenDAFF project", 0));
+#endif // QT_NO_TOOLTIP
+        actionAboutOpenDAFF->setShortcut(QApplication::translate("DAFFViewer", "A, O", 0));
+        actionAboutDAFFViewer->setText(QApplication::translate("DAFFViewer", "About DAFFViewer", 0));
+#ifndef QT_NO_TOOLTIP
+        actionAboutDAFFViewer->setToolTip(QApplication::translate("DAFFViewer", "Show information about the DAFFViewer application", 0));
+#endif // QT_NO_TOOLTIP
+        actionAboutDAFFViewer->setShortcut(QApplication::translate("DAFFViewer", "A, D", 0));
+        actionDownload->setText(QApplication::translate("DAFFViewer", "Download", 0));
+#ifndef QT_NO_TOOLTIP
+        actionDownload->setToolTip(QApplication::translate("DAFFViewer", "Download DAFF content online", 0));
+#endif // QT_NO_TOOLTIP
+        actionDownload->setShortcut(QApplication::translate("DAFFViewer", "D", 0));
+        actionCreate->setText(QApplication::translate("DAFFViewer", "Create", 0));
+#ifndef QT_NO_TOOLTIP
+        actionCreate->setToolTip(QApplication::translate("DAFFViewer", "Create or generate your own DAFF content", 0));
+#endif // QT_NO_TOOLTIP
+        actionCreate->setShortcut(QApplication::translate("DAFFViewer", "N", 0));
         groupBox_Reader->setTitle(QApplication::translate("DAFFViewer", "DAFF Reader ", 0));
         labelFileName->setText(QApplication::translate("DAFFViewer", "File name", 0));
         labelVersion->setText(QApplication::translate("DAFFViewer", "Version", 0));
@@ -290,6 +359,8 @@ public:
         pushButton_Channel1->setText(QApplication::translate("DAFFViewer", "Channel 1", 0));
         pushButton_Channel2->setText(QApplication::translate("DAFFViewer", "Channel 2", 0));
         menuFile->setTitle(QApplication::translate("DAFFViewer", "File", 0));
+        menuAbout->setTitle(QApplication::translate("DAFFViewer", "About", 0));
+        menuContent->setTitle(QApplication::translate("DAFFViewer", "Content", 0));
     } // retranslateUi
 
 };
