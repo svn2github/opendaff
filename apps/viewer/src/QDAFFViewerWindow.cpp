@@ -8,6 +8,8 @@
 #include <QErrorMessage>
 #include <QLayout>
 #include <QDesktopServices>
+#include <QKeyEvent>
+#include <QShortcut>
 
 #include <DAFF.h>
 
@@ -21,14 +23,41 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 {
     ui->setupUi(this);
     showMaximized();
+	
+	// Global shortcuts
+	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_Left ), this ) );
+	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
+	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( IncreaseAlpha() ) );
+	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_Right ), this ) );
+	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
+	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( DecreaseAlpha() ) );
+	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_Up ), this ) );
+	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
+	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( IncreaseBeta() ) );
+	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_Down ), this ) );
+	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
+	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( DecreaseBeta() ) );
+	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_Plus ), this ) );
+	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
+	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( IncreaseFrequency() ) );
+	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_Minus ), this ) );
+	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
+	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( DecreaseFrequency() ) );
 
-    connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->groupBox_Reader, SLOT( on_readDAFF( const DAFFReader* ) ) );
-    connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->DAFF3DPlot_VTKWidget, SLOT( on_readDAFF( const DAFFReader* ) ) );
-    connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->tableView_Metadata, SLOT( on_readDAFF( const DAFFReader* ) ) );
-    connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->tableView_Properties, SLOT( on_readDAFF( const DAFFReader* ) ) );
+	connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->groupBox_Reader, SLOT( on_readDAFF( const DAFFReader* ) ) );
+	connect( this, SIGNAL( closeDAFF() ), ui->groupBox_Reader, SLOT( on_closeDAFF() ) );
+
+	connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->DAFF3DPlot_VTKWidget, SLOT( on_readDAFF( const DAFFReader* ) ) );
+	connect( this, SIGNAL( closeDAFF() ), ui->DAFF3DPlot_VTKWidget, SLOT( on_closeDAFF() ) );
+
+	connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->tableView_Metadata, SLOT( on_readDAFF( const DAFFReader* ) ) );
+	connect( this, SIGNAL( closeDAFF() ), ui->tableView_Metadata, SLOT( on_closeDAFF() ) );
+
+	connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->tableView_Properties, SLOT( on_readDAFF( const DAFFReader* ) ) );
+	connect( this, SIGNAL( closeDAFF() ), ui->tableView_Properties, SLOT( on_closeDAFF() ) );
 
 	ui->DAFFStatusBar->showMessage( "No DAFF file loaded." );
-	
+
 	m_qSettings.setValue( "RequestedPath", sPath );
 
 	if( sPath.isEmpty() == false )
@@ -46,6 +75,9 @@ QDAFFViewerWindow::~QDAFFViewerWindow()
         m_pDAFFReader->closeFile();
 
     delete m_pDAFFReader;
+
+	for( size_t i = 0; i < m_vShortcuts.size(); i++ )
+		delete m_vShortcuts[ i ];
 }
 
 void QDAFFViewerWindow::on_actionOpen_triggered()
@@ -81,7 +113,7 @@ void QDAFFViewerWindow::OpenDAFFFile( QString sPath, bool bQuiet )
 {
 	if( m_pDAFFReader->isFileOpened() )
 	{
-		//emit closeDAFF();
+		emit closeDAFF();
 		m_pDAFFReader->closeFile();
 	}
 
@@ -111,6 +143,18 @@ void QDAFFViewerWindow::on_actionOpenDAFFWebsite_triggered()
 {
     QUrl urlOpenDAFFWebsite( "http://www.opendaff.org" );
     QDesktopServices::openUrl( urlOpenDAFFWebsite );
+}
+
+void QDAFFViewerWindow::on_actionCreate_triggered()
+{
+	QString msg;
+	msg += QString( "To create DAFF files you need Matlab. Find more Information at:\t\n" );
+	msg += QString( "http://www.opendaff.org/opendaff_content.html\t\n" );
+
+	QMessageBox d;
+	d.setText( msg );
+	d.layout()->setSpacing( 9 );
+	d.exec();
 }
 
 void QDAFFViewerWindow::on_actionAboutOpenDAFF_triggered()
@@ -143,7 +187,8 @@ void QDAFFViewerWindow::on_actionAboutDAFFViewer_triggered()
 
 void QDAFFViewerWindow::on_actionClose_triggered()
 {
-    //emit closeDAFF();
+    emit closeDAFF();
+	m_pDAFFReader->closeFile();
 }
 
 void QDAFFViewerWindow::on_actionDownload_triggered()
@@ -152,14 +197,73 @@ void QDAFFViewerWindow::on_actionDownload_triggered()
     QDesktopServices::openUrl( urlDownloadWebsite );
 }
 
-void QDAFFViewerWindow::on_actionCreate_triggered()
+void QDAFFViewerWindow::IncreaseAlpha()
 {
-    QString msg;
-    msg += QString( "To create DAFF files you need Matlab. Find more Information at:\t\n" );
-    msg += QString( "http://www.opendaff.org/opendaff_content.html\t\n" );
+	if( !m_pDAFFReader->isFileOpened() )
+		return;
 
-    QMessageBox d;
-    d.setText( msg );
-    d.layout()->setSpacing( 9 );
-    d.exec();
+	assert( m_fShowAlphaDeg >= 0.0f && m_fShowAlphaDeg < 360.0f );
+	m_fShowAlphaDeg += fmodf( m_pDAFFReader->getProperties()->getAlphaResolution(), 360.0f );
+}
+
+void QDAFFViewerWindow::DecreaseAlpha()
+{
+	if( !m_pDAFFReader->isFileOpened() )
+		return;
+
+	assert( m_fShowAlphaDeg >= 0.0f && m_fShowAlphaDeg < 360.0f );
+	m_fShowAlphaDeg -= m_pDAFFReader->getProperties()->getAlphaResolution();
+	if( m_fShowAlphaDeg < 0 )
+		m_fShowAlphaDeg += 180.0f;
+}
+
+void QDAFFViewerWindow::IncreaseBeta()
+{
+	if( !m_pDAFFReader->isFileOpened() )
+		return;
+
+	assert( m_fShowBeta >= 0.0f && m_fShowBeta <= 180.0f );
+	m_fShowBeta += fmodf( m_pDAFFReader->getProperties()->getBetaResolution(), 180.0f );
+}
+
+void QDAFFViewerWindow::DecreaseBeta()
+{
+	if( !m_pDAFFReader->isFileOpened() )
+		return;
+
+	assert( m_fShowBeta >= 0.0f && m_fShowBeta <= 180.0f );
+	m_fShowBeta -= m_pDAFFReader->getProperties()->getAlphaResolution();
+	if( m_fShowBeta < 0 )
+		m_fShowBeta += 180.0f;
+}
+
+void QDAFFViewerWindow::IncreaseFrequency()
+{
+	if( !m_pDAFFReader->isFileOpened() )
+		return;
+
+	m_fShowFrequency;
+}
+
+void QDAFFViewerWindow::DecreaseFrequency()
+{
+	if( !m_pDAFFReader->isFileOpened() )
+		return;
+
+	m_fShowFrequency;
+}
+
+void QDAFFViewerWindow::ShowChannel( int iChannel )
+{
+	m_iShowChannel = iChannel;
+}
+
+void QDAFFViewerWindow::SetDAFFObjectView()
+{
+	m_iShowDAFFView = DAFF_OBJECT_VIEW;
+}
+
+void QDAFFViewerWindow::SetDAFFDataView()
+{
+	m_iShowDAFFView = DAFF_DATA_VIEW;
 }

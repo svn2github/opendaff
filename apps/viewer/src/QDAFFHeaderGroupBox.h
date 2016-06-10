@@ -35,6 +35,26 @@ public:
         : QGroupBox( title, parent) {}
 
 public slots:
+inline void on_closeDAFF()
+{
+	QLineEdit* pLE = this->findChild<QLineEdit*>( "lineEditFileName" );
+	if( pLE )
+	{
+		pLE->setText( "" );
+		pLE->setToolTip( "" );
+	}
+
+	pLE = this->findChild<QLineEdit*>( "lineEditVersion" );
+	if( pLE )
+		pLE->setText( "" );
+
+	pLE = this->findChild<QLineEdit*>( "lineEditContentType" );
+	if( pLE )
+	{
+		pLE->setText( "" );
+		pLE->setToolTip( "" );
+	}
+}
     inline void on_readDAFF( const DAFFReader* pReader )
     {
        QLineEdit* pLE = this->findChild<QLineEdit*>( "lineEditFileName" );

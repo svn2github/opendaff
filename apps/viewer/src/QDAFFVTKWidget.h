@@ -14,6 +14,7 @@
 
 #include <QObject>
 #include <QVTKWidget.h>
+#include <QKeyEvent>
 
 #include <DAFF.h>
 #include <DAFFViz/DAFFViz.h>
@@ -51,6 +52,8 @@ public:
 		m_pRenderer->GetActiveCamera()->SetPosition( 3, 3, -3 );
 		
 		GetRenderWindow()->AddRenderer( m_pRenderer );
+
+		GetRenderWindow()->GetInteractor();
     }
 
 	inline ~QDAFFVTKWidget()
@@ -68,6 +71,11 @@ public:
 		delete m_pSGRootNode;
 	}
 
+	inline void keyPressEvent( QKeyEvent * pEvent )
+	{
+		std::cout << pEvent->key();
+	}
+
 private:
     vtkSmartPointer< vtkRenderer > m_pRenderer;
 	DAFFViz::SGNode* m_pSGRootNode;
@@ -77,6 +85,30 @@ private:
 	DAFFViz::CarpetPlot* m_pDAFFContentCarpet;
 
 public slots:
+
+inline void on_closeDAFF()
+{
+	// Clear current balloon node
+	if( m_pDAFFContentBalloon )
+	{
+		m_pSGRootNode->RemoveChildNode( m_pDAFFContentBalloon );
+		delete m_pDAFFContentBalloon;
+		m_pDAFFContentBalloon = NULL;
+	}
+
+	// Clear current carpet plot
+	if( m_pDAFFContentCarpet )
+	{
+		m_pSGRootNode->RemoveChildNode( m_pDAFFContentCarpet );
+		delete m_pDAFFContentCarpet;
+		m_pDAFFContentCarpet = NULL;
+	}
+
+	m_pCCA->SetVisible( false );
+	m_pSCA->SetVisible( true );
+
+	update();
+}
 
     inline void on_readDAFF( const DAFFReader* pReader )
 	{
@@ -121,6 +153,7 @@ public slots:
 			break;
 		}
 
+		update();
     }
 };
 

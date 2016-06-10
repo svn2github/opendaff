@@ -156,15 +156,15 @@ public:
     {
     }
 public slots:
+inline void on_closeDAFF()
+{
+	delete m_pModel;
+	m_pModel = NULL;
+}
     inline void on_readDAFF( const DAFFReader* pReader )
 	{
-		delete m_pModel;
-
 		if( pReader == NULL )
-		{
-			m_pModel = NULL;
 			return;
-		}
 
 		m_pModel = new DAFFPropertiesModel( this, pReader->getProperties()  );
 		this->setModel( m_pModel );
