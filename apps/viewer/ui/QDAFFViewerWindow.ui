@@ -161,31 +161,7 @@
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="layout_Visualization" stretch="0,1,1">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_ChannelSwitcher">
-          <property name="leftMargin">
-           <number>9</number>
-          </property>
-          <property name="rightMargin">
-           <number>9</number>
-          </property>
-          <item>
-           <widget class="QPushButton" name="pushButton_Channel1">
-            <property name="text">
-             <string>Channel 1</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_Channel2">
-            <property name="text">
-             <string>Channel 2</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
+       <layout class="QVBoxLayout" name="layout_Visualization" stretch="1,0,1">
         <item>
          <widget class="QFrame" name="frame_3DPlot">
           <property name="frameShape">
@@ -212,6 +188,33 @@
          </widget>
         </item>
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_InteractionPanel">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
+          <item>
+           <widget class="QComboBox" name="comboBox_FrequencySelector"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_Channel1">
+            <property name="text">
+             <string>Channel 1</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_Channel2">
+            <property name="text">
+             <string>Channel 2</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
          <widget class="QFrame" name="frame_2DPlot">
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
@@ -220,7 +223,7 @@
            <enum>QFrame::Raised</enum>
           </property>
           <layout class="QGridLayout" name="gridLayout">
-           <item row="0" column="0">
+           <item row="1" column="0">
             <widget class="QDAFF2DPlot" name="DAFF2DPlot_Frame">
              <property name="minimumSize">
               <size>
@@ -257,6 +260,7 @@
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionClose"/>
+    <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
@@ -269,14 +273,48 @@
    </widget>
    <widget class="QMenu" name="menuContent">
     <property name="title">
+     <string>Edit</string>
+    </property>
+    <widget class="QMenu" name="menuObject_view">
+     <property name="title">
+      <string>Object view</string>
+     </property>
+     <addaction name="actionIncrease_phi"/>
+     <addaction name="actionDecrease_phi"/>
+     <addaction name="separator"/>
+     <addaction name="actionIncrease_theta"/>
+     <addaction name="actionDecrease_theta"/>
+    </widget>
+    <widget class="QMenu" name="menuData_view">
+     <property name="title">
+      <string>Data view</string>
+     </property>
+     <addaction name="actionIncrease_alpha"/>
+     <addaction name="actionDecrease_alpha"/>
+     <addaction name="separator"/>
+     <addaction name="actionIncrease_beta"/>
+     <addaction name="actionDecrease_beta"/>
+    </widget>
+    <addaction name="separator"/>
+    <addaction name="actionIncrease_channel"/>
+    <addaction name="actionDecrease_channel"/>
+    <addaction name="separator"/>
+    <addaction name="actionIncrease_Frequency"/>
+    <addaction name="actionDecrease_Frequency"/>
+    <addaction name="separator"/>
+    <addaction name="menuObject_view"/>
+    <addaction name="menuData_view"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
      <string>Content</string>
     </property>
     <addaction name="actionDownload"/>
     <addaction name="actionCreate"/>
-    <addaction name="separator"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuContent"/>
+   <addaction name="menuEdit"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="DAFFStatusBar"/>
@@ -366,6 +404,66 @@
    </property>
    <property name="shortcut">
     <string>N</string>
+   </property>
+  </action>
+  <action name="actionIncrease_channel">
+   <property name="text">
+    <string>Increase channel</string>
+   </property>
+  </action>
+  <action name="actionDecrease_channel">
+   <property name="text">
+    <string>Decrease channel</string>
+   </property>
+  </action>
+  <action name="actionIncrease_Frequency">
+   <property name="text">
+    <string>Increase frequency</string>
+   </property>
+  </action>
+  <action name="actionDecrease_Frequency">
+   <property name="text">
+    <string>Decrease frequency</string>
+   </property>
+  </action>
+  <action name="actionIncrease_phi">
+   <property name="text">
+    <string>Increase phi</string>
+   </property>
+  </action>
+  <action name="actionDecrease_phi">
+   <property name="text">
+    <string>Decrease phi</string>
+   </property>
+  </action>
+  <action name="actionIncrease_theta">
+   <property name="text">
+    <string>Increase theta</string>
+   </property>
+  </action>
+  <action name="actionDecrease_theta">
+   <property name="text">
+    <string>Decrease theta</string>
+   </property>
+  </action>
+  <action name="actionIncrease_alpha">
+   <property name="text">
+    <string>Increase alpha</string>
+   </property>
+  </action>
+  <action name="actionDecrease_alpha">
+   <property name="text">
+    <string>Decrease alpha</string>
+   </property>
+  </action>
+  <action name="actionIncrease_beta">
+   <property name="text">
+    <string>Increase beta</string>
+   </property>
+  </action>
+  <action name="actionDecrease_beta">
+   <property name="text">
+    <string>Decrease beta</string>
    </property>
   </action>
  </widget>

@@ -1193,7 +1193,8 @@ int DAFFReaderImpl::getNumFrequencies() const {
 	return 0; // error!
 }
 
-const std::vector<float>& DAFFReaderImpl::getFrequencies() const {
+const std::vector<float>& DAFFReaderImpl::getFrequencies() const
+{
 	return m_vfFreqs;
 }
 

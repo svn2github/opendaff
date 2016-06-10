@@ -71,11 +71,6 @@ public:
 		delete m_pSGRootNode;
 	}
 
-	inline void keyPressEvent( QKeyEvent * pEvent )
-	{
-		std::cout << pEvent->key();
-	}
-
 private:
     vtkSmartPointer< vtkRenderer > m_pRenderer;
 	DAFFViz::SGNode* m_pSGRootNode;
@@ -154,7 +149,32 @@ inline void on_closeDAFF()
 		}
 
 		update();
-    }
+	}
+
+	inline void on_changeFrequencyIndex( int iFrequencyIndex )
+	{
+		if( m_pDAFFContentBalloon )
+		{
+			m_pDAFFContentBalloon->SetSelectedFrequency( iFrequencyIndex );
+		}
+
+		update();
+	}
+
+	inline void on_changeChannelIndex( int iChannelIndex )
+	{
+		if( m_pDAFFContentBalloon )
+		{
+			m_pDAFFContentBalloon->SetChannel( iChannelIndex );
+		}
+
+		if( m_pDAFFContentCarpet )
+		{
+			m_pDAFFContentCarpet->SetChannel( iChannelIndex );
+		}
+
+		update();
+	}
 };
 
 #endif // QDAFFVTKWIDGET_H

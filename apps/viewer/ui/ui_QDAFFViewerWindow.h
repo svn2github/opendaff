@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
@@ -47,6 +48,18 @@ public:
     QAction *actionAboutDAFFViewer;
     QAction *actionDownload;
     QAction *actionCreate;
+    QAction *actionIncrease_channel;
+    QAction *actionDecrease_channel;
+    QAction *actionIncrease_Frequency;
+    QAction *actionDecrease_Frequency;
+    QAction *actionIncrease_phi;
+    QAction *actionDecrease_phi;
+    QAction *actionIncrease_theta;
+    QAction *actionDecrease_theta;
+    QAction *actionIncrease_alpha;
+    QAction *actionDecrease_alpha;
+    QAction *actionIncrease_beta;
+    QAction *actionDecrease_beta;
     QWidget *DAFFCentralWidget;
     QHBoxLayout *horizontalLayout_2;
     QHBoxLayout *horizontalLayout;
@@ -66,12 +79,13 @@ public:
     QVBoxLayout *verticalLayout_2;
     QDAFFPropertiesTableView *tableView_Properties;
     QVBoxLayout *layout_Visualization;
-    QHBoxLayout *horizontalLayout_ChannelSwitcher;
-    QPushButton *pushButton_Channel1;
-    QPushButton *pushButton_Channel2;
     QFrame *frame_3DPlot;
     QGridLayout *gridLayout_2;
     QDAFFVTKWidget *DAFF3DPlot_VTKWidget;
+    QHBoxLayout *horizontalLayout_InteractionPanel;
+    QComboBox *comboBox_FrequencySelector;
+    QPushButton *pushButton_Channel1;
+    QPushButton *pushButton_Channel2;
     QFrame *frame_2DPlot;
     QGridLayout *gridLayout;
     QDAFF2DPlot *DAFF2DPlot_Frame;
@@ -79,6 +93,9 @@ public:
     QMenu *menuFile;
     QMenu *menuAbout;
     QMenu *menuContent;
+    QMenu *menuObject_view;
+    QMenu *menuData_view;
+    QMenu *menuEdit;
     QStatusBar *DAFFStatusBar;
 
     void setupUi(QMainWindow *DAFFViewer)
@@ -106,6 +123,30 @@ public:
         actionDownload->setObjectName(QStringLiteral("actionDownload"));
         actionCreate = new QAction(DAFFViewer);
         actionCreate->setObjectName(QStringLiteral("actionCreate"));
+        actionIncrease_channel = new QAction(DAFFViewer);
+        actionIncrease_channel->setObjectName(QStringLiteral("actionIncrease_channel"));
+        actionDecrease_channel = new QAction(DAFFViewer);
+        actionDecrease_channel->setObjectName(QStringLiteral("actionDecrease_channel"));
+        actionIncrease_Frequency = new QAction(DAFFViewer);
+        actionIncrease_Frequency->setObjectName(QStringLiteral("actionIncrease_Frequency"));
+        actionDecrease_Frequency = new QAction(DAFFViewer);
+        actionDecrease_Frequency->setObjectName(QStringLiteral("actionDecrease_Frequency"));
+        actionIncrease_phi = new QAction(DAFFViewer);
+        actionIncrease_phi->setObjectName(QStringLiteral("actionIncrease_phi"));
+        actionDecrease_phi = new QAction(DAFFViewer);
+        actionDecrease_phi->setObjectName(QStringLiteral("actionDecrease_phi"));
+        actionIncrease_theta = new QAction(DAFFViewer);
+        actionIncrease_theta->setObjectName(QStringLiteral("actionIncrease_theta"));
+        actionDecrease_theta = new QAction(DAFFViewer);
+        actionDecrease_theta->setObjectName(QStringLiteral("actionDecrease_theta"));
+        actionIncrease_alpha = new QAction(DAFFViewer);
+        actionIncrease_alpha->setObjectName(QStringLiteral("actionIncrease_alpha"));
+        actionDecrease_alpha = new QAction(DAFFViewer);
+        actionDecrease_alpha->setObjectName(QStringLiteral("actionDecrease_alpha"));
+        actionIncrease_beta = new QAction(DAFFViewer);
+        actionIncrease_beta->setObjectName(QStringLiteral("actionIncrease_beta"));
+        actionDecrease_beta = new QAction(DAFFViewer);
+        actionDecrease_beta->setObjectName(QStringLiteral("actionDecrease_beta"));
         DAFFCentralWidget = new QWidget(DAFFViewer);
         DAFFCentralWidget->setObjectName(QStringLiteral("DAFFCentralWidget"));
         DAFFCentralWidget->setEnabled(true);
@@ -210,23 +251,6 @@ public:
         layout_Visualization = new QVBoxLayout();
         layout_Visualization->setSpacing(6);
         layout_Visualization->setObjectName(QStringLiteral("layout_Visualization"));
-        horizontalLayout_ChannelSwitcher = new QHBoxLayout();
-        horizontalLayout_ChannelSwitcher->setSpacing(6);
-        horizontalLayout_ChannelSwitcher->setObjectName(QStringLiteral("horizontalLayout_ChannelSwitcher"));
-        horizontalLayout_ChannelSwitcher->setContentsMargins(9, -1, 9, -1);
-        pushButton_Channel1 = new QPushButton(DAFFCentralWidget);
-        pushButton_Channel1->setObjectName(QStringLiteral("pushButton_Channel1"));
-
-        horizontalLayout_ChannelSwitcher->addWidget(pushButton_Channel1);
-
-        pushButton_Channel2 = new QPushButton(DAFFCentralWidget);
-        pushButton_Channel2->setObjectName(QStringLiteral("pushButton_Channel2"));
-
-        horizontalLayout_ChannelSwitcher->addWidget(pushButton_Channel2);
-
-
-        layout_Visualization->addLayout(horizontalLayout_ChannelSwitcher);
-
         frame_3DPlot = new QFrame(DAFFCentralWidget);
         frame_3DPlot->setObjectName(QStringLiteral("frame_3DPlot"));
         frame_3DPlot->setFrameShape(QFrame::StyledPanel);
@@ -246,6 +270,28 @@ public:
 
         layout_Visualization->addWidget(frame_3DPlot);
 
+        horizontalLayout_InteractionPanel = new QHBoxLayout();
+        horizontalLayout_InteractionPanel->setSpacing(6);
+        horizontalLayout_InteractionPanel->setObjectName(QStringLiteral("horizontalLayout_InteractionPanel"));
+        horizontalLayout_InteractionPanel->setContentsMargins(9, -1, 9, -1);
+        comboBox_FrequencySelector = new QComboBox(DAFFCentralWidget);
+        comboBox_FrequencySelector->setObjectName(QStringLiteral("comboBox_FrequencySelector"));
+
+        horizontalLayout_InteractionPanel->addWidget(comboBox_FrequencySelector);
+
+        pushButton_Channel1 = new QPushButton(DAFFCentralWidget);
+        pushButton_Channel1->setObjectName(QStringLiteral("pushButton_Channel1"));
+
+        horizontalLayout_InteractionPanel->addWidget(pushButton_Channel1);
+
+        pushButton_Channel2 = new QPushButton(DAFFCentralWidget);
+        pushButton_Channel2->setObjectName(QStringLiteral("pushButton_Channel2"));
+
+        horizontalLayout_InteractionPanel->addWidget(pushButton_Channel2);
+
+
+        layout_Visualization->addLayout(horizontalLayout_InteractionPanel);
+
         frame_2DPlot = new QFrame(DAFFCentralWidget);
         frame_2DPlot->setObjectName(QStringLiteral("frame_2DPlot"));
         frame_2DPlot->setFrameShape(QFrame::StyledPanel);
@@ -259,12 +305,12 @@ public:
         DAFF2DPlot_Frame->setMinimumSize(QSize(0, 300));
         DAFF2DPlot_Frame->setStyleSheet(QStringLiteral("background-color: rgb(255, 255, 255);"));
 
-        gridLayout->addWidget(DAFF2DPlot_Frame, 0, 0, 1, 1);
+        gridLayout->addWidget(DAFF2DPlot_Frame, 1, 0, 1, 1);
 
 
         layout_Visualization->addWidget(frame_2DPlot);
 
-        layout_Visualization->setStretch(1, 1);
+        layout_Visualization->setStretch(0, 1);
         layout_Visualization->setStretch(2, 1);
 
         horizontalLayout->addLayout(layout_Visualization);
@@ -284,6 +330,12 @@ public:
         menuAbout->setObjectName(QStringLiteral("menuAbout"));
         menuContent = new QMenu(DAFFMenuBar);
         menuContent->setObjectName(QStringLiteral("menuContent"));
+        menuObject_view = new QMenu(menuContent);
+        menuObject_view->setObjectName(QStringLiteral("menuObject_view"));
+        menuData_view = new QMenu(menuContent);
+        menuData_view->setObjectName(QStringLiteral("menuData_view"));
+        menuEdit = new QMenu(DAFFMenuBar);
+        menuEdit->setObjectName(QStringLiteral("menuEdit"));
         DAFFViewer->setMenuBar(DAFFMenuBar);
         DAFFStatusBar = new QStatusBar(DAFFViewer);
         DAFFStatusBar->setObjectName(QStringLiteral("DAFFStatusBar"));
@@ -291,16 +343,36 @@ public:
 
         DAFFMenuBar->addAction(menuFile->menuAction());
         DAFFMenuBar->addAction(menuContent->menuAction());
+        DAFFMenuBar->addAction(menuEdit->menuAction());
         DAFFMenuBar->addAction(menuAbout->menuAction());
         menuFile->addAction(actionOpen);
         menuFile->addAction(actionClose);
+        menuFile->addSeparator();
         menuFile->addAction(actionQuit);
         menuAbout->addAction(actionAboutDAFFViewer);
         menuAbout->addAction(actionAboutOpenDAFF);
         menuAbout->addAction(actionOpenDAFFWebsite);
-        menuContent->addAction(actionDownload);
-        menuContent->addAction(actionCreate);
         menuContent->addSeparator();
+        menuContent->addAction(actionIncrease_channel);
+        menuContent->addAction(actionDecrease_channel);
+        menuContent->addSeparator();
+        menuContent->addAction(actionIncrease_Frequency);
+        menuContent->addAction(actionDecrease_Frequency);
+        menuContent->addSeparator();
+        menuContent->addAction(menuObject_view->menuAction());
+        menuContent->addAction(menuData_view->menuAction());
+        menuObject_view->addAction(actionIncrease_phi);
+        menuObject_view->addAction(actionDecrease_phi);
+        menuObject_view->addSeparator();
+        menuObject_view->addAction(actionIncrease_theta);
+        menuObject_view->addAction(actionDecrease_theta);
+        menuData_view->addAction(actionIncrease_alpha);
+        menuData_view->addAction(actionDecrease_alpha);
+        menuData_view->addSeparator();
+        menuData_view->addAction(actionIncrease_beta);
+        menuData_view->addAction(actionDecrease_beta);
+        menuEdit->addAction(actionDownload);
+        menuEdit->addAction(actionCreate);
 
         retranslateUi(DAFFViewer);
 
@@ -350,6 +422,18 @@ public:
         actionCreate->setToolTip(QApplication::translate("DAFFViewer", "Create or generate your own DAFF content", 0));
 #endif // QT_NO_TOOLTIP
         actionCreate->setShortcut(QApplication::translate("DAFFViewer", "N", 0));
+        actionIncrease_channel->setText(QApplication::translate("DAFFViewer", "Increase channel", 0));
+        actionDecrease_channel->setText(QApplication::translate("DAFFViewer", "Decrease channel", 0));
+        actionIncrease_Frequency->setText(QApplication::translate("DAFFViewer", "Increase frequency", 0));
+        actionDecrease_Frequency->setText(QApplication::translate("DAFFViewer", "Decrease frequency", 0));
+        actionIncrease_phi->setText(QApplication::translate("DAFFViewer", "Increase phi", 0));
+        actionDecrease_phi->setText(QApplication::translate("DAFFViewer", "Decrease phi", 0));
+        actionIncrease_theta->setText(QApplication::translate("DAFFViewer", "Increase theta", 0));
+        actionDecrease_theta->setText(QApplication::translate("DAFFViewer", "Decrease theta", 0));
+        actionIncrease_alpha->setText(QApplication::translate("DAFFViewer", "Increase alpha", 0));
+        actionDecrease_alpha->setText(QApplication::translate("DAFFViewer", "Decrease alpha", 0));
+        actionIncrease_beta->setText(QApplication::translate("DAFFViewer", "Increase beta", 0));
+        actionDecrease_beta->setText(QApplication::translate("DAFFViewer", "Decrease beta", 0));
         groupBox_Reader->setTitle(QApplication::translate("DAFFViewer", "DAFF Reader ", 0));
         labelFileName->setText(QApplication::translate("DAFFViewer", "File name", 0));
         labelVersion->setText(QApplication::translate("DAFFViewer", "Version", 0));
@@ -360,7 +444,10 @@ public:
         pushButton_Channel2->setText(QApplication::translate("DAFFViewer", "Channel 2", 0));
         menuFile->setTitle(QApplication::translate("DAFFViewer", "File", 0));
         menuAbout->setTitle(QApplication::translate("DAFFViewer", "About", 0));
-        menuContent->setTitle(QApplication::translate("DAFFViewer", "Content", 0));
+        menuContent->setTitle(QApplication::translate("DAFFViewer", "Edit", 0));
+        menuObject_view->setTitle(QApplication::translate("DAFFViewer", "Object view", 0));
+        menuData_view->setTitle(QApplication::translate("DAFFViewer", "Data view", 0));
+        menuEdit->setTitle(QApplication::translate("DAFFViewer", "Content", 0));
     } // retranslateUi
 
 };

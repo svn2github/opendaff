@@ -19,7 +19,14 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	: QMainWindow( parent )
 	, ui( new Ui::DAFFViewer )
 	, m_pDAFFReader( DAFFReader::create() )
-	, m_qSettings( "ITA", "DAFFVIewer" )
+	, m_qSettings( "ITA", "DAFFViewer" )
+	, m_iShowChannel( 0 )
+	, m_iShowFrequencyIndex( 0 )
+	, m_fShowTimeSample( 0 )
+	, m_fShowAlphaDeg( 0 )
+	, m_fShowBetaDeg( 90 )
+	, m_fShowPhiDeg( 0 )
+	, m_fShowTheta( 0 )
 {
     ui->setupUi(this);
     showMaximized();
@@ -43,18 +50,26 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_Minus ), this ) );
 	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
 	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( DecreaseFrequency() ) );
+	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_PageUp ), this ) );
+	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
+	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( IncreaseChannelIndex() ) );
+	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_PageDown ), this ) );
+	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
+	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( DecreaseChannelIndex() ) );
 
-	connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->groupBox_Reader, SLOT( on_readDAFF( const DAFFReader* ) ) );
-	connect( this, SIGNAL( closeDAFF() ), ui->groupBox_Reader, SLOT( on_closeDAFF() ) );
+	connect( this, SIGNAL( ReadDAFF( const DAFFReader* ) ), ui->groupBox_Reader, SLOT( on_readDAFF( const DAFFReader* ) ) );
+	connect( this, SIGNAL( CloseDAFF() ), ui->groupBox_Reader, SLOT( on_closeDAFF() ) );
 
-	connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->DAFF3DPlot_VTKWidget, SLOT( on_readDAFF( const DAFFReader* ) ) );
-	connect( this, SIGNAL( closeDAFF() ), ui->DAFF3DPlot_VTKWidget, SLOT( on_closeDAFF() ) );
+	connect( this, SIGNAL( ReadDAFF( const DAFFReader* ) ), ui->DAFF3DPlot_VTKWidget, SLOT( on_readDAFF( const DAFFReader* ) ) );
+	connect( this, SIGNAL( CloseDAFF() ), ui->DAFF3DPlot_VTKWidget, SLOT( on_closeDAFF() ) );
+	connect( this, SIGNAL( ChangeFrequencyIndex( int ) ), ui->DAFF3DPlot_VTKWidget, SLOT( on_changeFrequencyIndex( int ) ) );
+	connect( this, SIGNAL( ChangeChannelIndex( int ) ), ui->DAFF3DPlot_VTKWidget, SLOT( on_changeChannelIndex( int ) ) );
 
-	connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->tableView_Metadata, SLOT( on_readDAFF( const DAFFReader* ) ) );
-	connect( this, SIGNAL( closeDAFF() ), ui->tableView_Metadata, SLOT( on_closeDAFF() ) );
+	connect( this, SIGNAL( ReadDAFF( const DAFFReader* ) ), ui->tableView_Metadata, SLOT( on_readDAFF( const DAFFReader* ) ) );
+	connect( this, SIGNAL( CloseDAFF() ), ui->tableView_Metadata, SLOT( on_closeDAFF() ) );
 
-	connect( this, SIGNAL( readDAFF( const DAFFReader* ) ), ui->tableView_Properties, SLOT( on_readDAFF( const DAFFReader* ) ) );
-	connect( this, SIGNAL( closeDAFF() ), ui->tableView_Properties, SLOT( on_closeDAFF() ) );
+	connect( this, SIGNAL( ReadDAFF( const DAFFReader* ) ), ui->tableView_Properties, SLOT( on_readDAFF( const DAFFReader* ) ) );
+	connect( this, SIGNAL( CloseDAFF() ), ui->tableView_Properties, SLOT( on_closeDAFF() ) );
 
 	ui->DAFFStatusBar->showMessage( "No DAFF file loaded." );
 
@@ -113,7 +128,7 @@ void QDAFFViewerWindow::OpenDAFFFile( QString sPath, bool bQuiet )
 {
 	if( m_pDAFFReader->isFileOpened() )
 	{
-		emit closeDAFF();
+		emit CloseDAFF();
 		m_pDAFFReader->closeFile();
 	}
 
@@ -135,7 +150,7 @@ void QDAFFViewerWindow::OpenDAFFFile( QString sPath, bool bQuiet )
 	{
 		QString sMsg = QString( "DAFF file '" + oPassedFile.fileName() + "' sucessfully loaded." );
 		ui->DAFFStatusBar->showMessage( sMsg );
-		emit readDAFF( m_pDAFFReader );
+		emit ReadDAFF( m_pDAFFReader );
 	}
 }
 
@@ -187,7 +202,7 @@ void QDAFFViewerWindow::on_actionAboutDAFFViewer_triggered()
 
 void QDAFFViewerWindow::on_actionClose_triggered()
 {
-    emit closeDAFF();
+    emit CloseDAFF();
 	m_pDAFFReader->closeFile();
 }
 
@@ -222,8 +237,8 @@ void QDAFFViewerWindow::IncreaseBeta()
 	if( !m_pDAFFReader->isFileOpened() )
 		return;
 
-	assert( m_fShowBeta >= 0.0f && m_fShowBeta <= 180.0f );
-	m_fShowBeta += fmodf( m_pDAFFReader->getProperties()->getBetaResolution(), 180.0f );
+	assert( m_fShowBetaDeg >= 0.0f && m_fShowBetaDeg <= 180.0f );
+	m_fShowBetaDeg += fmodf( m_pDAFFReader->getProperties()->getBetaResolution(), 180.0f );
 }
 
 void QDAFFViewerWindow::DecreaseBeta()
@@ -231,10 +246,10 @@ void QDAFFViewerWindow::DecreaseBeta()
 	if( !m_pDAFFReader->isFileOpened() )
 		return;
 
-	assert( m_fShowBeta >= 0.0f && m_fShowBeta <= 180.0f );
-	m_fShowBeta -= m_pDAFFReader->getProperties()->getAlphaResolution();
-	if( m_fShowBeta < 0 )
-		m_fShowBeta += 180.0f;
+	assert( m_fShowBetaDeg >= 0.0f && m_fShowBetaDeg <= 180.0f );
+	m_fShowBetaDeg -= m_pDAFFReader->getProperties()->getAlphaResolution();
+	if( m_fShowBetaDeg < 0 )
+		m_fShowBetaDeg += 180.0f;
 }
 
 void QDAFFViewerWindow::IncreaseFrequency()
@@ -242,7 +257,52 @@ void QDAFFViewerWindow::IncreaseFrequency()
 	if( !m_pDAFFReader->isFileOpened() )
 		return;
 
-	m_fShowFrequency;
+	switch( m_pDAFFReader->getContentType() )
+	{
+	case DAFF_MAGNITUDE_SPECTRUM:
+	{
+		DAFFContentMS* pC = dynamic_cast< DAFFContentMS* >( m_pDAFFReader->getContent() );
+		const std::vector< float >& vFrequencies = pC->getFrequencies();
+		if( m_iShowFrequencyIndex < int( vFrequencies.size() ) - 1 )
+		{
+			m_iShowFrequencyIndex++;
+			emit ChangeFrequencyIndex( m_iShowFrequencyIndex );
+		}
+		break;
+	}
+	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+	{
+		DAFFContentMPS* pC = dynamic_cast< DAFFContentMPS* >( m_pDAFFReader->getContent() );
+		const std::vector< float >& vFrequencies = pC->getFrequencies();
+		if( m_iShowFrequencyIndex < int( vFrequencies.size() ) - 1 )
+		{
+			m_iShowFrequencyIndex++;
+			emit ChangeFrequencyIndex( m_iShowFrequencyIndex );
+		}
+		break;
+	}
+	case DAFF_DFT_SPECTRUM:
+	{
+		DAFFContentDFT* pC = dynamic_cast< DAFFContentDFT* >( m_pDAFFReader->getContent() );
+		if( m_iShowFrequencyIndex < pC->getNumDFTCoeffs() - 1 )
+		{
+			m_iShowFrequencyIndex++;
+			emit ChangeFrequencyIndex( m_iShowFrequencyIndex );
+		}
+		break;
+	}
+	case DAFF_PHASE_SPECTRUM:
+	{
+		DAFFContentPS* pC = dynamic_cast< DAFFContentPS* >( m_pDAFFReader->getContent() );
+		const std::vector< float >& vFrequencies = pC->getFrequencies();
+		if( m_iShowFrequencyIndex < int( vFrequencies.size() ) - 1 )
+		{
+			m_iShowFrequencyIndex++;
+			emit ChangeFrequencyIndex( m_iShowFrequencyIndex );
+		}
+		break;
+	}
+	}
 }
 
 void QDAFFViewerWindow::DecreaseFrequency()
@@ -250,12 +310,49 @@ void QDAFFViewerWindow::DecreaseFrequency()
 	if( !m_pDAFFReader->isFileOpened() )
 		return;
 
-	m_fShowFrequency;
+	if( m_iShowFrequencyIndex > 0 )
+	{
+		m_iShowFrequencyIndex--;
+		emit ChangeFrequencyIndex( m_iShowFrequencyIndex );
+	}	
 }
 
-void QDAFFViewerWindow::ShowChannel( int iChannel )
+void QDAFFViewerWindow::IncreaseChannelIndex()
 {
-	m_iShowChannel = iChannel;
+	if( m_pDAFFReader->isFileOpened() == false )
+		return;
+
+	int N = m_pDAFFReader->getProperties()->getNumberOfChannels();
+	if( m_iShowChannel < N - 1 )
+	{
+		m_iShowChannel++;
+		emit ChangeChannelIndex( m_iShowChannel );
+	}
+}
+
+void QDAFFViewerWindow::DecreaseChannelIndex()
+{
+	if( m_pDAFFReader->isFileOpened() == false )
+		return;
+
+	if( m_iShowChannel > 0 )
+	{
+		m_iShowChannel--;
+		emit ChangeChannelIndex( m_iShowChannel );
+	}
+}
+
+void QDAFFViewerWindow::ShowChannelIndex( int iChannelIndex )
+{
+	if( m_pDAFFReader->isFileOpened() == false )
+		return;
+
+	int N = m_pDAFFReader->getProperties()->getNumberOfChannels();
+	if( iChannelIndex >= 0 && iChannelIndex < N )
+	{
+		m_iShowChannel = iChannelIndex;
+		emit ChangeChannelIndex( m_iShowChannel );
+	}
 }
 
 void QDAFFViewerWindow::SetDAFFObjectView()

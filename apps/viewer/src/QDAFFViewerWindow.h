@@ -48,19 +48,21 @@ private slots:
 	void DecreaseBeta();
 	void IncreaseFrequency();
 	void DecreaseFrequency();
+	void IncreaseChannelIndex();
+	void DecreaseChannelIndex();
 
-	void ShowChannel( int );
+	void ShowChannelIndex( int );
 
 	void SetDAFFObjectView();
 	void SetDAFFDataView();
 
 signals:
-	void readDAFF( const DAFFReader* );
-	void closeDAFF();
-	void changeAlphaDeg( float );
-	void changeBetaDeg( float );
-	void changeFrequencyIndex( float );
-	void changeChannel( int );
+	void ReadDAFF( const DAFFReader* );
+	void CloseDAFF();
+	void ChangeAlpha( float fAlphaDegrees );
+	void ChangeBeta( float fBetaDegrees );
+	void ChangeFrequencyIndex( int iIndex );
+	void ChangeChannelIndex( int iChannelIndex );
 
 private:
     Ui::DAFFViewer *ui;
@@ -69,9 +71,9 @@ private:
 
     DAFFReader* m_pDAFFReader;
 
-	float m_fShowAlphaDeg, m_fShowBeta; //!< Data view angle
+	float m_fShowAlphaDeg, m_fShowBetaDeg; //!< Data view angle
 	float m_fShowPhiDeg, m_fShowTheta;  //!< Object view angle
-	float m_fShowFrequency; //!< Frequency (bin)
+	int m_iShowFrequencyIndex; //!< Frequency (bin) index
 	float m_fShowTimeSample; //!< Sample of time series (FIR tap)
 	int m_iShowChannel; //!< Requested channel
 	int m_iShowDAFFView; //!< Show DAFF object or data view
