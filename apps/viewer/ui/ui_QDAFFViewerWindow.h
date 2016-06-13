@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
@@ -25,7 +26,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
-#include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -83,9 +84,36 @@ public:
     QGridLayout *gridLayout_2;
     QDAFFVTKWidget *DAFF3DPlot_VTKWidget;
     QHBoxLayout *horizontalLayout_InteractionPanel;
+    QGroupBox *groupBox_ObjectView;
+    QGridLayout *gridLayout_3;
+    QDoubleSpinBox *doubleSpinBox_Phi;
+    QLabel *label_2;
+    QDoubleSpinBox *doubleSpinBox_Theta;
+    QLabel *label;
+    QLabel *label_5;
+    QLabel *label_6;
+    QGroupBox *groupBox_DataView;
+    QGridLayout *gridLayout_4;
+    QLabel *label_3;
+    QDoubleSpinBox *doubleSpinBox_Alpha;
+    QDoubleSpinBox *doubleSpinBox_Beta;
+    QLabel *label_4;
+    QLabel *label_7;
+    QLabel *label_8;
+    QGroupBox *groupBox_Record;
+    QFormLayout *formLayout;
+    QLabel *label_9;
+    QSpinBox *spinBox_RecordIndex;
+    QGroupBox *groupBox_Channel;
+    QFormLayout *formLayout_3;
+    QLabel *label_12;
+    QSpinBox *spinBox_ChannelIndex;
+    QGroupBox *groupBox_Frequency;
+    QFormLayout *formLayout_4;
+    QLabel *label_11;
+    QSpinBox *spinBox_FrequencyIndex;
+    QLabel *label_10;
     QComboBox *comboBox_FrequencySelector;
-    QPushButton *pushButton_Channel1;
-    QPushButton *pushButton_Channel2;
     QFrame *frame_2DPlot;
     QGridLayout *gridLayout;
     QDAFF2DPlot *DAFF2DPlot_Frame;
@@ -102,7 +130,7 @@ public:
     {
         if (DAFFViewer->objectName().isEmpty())
             DAFFViewer->setObjectName(QStringLiteral("DAFFViewer"));
-        DAFFViewer->resize(1024, 747);
+        DAFFViewer->resize(1102, 812);
         DAFFViewer->setAcceptDrops(true);
         DAFFViewer->setAutoFillBackground(false);
         DAFFViewer->setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -274,20 +302,172 @@ public:
         horizontalLayout_InteractionPanel->setSpacing(6);
         horizontalLayout_InteractionPanel->setObjectName(QStringLiteral("horizontalLayout_InteractionPanel"));
         horizontalLayout_InteractionPanel->setContentsMargins(9, -1, 9, -1);
-        comboBox_FrequencySelector = new QComboBox(DAFFCentralWidget);
+        groupBox_ObjectView = new QGroupBox(DAFFCentralWidget);
+        groupBox_ObjectView->setObjectName(QStringLiteral("groupBox_ObjectView"));
+        gridLayout_3 = new QGridLayout(groupBox_ObjectView);
+        gridLayout_3->setSpacing(6);
+        gridLayout_3->setContentsMargins(11, 11, 11, 11);
+        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        doubleSpinBox_Phi = new QDoubleSpinBox(groupBox_ObjectView);
+        doubleSpinBox_Phi->setObjectName(QStringLiteral("doubleSpinBox_Phi"));
+        doubleSpinBox_Phi->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        doubleSpinBox_Phi->setDecimals(1);
+        doubleSpinBox_Phi->setMaximum(360);
+        doubleSpinBox_Phi->setSingleStep(5);
+
+        gridLayout_3->addWidget(doubleSpinBox_Phi, 0, 1, 1, 1);
+
+        label_2 = new QLabel(groupBox_ObjectView);
+        label_2->setObjectName(QStringLiteral("label_2"));
+
+        gridLayout_3->addWidget(label_2, 1, 0, 1, 1);
+
+        doubleSpinBox_Theta = new QDoubleSpinBox(groupBox_ObjectView);
+        doubleSpinBox_Theta->setObjectName(QStringLiteral("doubleSpinBox_Theta"));
+        doubleSpinBox_Theta->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        doubleSpinBox_Theta->setDecimals(1);
+        doubleSpinBox_Theta->setMinimum(-90);
+        doubleSpinBox_Theta->setMaximum(90);
+        doubleSpinBox_Theta->setSingleStep(5);
+
+        gridLayout_3->addWidget(doubleSpinBox_Theta, 1, 1, 1, 1);
+
+        label = new QLabel(groupBox_ObjectView);
+        label->setObjectName(QStringLiteral("label"));
+
+        gridLayout_3->addWidget(label, 0, 0, 1, 1);
+
+        label_5 = new QLabel(groupBox_ObjectView);
+        label_5->setObjectName(QStringLiteral("label_5"));
+
+        gridLayout_3->addWidget(label_5, 0, 2, 1, 1);
+
+        label_6 = new QLabel(groupBox_ObjectView);
+        label_6->setObjectName(QStringLiteral("label_6"));
+
+        gridLayout_3->addWidget(label_6, 1, 2, 1, 1);
+
+
+        horizontalLayout_InteractionPanel->addWidget(groupBox_ObjectView);
+
+        groupBox_DataView = new QGroupBox(DAFFCentralWidget);
+        groupBox_DataView->setObjectName(QStringLiteral("groupBox_DataView"));
+        gridLayout_4 = new QGridLayout(groupBox_DataView);
+        gridLayout_4->setSpacing(6);
+        gridLayout_4->setContentsMargins(11, 11, 11, 11);
+        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        label_3 = new QLabel(groupBox_DataView);
+        label_3->setObjectName(QStringLiteral("label_3"));
+
+        gridLayout_4->addWidget(label_3, 0, 2, 1, 1);
+
+        doubleSpinBox_Alpha = new QDoubleSpinBox(groupBox_DataView);
+        doubleSpinBox_Alpha->setObjectName(QStringLiteral("doubleSpinBox_Alpha"));
+        doubleSpinBox_Alpha->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        doubleSpinBox_Alpha->setDecimals(1);
+        doubleSpinBox_Alpha->setMaximum(360);
+        doubleSpinBox_Alpha->setSingleStep(5);
+
+        gridLayout_4->addWidget(doubleSpinBox_Alpha, 0, 3, 1, 1);
+
+        doubleSpinBox_Beta = new QDoubleSpinBox(groupBox_DataView);
+        doubleSpinBox_Beta->setObjectName(QStringLiteral("doubleSpinBox_Beta"));
+        doubleSpinBox_Beta->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        doubleSpinBox_Beta->setDecimals(1);
+        doubleSpinBox_Beta->setMaximum(180);
+        doubleSpinBox_Beta->setSingleStep(5);
+
+        gridLayout_4->addWidget(doubleSpinBox_Beta, 1, 3, 1, 1);
+
+        label_4 = new QLabel(groupBox_DataView);
+        label_4->setObjectName(QStringLiteral("label_4"));
+
+        gridLayout_4->addWidget(label_4, 1, 2, 1, 1);
+
+        label_7 = new QLabel(groupBox_DataView);
+        label_7->setObjectName(QStringLiteral("label_7"));
+
+        gridLayout_4->addWidget(label_7, 0, 4, 1, 1);
+
+        label_8 = new QLabel(groupBox_DataView);
+        label_8->setObjectName(QStringLiteral("label_8"));
+
+        gridLayout_4->addWidget(label_8, 1, 4, 1, 1);
+
+
+        horizontalLayout_InteractionPanel->addWidget(groupBox_DataView);
+
+        groupBox_Record = new QGroupBox(DAFFCentralWidget);
+        groupBox_Record->setObjectName(QStringLiteral("groupBox_Record"));
+        formLayout = new QFormLayout(groupBox_Record);
+        formLayout->setSpacing(6);
+        formLayout->setContentsMargins(11, 11, 11, 11);
+        formLayout->setObjectName(QStringLiteral("formLayout"));
+        label_9 = new QLabel(groupBox_Record);
+        label_9->setObjectName(QStringLiteral("label_9"));
+
+        formLayout->setWidget(0, QFormLayout::LabelRole, label_9);
+
+        spinBox_RecordIndex = new QSpinBox(groupBox_Record);
+        spinBox_RecordIndex->setObjectName(QStringLiteral("spinBox_RecordIndex"));
+        spinBox_RecordIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        spinBox_RecordIndex->setMaximum(64800);
+
+        formLayout->setWidget(0, QFormLayout::FieldRole, spinBox_RecordIndex);
+
+
+        horizontalLayout_InteractionPanel->addWidget(groupBox_Record);
+
+        groupBox_Channel = new QGroupBox(DAFFCentralWidget);
+        groupBox_Channel->setObjectName(QStringLiteral("groupBox_Channel"));
+        formLayout_3 = new QFormLayout(groupBox_Channel);
+        formLayout_3->setSpacing(6);
+        formLayout_3->setContentsMargins(11, 11, 11, 11);
+        formLayout_3->setObjectName(QStringLiteral("formLayout_3"));
+        label_12 = new QLabel(groupBox_Channel);
+        label_12->setObjectName(QStringLiteral("label_12"));
+
+        formLayout_3->setWidget(1, QFormLayout::LabelRole, label_12);
+
+        spinBox_ChannelIndex = new QSpinBox(groupBox_Channel);
+        spinBox_ChannelIndex->setObjectName(QStringLiteral("spinBox_ChannelIndex"));
+        spinBox_ChannelIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        spinBox_ChannelIndex->setMaximum(12);
+
+        formLayout_3->setWidget(1, QFormLayout::FieldRole, spinBox_ChannelIndex);
+
+
+        horizontalLayout_InteractionPanel->addWidget(groupBox_Channel);
+
+        groupBox_Frequency = new QGroupBox(DAFFCentralWidget);
+        groupBox_Frequency->setObjectName(QStringLiteral("groupBox_Frequency"));
+        formLayout_4 = new QFormLayout(groupBox_Frequency);
+        formLayout_4->setSpacing(6);
+        formLayout_4->setContentsMargins(11, 11, 11, 11);
+        formLayout_4->setObjectName(QStringLiteral("formLayout_4"));
+        label_11 = new QLabel(groupBox_Frequency);
+        label_11->setObjectName(QStringLiteral("label_11"));
+
+        formLayout_4->setWidget(0, QFormLayout::LabelRole, label_11);
+
+        spinBox_FrequencyIndex = new QSpinBox(groupBox_Frequency);
+        spinBox_FrequencyIndex->setObjectName(QStringLiteral("spinBox_FrequencyIndex"));
+        spinBox_FrequencyIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        formLayout_4->setWidget(0, QFormLayout::FieldRole, spinBox_FrequencyIndex);
+
+        label_10 = new QLabel(groupBox_Frequency);
+        label_10->setObjectName(QStringLiteral("label_10"));
+
+        formLayout_4->setWidget(1, QFormLayout::LabelRole, label_10);
+
+        comboBox_FrequencySelector = new QComboBox(groupBox_Frequency);
         comboBox_FrequencySelector->setObjectName(QStringLiteral("comboBox_FrequencySelector"));
 
-        horizontalLayout_InteractionPanel->addWidget(comboBox_FrequencySelector);
+        formLayout_4->setWidget(1, QFormLayout::FieldRole, comboBox_FrequencySelector);
 
-        pushButton_Channel1 = new QPushButton(DAFFCentralWidget);
-        pushButton_Channel1->setObjectName(QStringLiteral("pushButton_Channel1"));
 
-        horizontalLayout_InteractionPanel->addWidget(pushButton_Channel1);
-
-        pushButton_Channel2 = new QPushButton(DAFFCentralWidget);
-        pushButton_Channel2->setObjectName(QStringLiteral("pushButton_Channel2"));
-
-        horizontalLayout_InteractionPanel->addWidget(pushButton_Channel2);
+        horizontalLayout_InteractionPanel->addWidget(groupBox_Frequency);
 
 
         layout_Visualization->addLayout(horizontalLayout_InteractionPanel);
@@ -323,7 +503,7 @@ public:
         DAFFViewer->setCentralWidget(DAFFCentralWidget);
         DAFFMenuBar = new QMenuBar(DAFFViewer);
         DAFFMenuBar->setObjectName(QStringLiteral("DAFFMenuBar"));
-        DAFFMenuBar->setGeometry(QRect(0, 0, 1024, 21));
+        DAFFMenuBar->setGeometry(QRect(0, 0, 1102, 21));
         menuFile = new QMenu(DAFFMenuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuAbout = new QMenu(DAFFMenuBar);
@@ -423,13 +603,21 @@ public:
 #endif // QT_NO_TOOLTIP
         actionCreate->setShortcut(QApplication::translate("DAFFViewer", "N", 0));
         actionIncrease_channel->setText(QApplication::translate("DAFFViewer", "Increase channel", 0));
+        actionIncrease_channel->setShortcut(QApplication::translate("DAFFViewer", "PgUp", 0));
         actionDecrease_channel->setText(QApplication::translate("DAFFViewer", "Decrease channel", 0));
+        actionDecrease_channel->setShortcut(QApplication::translate("DAFFViewer", "PgDown", 0));
         actionIncrease_Frequency->setText(QApplication::translate("DAFFViewer", "Increase frequency", 0));
+        actionIncrease_Frequency->setShortcut(QApplication::translate("DAFFViewer", "+", 0));
         actionDecrease_Frequency->setText(QApplication::translate("DAFFViewer", "Decrease frequency", 0));
+        actionDecrease_Frequency->setShortcut(QApplication::translate("DAFFViewer", "-", 0));
         actionIncrease_phi->setText(QApplication::translate("DAFFViewer", "Increase phi", 0));
+        actionIncrease_phi->setShortcut(QApplication::translate("DAFFViewer", "Right", 0));
         actionDecrease_phi->setText(QApplication::translate("DAFFViewer", "Decrease phi", 0));
+        actionDecrease_phi->setShortcut(QApplication::translate("DAFFViewer", "Left", 0));
         actionIncrease_theta->setText(QApplication::translate("DAFFViewer", "Increase theta", 0));
+        actionIncrease_theta->setShortcut(QApplication::translate("DAFFViewer", "Up", 0));
         actionDecrease_theta->setText(QApplication::translate("DAFFViewer", "Decrease theta", 0));
+        actionDecrease_theta->setShortcut(QApplication::translate("DAFFViewer", "Down", 0));
         actionIncrease_alpha->setText(QApplication::translate("DAFFViewer", "Increase alpha", 0));
         actionDecrease_alpha->setText(QApplication::translate("DAFFViewer", "Decrease alpha", 0));
         actionIncrease_beta->setText(QApplication::translate("DAFFViewer", "Increase beta", 0));
@@ -440,8 +628,23 @@ public:
         labelContentType->setText(QApplication::translate("DAFFViewer", "Content type", 0));
         groupBox_Metadata->setTitle(QApplication::translate("DAFFViewer", "DAFF Metadata", 0));
         groupBox_Properties->setTitle(QApplication::translate("DAFFViewer", "DAFF Properties", 0));
-        pushButton_Channel1->setText(QApplication::translate("DAFFViewer", "Channel 1", 0));
-        pushButton_Channel2->setText(QApplication::translate("DAFFViewer", "Channel 2", 0));
+        groupBox_ObjectView->setTitle(QApplication::translate("DAFFViewer", "Object view", 0));
+        label_2->setText(QApplication::translate("DAFFViewer", "Theta", 0));
+        label->setText(QApplication::translate("DAFFViewer", "Phi", 0));
+        label_5->setText(QApplication::translate("DAFFViewer", "\302\260", 0));
+        label_6->setText(QApplication::translate("DAFFViewer", "\302\260", 0));
+        groupBox_DataView->setTitle(QApplication::translate("DAFFViewer", "Data view", 0));
+        label_3->setText(QApplication::translate("DAFFViewer", "Alpha", 0));
+        label_4->setText(QApplication::translate("DAFFViewer", "Beta", 0));
+        label_7->setText(QApplication::translate("DAFFViewer", "\302\260", 0));
+        label_8->setText(QApplication::translate("DAFFViewer", "\302\260", 0));
+        groupBox_Record->setTitle(QApplication::translate("DAFFViewer", "Record", 0));
+        label_9->setText(QApplication::translate("DAFFViewer", "Index", 0));
+        groupBox_Channel->setTitle(QApplication::translate("DAFFViewer", "Channel", 0));
+        label_12->setText(QApplication::translate("DAFFViewer", "Index", 0));
+        groupBox_Frequency->setTitle(QApplication::translate("DAFFViewer", "Sample / Bin / Frequency", 0));
+        label_11->setText(QApplication::translate("DAFFViewer", "Index", 0));
+        label_10->setText(QApplication::translate("DAFFViewer", "Frequency", 0));
         menuFile->setTitle(QApplication::translate("DAFFViewer", "File", 0));
         menuAbout->setTitle(QApplication::translate("DAFFViewer", "About", 0));
         menuContent->setTitle(QApplication::translate("DAFFViewer", "Edit", 0));

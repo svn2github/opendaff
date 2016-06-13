@@ -30,46 +30,28 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 {
     ui->setupUi(this);
     showMaximized();
-	
-	// Global shortcuts
-	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_Left ), this ) );
-	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
-	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( IncreaseAlpha() ) );
-	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_Right ), this ) );
-	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
-	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( DecreaseAlpha() ) );
-	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_Up ), this ) );
-	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
-	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( IncreaseBeta() ) );
-	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_Down ), this ) );
-	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
-	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( DecreaseBeta() ) );
-	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_Plus ), this ) );
-	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
-	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( IncreaseFrequency() ) );
-	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_Minus ), this ) );
-	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
-	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( DecreaseFrequency() ) );
-	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_PageUp ), this ) );
-	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
-	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( IncreaseChannelIndex() ) );
-	m_vShortcuts.push_back( new QShortcut( QKeySequence( Qt::Key_PageDown ), this ) );
-	m_vShortcuts.back()->setContext( Qt::ApplicationShortcut );
-	connect( m_vShortcuts.back(), SIGNAL( activated() ), this, SLOT( DecreaseChannelIndex() ) );
 
 	connect( this, SIGNAL( ReadDAFF( const DAFFReader* ) ), ui->groupBox_Reader, SLOT( on_readDAFF( const DAFFReader* ) ) );
 	connect( this, SIGNAL( CloseDAFF() ), ui->groupBox_Reader, SLOT( on_closeDAFF() ) );
 
 	connect( this, SIGNAL( ReadDAFF( const DAFFReader* ) ), ui->DAFF3DPlot_VTKWidget, SLOT( on_readDAFF( const DAFFReader* ) ) );
 	connect( this, SIGNAL( CloseDAFF() ), ui->DAFF3DPlot_VTKWidget, SLOT( on_closeDAFF() ) );
-	connect( this, SIGNAL( ChangeFrequencyIndex( int ) ), ui->DAFF3DPlot_VTKWidget, SLOT( on_changeFrequencyIndex( int ) ) );
-	connect( this, SIGNAL( ChangeChannelIndex( int ) ), ui->DAFF3DPlot_VTKWidget, SLOT( on_changeChannelIndex( int ) ) );
+	connect( this, SIGNAL( SignalFrequencyIndexChanged( int ) ), ui->DAFF3DPlot_VTKWidget, SLOT( on_changeFrequencyIndex( int ) ) );
 
 	connect( this, SIGNAL( ReadDAFF( const DAFFReader* ) ), ui->tableView_Metadata, SLOT( on_readDAFF( const DAFFReader* ) ) );
 	connect( this, SIGNAL( CloseDAFF() ), ui->tableView_Metadata, SLOT( on_closeDAFF() ) );
 
 	connect( this, SIGNAL( ReadDAFF( const DAFFReader* ) ), ui->tableView_Properties, SLOT( on_readDAFF( const DAFFReader* ) ) );
 	connect( this, SIGNAL( CloseDAFF() ), ui->tableView_Properties, SLOT( on_closeDAFF() ) );
+
+	connect( this, SIGNAL( SignalContentLoaded( const DAFFContent* ) ), this, SLOT( LoadContent( const DAFFContent* ) ) );
+
+	// Frequency index conns
+	connect( this, SIGNAL( SignalFrequencyIndexChanged( int ) ), ui->spinBox_FrequencyIndex, SLOT( setValue( int ) ) );
+	connect( this, SIGNAL( SignalFrequencyIndexChanged( int ) ), ui->comboBox_FrequencySelector, SLOT( setCurrentIndex( int ) ) );
+	connect( this, SIGNAL( SignalFrequencyIndexChanged( int ) ), ui->DAFF3DPlot_VTKWidget, SLOT( on_changeFrequencyIndex( int ) ) );
+	connect( ui->spinBox_FrequencyIndex, SIGNAL( valueChanged( int ) ), this, SLOT( ChangeFrequencyIndex( int ) ) );
+	connect( ui->comboBox_FrequencySelector, SIGNAL( currentIndexChanged( int ) ), this, SLOT( ChangeFrequencyIndex( int ) ) );
 
 	ui->DAFFStatusBar->showMessage( "No DAFF file loaded." );
 
@@ -90,9 +72,6 @@ QDAFFViewerWindow::~QDAFFViewerWindow()
         m_pDAFFReader->closeFile();
 
     delete m_pDAFFReader;
-
-	for( size_t i = 0; i < m_vShortcuts.size(); i++ )
-		delete m_vShortcuts[ i ];
 }
 
 void QDAFFViewerWindow::on_actionOpen_triggered()
@@ -151,6 +130,7 @@ void QDAFFViewerWindow::OpenDAFFFile( QString sPath, bool bQuiet )
 		QString sMsg = QString( "DAFF file '" + oPassedFile.fileName() + "' sucessfully loaded." );
 		ui->DAFFStatusBar->showMessage( sMsg );
 		emit ReadDAFF( m_pDAFFReader );
+		emit SignalContentLoaded( m_pDAFFReader->getContent() );
 	}
 }
 
@@ -252,7 +232,7 @@ void QDAFFViewerWindow::DecreaseBeta()
 		m_fShowBetaDeg += 180.0f;
 }
 
-void QDAFFViewerWindow::IncreaseFrequency()
+void QDAFFViewerWindow::IncreaseFrequencyIndex()
 {
 	if( !m_pDAFFReader->isFileOpened() )
 		return;
@@ -266,7 +246,7 @@ void QDAFFViewerWindow::IncreaseFrequency()
 		if( m_iShowFrequencyIndex < int( vFrequencies.size() ) - 1 )
 		{
 			m_iShowFrequencyIndex++;
-			emit ChangeFrequencyIndex( m_iShowFrequencyIndex );
+			emit SignalFrequencyIndexChanged( m_iShowFrequencyIndex );
 		}
 		break;
 	}
@@ -277,7 +257,7 @@ void QDAFFViewerWindow::IncreaseFrequency()
 		if( m_iShowFrequencyIndex < int( vFrequencies.size() ) - 1 )
 		{
 			m_iShowFrequencyIndex++;
-			emit ChangeFrequencyIndex( m_iShowFrequencyIndex );
+			emit SignalFrequencyIndexChanged( m_iShowFrequencyIndex );
 		}
 		break;
 	}
@@ -287,7 +267,7 @@ void QDAFFViewerWindow::IncreaseFrequency()
 		if( m_iShowFrequencyIndex < pC->getNumDFTCoeffs() - 1 )
 		{
 			m_iShowFrequencyIndex++;
-			emit ChangeFrequencyIndex( m_iShowFrequencyIndex );
+			emit SignalFrequencyIndexChanged( m_iShowFrequencyIndex );
 		}
 		break;
 	}
@@ -298,14 +278,14 @@ void QDAFFViewerWindow::IncreaseFrequency()
 		if( m_iShowFrequencyIndex < int( vFrequencies.size() ) - 1 )
 		{
 			m_iShowFrequencyIndex++;
-			emit ChangeFrequencyIndex( m_iShowFrequencyIndex );
+			emit SignalFrequencyIndexChanged( m_iShowFrequencyIndex );
 		}
 		break;
 	}
 	}
 }
 
-void QDAFFViewerWindow::DecreaseFrequency()
+void QDAFFViewerWindow::DecreaseFrequencyIndex()
 {
 	if( !m_pDAFFReader->isFileOpened() )
 		return;
@@ -313,8 +293,17 @@ void QDAFFViewerWindow::DecreaseFrequency()
 	if( m_iShowFrequencyIndex > 0 )
 	{
 		m_iShowFrequencyIndex--;
-		emit ChangeFrequencyIndex( m_iShowFrequencyIndex );
-	}	
+		emit SignalFrequencyIndexChanged( m_iShowFrequencyIndex );
+	}
+}
+
+void QDAFFViewerWindow::ChangeFrequencyIndex( int iIndex )
+{
+	if( !m_pDAFFReader->isFileOpened() || iIndex == -1 )
+		return;
+
+	m_iShowFrequencyIndex = iIndex;
+	emit SignalFrequencyIndexChanged( iIndex );
 }
 
 void QDAFFViewerWindow::IncreaseChannelIndex()
@@ -342,7 +331,7 @@ void QDAFFViewerWindow::DecreaseChannelIndex()
 	}
 }
 
-void QDAFFViewerWindow::ShowChannelIndex( int iChannelIndex )
+void QDAFFViewerWindow::ChangeChannelIndex( int iChannelIndex )
 {
 	if( m_pDAFFReader->isFileOpened() == false )
 		return;
@@ -363,4 +352,81 @@ void QDAFFViewerWindow::SetDAFFObjectView()
 void QDAFFViewerWindow::SetDAFFDataView()
 {
 	m_iShowDAFFView = DAFF_DATA_VIEW;
+}
+
+void QDAFFViewerWindow::LoadContent( const DAFFContent* pContent )
+{
+	// Prepare UI objects to fit to this DAFF file props
+
+	// Channels
+	int N = pContent->getProperties()->getNumberOfChannels();
+	ui->spinBox_ChannelIndex->setMaximum( N - 1 );
+	ui->spinBox_ChannelIndex->setValue( 0 );
+
+	// Alpha
+	ui->doubleSpinBox_Alpha->setMinimum( pContent->getProperties()->getAlphaStart() );
+	ui->doubleSpinBox_Alpha->setMaximum( pContent->getProperties()->getAlphaEnd() );
+	ui->doubleSpinBox_Alpha->setSingleStep( pContent->getProperties()->getAlphaResolution() );
+
+	// Beta
+	ui->doubleSpinBox_Beta->setMinimum( pContent->getProperties()->getBetaStart() );
+	ui->doubleSpinBox_Beta->setMaximum( pContent->getProperties()->getBetaEnd() );
+	ui->doubleSpinBox_Beta->setSingleStep( pContent->getProperties()->getBetaResolution() );
+	
+	switch( pContent->getProperties()->getContentType() )
+	{
+	case DAFF_MAGNITUDE_SPECTRUM:
+	{
+		// Frequency
+		ui->groupBox_Frequency->setTitle( "Frequency" );
+		const DAFFContentMS* pC = dynamic_cast< const DAFFContentMS* >( pContent );
+		const std::vector< float >& vfFrequencies = pC->getFrequencies();
+		ui->spinBox_FrequencyIndex->setMaximum( int( vfFrequencies.size() ) - 1 );
+		ui->comboBox_FrequencySelector->clear();
+		for( size_t i = 0; i < vfFrequencies.size(); i++ )
+		{
+			ui->comboBox_FrequencySelector->addItem( QString::number( vfFrequencies[ i ] ) + " Hz" );
+			if( std::abs( vfFrequencies[ i ] - 1000.0f ) < 10.0f )
+				ui->comboBox_FrequencySelector->setCurrentIndex( int( i ) );
+		}
+		break;
+	}
+	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+	{
+		ui->groupBox_Frequency->setTitle( "Frequency" );
+		const DAFFContentMPS* pC = dynamic_cast< const DAFFContentMPS* >( m_pDAFFReader->getContent() );
+		const std::vector< float >& vFrequencies = pC->getFrequencies();
+		ui->spinBox_FrequencyIndex->setMaximum( int( vFrequencies.size() ) - 1 );
+		break;
+	}
+	case DAFF_DFT_SPECTRUM:
+	{
+		ui->groupBox_Frequency->setTitle( "Frequency bin" );
+		const DAFFContentDFT* pC = dynamic_cast< const DAFFContentDFT* >( m_pDAFFReader->getContent() );
+		ui->spinBox_FrequencyIndex->setMaximum( pC->getNumDFTCoeffs() - 1 );
+		break;
+	}
+	case DAFF_PHASE_SPECTRUM:
+	{
+		ui->groupBox_Frequency->setTitle( "Frequency" );
+		const DAFFContentPS* pC = dynamic_cast< const DAFFContentPS* >( m_pDAFFReader->getContent() );
+		const std::vector< float >& vFrequencies = pC->getFrequencies();
+		ui->spinBox_FrequencyIndex->setMaximum( int( vFrequencies.size() ) - 1 );
+		break;
+	}
+	case DAFF_IMPULSE_RESPONSE:
+	{
+		ui->groupBox_Frequency->setTitle( "Sample" );
+	}
+	}
+}
+
+void QDAFFViewerWindow::on_actionIncrease_Frequency_triggered()
+{
+    IncreaseFrequencyIndex();
+}
+
+void QDAFFViewerWindow::on_actionDecrease_Frequency_triggered()
+{
+    DecreaseFrequencyIndex();
 }

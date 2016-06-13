@@ -16,6 +16,7 @@
 #include <QSettings>
 
 class DAFFReader;
+class DAFFContent;
 
 namespace Ui {
 class DAFFViewer;
@@ -33,6 +34,7 @@ public:
 	
 
 private slots:
+
     void on_actionOpen_triggered();
     void on_actionQuit_triggered();
     void on_actionClose_triggered();
@@ -46,28 +48,36 @@ private slots:
 	void DecreaseAlpha();
 	void IncreaseBeta();
 	void DecreaseBeta();
-	void IncreaseFrequency();
-	void DecreaseFrequency();
+
+	void IncreaseFrequencyIndex();
+	void DecreaseFrequencyIndex();
+	void ChangeFrequencyIndex( int );
+	
 	void IncreaseChannelIndex();
 	void DecreaseChannelIndex();
-
-	void ShowChannelIndex( int );
+	void ChangeChannelIndex( int );
 
 	void SetDAFFObjectView();
 	void SetDAFFDataView();
 
+	void LoadContent( const DAFFContent* );
+
+    void on_actionIncrease_Frequency_triggered();
+
+    void on_actionDecrease_Frequency_triggered();
+
 signals:
 	void ReadDAFF( const DAFFReader* );
+	void SignalContentLoaded( const DAFFContent* );
 	void CloseDAFF();
 	void ChangeAlpha( float fAlphaDegrees );
 	void ChangeBeta( float fBetaDegrees );
-	void ChangeFrequencyIndex( int iIndex );
-	void ChangeChannelIndex( int iChannelIndex );
+	void SignalFrequencyIndexChanged( int iIndex );
+	void SignalChannelIndexChanged( int iChannelIndex );
 
 private:
     Ui::DAFFViewer *ui;
     QSettings m_qSettings;
-	std::vector< QShortcut* > m_vShortcuts;
 
     DAFFReader* m_pDAFFReader;
 
