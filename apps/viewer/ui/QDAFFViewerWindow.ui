@@ -433,7 +433,7 @@
           </property>
           <layout class="QGridLayout" name="gridLayout">
            <item row="1" column="0">
-            <widget class="QDAFF2DPlot" name="DAFF2DPlot_Frame">
+            <widget class="QDAFF2DPlotFrame" name="Frame_Frame">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -720,15 +720,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QDAFF2DPlot</class>
-   <extends>QFrame</extends>
-   <header>QDAFF2DPlot.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QDAFFPropertiesTableView</class>
    <extends>QTableView</extends>
    <header>QDAFFPropertiesTable.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QDAFF2DPlotFrame</class>
+   <extends>QFrame</extends>
+   <header>QDAFF2DPlotFrame.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

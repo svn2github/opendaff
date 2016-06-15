@@ -70,7 +70,7 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 	m_fileHeader.fixEndianness();
 
 	// Check signature
-	if( !( ( m_fileHeader.pcSignature[0] == 'F' ) && ( m_fileHeader.pcSignature[1] == 'W' ) ) )
+	if( !( ( m_fileHeader.pcSignature[ 0 ] == 'F' ) && ( m_fileHeader.pcSignature[ 1 ] == 'W' ) ) )
 	{
 		// File is not an OpenDAFF database.
 		tidyup();
@@ -97,27 +97,26 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 	// Read the file block table
 	size_t iFileBlockTableSize = m_fileHeader.iNumFileBlocks * sizeof( DAFFFileBlockEntry );
 	m_pFileBlockTable = ( DAFFFileBlockEntry* ) DAFF::malloc_aligned16( iFileBlockTableSize );
-	if( fread(m_pFileBlockTable, 1, iFileBlockTableSize, m_file) != iFileBlockTableSize )
+	if( fread( m_pFileBlockTable, 1, iFileBlockTableSize, m_file ) != iFileBlockTableSize )
 	{
 		tidyup();
 		return DAFF_FILE_INVALID;
 	}
 
-	for( int i=0; i<m_fileHeader.iNumFileBlocks; i++ )
-		m_pFileBlockTable[i].fixEndianness();
+	for( int i = 0; i < m_fileHeader.iNumFileBlocks; i++ )
+		m_pFileBlockTable[ i ].fixEndianness();
 
-	/*  DEBUG:
+#if ( DAFF_DEBUG == 1 )
 	for( int i=0; i<m_fileHeader.iNumFileBlocks; i++ )
 		printf( "FILE BLOCK[%d] = { ID = 0x%04X, offset = %llu, size = %llu bytes }\n",
-		        i, m_pFileBlockTable[i].iID, m_pFileBlockTable[i].ui64Offset, m_pFileBlockTable[i].ui64Size );
-	*/
+		i, m_pFileBlockTable[i].iID, m_pFileBlockTable[i].ui64Offset, m_pFileBlockTable[i].ui64Size );
+#endif
 
 	// Check for correctness
-	for( int i=0; i<m_fileHeader.iNumFileBlocks; i++ )
+	for( int i = 0; i < m_fileHeader.iNumFileBlocks; i++ )
 	{
 		// Note: IDs are not checked
-		if( ( m_pFileBlockTable[ i ].ui64Offset < ( sizeof( DAFFFileHeader ) + iFileBlockTableSize ) ) ||
-			( m_pFileBlockTable[i].ui64Size <= 0 ) )
+		if( ( m_pFileBlockTable[ i ].ui64Offset < ( sizeof( DAFFFileHeader ) + iFileBlockTableSize ) ) )
 		{
 			tidyup();
 			return DAFF_FILE_INVALID;
@@ -130,14 +129,14 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 
 	// Search for the main header block
 	DAFFFileBlockEntry* pfbMainHeader;
-	if( getFirstFileBlockByID( FILEBLOCK_DAFF1_MAIN_HEADER_ID, pfbMainHeader) != 1 )
+	if( getFirstFileBlockByID( FILEBLOCK_DAFF1_MAIN_HEADER_ID, pfbMainHeader ) != 1 )
 	{
 		tidyup();
 		return DAFF_FILE_INVALID;
 	}
 
 	m_pMainHeader = ( DAFFMainHeader* ) DAFF::malloc_aligned16( sizeof( DAFFMainHeader ) );
-	fseek(m_file, (long) pfbMainHeader->ui64Offset, SEEK_SET );
+	fseek( m_file, ( long ) pfbMainHeader->ui64Offset, SEEK_SET );
 	if( fread( m_pMainHeader, 1, sizeof( DAFFMainHeader ), m_file ) != sizeof( DAFFMainHeader ) )
 	{
 		tidyup();
@@ -147,7 +146,7 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 	m_pMainHeader->fixEndianness();
 
 	// Content type
-	switch (m_pMainHeader->iContentType)
+	switch( m_pMainHeader->iContentType )
 	{
 	case DAFF_IMPULSE_RESPONSE:
 	case DAFF_MAGNITUDE_SPECTRUM:
@@ -163,7 +162,7 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 	};
 
 	// Quantization
-	switch (m_pMainHeader->iQuantization)
+	switch( m_pMainHeader->iQuantization )
 	{
 	case DAFF_INT16:
 	case DAFF_INT24:
@@ -189,11 +188,11 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 		return DAFF_FILE_ALPHA_ANGLES_INVALID;
 
 	// alpha start value must not be 360&deg;
-	if( (m_pMainHeader->fAlphaStart < 0.0f) || (m_pMainHeader->fAlphaStart >= 360.0f) )
+	if( ( m_pMainHeader->fAlphaStart < 0.0f ) || ( m_pMainHeader->fAlphaStart >= 360.0f ) )
 		return DAFF_FILE_ALPHA_ANGLES_INVALID;
 
 	// alpha stop value may be 360&deg; indicating that the full alpha range is covered.
-	if( (m_pMainHeader->fAlphaEnd < 0.0f) || (m_pMainHeader->fAlphaEnd > 360.0f) )
+	if( ( m_pMainHeader->fAlphaEnd < 0.0f ) || ( m_pMainHeader->fAlphaEnd > 360.0f ) )
 		return DAFF_FILE_ALPHA_ANGLES_INVALID;
 
 	// Beta angle validation
@@ -203,17 +202,17 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 	if( m_pMainHeader->fBetaStart > m_pMainHeader->fBetaEnd )
 		return DAFF_FILE_BETA_ANGLES_INVALID;
 
-	if( (m_pMainHeader->fBetaStart < 0.0f) || (m_pMainHeader->fBetaStart > 180.0f) )
+	if( ( m_pMainHeader->fBetaStart < 0.0f ) || ( m_pMainHeader->fBetaStart > 180.0f ) )
 		return DAFF_FILE_BETA_ANGLES_INVALID;
 
-	if( (m_pMainHeader->fBetaEnd < 0.0f) || (m_pMainHeader->fBetaEnd > 180.0f) )
+	if( ( m_pMainHeader->fBetaEnd < 0.0f ) || ( m_pMainHeader->fBetaEnd > 180.0f ) )
 		return DAFF_FILE_BETA_ANGLES_INVALID;
 
 	// Orientation
 	m_orientationDefault.fYawAngleDeg = m_pMainHeader->fOrientYaw;
 	m_orientationDefault.fPitchAngleDeg = m_pMainHeader->fOrientPitch;
 	m_orientationDefault.fRollAngleDeg = m_pMainHeader->fOrientRoll;
-	m_tTrans.setOrientation(m_orientationDefault);
+	m_tTrans.setOrientation( m_orientationDefault );
 
 	/*
 	 *  3rd step: Load the content header, validate it for correctness
@@ -226,20 +225,20 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 		return DAFF_FILE_CORRUPTED;
 	}
 
-	m_pContentHeader = (char*) DAFF::malloc_aligned16( ( size_t ) pfbContentHeader->ui64Size );
-	fseek( m_file, (long) pfbContentHeader->ui64Offset, SEEK_SET );
-	if( fread(m_pContentHeader, 1, (size_t) pfbContentHeader->ui64Size, m_file) != (size_t) pfbContentHeader->ui64Size )
+	m_pContentHeader = ( char* ) DAFF::malloc_aligned16( ( size_t ) pfbContentHeader->ui64Size );
+	fseek( m_file, ( long ) pfbContentHeader->ui64Offset, SEEK_SET );
+	if( fread( m_pContentHeader, 1, ( size_t ) pfbContentHeader->ui64Size, m_file ) != ( size_t ) pfbContentHeader->ui64Size )
 	{
 		tidyup();
 		return DAFF_FILE_CORRUPTED;
 	}
 
-	float* pfFreqs=0;
+	float* pfFreqs = 0;
 
 	switch( m_pMainHeader->iContentType )
 	{
 	case DAFF_IMPULSE_RESPONSE:
-		m_pContentHeaderIR = static_cast<DAFFContentHeaderIR*>( m_pContentHeader );
+		m_pContentHeaderIR = static_cast< DAFFContentHeaderIR* >( m_pContentHeader );
 		m_pContentHeaderIR->fixEndianness();
 
 		if( m_pContentHeaderIR->fSamplerate < 0.0f )
@@ -249,75 +248,75 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 			( m_pContentHeaderIR->iMaxEffectiveFilterLength > m_pMainHeader->iElementsPerRecord ) )
 			return DAFF_FILE_CONTENT_INVALID_PARAMETER;
 
-		if( ( m_pContentHeaderIR->iMinFilterOffset < 0 ) || 
+		if( ( m_pContentHeaderIR->iMinFilterOffset < 0 ) ||
 			( m_pContentHeaderIR->iMinFilterOffset > m_pMainHeader->iElementsPerRecord ) )
 			return DAFF_FILE_CONTENT_INVALID_PARAMETER;
 
 		break;
 
 	case DAFF_MAGNITUDE_SPECTRUM:
-		m_pContentHeaderMS = static_cast<DAFFContentHeaderMS*>( m_pContentHeader );
+		m_pContentHeaderMS = static_cast< DAFFContentHeaderMS* >( m_pContentHeader );
 		m_pContentHeaderMS->fixEndianness();
 
-		if (m_pContentHeaderMS->iNumFreqs <= 0)
+		if( m_pContentHeaderMS->iNumFreqs <= 0 )
 			return DAFF_FILE_CONTENT_INVALID_PARAMETER;
 
-		pfFreqs = (float*) ((char*) m_pContentHeader + 8); 
+		pfFreqs = ( float* ) ( ( char* ) m_pContentHeader + 8 );
 
 		// Fix the endianness of the frequency list
-		DAFF::le2se_4byte(pfFreqs, m_pContentHeaderMS->iNumFreqs);
+		DAFF::le2se_4byte( pfFreqs, m_pContentHeaderMS->iNumFreqs );
 
 		// Load the (dynamically sized) frequency list
-		m_vfFreqs.resize(m_pContentHeaderMS->iNumFreqs);
-		for( int i=0; i<m_pContentHeaderMS->iNumFreqs; i++ )
-			m_vfFreqs[i] = pfFreqs[i];
-				
+		m_vfFreqs.resize( m_pContentHeaderMS->iNumFreqs );
+		for( int i = 0; i < m_pContentHeaderMS->iNumFreqs; i++ )
+			m_vfFreqs[ i ] = pfFreqs[ i ];
+
 		break;
-	
+
 	case DAFF_PHASE_SPECTRUM:
-		m_pContentHeaderPS = static_cast<DAFFContentHeaderPS*>( m_pContentHeader );
+		m_pContentHeaderPS = static_cast< DAFFContentHeaderPS* >( m_pContentHeader );
 		m_pContentHeaderPS->fixEndianness();
 
-		if (m_pContentHeaderPS->iNumFreqs <= 0)
+		if( m_pContentHeaderPS->iNumFreqs <= 0 )
 			return DAFF_FILE_CONTENT_INVALID_PARAMETER;
 
-		pfFreqs = (float*) ((char*) m_pContentHeader + 8); 
+		pfFreqs = ( float* ) ( ( char* ) m_pContentHeader + 8 );
 
 		// Fix the endianness of the frequency list
-		DAFF::le2se_4byte(pfFreqs, m_pContentHeaderPS->iNumFreqs);
+		DAFF::le2se_4byte( pfFreqs, m_pContentHeaderPS->iNumFreqs );
 
 		// Load the (dynamically sized) frequency list
-		m_vfFreqs.resize(m_pContentHeaderPS->iNumFreqs);
-		for (int i=0; i<m_pContentHeaderPS->iNumFreqs; i++) m_vfFreqs[i] = pfFreqs[i];
-				
+		m_vfFreqs.resize( m_pContentHeaderPS->iNumFreqs );
+		for( int i = 0; i < m_pContentHeaderPS->iNumFreqs; i++ ) m_vfFreqs[ i ] = pfFreqs[ i ];
+
 		break;
-	
+
 	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
-		m_pContentHeaderMPS = static_cast<DAFFContentHeaderMPS*>( m_pContentHeader );
+		m_pContentHeaderMPS = static_cast< DAFFContentHeaderMPS* >( m_pContentHeader );
 		m_pContentHeaderMPS->fixEndianness();
 
-		if (m_pContentHeaderMPS->iNumFreqs <= 0)
+		if( m_pContentHeaderMPS->iNumFreqs <= 0 )
 			return DAFF_FILE_CONTENT_INVALID_PARAMETER;
 
-		pfFreqs = (float*) ((char*) m_pContentHeader + 8); 
+		pfFreqs = ( float* ) ( ( char* ) m_pContentHeader + 8 );
 
 		// Fix the endianness of the frequency list
-		DAFF::le2se_4byte(pfFreqs, m_pContentHeaderMPS->iNumFreqs);
+		DAFF::le2se_4byte( pfFreqs, m_pContentHeaderMPS->iNumFreqs );
 
 		// Load the (dynamically sized) frequency list
-		m_vfFreqs.resize(m_pContentHeaderMPS->iNumFreqs);
-		for (int i=0; i<m_pContentHeaderMPS->iNumFreqs; i++) m_vfFreqs[i] = pfFreqs[i];
-				
+		m_vfFreqs.resize( m_pContentHeaderMPS->iNumFreqs );
+		for( int i = 0; i < m_pContentHeaderMPS->iNumFreqs; i++ ) m_vfFreqs[ i ] = pfFreqs[ i ];
+
 		break;
-	
+
 	case DAFF_DFT_SPECTRUM:
-		m_pContentHeaderDFT = static_cast<DAFFContentHeaderDFT*>( m_pContentHeader );
+		m_pContentHeaderDFT = static_cast< DAFFContentHeaderDFT* >( m_pContentHeader );
 		m_pContentHeaderDFT->fixEndianness();
 
-		if ((m_pContentHeaderDFT->iNumDFTCoeffs != m_pContentHeaderDFT->iTransformSize) &&
-			(m_pContentHeaderDFT->iNumDFTCoeffs != floor(m_pContentHeaderDFT->iTransformSize/2.0)+1))
+		if( ( m_pContentHeaderDFT->iNumDFTCoeffs != m_pContentHeaderDFT->iTransformSize ) &&
+			( m_pContentHeaderDFT->iNumDFTCoeffs != floor( m_pContentHeaderDFT->iTransformSize / 2.0 ) + 1 ) )
 			return DAFF_FILE_CONTENT_INVALID_PARAMETER;
-				
+
 		break;
 	};
 
@@ -331,9 +330,9 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 		return DAFF_FILE_CORRUPTED;
 	}
 
-	m_pRecordDescriptorBlock = (char*) DAFF::malloc_aligned16( (size_t) m_pRecordDescriptorTable->ui64Size );
-	fseek( m_file, (long) m_pRecordDescriptorTable->ui64Offset, SEEK_SET );
-	if( fread( m_pRecordDescriptorBlock, 1, (size_t) m_pRecordDescriptorTable->ui64Size, m_file ) != (size_t) m_pRecordDescriptorTable->ui64Size )
+	m_pRecordDescriptorBlock = ( char* ) DAFF::malloc_aligned16( ( size_t ) m_pRecordDescriptorTable->ui64Size );
+	fseek( m_file, ( long ) m_pRecordDescriptorTable->ui64Offset, SEEK_SET );
+	if( fread( m_pRecordDescriptorBlock, 1, ( size_t ) m_pRecordDescriptorTable->ui64Size, m_file ) != ( size_t ) m_pRecordDescriptorTable->ui64Size )
 	{
 		tidyup();
 		return DAFF_FILE_CORRUPTED;
@@ -348,9 +347,9 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 		assert( m_iRecordChannelDescSize == 20 );
 
 		// Fix endianness for channel descriptors and metadata index
-		for( int i=0; i<m_pMainHeader->iNumRecords; i++ )
+		for( int i = 0; i < m_pMainHeader->iNumRecords; i++ )
 		{
-			for( int c=0; c<m_pMainHeader->iNumChannels; c++ )
+			for( int c = 0; c < m_pMainHeader->iNumChannels; c++ )
 			{
 				DAFFRecordChannelDescIR* pDesc = reinterpret_cast< DAFFRecordChannelDescIR* >( getRecordChannelDescPtr( i, c ) );
 				pDesc->fixEndianness();
@@ -369,9 +368,9 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 		m_iRecordChannelDescSize = sizeof( DAFFRecordChannelDescDefault );
 
 		// Fix endianness for channel descriptors and metadata index
-		for( int i=0; i<m_pMainHeader->iNumRecords; i++ )
+		for( int i = 0; i < m_pMainHeader->iNumRecords; i++ )
 		{
-			for( int c=0; c<m_pMainHeader->iNumChannels; c++ )
+			for( int c = 0; c < m_pMainHeader->iNumChannels; c++ )
 			{
 				DAFFRecordChannelDescDefault* pDesc = reinterpret_cast< DAFFRecordChannelDescDefault* >( getRecordChannelDescPtr( i, c ) );
 				pDesc->fixEndianness();
@@ -395,27 +394,27 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 	}
 
 	m_pDataBlock = DAFF::malloc_aligned16( ( size_t ) m_pDataFileBlock->ui64Size );
-	fseek( m_file, (long) m_pDataFileBlock->ui64Offset, SEEK_SET );
-	if( fread( m_pDataBlock, 1, (size_t) m_pDataFileBlock->ui64Size, m_file ) != (size_t) m_pDataFileBlock->ui64Size )
+	fseek( m_file, ( long ) m_pDataFileBlock->ui64Offset, SEEK_SET );
+	if( fread( m_pDataBlock, 1, ( size_t ) m_pDataFileBlock->ui64Size, m_file ) != ( size_t ) m_pDataFileBlock->ui64Size )
 	{
 		DAFF::free_aligned16( m_pDataBlock );
 		tidyup();
 		return DAFF_FILE_CORRUPTED;
-	} 
+	}
 
 	// Fix the endianess of the data
 	switch( m_pMainHeader->iQuantization )
 	{
 	case DAFF_INT16:
-		DAFF::le2se_2byte( m_pDataBlock, (size_t) ( m_pDataFileBlock->ui64Size / 2 ) );
+		DAFF::le2se_2byte( m_pDataBlock, ( size_t ) ( m_pDataFileBlock->ui64Size / 2 ) );
 		break;
 
 	case DAFF_INT24:
-		DAFF::le2se_3byte( m_pDataBlock, (size_t) ( m_pDataFileBlock->ui64Size / 3 ) );
+		DAFF::le2se_3byte( m_pDataBlock, ( size_t ) ( m_pDataFileBlock->ui64Size / 3 ) );
 		break;
 
 	case DAFF_FLOAT32:
-		DAFF::le2se_4byte( m_pDataBlock, (size_t) ( m_pDataFileBlock->ui64Size / 4 ) );
+		DAFF::le2se_4byte( m_pDataBlock, ( size_t ) ( m_pDataFileBlock->ui64Size / 4 ) );
 		break;
 	}
 
@@ -430,7 +429,15 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 		return DAFF_FILE_CORRUPTED;
 	}
 
-	if( pMetadataFileBlock != NULL )
+	if( pMetadataFileBlock == nullptr )
+	{
+		m_vpMetadata.push_back( new DAFFMetadataImpl ); // Empty
+	}
+	else if( pMetadataFileBlock->ui64Size == 0 )
+	{
+		m_vpMetadata.push_back( new DAFFMetadataImpl ); // Empty  )
+	}
+	else
 	{
 		// Metadata block present
 		void* pMetadataBuf = DAFF::malloc_aligned16( ( size_t ) pMetadataFileBlock->ui64Size );
@@ -465,11 +472,7 @@ int DAFFReaderImpl::openFile( const std::string& sFilename )
 		}
 		DAFF::free_aligned16( pMetadataBuf );
 	}
-	else
-	{
-		m_vpMetadata.push_back( new DAFFMetadataImpl ); // Empty
-	}
-	
+
 	// Everything worked fine ... Close the file
 	fclose( m_file );
 	m_file = NULL;

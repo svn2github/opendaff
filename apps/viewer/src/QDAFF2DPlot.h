@@ -13,32 +13,33 @@
 #define QDAFF2DPLOT_H
 
 #include <QFrame>
-//#include <qwt_plot.h>
-
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QGraphicsItem>
+#include <QOpenGLWidget>
 
 #include <DAFF.h>
 
 #include <iostream>
-#include "QBoxLayout"
 
-class QDAFF2DPlot : public QFrame
+class QDAFF2DPlot : public QGraphicsView
 {
     Q_OBJECT
 
 public:
 	inline QDAFF2DPlot( QWidget *parent = Q_NULLPTR )
-        : QFrame( parent )
+		: QGraphicsView( new QGraphicsScene(), parent )
 	{
-		//QwtPlot* plot = new QwtPlot( this );
-
-		QHBoxLayout *layout = new QHBoxLayout( this );
-		layout->setContentsMargins( 0, 0, 0, 0 );
-		//layout->addWidget( plot );
-
+		setScene( new QGraphicsScene() );
+		QGraphicsRectItem *rect = scene()->addRect( QRectF( 0, 0, 100, 100 ) );
+		QGraphicsItem *item = scene()->itemAt( 50, 50, QTransform() );
+		
+		//setViewport( new QOpenGLWidget( this ) );
+		setBackgroundBrush( QBrush( Qt::darkBlue ) );
     }
 
 public slots:
-    inline void on_readDAFF( const DAFFReader* pReader )
+    inline void ReadDAFF( const DAFFReader* pReader )
     {
         std::cout << "2D: " << pReader->getFilename() << std::endl;
 

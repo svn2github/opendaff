@@ -21,8 +21,9 @@ HEADERS  += \
     src/QDAFFMetadataTable.h \
     src/QDAFFPropertiesTable.h \
     src/QDAFFHeaderGroupBox.h\
-    src/QDAFFVTKWidget.h
-    src/QDAFF2DPlot.h
+    src/QDAFFVTKWidget.h \
+    src/QDAFF2DPlot.h \
+    src/QDAFF2DPlotFrame.h
 
 FORMS    += \
     ui/QDAFFViewerWindow.ui

@@ -17,9 +17,9 @@
 void DAFFUtils::getLibraryVersion( DAFFVersion& version )
 {
 	// Version 0.1
-	version.iVersionMajor = 0;
-	version.iVersionMinor = 105;
-	version.sVersion = "0.105";
+	version.iVersionMajor = 1;
+	version.iVersionMinor = 70;
+	version.sVersion = "1.7";
 }
 
 // Helper function: Convert float => std::string (fixed format, but without trailing zeros)

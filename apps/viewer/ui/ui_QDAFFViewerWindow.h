@@ -30,7 +30,7 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include "QDAFF2DPlot.h"
+#include "QDAFF2DPlotFrame.h"
 #include "QDAFFHeaderGroupBox.h"
 #include "QDAFFMetadataTable.h"
 #include "QDAFFPropertiesTable.h"
@@ -116,7 +116,7 @@ public:
     QComboBox *comboBox_FrequencySelector;
     QFrame *frame_2DPlot;
     QGridLayout *gridLayout;
-    QDAFF2DPlot *DAFF2DPlot_Frame;
+    QDAFF2DPlotFrame *Frame_Frame;
     QMenuBar *DAFFMenuBar;
     QMenu *menuFile;
     QMenu *menuAbout;
@@ -480,12 +480,12 @@ public:
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        DAFF2DPlot_Frame = new QDAFF2DPlot(frame_2DPlot);
-        DAFF2DPlot_Frame->setObjectName(QStringLiteral("DAFF2DPlot_Frame"));
-        DAFF2DPlot_Frame->setMinimumSize(QSize(0, 300));
-        DAFF2DPlot_Frame->setStyleSheet(QStringLiteral("background-color: rgb(255, 255, 255);"));
+        Frame_Frame = new QDAFF2DPlotFrame(frame_2DPlot);
+        Frame_Frame->setObjectName(QStringLiteral("Frame_Frame"));
+        Frame_Frame->setMinimumSize(QSize(0, 300));
+        Frame_Frame->setStyleSheet(QStringLiteral("background-color: rgb(255, 255, 255);"));
 
-        gridLayout->addWidget(DAFF2DPlot_Frame, 1, 0, 1, 1);
+        gridLayout->addWidget(Frame_Frame, 1, 0, 1, 1);
 
 
         layout_Visualization->addWidget(frame_2DPlot);

@@ -28,8 +28,8 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	, m_fShowPhiDeg( 0 )
 	, m_fShowTheta( 0 )
 {
-    ui->setupUi(this);
-    showMaximized();
+	ui->setupUi( this );
+    showMaximized(); // does not work with QGraphicsView
 
 	connect( this, SIGNAL( ReadDAFF( const DAFFReader* ) ), ui->groupBox_Reader, SLOT( on_readDAFF( const DAFFReader* ) ) );
 	connect( this, SIGNAL( CloseDAFF() ), ui->groupBox_Reader, SLOT( on_closeDAFF() ) );
@@ -56,6 +56,7 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	ui->DAFFStatusBar->showMessage( "No DAFF file loaded." );
 
 	m_qSettings.setValue( "RequestedPath", sPath );
+
 
 	if( sPath.isEmpty() == false )
 		OpenDAFFFile( sPath, false );

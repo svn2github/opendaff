@@ -2,31 +2,26 @@
 * -------------------------------------------------------------------------------------
 *
 *  OpenDAFF - A free, open source software package for directional audio data
-*  OpenDAFF is distributed under the terms of the GNU Lesser Public License (LGPL)
-*
-*  Copyright (c) Institute of Technical Acoustics, RWTH Aachen University, 2009-2016
 *
 *  ------------------------------------------------------------------------------------
 *
-*  Visit the OpenDAFF homepage: http://www.opendaff.org
+*  Visit the OpenDAFF website: http://www.opendaff.org
 *
 *  ------------------------------------------------------------------------------------
 *
-*  License and warranty notes
+*  Copyright 2016 Institute of Technical Acoustics, RWTH Aachen University
 *
-*  OpenDAFF is free software, distributed under the terms of the
-*  GNU Lesser General Public License (LGPL) version 3.
-*  You can redistribute it and/or modify it under the terms of the
-*  GNU Lesser General Public License (LGPL) version 3,
-*  as published by the Free Software Foundation.
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use the OpenDAFF software package except in compliance with the License.
+*  You may obtain a copy of the License at
 *
-*  This program is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*  See the GNU General Public License for more details.
+*    http://www.apache.org/licenses/LICENSE-2.0
 *
-*  You should have received a copy of the GNU General Public License
-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
 *
 *  ------------------------------------------------------------------------------------
 *
@@ -64,12 +59,14 @@ void GetCell(int, mxArray**, int, const mxArray**);
 typedef int32_t HANDLE;
 
 // Reader wrapper/adapter
-class TARGET {
+class TARGET
+{
 public:
 	DAFFReader* pReader;		// Associated reader
 	float* pfBuffer;			// Help buffer for conversions
 
-	TARGET(DAFFReader* pReader) {
+	inline TARGET( DAFFReader* pReader )
+	{
 		this->pReader = pReader;
 
 		// Allocate the conversion buffer
@@ -102,7 +99,8 @@ public:
 		}
 	}
 
-	~TARGET() {
+	inline ~TARGET()
+	{
 		delete pReader;
 		delete[] pfBuffer;
 	}
@@ -155,7 +153,7 @@ TARGET* GetHandleTarget(const mxArray *pArray) {
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 	DAFFVersion version;
-	DAFFUtils::getLibraryVersion(version);
+	DAFFUtils::getLibraryVersion( version );
 
 	// At least one argument must be specified
 	if (nrhs < 1) mexErrMsgTxt("Command expected");
@@ -168,17 +166,19 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	std::transform(sCommand.begin(), sCommand.end(), sCommand.begin(), tolower);
 	bool bMatch=false;
 
-	if (sCommand == "getversion") {
+	if( sCommand == "getversion" )
+	{
 		std::stringstream ss;
-		ss << "OpenDAFF Matlab Extension Version " << version.sVersion;
-		plhs[0] = mxCreateString(ss.str().c_str());
+		ss << "OpenDAFF Matlab executable version " << version.sVersion;
+		plhs[ 0 ] = mxCreateString( ss.str().c_str() );
 		bMatch = true;
 	}
 
-	if (sCommand == "help") {
-		mexPrintf("\n  OpenDAFF Matlab Extension (MEX) Version %s\n", version.sVersion.c_str());
-		mexPrintf("  OpenDAFF (c) Copyright Institut für Technische Akustik (ITA), RWTH Aachen, 2009-2010\n\n");
-		mexPrintf("  The OpenDAFF Matlab Extension is part of the OpenDAFF software package\n");
+	if (sCommand == "help")
+	{
+		mexPrintf( "\n  OpenDAFF Matlab Extension (MEX) Version %s\n", version.sVersion.c_str() );
+		mexPrintf("  (c) Copyright 2016 Institut für Technische Akustik (ITA), RWTH Aachen University\n\n");
+		mexPrintf("  The OpenDAFF Matlab executable is part of the OpenDAFF software package\n");
 		mexPrintf("  For more information visit the OpenDAFF website: http://www.opendaff.org\n\n");
 		mexPrintf("  Note: A full description of this module can be found in the HTML documentation\n\n");
 
@@ -283,7 +283,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		bMatch = true;
 	}
 
-	if (sCommand == "open") {
+	if( sCommand == "open" )
+	{
 		Open(nlhs, plhs, nrhs, prhs);
 		bMatch = true;
 	}
@@ -585,22 +586,22 @@ void GetProperties(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 	// Content type
 	std::string sContentType;
-	sContentType = DAFFUtils::StrShortContentType(iContentType);
-	mxSetField(pStruct, 0, "contentType", mxCreateString( sContentType.c_str() ));
+	sContentType = DAFFUtils::StrShortContentType( iContentType );
+	mxSetField( pStruct, 0, "contentType", mxCreateString( sContentType.c_str() ) );
 
 	// Quantization
 	int iQuantization = pProps->getQuantization();
 	std::string sQuantization;
-	if (iContentType == DAFF_INT16) sQuantization = "int16";
-	if (iContentType == DAFF_INT24) sQuantization = "int24";
-	if (iContentType == DAFF_FLOAT32) sQuantization = "float32";
+	if( iQuantization == DAFF_INT16 ) sQuantization = "int16";
+	if( iQuantization == DAFF_INT24 ) sQuantization = "int24";
+	if( iQuantization == DAFF_FLOAT32 ) sQuantization = "float32";
 	mxSetField(pStruct, 0, "quantization", mxCreateString( sQuantization.c_str() ));
 
 	// Number of channels
-	mxSetField(pStruct, 0, "numChannels", mxCreateDoubleScalar( pProps->getNumberOfChannels() ));
+	mxSetField( pStruct, 0, "numChannels", mxCreateDoubleScalar( pProps->getNumberOfChannels() ) );
 
 	// Number of records
-	mxSetField(pStruct, 0, "numRecords", mxCreateDoubleScalar( pProps->getNumberOfRecords() ));
+	mxSetField( pStruct, 0, "numRecords", mxCreateDoubleScalar( pProps->getNumberOfRecords() ) );
 
 	// Channel labels (cell array of strings)
 	int iChannels = pProps->getNumberOfChannels();

@@ -61,7 +61,7 @@ srcs = {'DAFFMEX.cpp', ...
 
 % ---------------
 
-fprintf('Building OpenDAFF Matlab extension using ''%s''...\n', cxx.Name)
+fprintf('Building OpenDAFF Matlab executable using ''%s''...\n', cxx.Name)
 
 % Create the destination directory if it does not exist
 if ~exist(outdir, 'dir'), mkdir(outdir); end
@@ -76,6 +76,6 @@ cmd = sprintf('mex -O -I../../include -I../../src %s -output %s', ...
               srcs, outfile);
 % Debug: disp(cmd);
 [errorcode, result] = system(cmd, '-echo');
-if (errorcode ~= 0), error('Building OpenDAFF Matlab extension failed'); end;
+if (errorcode ~= 0), error('Building OpenDAFF Matlab executable failed'); end;
 
-fprintf('\nOpenDAFF Matlab extension successfully built!\n\nOutput MEX file: ''%s''\n\n', outfile)
+fprintf('\nOpenDAFF Matlab executable successfully built!\n\nOutput MEX file: ''%s''\n\n', outfile)
