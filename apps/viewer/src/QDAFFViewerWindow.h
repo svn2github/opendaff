@@ -42,12 +42,23 @@ private slots:
     void on_actionCreate_triggered();
     void on_actionAboutOpenDAFF_triggered();
     void on_actionAboutDAFFViewer_triggered();
-	void on_actionDownload_triggered();
-	
-	void IncreaseAlpha();
+    void on_actionDownload_triggered();
+
+    void IncreaseAlpha();
 	void DecreaseAlpha();
-	void IncreaseBeta();
+	void ChangeAlpha( double );
+
+    void IncreaseBeta();
 	void DecreaseBeta();
+	void ChangeBeta( double );
+
+    void IncreasePhi() {};
+	void DecreasePhi() {};
+	void ChangePhi( double ) {};
+
+    void IncreaseTheta() {};
+	void DecreaseTheta() {};
+	void ChangeTheta( double ) {};
 
 	void IncreaseFrequencyIndex();
 	void DecreaseFrequencyIndex();
@@ -62,16 +73,28 @@ private slots:
 
 	void LoadContent( const DAFFContent* );
 
-    void on_actionIncrease_Frequency_triggered();
+	void ChangeRecordIndex( int iRecordIndex );
 
+    void on_actionIncrease_Frequency_triggered();
     void on_actionDecrease_Frequency_triggered();
+    void on_actionIncrease_channel_triggered();
+    void on_actionDecrease_channel_triggered();
+    void on_actionIncrease_alpha_triggered();
+    void on_actionDecrease_alpha_triggered();
+    void on_actionIncrease_beta_triggered();
+	void on_actionDecrease_beta_triggered();
+	void on_actionIncrease_phi_triggered();
+	void on_actionDecrease_phi_triggered();
+	void on_actionIncrease_theta_triggered();
+	void on_actionDecrease_theta_triggered();
 
 signals:
-	void ReadDAFF( const DAFFReader* );
-	void SignalContentLoaded( const DAFFContent* );
-	void CloseDAFF();
-	void ChangeAlpha( float fAlphaDegrees );
-	void ChangeBeta( float fBetaDegrees );
+	void SignalReadDAFF( const DAFFReader* pReader );
+	void SignalContentLoaded( const DAFFContent* pContent );
+	void SignalCloseDAFF();
+    void SignalAlphaChanged( double dAlphaDegree );
+    void SignalBetaChanged( double dBetaDegree );
+	void SignalRecordIndexChanged( int iRecordIndex );
 	void SignalFrequencyIndexChanged( int iIndex );
 	void SignalChannelIndexChanged( int iChannelIndex );
 
@@ -81,12 +104,13 @@ private:
 
     DAFFReader* m_pDAFFReader;
 
-	float m_fShowAlphaDeg, m_fShowBetaDeg; //!< Data view angle
-	float m_fShowPhiDeg, m_fShowTheta;  //!< Object view angle
+	double m_dShowAlphaDeg, m_dShowBetaDeg; //!< Data view angle
+	double m_dShowPhiDeg, m_dShowTheta;  //!< Object view angle
 	int m_iShowFrequencyIndex; //!< Frequency (bin) index
-	float m_fShowTimeSample; //!< Sample of time series (FIR tap)
+	double m_dShowTimeSample; //!< Sample of time series (FIR tap)
 	int m_iShowChannel; //!< Requested channel
 	int m_iShowDAFFView; //!< Show DAFF object or data view
+	int m_iShowRecordIndex; //!< Show DAFF record index / data of file
 };
 
 #endif // QDAFFVIEWERWINDOW_H

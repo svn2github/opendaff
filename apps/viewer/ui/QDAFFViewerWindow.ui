@@ -409,7 +409,7 @@
               </widget>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="label_10">
+              <widget class="QLabel" name="label_frequency">
                <property name="text">
                 <string>Frequency</string>
                </property>
@@ -683,20 +683,32 @@
    <property name="text">
     <string>Increase alpha</string>
    </property>
+   <property name="shortcut">
+    <string>Shift+Right</string>
+   </property>
   </action>
   <action name="actionDecrease_alpha">
    <property name="text">
     <string>Decrease alpha</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+Left</string>
    </property>
   </action>
   <action name="actionIncrease_beta">
    <property name="text">
     <string>Increase beta</string>
    </property>
+   <property name="shortcut">
+    <string>Shift+Up</string>
+   </property>
   </action>
   <action name="actionDecrease_beta">
    <property name="text">
     <string>Decrease beta</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+Down</string>
    </property>
   </action>
  </widget>

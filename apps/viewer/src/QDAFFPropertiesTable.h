@@ -156,12 +156,12 @@ public:
     {
     }
 public slots:
-inline void on_closeDAFF()
-{
-	delete m_pModel;
-	m_pModel = NULL;
-}
-    inline void on_readDAFF( const DAFFReader* pReader )
+	inline void CloseDAFF()
+	{
+		delete m_pModel;
+		m_pModel = NULL;
+	}
+    inline void ReadDAFF( const DAFFReader* pReader )
 	{
 		if( pReader == NULL )
 			return;

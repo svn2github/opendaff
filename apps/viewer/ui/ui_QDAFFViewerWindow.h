@@ -112,7 +112,7 @@ public:
     QFormLayout *formLayout_4;
     QLabel *label_11;
     QSpinBox *spinBox_FrequencyIndex;
-    QLabel *label_10;
+    QLabel *label_frequency;
     QComboBox *comboBox_FrequencySelector;
     QFrame *frame_2DPlot;
     QGridLayout *gridLayout;
@@ -456,10 +456,10 @@ public:
 
         formLayout_4->setWidget(0, QFormLayout::FieldRole, spinBox_FrequencyIndex);
 
-        label_10 = new QLabel(groupBox_Frequency);
-        label_10->setObjectName(QStringLiteral("label_10"));
+        label_frequency = new QLabel(groupBox_Frequency);
+        label_frequency->setObjectName(QStringLiteral("label_frequency"));
 
-        formLayout_4->setWidget(1, QFormLayout::LabelRole, label_10);
+        formLayout_4->setWidget(1, QFormLayout::LabelRole, label_frequency);
 
         comboBox_FrequencySelector = new QComboBox(groupBox_Frequency);
         comboBox_FrequencySelector->setObjectName(QStringLiteral("comboBox_FrequencySelector"));
@@ -619,9 +619,13 @@ public:
         actionDecrease_theta->setText(QApplication::translate("DAFFViewer", "Decrease theta", 0));
         actionDecrease_theta->setShortcut(QApplication::translate("DAFFViewer", "Down", 0));
         actionIncrease_alpha->setText(QApplication::translate("DAFFViewer", "Increase alpha", 0));
+        actionIncrease_alpha->setShortcut(QApplication::translate("DAFFViewer", "Shift+Right", 0));
         actionDecrease_alpha->setText(QApplication::translate("DAFFViewer", "Decrease alpha", 0));
+        actionDecrease_alpha->setShortcut(QApplication::translate("DAFFViewer", "Shift+Left", 0));
         actionIncrease_beta->setText(QApplication::translate("DAFFViewer", "Increase beta", 0));
+        actionIncrease_beta->setShortcut(QApplication::translate("DAFFViewer", "Shift+Up", 0));
         actionDecrease_beta->setText(QApplication::translate("DAFFViewer", "Decrease beta", 0));
+        actionDecrease_beta->setShortcut(QApplication::translate("DAFFViewer", "Shift+Down", 0));
         groupBox_Reader->setTitle(QApplication::translate("DAFFViewer", "DAFF Reader ", 0));
         labelFileName->setText(QApplication::translate("DAFFViewer", "File name", 0));
         labelVersion->setText(QApplication::translate("DAFFViewer", "Version", 0));
@@ -644,7 +648,7 @@ public:
         label_12->setText(QApplication::translate("DAFFViewer", "Index", 0));
         groupBox_Frequency->setTitle(QApplication::translate("DAFFViewer", "Sample / Bin / Frequency", 0));
         label_11->setText(QApplication::translate("DAFFViewer", "Index", 0));
-        label_10->setText(QApplication::translate("DAFFViewer", "Frequency", 0));
+        label_frequency->setText(QApplication::translate("DAFFViewer", "Frequency", 0));
         menuFile->setTitle(QApplication::translate("DAFFViewer", "File", 0));
         menuAbout->setTitle(QApplication::translate("DAFFViewer", "About", 0));
         menuContent->setTitle(QApplication::translate("DAFFViewer", "Edit", 0));

@@ -81,31 +81,31 @@ private:
 
 public slots:
 
-inline void on_closeDAFF()
-{
-	// Clear current balloon node
-	if( m_pDAFFContentBalloon )
+	inline void CloseDAFF()
 	{
-		m_pSGRootNode->RemoveChildNode( m_pDAFFContentBalloon );
-		delete m_pDAFFContentBalloon;
-		m_pDAFFContentBalloon = NULL;
+		// Clear current balloon node
+		if( m_pDAFFContentBalloon )
+		{
+			m_pSGRootNode->RemoveChildNode( m_pDAFFContentBalloon );
+			delete m_pDAFFContentBalloon;
+			m_pDAFFContentBalloon = NULL;
+		}
+
+		// Clear current carpet plot
+		if( m_pDAFFContentCarpet )
+		{
+			m_pSGRootNode->RemoveChildNode( m_pDAFFContentCarpet );
+			delete m_pDAFFContentCarpet;
+			m_pDAFFContentCarpet = NULL;
+		}
+
+		m_pCCA->SetVisible( false );
+		m_pSCA->SetVisible( true );
+
+		update();
 	}
 
-	// Clear current carpet plot
-	if( m_pDAFFContentCarpet )
-	{
-		m_pSGRootNode->RemoveChildNode( m_pDAFFContentCarpet );
-		delete m_pDAFFContentCarpet;
-		m_pDAFFContentCarpet = NULL;
-	}
-
-	m_pCCA->SetVisible( false );
-	m_pSCA->SetVisible( true );
-
-	update();
-}
-
-    inline void on_readDAFF( const DAFFReader* pReader )
+    inline void ReadDAFF( const DAFFReader* pReader )
 	{
 		// Clear current balloon node
 		if( m_pDAFFContentBalloon )
@@ -151,7 +151,7 @@ inline void on_closeDAFF()
 		update();
 	}
 
-	inline void on_changeFrequencyIndex( int iFrequencyIndex )
+	inline void ChangeFrequencyIndex( int iFrequencyIndex )
 	{
 		if( m_pDAFFContentBalloon )
 		{
@@ -161,7 +161,7 @@ inline void on_closeDAFF()
 		update();
 	}
 
-	inline void on_changeChannelIndex( int iChannelIndex )
+	inline void ChangeChannelIndex( int iChannelIndex )
 	{
 		if( m_pDAFFContentBalloon )
 		{
@@ -171,6 +171,28 @@ inline void on_closeDAFF()
 		if( m_pDAFFContentCarpet )
 		{
 			m_pDAFFContentCarpet->SetChannel( iChannelIndex );
+		}
+
+		update();
+	}
+
+	inline void ChangeAlpha( double dAlphaDeg )
+	{
+		if( m_pDAFFContentCarpet )
+		{
+			if( m_pDAFFContentCarpet->getFixedAngle() == DAFFViz::CarpetPlot::ALPHA_FIXED )
+				m_pDAFFContentCarpet->SetSelectedAngle( dAlphaDeg );
+		}
+
+		update();
+	}
+
+	inline void ChangeBeta( double dBetaDeg )
+	{
+		if( m_pDAFFContentCarpet )
+		{
+			if( m_pDAFFContentCarpet->getFixedAngle() == DAFFViz::CarpetPlot::BETA_FIXED )
+				m_pDAFFContentCarpet->SetSelectedAngle( dBetaDeg );
 		}
 
 		update();
