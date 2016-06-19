@@ -10,6 +10,7 @@
 #include <QDesktopServices>
 #include <QKeyEvent>
 #include <QShortcut>
+#include <QPalette>
 
 #include <DAFF.h>
 
@@ -26,7 +27,8 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	, m_dShowAlphaDeg( 0.0f )
 	, m_dShowBetaDeg( 90.0f )
 	, m_dShowPhiDeg( 0.0f )
-	, m_dShowTheta( 0.0f )
+	, m_dShowThetaDeg( 0.0f )
+	, m_dPhiThetaIncrementDeg( 1.0f )
 {
 	ui->setupUi( this );
     showMaximized(); // does not work with QGraphicsView
@@ -59,7 +61,7 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	connect( this, SIGNAL( SignalChannelIndexChanged( int ) ), ui->spinBox_ChannelIndex, SLOT( setValue( int ) ) );
 	connect( ui->spinBox_ChannelIndex, SIGNAL( valueChanged( int ) ), this, SLOT( ChangeChannelIndex( int ) ) );
 
-	// Alpha and Beta conns
+	// Alpha and beta conns
 	connect( ui->doubleSpinBox_Alpha, SIGNAL( valueChanged( double ) ), this, SLOT( ChangeAlpha( double ) ) );
 	connect( this, SIGNAL( SignalAlphaChanged( double ) ), ui->doubleSpinBox_Alpha, SLOT( setValue( double ) ) );
 	connect( this, SIGNAL( SignalAlphaChanged( double ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ChangeAlpha( double ) ) );
@@ -72,18 +74,31 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	connect( ui->spinBox_RecordIndex, SIGNAL( valueChanged( int ) ), this, SLOT( ChangeRecordIndex( int ) ) );
 	//connect( this, SIGNAL( SignalRecordIndexChanged( int ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ChangeRecordIndex( int ) ) );
 
+	// Phi and theta conns
+	connect( ui->doubleSpinBox_Phi, SIGNAL( valueChanged( double ) ), this, SLOT( ChangePhi( double ) ) );
+	connect( this, SIGNAL( SignalPhiChanged( double ) ), ui->doubleSpinBox_Phi, SLOT( setValue( double ) ) );
+	connect( ui->doubleSpinBox_Theta, SIGNAL( valueChanged( double ) ), this, SLOT( ChangeTheta( double ) ) );
+	connect( this, SIGNAL( SignalThetaChanged( double ) ), ui->doubleSpinBox_Theta, SLOT( setValue( double ) ) );
+	connect( this, SIGNAL( SignalPhiAndThetaOutOfBounds( bool ) ), this, SLOT( SetPhiAndThetaOutOfBoundsIndicator( bool ) ) );
+
 	ui->DAFFStatusBar->showMessage( "No DAFF file loaded." );
 
 	m_qSettings.setValue( "RequestedPath", sPath );
+	m_qSettings.value( "PhiThetaIncrementDeg", m_dPhiThetaIncrementDeg );
 	
 	if( sPath.isEmpty() == false )
 		OpenDAFFFile( sPath, false );
+
+	ChangePhi( m_dShowPhiDeg ); // Initially, show default frontal record
+	ChangeTheta( m_dShowThetaDeg ); // Initially, show default frontal record
 }
 
 QDAFFViewerWindow::~QDAFFViewerWindow()
 {
     m_qSettings.setValue( "geometry", saveGeometry() );
     m_qSettings.setValue( "windowState", saveState() );
+
+	m_qSettings.setValue( "PhiThetaIncrementDeg", m_dPhiThetaIncrementDeg );
 
     delete ui;
 
@@ -442,17 +457,49 @@ void QDAFFViewerWindow::ChangeRecordIndex( int iRecordIndex )
 		return;
 
 	m_iShowRecordIndex = iRecordIndex;
-	emit SignalRecordIndexChanged( m_iShowRecordIndex );
+
+	double dEpsilon = 0.001f;
 
 	if( m_pDAFFReader->isFileOpened() )
 	{
+		// Record index change not invoked by alpha/beta (data view), so overwrite and emit signal
 		float fAlphaDeg, fBetaDeg;
 		m_pDAFFReader->getContent()->getRecordCoords( m_iShowRecordIndex, DAFF_DATA_VIEW, fAlphaDeg, fBetaDeg );
-		if( std::abs( m_dShowAlphaDeg - fAlphaDeg ) > 0.001f )
-			emit ChangeAlpha( fAlphaDeg );
-		if( std::abs( m_dShowBetaDeg - fBetaDeg ) > 0.001f )
-			emit ChangeBeta( fBetaDeg );
+		ChangeAlphaAndBeta( fAlphaDeg, fBetaDeg );
+		
+		// If record index change not invoked by phi/theta (object view) then emit signal
+		int iRecordIndexCurrentObjectView;
+		m_pDAFFReader->getContent()->getNearestNeighbour( DAFF_OBJECT_VIEW, m_dShowPhiDeg, m_dShowThetaDeg, iRecordIndexCurrentObjectView );
+		if( iRecordIndexCurrentObjectView != m_iShowRecordIndex )
+		{
+			float fPhiDeg, fThetaDeg;
+			m_pDAFFReader->getContent()->getRecordCoords( m_iShowRecordIndex, DAFF_OBJECT_VIEW, fPhiDeg, fThetaDeg );
+			ChangePhiAndTheta( fPhiDeg, fThetaDeg );
+		}
 	}
+
+	emit SignalRecordIndexChanged( m_iShowRecordIndex );
+}
+
+void QDAFFViewerWindow::SetPhiAndThetaOutOfBoundsIndicator( bool bOutOfBounds )
+{
+	QString sToolTip, sStyleSheet;
+
+	if( bOutOfBounds )
+	{
+		sToolTip = "Requested direction is out of bounds (not covered by a record data set)";
+		sStyleSheet = "QDoubleSpinBox { background-color: rgb(255, 85, 127); }";
+	}
+	else
+	{
+		sToolTip = "Requested direction is within bounds (covered by a record data set)";
+		sStyleSheet = "QDoubleSpinBox { background-color: rgb(170, 255, 127); }";
+	}
+
+	ui->doubleSpinBox_Phi->setToolTip( sToolTip );
+	ui->doubleSpinBox_Theta->setToolTip( sToolTip );
+	ui->doubleSpinBox_Phi->setStyleSheet( sStyleSheet );
+	ui->doubleSpinBox_Theta->setStyleSheet( sStyleSheet );
 }
 
 void QDAFFViewerWindow::IncreaseAlpha()
@@ -480,7 +527,6 @@ void QDAFFViewerWindow::DecreaseAlpha()
 void QDAFFViewerWindow::ChangeAlpha( double dAlphaDeg )
 {
 	m_dShowAlphaDeg = fmodf( dAlphaDeg, 360.0f );
-	emit SignalAlphaChanged( m_dShowAlphaDeg );
 
 	if( m_pDAFFReader->isFileOpened() )
 	{
@@ -488,6 +534,8 @@ void QDAFFViewerWindow::ChangeAlpha( double dAlphaDeg )
 		m_pDAFFReader->getContent()->getNearestNeighbour( DAFF_DATA_VIEW, m_dShowAlphaDeg, m_dShowBetaDeg, iRecordIndex );
 		ChangeRecordIndex( iRecordIndex );
 	}
+
+	emit SignalAlphaChanged( m_dShowAlphaDeg );
 }
 
 void QDAFFViewerWindow::IncreaseBeta()
@@ -515,7 +563,6 @@ void QDAFFViewerWindow::DecreaseBeta()
 void QDAFFViewerWindow::ChangeBeta( double dBetaDeg )
 {
 	m_dShowBetaDeg = fmodf( dBetaDeg, 180.0f );
-	emit SignalBetaChanged( m_dShowBetaDeg );
 
 	if( m_pDAFFReader->isFileOpened() )
 	{
@@ -523,6 +570,43 @@ void QDAFFViewerWindow::ChangeBeta( double dBetaDeg )
 		m_pDAFFReader->getContent()->getNearestNeighbour( DAFF_DATA_VIEW, m_dShowAlphaDeg, m_dShowBetaDeg, iRecordIndex );
 		ChangeRecordIndex( iRecordIndex );
 	}
+
+	emit SignalBetaChanged( m_dShowBetaDeg );
+}
+
+void QDAFFViewerWindow::ChangeAlphaAndBeta( double dAlphaDeg, double dBetaDeg )
+{
+	m_dShowAlphaDeg = fmodf( dAlphaDeg, 360.0f );
+	m_dShowBetaDeg = fmodf( dBetaDeg, 180.0f );
+
+	if( m_pDAFFReader->isFileOpened() )
+	{
+		int iRecordIndex;
+		m_pDAFFReader->getContent()->getNearestNeighbour( DAFF_DATA_VIEW, m_dShowAlphaDeg, m_dShowBetaDeg, iRecordIndex );
+		ChangeRecordIndex( iRecordIndex );
+	}
+
+	emit SignalAlphaChanged( m_dShowAlphaDeg );
+	emit SignalBetaChanged( m_dShowBetaDeg );
+}
+
+void QDAFFViewerWindow::ChangePhiAndTheta( double dPhiDeg, double dThetaDeg )
+{
+	m_dShowPhiDeg = dPhiDeg;
+	m_dShowThetaDeg = dThetaDeg;
+
+	if( m_pDAFFReader->isFileOpened() )
+	{
+		int iRecordIndex;
+		bool bOutOfBounds;
+		m_pDAFFReader->getContent()->getNearestNeighbour( DAFF_OBJECT_VIEW, m_dShowPhiDeg, m_dShowThetaDeg, iRecordIndex, bOutOfBounds );
+		ChangeRecordIndex( iRecordIndex );
+		
+		emit SignalPhiAndThetaOutOfBounds( bOutOfBounds );
+	}
+
+	emit SignalPhiChanged( m_dShowPhiDeg );
+	emit SignalThetaChanged( m_dShowThetaDeg );
 }
 
 void QDAFFViewerWindow::on_actionIncrease_Frequency_triggered()
@@ -583,4 +667,57 @@ void QDAFFViewerWindow::on_actionIncrease_theta_triggered()
 void QDAFFViewerWindow::on_actionDecrease_theta_triggered()
 {
     DecreaseTheta();
+}
+
+void QDAFFViewerWindow::IncreasePhi()
+{
+	ChangePhi( m_dShowPhiDeg + m_dPhiThetaIncrementDeg );
+}
+
+void QDAFFViewerWindow::DecreasePhi()
+{
+	ChangePhi( m_dShowPhiDeg - m_dPhiThetaIncrementDeg );
+}
+
+void QDAFFViewerWindow::ChangePhi( double dPhiDeg )
+{
+	m_dShowPhiDeg = dPhiDeg;
+	emit SignalPhiChanged( dPhiDeg );
+
+	if( m_pDAFFReader->isFileOpened() )
+	{
+		int iRecordIndex;
+		bool bOutOfBounds;
+		m_pDAFFReader->getContent()->getNearestNeighbour( DAFF_OBJECT_VIEW, m_dShowPhiDeg, m_dShowThetaDeg, iRecordIndex, bOutOfBounds );
+		ChangeRecordIndex( iRecordIndex );
+
+		emit SignalPhiAndThetaOutOfBounds( bOutOfBounds );
+	}
+}
+
+void QDAFFViewerWindow::IncreaseTheta()
+{
+	ChangeTheta( m_dShowThetaDeg + m_dPhiThetaIncrementDeg );
+}
+
+void QDAFFViewerWindow::DecreaseTheta()
+{
+	ChangeTheta( m_dShowThetaDeg - m_dPhiThetaIncrementDeg );
+}
+
+void QDAFFViewerWindow::ChangeTheta( double dThetaDeg )
+{
+	m_dShowThetaDeg = dThetaDeg;
+
+	if( m_pDAFFReader->isFileOpened() )
+	{
+		int iRecordIndex;
+		bool bOutOfBounds;
+		m_pDAFFReader->getContent()->getNearestNeighbour( DAFF_OBJECT_VIEW, m_dShowPhiDeg, m_dShowThetaDeg, iRecordIndex, bOutOfBounds );
+		ChangeRecordIndex( iRecordIndex );
+
+		emit SignalPhiAndThetaOutOfBounds( bOutOfBounds );
+	}
+
+	emit SignalThetaChanged( m_dShowThetaDeg );
 }

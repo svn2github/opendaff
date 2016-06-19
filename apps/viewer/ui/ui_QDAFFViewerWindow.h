@@ -130,7 +130,7 @@ public:
     {
         if (DAFFViewer->objectName().isEmpty())
             DAFFViewer->setObjectName(QStringLiteral("DAFFViewer"));
-        DAFFViewer->resize(1102, 812);
+        DAFFViewer->resize(1114, 812);
         DAFFViewer->setAcceptDrops(true);
         DAFFViewer->setAutoFillBackground(false);
         DAFFViewer->setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -197,7 +197,7 @@ public:
         groupBox_Reader->setObjectName(QStringLiteral("groupBox_Reader"));
         groupBox_Reader->setMinimumSize(QSize(400, 0));
         groupBox_Reader->setMaximumSize(QSize(16777215, 16777215));
-        groupBox_Reader->setStyleSheet(QStringLiteral(""));
+        groupBox_Reader->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
         formLayout_2 = new QFormLayout(groupBox_Reader);
         formLayout_2->setSpacing(6);
         formLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -207,35 +207,50 @@ public:
         formLayout_2->setContentsMargins(20, 20, 20, 20);
         labelFileName = new QLabel(groupBox_Reader);
         labelFileName->setObjectName(QStringLiteral("labelFileName"));
-        labelFileName->setStyleSheet(QStringLiteral(""));
+        labelFileName->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
+        labelFileName->setFrameShape(QFrame::NoFrame);
+        labelFileName->setFrameShadow(QFrame::Plain);
 
         formLayout_2->setWidget(1, QFormLayout::LabelRole, labelFileName);
 
         lineEditFileName = new QLineEdit(groupBox_Reader);
         lineEditFileName->setObjectName(QStringLiteral("lineEditFileName"));
         lineEditFileName->setEnabled(false);
+        lineEditFileName->setStyleSheet(QLatin1String("color: rgb(131, 131, 131);\n"
+"background-color: rgb(255, 255, 255);\n"
+"font: 75 12pt \"Calibri\";"));
+        lineEditFileName->setClearButtonEnabled(false);
 
         formLayout_2->setWidget(1, QFormLayout::FieldRole, lineEditFileName);
 
         labelVersion = new QLabel(groupBox_Reader);
         labelVersion->setObjectName(QStringLiteral("labelVersion"));
+        labelVersion->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
 
         formLayout_2->setWidget(2, QFormLayout::LabelRole, labelVersion);
 
         lineEditVersion = new QLineEdit(groupBox_Reader);
         lineEditVersion->setObjectName(QStringLiteral("lineEditVersion"));
         lineEditVersion->setEnabled(false);
+        lineEditVersion->setStyleSheet(QLatin1String("color: rgb(131, 131, 131);\n"
+"background-color: rgb(255, 255, 255);\n"
+"font: 75 12pt \"Calibri\";"));
 
         formLayout_2->setWidget(2, QFormLayout::FieldRole, lineEditVersion);
 
         labelContentType = new QLabel(groupBox_Reader);
         labelContentType->setObjectName(QStringLiteral("labelContentType"));
+        labelContentType->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
+        labelContentType->setFrameShape(QFrame::NoFrame);
 
         formLayout_2->setWidget(3, QFormLayout::LabelRole, labelContentType);
 
         lineEditContentType = new QLineEdit(groupBox_Reader);
         lineEditContentType->setObjectName(QStringLiteral("lineEditContentType"));
         lineEditContentType->setEnabled(false);
+        lineEditContentType->setStyleSheet(QLatin1String("color: rgb(131, 131, 131);\n"
+"background-color: rgb(255, 255, 255);\n"
+"font: 75 12pt \"Calibri\";"));
 
         formLayout_2->setWidget(3, QFormLayout::FieldRole, lineEditContentType);
 
@@ -244,6 +259,7 @@ public:
 
         groupBox_Metadata = new QGroupBox(DAFFCentralWidget);
         groupBox_Metadata->setObjectName(QStringLiteral("groupBox_Metadata"));
+        groupBox_Metadata->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
         verticalLayout = new QVBoxLayout(groupBox_Metadata);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
@@ -259,6 +275,7 @@ public:
 
         groupBox_Properties = new QGroupBox(DAFFCentralWidget);
         groupBox_Properties->setObjectName(QStringLiteral("groupBox_Properties"));
+        groupBox_Properties->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
         verticalLayout_2 = new QVBoxLayout(groupBox_Properties);
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -304,46 +321,57 @@ public:
         horizontalLayout_InteractionPanel->setContentsMargins(9, -1, 9, -1);
         groupBox_ObjectView = new QGroupBox(DAFFCentralWidget);
         groupBox_ObjectView->setObjectName(QStringLiteral("groupBox_ObjectView"));
+        groupBox_ObjectView->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
         gridLayout_3 = new QGridLayout(groupBox_ObjectView);
         gridLayout_3->setSpacing(6);
         gridLayout_3->setContentsMargins(11, 11, 11, 11);
         gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
         doubleSpinBox_Phi = new QDoubleSpinBox(groupBox_ObjectView);
         doubleSpinBox_Phi->setObjectName(QStringLiteral("doubleSpinBox_Phi"));
+        doubleSpinBox_Phi->setAutoFillBackground(false);
+        doubleSpinBox_Phi->setStyleSheet(QLatin1String("background-color: rgb(170, 255, 127);\n"
+"font: 75 12pt \"Calibri\";"));
         doubleSpinBox_Phi->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         doubleSpinBox_Phi->setDecimals(1);
-        doubleSpinBox_Phi->setMaximum(360);
-        doubleSpinBox_Phi->setSingleStep(5);
+        doubleSpinBox_Phi->setMinimum(-1e+06);
+        doubleSpinBox_Phi->setMaximum(1e+06);
 
         gridLayout_3->addWidget(doubleSpinBox_Phi, 0, 1, 1, 1);
 
         label_2 = new QLabel(groupBox_ObjectView);
         label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
 
         gridLayout_3->addWidget(label_2, 1, 0, 1, 1);
 
         doubleSpinBox_Theta = new QDoubleSpinBox(groupBox_ObjectView);
         doubleSpinBox_Theta->setObjectName(QStringLiteral("doubleSpinBox_Theta"));
+        doubleSpinBox_Theta->setAutoFillBackground(true);
+        doubleSpinBox_Theta->setStyleSheet(QLatin1String("background-color: rgb(170, 255, 127);\n"
+"font: 75 12pt \"Calibri\";"));
         doubleSpinBox_Theta->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         doubleSpinBox_Theta->setDecimals(1);
-        doubleSpinBox_Theta->setMinimum(-90);
-        doubleSpinBox_Theta->setMaximum(90);
+        doubleSpinBox_Theta->setMinimum(-1e+06);
+        doubleSpinBox_Theta->setMaximum(1e+06);
         doubleSpinBox_Theta->setSingleStep(5);
 
         gridLayout_3->addWidget(doubleSpinBox_Theta, 1, 1, 1, 1);
 
         label = new QLabel(groupBox_ObjectView);
         label->setObjectName(QStringLiteral("label"));
+        label->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
 
         gridLayout_3->addWidget(label, 0, 0, 1, 1);
 
         label_5 = new QLabel(groupBox_ObjectView);
         label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setStyleSheet(QStringLiteral("font: 75 12pt \"Calibri\";"));
 
         gridLayout_3->addWidget(label_5, 0, 2, 1, 1);
 
         label_6 = new QLabel(groupBox_ObjectView);
         label_6->setObjectName(QStringLiteral("label_6"));
+        label_6->setStyleSheet(QStringLiteral("font: 75 12pt \"Calibri\";"));
 
         gridLayout_3->addWidget(label_6, 1, 2, 1, 1);
 
@@ -352,6 +380,7 @@ public:
 
         groupBox_DataView = new QGroupBox(DAFFCentralWidget);
         groupBox_DataView->setObjectName(QStringLiteral("groupBox_DataView"));
+        groupBox_DataView->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
         gridLayout_4 = new QGridLayout(groupBox_DataView);
         gridLayout_4->setSpacing(6);
         gridLayout_4->setContentsMargins(11, 11, 11, 11);
@@ -363,6 +392,8 @@ public:
 
         doubleSpinBox_Alpha = new QDoubleSpinBox(groupBox_DataView);
         doubleSpinBox_Alpha->setObjectName(QStringLiteral("doubleSpinBox_Alpha"));
+        doubleSpinBox_Alpha->setStyleSheet(QLatin1String("background-color: rgb(170, 255, 255);\n"
+"font: 75 12pt \"Calibri\";"));
         doubleSpinBox_Alpha->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         doubleSpinBox_Alpha->setDecimals(1);
         doubleSpinBox_Alpha->setMaximum(360);
@@ -372,6 +403,8 @@ public:
 
         doubleSpinBox_Beta = new QDoubleSpinBox(groupBox_DataView);
         doubleSpinBox_Beta->setObjectName(QStringLiteral("doubleSpinBox_Beta"));
+        doubleSpinBox_Beta->setStyleSheet(QLatin1String("background-color: rgb(170, 255, 255);\n"
+"font: 75 12pt \"Calibri\";"));
         doubleSpinBox_Beta->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         doubleSpinBox_Beta->setDecimals(1);
         doubleSpinBox_Beta->setMaximum(180);
@@ -386,11 +419,13 @@ public:
 
         label_7 = new QLabel(groupBox_DataView);
         label_7->setObjectName(QStringLiteral("label_7"));
+        label_7->setStyleSheet(QStringLiteral("font: 75 12pt \"Calibri\";"));
 
         gridLayout_4->addWidget(label_7, 0, 4, 1, 1);
 
         label_8 = new QLabel(groupBox_DataView);
         label_8->setObjectName(QStringLiteral("label_8"));
+        label_8->setStyleSheet(QStringLiteral("font: 75 12pt \"Calibri\";"));
 
         gridLayout_4->addWidget(label_8, 1, 4, 1, 1);
 
@@ -399,17 +434,21 @@ public:
 
         groupBox_Record = new QGroupBox(DAFFCentralWidget);
         groupBox_Record->setObjectName(QStringLiteral("groupBox_Record"));
+        groupBox_Record->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
         formLayout = new QFormLayout(groupBox_Record);
         formLayout->setSpacing(6);
         formLayout->setContentsMargins(11, 11, 11, 11);
         formLayout->setObjectName(QStringLiteral("formLayout"));
         label_9 = new QLabel(groupBox_Record);
         label_9->setObjectName(QStringLiteral("label_9"));
+        label_9->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
 
         formLayout->setWidget(0, QFormLayout::LabelRole, label_9);
 
         spinBox_RecordIndex = new QSpinBox(groupBox_Record);
         spinBox_RecordIndex->setObjectName(QStringLiteral("spinBox_RecordIndex"));
+        spinBox_RecordIndex->setStyleSheet(QLatin1String("background-color: rgb(170, 255, 255);\n"
+"font: 75 12pt \"Calibri\";"));
         spinBox_RecordIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         spinBox_RecordIndex->setMaximum(64800);
 
@@ -420,17 +459,21 @@ public:
 
         groupBox_Channel = new QGroupBox(DAFFCentralWidget);
         groupBox_Channel->setObjectName(QStringLiteral("groupBox_Channel"));
+        groupBox_Channel->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
         formLayout_3 = new QFormLayout(groupBox_Channel);
         formLayout_3->setSpacing(6);
         formLayout_3->setContentsMargins(11, 11, 11, 11);
         formLayout_3->setObjectName(QStringLiteral("formLayout_3"));
         label_12 = new QLabel(groupBox_Channel);
         label_12->setObjectName(QStringLiteral("label_12"));
+        label_12->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
 
         formLayout_3->setWidget(1, QFormLayout::LabelRole, label_12);
 
         spinBox_ChannelIndex = new QSpinBox(groupBox_Channel);
         spinBox_ChannelIndex->setObjectName(QStringLiteral("spinBox_ChannelIndex"));
+        spinBox_ChannelIndex->setStyleSheet(QLatin1String("background-color: rgb(255, 255, 127);\n"
+"font: 75 12pt \"Calibri\";"));
         spinBox_ChannelIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         spinBox_ChannelIndex->setMaximum(12);
 
@@ -441,28 +484,35 @@ public:
 
         groupBox_Frequency = new QGroupBox(DAFFCentralWidget);
         groupBox_Frequency->setObjectName(QStringLiteral("groupBox_Frequency"));
+        groupBox_Frequency->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
         formLayout_4 = new QFormLayout(groupBox_Frequency);
         formLayout_4->setSpacing(6);
         formLayout_4->setContentsMargins(11, 11, 11, 11);
         formLayout_4->setObjectName(QStringLiteral("formLayout_4"));
         label_11 = new QLabel(groupBox_Frequency);
         label_11->setObjectName(QStringLiteral("label_11"));
+        label_11->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
 
         formLayout_4->setWidget(0, QFormLayout::LabelRole, label_11);
 
         spinBox_FrequencyIndex = new QSpinBox(groupBox_Frequency);
         spinBox_FrequencyIndex->setObjectName(QStringLiteral("spinBox_FrequencyIndex"));
+        spinBox_FrequencyIndex->setStyleSheet(QLatin1String("background-color: rgb(255, 170, 255);\n"
+"font: 75 12pt \"Calibri\";"));
         spinBox_FrequencyIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         formLayout_4->setWidget(0, QFormLayout::FieldRole, spinBox_FrequencyIndex);
 
         label_frequency = new QLabel(groupBox_Frequency);
         label_frequency->setObjectName(QStringLiteral("label_frequency"));
+        label_frequency->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
 
         formLayout_4->setWidget(1, QFormLayout::LabelRole, label_frequency);
 
         comboBox_FrequencySelector = new QComboBox(groupBox_Frequency);
         comboBox_FrequencySelector->setObjectName(QStringLiteral("comboBox_FrequencySelector"));
+        comboBox_FrequencySelector->setStyleSheet(QLatin1String("background-color: rgb(255, 170, 255);\n"
+"font: 75 12pt \"Calibri\";"));
 
         formLayout_4->setWidget(1, QFormLayout::FieldRole, comboBox_FrequencySelector);
 
@@ -503,7 +553,7 @@ public:
         DAFFViewer->setCentralWidget(DAFFCentralWidget);
         DAFFMenuBar = new QMenuBar(DAFFViewer);
         DAFFMenuBar->setObjectName(QStringLiteral("DAFFMenuBar"));
-        DAFFMenuBar->setGeometry(QRect(0, 0, 1102, 21));
+        DAFFMenuBar->setGeometry(QRect(0, 0, 1114, 21));
         menuFile = new QMenu(DAFFMenuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuAbout = new QMenu(DAFFMenuBar);
@@ -633,6 +683,7 @@ public:
         groupBox_Metadata->setTitle(QApplication::translate("DAFFViewer", "DAFF Metadata", 0));
         groupBox_Properties->setTitle(QApplication::translate("DAFFViewer", "DAFF Properties", 0));
         groupBox_ObjectView->setTitle(QApplication::translate("DAFFViewer", "Object view", 0));
+        doubleSpinBox_Phi->setSuffix(QString());
         label_2->setText(QApplication::translate("DAFFViewer", "Theta", 0));
         label->setText(QApplication::translate("DAFFViewer", "Phi", 0));
         label_5->setText(QApplication::translate("DAFFViewer", "\302\260", 0));

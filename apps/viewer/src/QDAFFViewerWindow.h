@@ -52,13 +52,17 @@ private slots:
 	void DecreaseBeta();
 	void ChangeBeta( double );
 
-    void IncreasePhi() {};
-	void DecreasePhi() {};
-	void ChangePhi( double ) {};
+	void ChangeAlphaAndBeta( double dAlphaDeg, double dBetaDeg );
 
-    void IncreaseTheta() {};
-	void DecreaseTheta() {};
-	void ChangeTheta( double ) {};
+    void IncreasePhi();
+	void DecreasePhi();
+	void ChangePhi( double );
+
+    void IncreaseTheta();
+	void DecreaseTheta();
+	void ChangeTheta( double );
+
+	void ChangePhiAndTheta( double dPhiDeg, double dThetaDeg );
 
 	void IncreaseFrequencyIndex();
 	void DecreaseFrequencyIndex();
@@ -74,6 +78,8 @@ private slots:
 	void LoadContent( const DAFFContent* );
 
 	void ChangeRecordIndex( int iRecordIndex );
+	
+	void SetPhiAndThetaOutOfBoundsIndicator( bool bOutOfBounds );
 
     void on_actionIncrease_Frequency_triggered();
     void on_actionDecrease_Frequency_triggered();
@@ -92,8 +98,11 @@ signals:
 	void SignalReadDAFF( const DAFFReader* pReader );
 	void SignalContentLoaded( const DAFFContent* pContent );
 	void SignalCloseDAFF();
-    void SignalAlphaChanged( double dAlphaDegree );
-    void SignalBetaChanged( double dBetaDegree );
+	void SignalAlphaChanged( double dAlphaDegree );
+	void SignalBetaChanged( double dBetaDegree );
+	void SignalPhiChanged( double dPhiDeg );
+	void SignalThetaChanged( double dThetaDeg );
+	void SignalPhiAndThetaOutOfBounds( bool );
 	void SignalRecordIndexChanged( int iRecordIndex );
 	void SignalFrequencyIndexChanged( int iIndex );
 	void SignalChannelIndexChanged( int iChannelIndex );
@@ -105,7 +114,7 @@ private:
     DAFFReader* m_pDAFFReader;
 
 	double m_dShowAlphaDeg, m_dShowBetaDeg; //!< Data view angle
-	double m_dShowPhiDeg, m_dShowTheta;  //!< Object view angle
+	double m_dShowPhiDeg, m_dShowThetaDeg, m_dPhiThetaIncrementDeg;  //!< Object view angle
 	int m_iShowFrequencyIndex; //!< Frequency (bin) index
 	double m_dShowTimeSample; //!< Sample of time series (FIR tap)
 	int m_iShowChannel; //!< Requested channel

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1102</width>
+    <width>1114</width>
     <height>812</height>
    </rect>
   </property>
@@ -55,7 +55,7 @@
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true"/>
+           <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
           </property>
           <property name="title">
            <string>DAFF Reader </string>
@@ -82,7 +82,13 @@
            <item row="1" column="0">
             <widget class="QLabel" name="labelFileName">
              <property name="styleSheet">
-              <string notr="true"/>
+              <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
              </property>
              <property name="text">
               <string>File name</string>
@@ -94,10 +100,21 @@
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="styleSheet">
+              <string notr="true">color: rgb(131, 131, 131);
+background-color: rgb(255, 255, 255);
+font: 75 12pt &quot;Calibri&quot;;</string>
+             </property>
+             <property name="clearButtonEnabled">
+              <bool>false</bool>
+             </property>
             </widget>
            </item>
            <item row="2" column="0">
             <widget class="QLabel" name="labelVersion">
+             <property name="styleSheet">
+              <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+             </property>
              <property name="text">
               <string>Version</string>
              </property>
@@ -108,10 +125,21 @@
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="styleSheet">
+              <string notr="true">color: rgb(131, 131, 131);
+background-color: rgb(255, 255, 255);
+font: 75 12pt &quot;Calibri&quot;;</string>
+             </property>
             </widget>
            </item>
            <item row="3" column="0">
             <widget class="QLabel" name="labelContentType">
+             <property name="styleSheet">
+              <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
              <property name="text">
               <string>Content type</string>
              </property>
@@ -122,6 +150,11 @@
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="styleSheet">
+              <string notr="true">color: rgb(131, 131, 131);
+background-color: rgb(255, 255, 255);
+font: 75 12pt &quot;Calibri&quot;;</string>
+             </property>
             </widget>
            </item>
           </layout>
@@ -129,6 +162,9 @@
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_Metadata">
+          <property name="styleSheet">
+           <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+          </property>
           <property name="title">
            <string>DAFF Metadata</string>
           </property>
@@ -148,6 +184,9 @@
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_Properties">
+          <property name="styleSheet">
+           <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+          </property>
           <property name="title">
            <string>DAFF Properties</string>
           </property>
@@ -197,28 +236,44 @@
           </property>
           <item>
            <widget class="QGroupBox" name="groupBox_ObjectView">
+            <property name="styleSheet">
+             <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+            </property>
             <property name="title">
              <string>Object view</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_3">
              <item row="0" column="1">
               <widget class="QDoubleSpinBox" name="doubleSpinBox_Phi">
+               <property name="autoFillBackground">
+                <bool>false</bool>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(170, 255, 127);
+font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="suffix">
+                <string/>
                </property>
                <property name="decimals">
                 <number>1</number>
                </property>
-               <property name="maximum">
-                <double>360.000000000000000</double>
+               <property name="minimum">
+                <double>-999.000000000000000</double>
                </property>
-               <property name="singleStep">
-                <double>5.000000000000000</double>
+               <property name="maximum">
+                <double>999.000000000000000</double>
                </property>
               </widget>
              </item>
              <item row="1" column="0">
               <widget class="QLabel" name="label_2">
+               <property name="styleSheet">
+                <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="text">
                 <string>Theta</string>
                </property>
@@ -226,6 +281,13 @@
              </item>
              <item row="1" column="1">
               <widget class="QDoubleSpinBox" name="doubleSpinBox_Theta">
+               <property name="autoFillBackground">
+                <bool>true</bool>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(170, 255, 127);
+font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
@@ -233,10 +295,10 @@
                 <number>1</number>
                </property>
                <property name="minimum">
-                <double>-90.000000000000000</double>
+                <double>-999.000000000000000</double>
                </property>
                <property name="maximum">
-                <double>90.000000000000000</double>
+                <double>999.000000000000000</double>
                </property>
                <property name="singleStep">
                 <double>5.000000000000000</double>
@@ -245,6 +307,9 @@
              </item>
              <item row="0" column="0">
               <widget class="QLabel" name="label">
+               <property name="styleSheet">
+                <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="text">
                 <string>Phi</string>
                </property>
@@ -252,6 +317,9 @@
              </item>
              <item row="0" column="2">
               <widget class="QLabel" name="label_5">
+               <property name="styleSheet">
+                <string notr="true">font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="text">
                 <string>°</string>
                </property>
@@ -259,6 +327,9 @@
              </item>
              <item row="1" column="2">
               <widget class="QLabel" name="label_6">
+               <property name="styleSheet">
+                <string notr="true">font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="text">
                 <string>°</string>
                </property>
@@ -269,6 +340,9 @@
           </item>
           <item>
            <widget class="QGroupBox" name="groupBox_DataView">
+            <property name="styleSheet">
+             <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+            </property>
             <property name="title">
              <string>Data view</string>
             </property>
@@ -282,6 +356,10 @@
              </item>
              <item row="0" column="3">
               <widget class="QDoubleSpinBox" name="doubleSpinBox_Alpha">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(170, 255, 255);
+font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
@@ -298,6 +376,10 @@
              </item>
              <item row="1" column="3">
               <widget class="QDoubleSpinBox" name="doubleSpinBox_Beta">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(170, 255, 255);
+font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
@@ -321,6 +403,9 @@
              </item>
              <item row="0" column="4">
               <widget class="QLabel" name="label_7">
+               <property name="styleSheet">
+                <string notr="true">font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="text">
                 <string>°</string>
                </property>
@@ -328,6 +413,9 @@
              </item>
              <item row="1" column="4">
               <widget class="QLabel" name="label_8">
+               <property name="styleSheet">
+                <string notr="true">font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="text">
                 <string>°</string>
                </property>
@@ -338,19 +426,29 @@
           </item>
           <item>
            <widget class="QGroupBox" name="groupBox_Record">
+            <property name="styleSheet">
+             <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+            </property>
             <property name="title">
              <string>Record</string>
             </property>
-            <layout class="QFormLayout" name="formLayout">
-             <item row="0" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
               <widget class="QLabel" name="label_9">
+               <property name="styleSheet">
+                <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="text">
                 <string>Index</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
+             <item>
               <widget class="QSpinBox" name="spinBox_RecordIndex">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(170, 255, 255);
+font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
@@ -364,24 +462,34 @@
           </item>
           <item>
            <widget class="QGroupBox" name="groupBox_Channel">
+            <property name="styleSheet">
+             <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+            </property>
             <property name="title">
              <string>Channel</string>
             </property>
-            <layout class="QFormLayout" name="formLayout_3">
-             <item row="1" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <item>
               <widget class="QLabel" name="label_12">
+               <property name="styleSheet">
+                <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="text">
                 <string>Index</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="1">
+             <item>
               <widget class="QSpinBox" name="spinBox_ChannelIndex">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(255, 255, 127);
+font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
                <property name="maximum">
-                <number>12</number>
+                <number>64000</number>
                </property>
               </widget>
              </item>
@@ -390,12 +498,18 @@
           </item>
           <item>
            <widget class="QGroupBox" name="groupBox_Frequency">
+            <property name="styleSheet">
+             <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+            </property>
             <property name="title">
              <string>Sample / Bin / Frequency</string>
             </property>
             <layout class="QFormLayout" name="formLayout_4">
              <item row="0" column="0">
               <widget class="QLabel" name="label_11">
+               <property name="styleSheet">
+                <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="text">
                 <string>Index</string>
                </property>
@@ -403,6 +517,10 @@
              </item>
              <item row="0" column="1">
               <widget class="QSpinBox" name="spinBox_FrequencyIndex">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(255, 170, 255);
+font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
@@ -410,13 +528,21 @@
              </item>
              <item row="1" column="0">
               <widget class="QLabel" name="label_frequency">
+               <property name="styleSheet">
+                <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+               </property>
                <property name="text">
                 <string>Frequency</string>
                </property>
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QComboBox" name="comboBox_FrequencySelector"/>
+              <widget class="QComboBox" name="comboBox_FrequencySelector">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(255, 170, 255);
+font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -459,7 +585,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1102</width>
+     <width>1114</width>
      <height>21</height>
     </rect>
    </property>

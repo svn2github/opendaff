@@ -901,74 +901,106 @@ int DAFFReaderImpl::getRecordCoords(int iRecordIndex, int iView, float& fAngle1,
 	return 0;
 }
 
-void DAFFReaderImpl::getNearestNeighbour(int iView, float fAngle1, float fAngle2, int& iRecordIndex, bool& bOutOfBounds) const {
-	assert( (iView == DAFF_DATA_VIEW) || (iView == DAFF_OBJECT_VIEW) );
+void DAFFReaderImpl::getNearestNeighbour( int iView, float fAngle1, float fAngle2, int& iRecordIndex, bool& bOutOfBounds ) const
+{
+	assert( ( iView == DAFF_DATA_VIEW ) || ( iView == DAFF_OBJECT_VIEW ) );
 
 	float fAlpha;
 	float fBeta;
 
-	if (iView == DAFF_DATA_VIEW) {
+	if( iView == DAFF_DATA_VIEW )
+	{
 		fAlpha = fAngle1;
 		fBeta = fAngle2;
-	} else {
+	}
+	else
+	{
 		// Transform the coordinates into the DSC
-		transformAnglesO2D(fAngle1, fAngle2, fAlpha, fBeta);
+		transformAnglesO2D( fAngle1, fAngle2, fAlpha, fBeta );
 	}
 
 	// Normalize the direction
-	DAFFUtils::NormalizeDirection(DAFF_DATA_VIEW, fAlpha, fBeta, fAlpha, fBeta);
+	DAFFUtils::NormalizeDirection( DAFF_DATA_VIEW, fAlpha, fBeta, fAlpha, fBeta );
 
 	iRecordIndex = -1;
 	bOutOfBounds = false;
 	
 	int iAlphaIndex, iBetaIndex;
 
-	if (m_pMainHeader->iAlphaPoints == 1) {
+	if( m_pMainHeader->iAlphaPoints == 1 )
+	{
 		// Trivial case: Just one point
 		iAlphaIndex = 0;
-	} else {
-		if ((fAlpha >= m_pMainHeader->fAlphaStart) && (fAlpha <= m_pMainHeader->fAlphaEnd)) {
+		bOutOfBounds = true;
+		if( fAlpha == m_pMainHeader->fAlphaStart && fAlpha == std::fmodf( m_pMainHeader->fAlphaEnd, 360.0f ) )
+			bOutOfBounds = false; // Direct hit
+	}
+	else
+	{
+		if( ( fAlpha >= m_pMainHeader->fAlphaStart ) && ( fAlpha <= m_pMainHeader->fAlphaEnd ) )
+		{
 			// Within the covered alpha range
-			iAlphaIndex = (int) roundf((fAlpha - m_pMainHeader->fAlphaStart) / m_fAlphaResolution);
-		} else {
+			iAlphaIndex = ( int ) roundf( ( fAlpha - m_pMainHeader->fAlphaStart ) / m_fAlphaResolution );
+		}
+		else
+		{
 			// Outside the covered alpha range
 			// Decide: Which is closer? Start boundary or end boundary?
-			if (DAFF::anglef_mindiff_abs_0_360_DEG(m_pMainHeader->fAlphaStart, fAlpha) <= DAFF::anglef_mindiff_abs_0_360_DEG(m_pMainHeader->fAlphaEnd, fAlpha))
+			if( DAFF::anglef_mindiff_abs_0_360_DEG( m_pMainHeader->fAlphaStart, fAlpha ) <= DAFF::anglef_mindiff_abs_0_360_DEG( m_pMainHeader->fAlphaEnd, fAlpha ) )
 				iAlphaIndex = 0; // Start index
 			else
 				iAlphaIndex = (int) m_pMainHeader->iAlphaPoints - 1; // End index
+			
+			bOutOfBounds = true;
 		}
 	}
 
-	if (m_pMainHeader->iBetaPoints == 1) {
+	if( m_pMainHeader->iBetaPoints == 1 )
+	{
 		// Trivial case: Just one point
 		iBetaIndex = 0;
-	} else {
-		if ((fBeta >= m_pMainHeader->fBetaStart) && (fBeta <= m_pMainHeader->fBetaEnd)) {
+		bOutOfBounds = true;
+		if( fBeta == m_pMainHeader->fBetaEnd && fBeta == m_pMainHeader->fBetaStart )
+			bOutOfBounds = false; // Direct hit
+	}
+	else
+	{
+		if( ( fBeta >= m_pMainHeader->fBetaStart ) && ( fBeta <= m_pMainHeader->fBetaEnd ) )
+		{
 			// Within the covered beta range
 			iBetaIndex = (int) roundf((fBeta - m_pMainHeader->fBetaStart) / m_fBetaResolution);
-		} else {
+		}
+		else
+		{
 			// Outside the covered beta range
 			// Decide: Which is closer? Start boundary or end boundary?
-			if (std::abs(m_pMainHeader->fBetaStart - fBeta) <= std::abs(m_pMainHeader->fBetaEnd - fBeta))
+			if( std::abs( m_pMainHeader->fBetaStart - fBeta ) <= std::abs( m_pMainHeader->fBetaEnd - fBeta ) )
 				iBetaIndex = 0; // Start index
 			else
 				iBetaIndex = (int) m_pMainHeader->iBetaPoints - 1; // End index
+
+			bOutOfBounds = true;
 		}
 	}
 
 	// Calculate index
-	if (m_pMainHeader->fBetaStart == 0.0f) { // South pole present: increment by one (single record at poles)
-		if (iBetaIndex == 0) { // Hit south pole
+	if( m_pMainHeader->fBetaStart == 0.0f )
+	{ // South pole present: increment by one (single record at poles)
+		if( iBetaIndex == 0 )
+		{ // Hit south pole
 			iRecordIndex = 0;
-		} else {
-			if ((iBetaIndex == m_pMainHeader->iBetaPoints-1) && (m_pMainHeader->fBetaEnd == 180.0f)) // Hit north pole
+		}
+		else
+		{
+			if( ( iBetaIndex == m_pMainHeader->iBetaPoints - 1 ) && ( m_pMainHeader->fBetaEnd == 180.0f ) ) // Hit north pole
 				iRecordIndex = 1 + (iBetaIndex - 1) * m_pMainHeader->iAlphaPoints;
 			else
 				iRecordIndex = 1 + (iBetaIndex - 1) * m_pMainHeader->iAlphaPoints + iAlphaIndex;
 		}
-	} else {
-		if ((iBetaIndex == m_pMainHeader->iBetaPoints-1) && (m_pMainHeader->fBetaEnd == 180.0f)) // Hit north pole
+	}
+	else
+	{
+		if( ( iBetaIndex == m_pMainHeader->iBetaPoints - 1 ) && ( m_pMainHeader->fBetaEnd == 180.0f ) ) // Hit north pole
 			iRecordIndex = iBetaIndex * m_pMainHeader->iAlphaPoints;
 		else
 			iRecordIndex = iBetaIndex * m_pMainHeader->iAlphaPoints + iAlphaIndex;
