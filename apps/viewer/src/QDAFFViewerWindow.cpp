@@ -92,8 +92,9 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	if( sPath.isEmpty() == false )
 		OpenDAFFFile( sPath, false );
 
-	ChangePhi( m_dShowPhiDeg ); // Initially, show default frontal record
-	ChangeTheta( m_dShowThetaDeg ); // Initially, show default frontal record
+	UpdateRecentFilesActions();
+
+	ChangePhiAndTheta( m_dShowPhiDeg, m_dShowThetaDeg ); // Initially, show default frontal record
 }
 
 QDAFFViewerWindow::~QDAFFViewerWindow()
@@ -109,6 +110,27 @@ QDAFFViewerWindow::~QDAFFViewerWindow()
         m_pDAFFReader->closeFile();
 
     delete m_pDAFFReader;
+}
+
+void QDAFFViewerWindow::UpdateRecentFilesActions()
+{
+	QStringList vsRecentFiles = m_qSettings.value( "RecentFiles" ).toStringList();
+	QList< QAction*> lActions = ui->menuRecent->actions();
+
+	for( size_t i = 0; i < std::min( 9, vsRecentFiles.size() ); i++ )
+	{
+		QFileInfo oCurrentFileInfo( vsRecentFiles.at( int( i ) ) );
+		QAction* pAction = new QAction( this );
+
+		pAction->setShortcut( Qt::Key_1 + char( i ) );
+		pAction->setText( oCurrentFileInfo.fileName() );
+		pAction->setData( oCurrentFileInfo.filePath() );
+		connect( pAction, SIGNAL( triggered() ), this, SLOT( OpenDAFFFileRecent() ) );
+
+		if( lActions.size() > i + 1 )
+            ui->menuRecent->removeAction( lActions[ int( i + 1 ) ] );
+		ui->menuRecent->addAction( pAction );
+	}
 }
 
 void QDAFFViewerWindow::on_actionOpen_triggered()
@@ -168,6 +190,16 @@ void QDAFFViewerWindow::OpenDAFFFile( QString sPath, bool bQuiet )
 		ui->DAFFStatusBar->showMessage( sMsg );
 		emit SignalReadDAFF( m_pDAFFReader );
 		emit SignalContentLoaded( m_pDAFFReader->getContent() );
+
+		QStringList vsRecentFiles = m_qSettings.value( "RecentFiles" ).toStringList();
+		QStringList vsNewRecentFiles;
+		vsNewRecentFiles.push_back( oPassedFile.filePath() );
+		for( int i = 0; i < std::min( 9-1, vsRecentFiles.size() ); i++ )
+			if( vsRecentFiles[ i ] != oPassedFile.filePath() )
+				vsNewRecentFiles.push_back( vsRecentFiles[ i ] );
+		m_qSettings.setValue( "RecentFiles", vsNewRecentFiles );
+
+		UpdateRecentFilesActions();
 	}
 }
 
@@ -227,6 +259,13 @@ void QDAFFViewerWindow::on_actionDownload_triggered()
 {
     QUrl urlDownloadWebsite( "http://sourceforge.net/projects/opendaff/files/Content" );
     QDesktopServices::openUrl( urlDownloadWebsite );
+}
+
+void QDAFFViewerWindow::OpenDAFFFileRecent()
+{
+	QAction* pSendingAction = qobject_cast< QAction * >( sender() );
+	if( pSendingAction )
+		OpenDAFFFile( pSendingAction->data().toString() );
 }
 
 void QDAFFViewerWindow::IncreaseFrequencyIndex()
@@ -460,8 +499,6 @@ void QDAFFViewerWindow::ChangeRecordIndex( int iRecordIndex )
 		return;
 
 	m_iShowRecordIndex = iRecordIndex;
-
-	double dEpsilon = 0.001f;
 
 	if( m_pDAFFReader->isFileOpened() )
 	{
@@ -723,4 +760,10 @@ void QDAFFViewerWindow::ChangeTheta( double dThetaDeg )
 	}
 
 	emit SignalThetaChanged( m_dShowThetaDeg );
+}
+
+void QDAFFViewerWindow::on_actionRecent_Clear_triggered()
+{
+    m_qSettings.setValue( "RecentFiles", QVariant() );
+    UpdateRecentFilesActions();
 }

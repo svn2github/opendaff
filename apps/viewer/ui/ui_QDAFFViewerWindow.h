@@ -61,6 +61,7 @@ public:
     QAction *actionDecrease_alpha;
     QAction *actionIncrease_beta;
     QAction *actionDecrease_beta;
+    QAction *actionRecent_Clear;
     QWidget *DAFFCentralWidget;
     QHBoxLayout *horizontalLayout_2;
     QHBoxLayout *horizontalLayout;
@@ -89,8 +90,8 @@ public:
     QDoubleSpinBox *doubleSpinBox_Phi;
     QLabel *label_2;
     QDoubleSpinBox *doubleSpinBox_Theta;
-    QLabel *label;
     QLabel *label_5;
+    QLabel *label;
     QLabel *label_6;
     QGroupBox *groupBox_DataView;
     QGridLayout *gridLayout_4;
@@ -119,6 +120,7 @@ public:
     QDAFF2DPlot *graphicsView_2DDAFFPlot;
     QMenuBar *DAFFMenuBar;
     QMenu *menuFile;
+    QMenu *menuRecent;
     QMenu *menuAbout;
     QMenu *menuContent;
     QMenu *menuObject_view;
@@ -130,7 +132,7 @@ public:
     {
         if (DAFFViewer->objectName().isEmpty())
             DAFFViewer->setObjectName(QStringLiteral("DAFFViewer"));
-        DAFFViewer->resize(1114, 812);
+        DAFFViewer->resize(1141, 812);
         DAFFViewer->setAcceptDrops(true);
         DAFFViewer->setAutoFillBackground(false);
         DAFFViewer->setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -175,6 +177,8 @@ public:
         actionIncrease_beta->setObjectName(QStringLiteral("actionIncrease_beta"));
         actionDecrease_beta = new QAction(DAFFViewer);
         actionDecrease_beta->setObjectName(QStringLiteral("actionDecrease_beta"));
+        actionRecent_Clear = new QAction(DAFFViewer);
+        actionRecent_Clear->setObjectName(QStringLiteral("actionRecent_Clear"));
         DAFFCentralWidget = new QWidget(DAFFViewer);
         DAFFCentralWidget->setObjectName(QStringLiteral("DAFFCentralWidget"));
         DAFFCentralWidget->setEnabled(true);
@@ -353,21 +357,21 @@ public:
         doubleSpinBox_Theta->setDecimals(1);
         doubleSpinBox_Theta->setMinimum(-999);
         doubleSpinBox_Theta->setMaximum(999);
-        doubleSpinBox_Theta->setSingleStep(5);
+        doubleSpinBox_Theta->setSingleStep(1);
 
         gridLayout_3->addWidget(doubleSpinBox_Theta, 1, 1, 1, 1);
-
-        label = new QLabel(groupBox_ObjectView);
-        label->setObjectName(QStringLiteral("label"));
-        label->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
-
-        gridLayout_3->addWidget(label, 0, 0, 1, 1);
 
         label_5 = new QLabel(groupBox_ObjectView);
         label_5->setObjectName(QStringLiteral("label_5"));
         label_5->setStyleSheet(QStringLiteral("font: 75 12pt \"Calibri\";"));
 
         gridLayout_3->addWidget(label_5, 0, 2, 1, 1);
+
+        label = new QLabel(groupBox_ObjectView);
+        label->setObjectName(QStringLiteral("label"));
+        label->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
+
+        gridLayout_3->addWidget(label, 0, 0, 1, 1);
 
         label_6 = new QLabel(groupBox_ObjectView);
         label_6->setObjectName(QStringLiteral("label_6"));
@@ -397,7 +401,7 @@ public:
         doubleSpinBox_Alpha->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         doubleSpinBox_Alpha->setDecimals(1);
         doubleSpinBox_Alpha->setMaximum(360);
-        doubleSpinBox_Alpha->setSingleStep(5);
+        doubleSpinBox_Alpha->setSingleStep(1);
 
         gridLayout_4->addWidget(doubleSpinBox_Alpha, 0, 3, 1, 1);
 
@@ -408,7 +412,7 @@ public:
         doubleSpinBox_Beta->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         doubleSpinBox_Beta->setDecimals(1);
         doubleSpinBox_Beta->setMaximum(180);
-        doubleSpinBox_Beta->setSingleStep(5);
+        doubleSpinBox_Beta->setSingleStep(1);
 
         gridLayout_4->addWidget(doubleSpinBox_Beta, 1, 3, 1, 1);
 
@@ -551,9 +555,11 @@ public:
         DAFFViewer->setCentralWidget(DAFFCentralWidget);
         DAFFMenuBar = new QMenuBar(DAFFViewer);
         DAFFMenuBar->setObjectName(QStringLiteral("DAFFMenuBar"));
-        DAFFMenuBar->setGeometry(QRect(0, 0, 1114, 21));
+        DAFFMenuBar->setGeometry(QRect(0, 0, 1141, 21));
         menuFile = new QMenu(DAFFMenuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
+        menuRecent = new QMenu(menuFile);
+        menuRecent->setObjectName(QStringLiteral("menuRecent"));
         menuAbout = new QMenu(DAFFMenuBar);
         menuAbout->setObjectName(QStringLiteral("menuAbout"));
         menuContent = new QMenu(DAFFMenuBar);
@@ -575,8 +581,11 @@ public:
         DAFFMenuBar->addAction(menuAbout->menuAction());
         menuFile->addAction(actionOpen);
         menuFile->addAction(actionClose);
+        menuFile->addAction(menuRecent->menuAction());
         menuFile->addSeparator();
         menuFile->addAction(actionQuit);
+        menuRecent->addAction(actionRecent_Clear);
+        menuRecent->addSeparator();
         menuAbout->addAction(actionAboutDAFFViewer);
         menuAbout->addAction(actionAboutOpenDAFF);
         menuAbout->addAction(actionOpenDAFFWebsite);
@@ -674,31 +683,81 @@ public:
         actionIncrease_beta->setShortcut(QApplication::translate("DAFFViewer", "Shift+Up", 0));
         actionDecrease_beta->setText(QApplication::translate("DAFFViewer", "Decrease beta", 0));
         actionDecrease_beta->setShortcut(QApplication::translate("DAFFViewer", "Shift+Down", 0));
+        actionRecent_Clear->setText(QApplication::translate("DAFFViewer", "Clear", 0));
+#ifndef QT_NO_TOOLTIP
+        actionRecent_Clear->setToolTip(QApplication::translate("DAFFViewer", "Clear recent DAFF file history", 0));
+#endif // QT_NO_TOOLTIP
+        actionRecent_Clear->setShortcut(QApplication::translate("DAFFViewer", "R, C", 0));
+#ifndef QT_NO_TOOLTIP
+        groupBox_Reader->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>The DAFF <span style=\" font-weight:600;\">reader</span> opens a DAFF file and gives access to general information like file name, content type, file format version and global metadata.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         groupBox_Reader->setTitle(QApplication::translate("DAFFViewer", "DAFF Reader ", 0));
         labelFileName->setText(QApplication::translate("DAFFViewer", "File name", 0));
         labelVersion->setText(QApplication::translate("DAFFViewer", "Version", 0));
         labelContentType->setText(QApplication::translate("DAFFViewer", "Content type", 0));
+#ifndef QT_NO_TOOLTIP
+        groupBox_Metadata->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>The DAFF global <span style=\" font-weight:600;\">metadata</span> is a table of key-value pairs with four data types: boolean, floating point number, integer and string. Creators of DAFF files can specify arbitrary information for the content. It can help to include properties that are not covered natively by DAFF (prototyping). It can also explain more about the directional content, like type of the object, web resource, author, creation date, publication reference, license and many more.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         groupBox_Metadata->setTitle(QApplication::translate("DAFFViewer", "DAFF Metadata", 0));
+#ifndef QT_NO_TOOLTIP
+        groupBox_Properties->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>The <span style=\" font-weight:600;\">properties</span> of a DAFF file are definitions of the file that describe the content in detail. Here, the resolution and ranges for Alpha and Beta angles are stored as well the orientation of the data view that has to be applied by DAFF to rotate from the user (object) view. Also the number of channels, the quantization of the data sets and the total number of data points can be queried.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         groupBox_Properties->setTitle(QApplication::translate("DAFFViewer", "DAFF Properties", 0));
-        groupBox_ObjectView->setTitle(QApplication::translate("DAFFViewer", "Object view", 0));
+#ifndef QT_NO_TOOLTIP
+        groupBox_ObjectView->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p><span style=\" font-weight:600;\">Views</span> on directional contents are a central property of DAFF. A main problem of spatial content is that everyone uses a representation and coordinate system (a <span style=\" font-style:italic;\">view</span>) that naturally appears to be the best. Therefore a variety of views are in place and a debate about pros and cons is meaningless. DAFF does not claim to solve this circumstance, but provides a conversion between the so called <span style=\" font-style:italic;\">user (or object) view</span> and the <span style=\" font-style:italic;\">data view</span>. The <span style=\" font-weight:600;\">user view</span> is commonly used for HRTFs where the frontal direction is at angles (0\302\260, 0\302\260). It is also called object view because it is the projection of oneself into the object (i.e. looking through the 'eyes' of the dummy head). Here, DAFF uses the term Phi and Theta for azimuth and elevation angle. No matter how the underlying data is orien"
+                        "ted, this view is meant for users that require to get the right direction without further knowledge on how the data is actually formatted.</p><p>The data view, in contrast, is more mathematically motivated and is used when creating DAFF content. During creation of DAFF content and to define the rotation of the data into the user (object) view, an orientation can be added that DAFF will apply automatically, if the <span style=\" font-style:italic;\">user view</span> is used.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        groupBox_ObjectView->setTitle(QApplication::translate("DAFFViewer", "User view", 0));
+#ifndef QT_NO_TOOLTIP
+        doubleSpinBox_Phi->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>A <span style=\" font-weight:600; color:#55aa00;\">green</span> background indicates a phi <span style=\" font-style:italic;\">and</span> theta angle pair that represents a <span style=\" font-weight:600;\">valid direction</span> that is covered by the currently opened DAFF file.</p><p>A <span style=\" font-weight:600; color:#ff0000;\">red</span> background indicates that thes direction is<span style=\" font-weight:600;\"> out of bounds</span>.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+#ifndef QT_NO_WHATSTHIS
+        doubleSpinBox_Phi->setWhatsThis(QApplication::translate("DAFFViewer", "<html><head/><body><p><span style=\" font-weight:600;\">Theta</span> spin box with out of bounds indicator (red background).</p></body></html>", 0));
+#endif // QT_NO_WHATSTHIS
         doubleSpinBox_Phi->setSuffix(QString());
+#ifndef QT_NO_TOOLTIP
+        label_2->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>The <span style=\" font-weight:600;\">Theta</span> angle corresponds to the vertical direction, also referred to as the elevation angle or elevation.</p><p>In DAFF, this angle definition is a value of the <span style=\" font-weight:600;\">user view</span> on the directional data, and a Theta angle of zero degree (0\302\260) is the front direction in vertical plane. The north pole (user view) has a Theta of 90\302\260, the south pole -90\302\260.</p><p>The default range of the Theta angle is [-90\302\260, 90\302\260], but the nearest neighbour mapping will also accept any other value that will be projected into this range. Range overrun of <span style=\" font-weight:600;\">Theta</span> may influence the <span style=\" font-weight:600;\">Phi</span> angle, too.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         label_2->setText(QApplication::translate("DAFFViewer", "Theta", 0));
-        label->setText(QApplication::translate("DAFFViewer", "Phi", 0));
+#ifndef QT_NO_TOOLTIP
+        doubleSpinBox_Theta->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>A <span style=\" font-weight:600; color:#55aa00;\">green</span> background indicates a phi <span style=\" font-style:italic;\">and</span> theta angle pair that represents a <span style=\" font-weight:600;\">valid direction</span> that is covered by the currently opened DAFF file.</p><p>A <span style=\" font-weight:600; color:#ff0000;\">red</span> background indicates that thes direction is<span style=\" font-weight:600;\"> out of bounds</span>.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+#ifndef QT_NO_WHATSTHIS
+        doubleSpinBox_Theta->setWhatsThis(QApplication::translate("DAFFViewer", "<html><head/><body><p><span style=\" font-weight:600;\">Phi</span> spin box with out of bounds indicator (red background).</p></body></html>", 0));
+#endif // QT_NO_WHATSTHIS
         label_5->setText(QApplication::translate("DAFFViewer", "\302\260", 0));
+#ifndef QT_NO_TOOLTIP
+        label->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>The <span style=\" font-weight:600;\">Phi</span> angle corresponds to the horizontal direction also referred to as the azimuthal angle or azimuth.</p><p>In DAFF, this angle definition is a value of the <span style=\" font-weight:600;\">user view</span> on the directional data, and a Phi angle of zero degree (0\302\260) is the front direction in horizontal plane. The north and south pole (user view) have an arbitrary Phi angle.</p><p>The default range of the Phi angle is (-180\302\260, 180\302\260], but the nearest neighbour mapping will also accept any other value that will be projected into this range. Range overrun of <span style=\" font-weight:600;\">Phi</span> may influence the <span style=\" font-weight:600;\">Theta</span> angle, too.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        label->setText(QApplication::translate("DAFFViewer", "Phi", 0));
         label_6->setText(QApplication::translate("DAFFViewer", "\302\260", 0));
+#ifndef QT_NO_TOOLTIP
+        groupBox_DataView->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p><span style=\" font-weight:600;\">Views</span> on directional contents are a central property of DAFF. A main problem of spatial content is that everyone uses a representation and coordinate system (a <span style=\" font-style:italic;\">view</span>) that naturally appears to be the best. Therefore a variety of views are in place and a debate about pros and cons is meaningless. DAFF does not claim to solve this circumstance, but provides a conversion between the so called <span style=\" font-style:italic;\">user (or object) view</span> and the <span style=\" font-style:italic;\">data view</span>. The <span style=\" font-weight:600;\">data view</span> is commonly used as a mathematical polar coordinate system, and DAFF uses the terms Alpha and Beta for azimuth and elevation angle. The south pole is represented by a Beta elevation angle of 0\302\260 (an equally appropriate polar coordinate system would use 0\302\260 for the north pole here, but DAFF doesn't). This data view is meant to be us"
+                        "ed by the creators of DAFF content. By also providing an orientation, the rotation of the data into the user (object) view can be defined and DAFF will apply this rotation automatically, if the <span style=\" font-style:italic;\">user view</span> is used. By this approach, the user of a DAFF file does not require any further information on the formatting of the underlying directional content.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         groupBox_DataView->setTitle(QApplication::translate("DAFFViewer", "Data view", 0));
         label_3->setText(QApplication::translate("DAFFViewer", "Alpha", 0));
         label_4->setText(QApplication::translate("DAFFViewer", "Beta", 0));
         label_7->setText(QApplication::translate("DAFFViewer", "\302\260", 0));
         label_8->setText(QApplication::translate("DAFFViewer", "\302\260", 0));
+#ifndef QT_NO_TOOLTIP
+        groupBox_Record->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>A <span style=\" font-weight:600;\">record data set</span> represents a set of (potentially multi-channel) time series audio samples or frequency values for a <span style=\" font-weight:600;\">certain direction</span>. The index of a record defines where in the memory such a data set can be found. DAFF uses a two-step access to directional data that is not spatially continuous. First, a nearest neighbour search has to be executed, that returns a record index. Then, by using the corresponding index, the data can be requested.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         groupBox_Record->setTitle(QApplication::translate("DAFFViewer", "Record", 0));
         label_9->setText(QApplication::translate("DAFFViewer", "Index", 0));
+#ifndef QT_NO_TOOLTIP
+        groupBox_Channel->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>DAFF provides <span style=\" font-weight:600;\">multi-channel data sets</span>, i.e. for an HRTF two channels are usually needed. The channel spin box chooses which channel should be shown.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         groupBox_Channel->setTitle(QApplication::translate("DAFFViewer", "Channel", 0));
         label_12->setText(QApplication::translate("DAFFViewer", "Index", 0));
+#ifndef QT_NO_TOOLTIP
+        groupBox_Frequency->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>Depending on the content type, DAFF files have a <span style=\" font-weight:600;\">vector</span> of (potentially multi-channel) data. The base of this data is either a time for a sample in an impule response, or a frequency in a spectrum representation, either as frequency bins in a DFT coefficient vector, or a center frequency in an energetic band spectrum.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         groupBox_Frequency->setTitle(QApplication::translate("DAFFViewer", "Sample / Bin / Frequency", 0));
         label_11->setText(QApplication::translate("DAFFViewer", "Index", 0));
         label_frequency->setText(QApplication::translate("DAFFViewer", "Frequency", 0));
         menuFile->setTitle(QApplication::translate("DAFFViewer", "File", 0));
+        menuRecent->setTitle(QApplication::translate("DAFFViewer", "Recent", 0));
         menuAbout->setTitle(QApplication::translate("DAFFViewer", "About", 0));
         menuContent->setTitle(QApplication::translate("DAFFViewer", "Edit", 0));
         menuObject_view->setTitle(QApplication::translate("DAFFViewer", "Object view", 0));

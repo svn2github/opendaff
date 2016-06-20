@@ -31,7 +31,7 @@ public:
     ~QDAFFViewerWindow();
 
     void OpenDAFFFile( QString sPath, bool bQuiet = false );
-	
+	void UpdateRecentFilesActions();
 
 private slots:
 
@@ -43,6 +43,8 @@ private slots:
     void on_actionAboutOpenDAFF_triggered();
     void on_actionAboutDAFFViewer_triggered();
     void on_actionDownload_triggered();
+
+	void OpenDAFFFileRecent();
 
     void IncreaseAlpha();
 	void DecreaseAlpha();
@@ -93,6 +95,7 @@ private slots:
 	void on_actionDecrease_phi_triggered();
 	void on_actionIncrease_theta_triggered();
 	void on_actionDecrease_theta_triggered();
+    void on_actionRecent_Clear_triggered();
 
 signals:
 	void SignalReadDAFF( const DAFFReader* pReader );

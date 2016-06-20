@@ -12,8 +12,10 @@ TARGET = DAFFViewer
 TEMPLATE = app
 
 
-SOURCES += src/DAFFViewer.cpp \
-    src/QDAFFViewerWindow.cpp
+SOURCES += \
+    src/DAFFViewer.cpp \
+    src/QDAFFViewerWindow.cpp \
+    src/QDAFF2DPlot.cpp
 
 HEADERS  += \
     src/QDAFF2DPlot.h \
@@ -22,8 +24,7 @@ HEADERS  += \
     src/QDAFFPropertiesTable.h \
     src/QDAFFHeaderGroupBox.h\
     src/QDAFFVTKWidget.h \
-    src/QDAFF2DPlot.h \
-    src/QDAFF2DPlot.cpp
+    src/QDAFF2DPlot.h
 
 FORMS    += \
     ui/QDAFFViewerWindow.ui
@@ -49,6 +50,6 @@ win32:CONFIG(release, debug|release): LIBS += -LC:/dev/ExternalLibs/VTK/VTK-7.0/
 else:win32:CONFIG(debug, debug|release): LIBS += -LC:/dev/ExternalLibs/VTK/VTK-7.0/win32-x64.vc12/lib -LX:/VR/dev/ExternalLibs/VTK/VTK-7.0/win32-x64.vc12/lib -lglu32 -lopengl32 -luser32 -lgdi32 -lkernel32 -ladvapi32 -lvtkViewsQt-7.0D -lvtkRenderingQt-7.0D -lvtkGUISupportQtSQL-7.0D -lvtkGUISupportQt-7.0D -lvtkalglib-7.0D -lvtkChartsCore-7.0D -lvtkCommonColor-7.0D -lvtkCommonDataModel-7.0D -lvtkCommonMath-7.0D -lvtkCommonCore-7.0D -lvtksys-7.0D -lvtkCommonMisc-7.0D -lvtkCommonSystem-7.0D -lvtkCommonTransforms-7.0D -lvtkInfovisCore-7.0D -lvtkFiltersExtraction-7.0D -lvtkCommonExecutionModel-7.0D -lvtkFiltersCore-7.0D -lvtkFiltersGeneral-7.0D -lvtkCommonComputationalGeometry-7.0D -lvtkFiltersStatistics-7.0D -lvtkImagingFourier-7.0D -lvtkImagingCore-7.0D -lvtkRenderingContext2D-7.0D -lvtkRenderingCore-7.0D -lvtkFiltersGeometry-7.0D -lvtkFiltersSources-7.0D -lvtkRenderingFreeType-7.0D -lvtkfreetype-7.0D -lvtkzlib-7.0D -lvtkDICOMParser-7.0D -lvtkDomainsChemistry-7.0D -lvtkIOXML-7.0D -lvtkIOGeometry-7.0D -lvtkIOCore-7.0D -lvtkIOXMLParser-7.0D -lvtkexpat-7.0D -lvtkDomainsChemistryOpenGL2-7.0D -lvtkRenderingOpenGL2-7.0D -lvtkImagingHybrid-7.0D -lvtkIOImage-7.0D -lvtkmetaio-7.0D -lvtkjpeg-7.0D -lvtkpng-7.0D -lvtktiff-7.0D -lvtkglew-7.0D -lvtkexoIIc-7.0D -lvtkNetCDF-7.0D -lvtkNetCDF_cxx-7.0D -lvtkhdf5_hl-7.0D -lvtkhdf5-7.0D -lvtkFiltersAMR-7.0D -lvtkParallelCore-7.0D -lvtkIOLegacy-7.0D -lvtkFiltersFlowPaths-7.0D -lvtkFiltersGeneric-7.0D -lvtkFiltersHybrid-7.0D -lvtkImagingSources-7.0D -lvtkFiltersHyperTree-7.0D -lvtkFiltersImaging-7.0D -lvtkImagingGeneral-7.0D -lvtkFiltersModeling-7.0D -lvtkFiltersParallel-7.0D -lvtkFiltersParallelImaging-7.0D -lvtkFiltersProgrammable-7.0D -lvtkFiltersSelection-7.0D -lvtkFiltersSMP-7.0D -lvtkFiltersTexture-7.0D -lvtkFiltersVerdict-7.0D -lvtkverdict-7.0D -lvtkGeovisCore-7.0D -lvtkInfovisLayout-7.0D -lvtkInteractionStyle-7.0D -lvtkInteractionWidgets-7.0D -lvtkRenderingAnnotation-7.0D -lvtkImagingColor-7.0D -lvtkRenderingVolume-7.0D -lvtkViewsCore-7.0D -lvtkproj4-7.0D -lvtkGUISupportQt-7.0D -lvtkGUISupportQtSQL-7.0D -lvtkIOSQL-7.0D -lvtksqlite-7.0D -lvtkImagingMath-7.0D -lvtkImagingMorphological-7.0D -lvtkImagingStatistics-7.0D -lvtkImagingStencil-7.0D -lvtkInteractionImage-7.0D -lvtkIOAMR-7.0D -lvtkIOEnSight-7.0D -lvtkIOExodus-7.0D -lvtkIOExport-7.0D -lvtkRenderingLabel-7.0D -lvtkIOImport-7.0D -lvtkIOInfovis-7.0D -lvtklibxml2-7.0D -lvtkIOLSDyna-7.0D -lvtkIOMINC-7.0D -lvtkIOMovie-7.0D -lvtkoggtheora-7.0D -lvtkIONetCDF-7.0D -lvtkIOParallel-7.0D -lvtkjsoncpp-7.0D -lvtkIOParallelXML-7.0D -lvtkIOPLY-7.0D -lvtkIOVideo-7.0D -lvtkRenderingContextOpenGL2-7.0D -lvtkRenderingImage-7.0D -lvtkRenderingLOD-7.0D -lvtkRenderingQt-7.0D -lvtkRenderingVolumeOpenGL2-7.0D -lvtkViewsContext2D-7.0D -lvtkViewsInfovis-7.0D -lvtkViewsQt-7.0D
 
 INCLUDEPATH += X:/VR/dev/ExternalLibs/VTK/VTK-7.0/win32-x64.vc12/include/vtk-7.0
-#INCLUDEPATH += C:\dev\ExternalLibs\VTK\VTK-7.0\win32-x64.vc12\include/vtk-7.0
+INCLUDEPATH += C:\dev\ExternalLibs\VTK\VTK-7.0\win32-x64.vc12\include/vtk-7.0
 DEPENDPATH += X:/VR/dev/ExternalLibs/VTK/VTK-7.0/win32-x64.vc12/lib
-#DEPENDPATH += C:/dev/ExternalLibs/VTK/VTK-7.0/win32-x64.vc12/lib
+DEPENDPATH += C:/dev/ExternalLibs/VTK/VTK-7.0/win32-x64.vc12/lib
