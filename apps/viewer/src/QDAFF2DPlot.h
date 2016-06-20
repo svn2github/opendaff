@@ -27,23 +27,14 @@ class QDAFF2DPlot : public QGraphicsView
     Q_OBJECT
 
 public:
-	inline QDAFF2DPlot( QWidget *parent = Q_NULLPTR )
-		: QGraphicsView( new QGraphicsScene(), parent )
-	{
-		setScene( new QGraphicsScene() );
-		QGraphicsRectItem *rect = scene()->addRect( QRectF( 0, 0, 100, 100 ) );
-		QGraphicsItem *item = scene()->itemAt( 50, 50, QTransform() );
-		
-		//setViewport( new QOpenGLWidget( this ) );
-		setBackgroundBrush( QBrush( Qt::darkBlue ) );
-    }
+	QDAFF2DPlot( QWidget *parent = Q_NULLPTR );
 
 public slots:
-    inline void ReadDAFF( const DAFFReader* pReader )
-    {
-        std::cout << "2D: " << pReader->getFilename() << std::endl;
-
-    }
+     void ReadDAFF( const DAFFReader* pReader );
+	 void CloseDAFF();
+	 void ChangeFrequencyIndex( int );
+private:
+	const DAFFReader* m_pReader;
 };
 
 #endif // QDAFF2DPLOT_H

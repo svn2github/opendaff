@@ -38,12 +38,14 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	connect( this, SIGNAL( SignalReadDAFF( const DAFFReader* ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ReadDAFF( const DAFFReader* ) ) );
 	connect( this, SIGNAL( SignalReadDAFF( const DAFFReader* ) ), ui->tableView_Metadata, SLOT( ReadDAFF( const DAFFReader* ) ) );
 	connect( this, SIGNAL( SignalReadDAFF( const DAFFReader* ) ), ui->tableView_Properties, SLOT( ReadDAFF( const DAFFReader* ) ) );
+    connect( this, SIGNAL( SignalReadDAFF( const DAFFReader* ) ), ui->graphicsView_2DDAFFPlot, SLOT( ReadDAFF( const DAFFReader* ) ) );
 
 	// Close DAFF file conns
 	connect( this, SIGNAL( SignalCloseDAFF() ), ui->groupBox_Reader, SLOT( CloseDAFF() ) );
 	connect( this, SIGNAL( SignalCloseDAFF() ), ui->DAFF3DPlot_VTKWidget, SLOT( CloseDAFF() ) );
 	connect( this, SIGNAL( SignalCloseDAFF() ), ui->tableView_Metadata, SLOT( CloseDAFF() ) );
 	connect( this, SIGNAL( SignalCloseDAFF() ), ui->tableView_Properties, SLOT( CloseDAFF() ) );
+	connect( this, SIGNAL( SignalCloseDAFF() ), ui->graphicsView_2DDAFFPlot, SLOT( CloseDAFF() ) );
 
 	// Load & prepare DAFF content conns
 	connect( this, SIGNAL( SignalContentLoaded( const DAFFContent* ) ), this, SLOT( LoadContent( const DAFFContent* ) ) );
@@ -55,6 +57,7 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	connect( this, SIGNAL( SignalFrequencyIndexChanged( int ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ChangeFrequencyIndex( int ) ) );
 	connect( ui->spinBox_FrequencyIndex, SIGNAL( valueChanged( int ) ), this, SLOT( ChangeFrequencyIndex( int ) ) );
 	connect( ui->comboBox_FrequencySelector, SIGNAL( currentIndexChanged( int ) ), this, SLOT( ChangeFrequencyIndex( int ) ) );
+	connect( this, SIGNAL( SignalFrequencyIndexChanged( int ) ), ui->graphicsView_2DDAFFPlot, SLOT( ChangeFrequencyIndex( int ) ) );
 
 	// Channel index conns
 	connect( this, SIGNAL( SignalChannelIndexChanged( int ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ChangeChannelIndex( int ) ) );

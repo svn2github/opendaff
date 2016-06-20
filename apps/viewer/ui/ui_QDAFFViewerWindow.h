@@ -30,7 +30,7 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include "QDAFF2DPlotFrame.h"
+#include "QDAFF2DPlot.h"
 #include "QDAFFHeaderGroupBox.h"
 #include "QDAFFMetadataTable.h"
 #include "QDAFFPropertiesTable.h"
@@ -101,11 +101,11 @@ public:
     QLabel *label_7;
     QLabel *label_8;
     QGroupBox *groupBox_Record;
-    QFormLayout *formLayout;
+    QVBoxLayout *verticalLayout_3;
     QLabel *label_9;
     QSpinBox *spinBox_RecordIndex;
     QGroupBox *groupBox_Channel;
-    QFormLayout *formLayout_3;
+    QVBoxLayout *verticalLayout_4;
     QLabel *label_12;
     QSpinBox *spinBox_ChannelIndex;
     QGroupBox *groupBox_Frequency;
@@ -116,7 +116,7 @@ public:
     QComboBox *comboBox_FrequencySelector;
     QFrame *frame_2DPlot;
     QGridLayout *gridLayout;
-    QDAFF2DPlotFrame *Frame_Frame;
+    QDAFF2DPlot *graphicsView_2DDAFFPlot;
     QMenuBar *DAFFMenuBar;
     QMenu *menuFile;
     QMenu *menuAbout;
@@ -333,8 +333,8 @@ public:
 "font: 75 12pt \"Calibri\";"));
         doubleSpinBox_Phi->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         doubleSpinBox_Phi->setDecimals(1);
-        doubleSpinBox_Phi->setMinimum(-1e+06);
-        doubleSpinBox_Phi->setMaximum(1e+06);
+        doubleSpinBox_Phi->setMinimum(-999);
+        doubleSpinBox_Phi->setMaximum(999);
 
         gridLayout_3->addWidget(doubleSpinBox_Phi, 0, 1, 1, 1);
 
@@ -351,8 +351,8 @@ public:
 "font: 75 12pt \"Calibri\";"));
         doubleSpinBox_Theta->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         doubleSpinBox_Theta->setDecimals(1);
-        doubleSpinBox_Theta->setMinimum(-1e+06);
-        doubleSpinBox_Theta->setMaximum(1e+06);
+        doubleSpinBox_Theta->setMinimum(-999);
+        doubleSpinBox_Theta->setMaximum(999);
         doubleSpinBox_Theta->setSingleStep(5);
 
         gridLayout_3->addWidget(doubleSpinBox_Theta, 1, 1, 1, 1);
@@ -435,15 +435,15 @@ public:
         groupBox_Record = new QGroupBox(DAFFCentralWidget);
         groupBox_Record->setObjectName(QStringLiteral("groupBox_Record"));
         groupBox_Record->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
-        formLayout = new QFormLayout(groupBox_Record);
-        formLayout->setSpacing(6);
-        formLayout->setContentsMargins(11, 11, 11, 11);
-        formLayout->setObjectName(QStringLiteral("formLayout"));
+        verticalLayout_3 = new QVBoxLayout(groupBox_Record);
+        verticalLayout_3->setSpacing(6);
+        verticalLayout_3->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
         label_9 = new QLabel(groupBox_Record);
         label_9->setObjectName(QStringLiteral("label_9"));
         label_9->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
 
-        formLayout->setWidget(0, QFormLayout::LabelRole, label_9);
+        verticalLayout_3->addWidget(label_9);
 
         spinBox_RecordIndex = new QSpinBox(groupBox_Record);
         spinBox_RecordIndex->setObjectName(QStringLiteral("spinBox_RecordIndex"));
@@ -452,7 +452,7 @@ public:
         spinBox_RecordIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         spinBox_RecordIndex->setMaximum(64800);
 
-        formLayout->setWidget(0, QFormLayout::FieldRole, spinBox_RecordIndex);
+        verticalLayout_3->addWidget(spinBox_RecordIndex);
 
 
         horizontalLayout_InteractionPanel->addWidget(groupBox_Record);
@@ -460,24 +460,24 @@ public:
         groupBox_Channel = new QGroupBox(DAFFCentralWidget);
         groupBox_Channel->setObjectName(QStringLiteral("groupBox_Channel"));
         groupBox_Channel->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
-        formLayout_3 = new QFormLayout(groupBox_Channel);
-        formLayout_3->setSpacing(6);
-        formLayout_3->setContentsMargins(11, 11, 11, 11);
-        formLayout_3->setObjectName(QStringLiteral("formLayout_3"));
+        verticalLayout_4 = new QVBoxLayout(groupBox_Channel);
+        verticalLayout_4->setSpacing(6);
+        verticalLayout_4->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
         label_12 = new QLabel(groupBox_Channel);
         label_12->setObjectName(QStringLiteral("label_12"));
         label_12->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
 
-        formLayout_3->setWidget(1, QFormLayout::LabelRole, label_12);
+        verticalLayout_4->addWidget(label_12);
 
         spinBox_ChannelIndex = new QSpinBox(groupBox_Channel);
         spinBox_ChannelIndex->setObjectName(QStringLiteral("spinBox_ChannelIndex"));
         spinBox_ChannelIndex->setStyleSheet(QLatin1String("background-color: rgb(255, 255, 127);\n"
 "font: 75 12pt \"Calibri\";"));
         spinBox_ChannelIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-        spinBox_ChannelIndex->setMaximum(12);
+        spinBox_ChannelIndex->setMaximum(64000);
 
-        formLayout_3->setWidget(1, QFormLayout::FieldRole, spinBox_ChannelIndex);
+        verticalLayout_4->addWidget(spinBox_ChannelIndex);
 
 
         horizontalLayout_InteractionPanel->addWidget(groupBox_Channel);
@@ -530,12 +530,10 @@ public:
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        Frame_Frame = new QDAFF2DPlotFrame(frame_2DPlot);
-        Frame_Frame->setObjectName(QStringLiteral("Frame_Frame"));
-        Frame_Frame->setMinimumSize(QSize(0, 300));
-        Frame_Frame->setStyleSheet(QStringLiteral("background-color: rgb(255, 255, 255);"));
+        graphicsView_2DDAFFPlot = new QDAFF2DPlot(frame_2DPlot);
+        graphicsView_2DDAFFPlot->setObjectName(QStringLiteral("graphicsView_2DDAFFPlot"));
 
-        gridLayout->addWidget(Frame_Frame, 1, 0, 1, 1);
+        gridLayout->addWidget(graphicsView_2DDAFFPlot, 0, 0, 1, 1);
 
 
         layout_Visualization->addWidget(frame_2DPlot);

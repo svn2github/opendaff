@@ -558,18 +558,8 @@ font: 75 12pt &quot;Calibri&quot;;</string>
            <enum>QFrame::Raised</enum>
           </property>
           <layout class="QGridLayout" name="gridLayout">
-           <item row="1" column="0">
-            <widget class="QDAFF2DPlotFrame" name="Frame_Frame">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>300</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(255, 255, 255);</string>
-             </property>
-            </widget>
+           <item row="0" column="0">
+            <widget class="QDAFF2DPlot" name="graphicsView_2DDAFFPlot"/>
            </item>
           </layout>
          </widget>
@@ -863,10 +853,9 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    <header>QDAFFPropertiesTable.h</header>
   </customwidget>
   <customwidget>
-   <class>QDAFF2DPlotFrame</class>
-   <extends>QFrame</extends>
-   <header>QDAFF2DPlotFrame.h</header>
-   <container>1</container>
+   <class>QDAFF2DPlot</class>
+   <extends>QGraphicsView</extends>
+   <header>QDAFF2DPlot.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
