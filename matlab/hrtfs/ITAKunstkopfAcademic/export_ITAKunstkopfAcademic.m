@@ -8,7 +8,7 @@
 addpath( '../..' ) % Find daff_write and daff_add_metadata function
 
 metadata = [];
-metadata = daff_add_metadata( metadata, 'Description', 'String', 'Generated OpenDAFF example directivity' );
+metadata = daff_add_metadata( metadata, 'Description', 'String', 'ITA Kunstkopf HRIR (Academic)' );
 metadata = daff_add_metadata( metadata, 'Creation date', 'String', date );
 metadata = daff_add_metadata( metadata, 'License', 'String', 'CC BY-NC 4.0' );
 metadata = daff_add_metadata( metadata, 'CC License Deed', 'String', 'https://creativecommons.org/licenses/by-nc/4.0/' );
