@@ -47,7 +47,8 @@ namespace DAFFViz
 	m_iFrequency(0),
 	m_iNumFrequencies(0), 
 	m_iScaling( SCALING_DECIBEL ),
-	m_dMin(0.0), m_dMax(1.0),
+	m_dMin( 0.0f ),
+	m_dMax( 0.5f ),
 	m_iChannel(0),
 	m_bWarp(true),
 	m_bUsePhaseAsColor(false)
@@ -485,19 +486,20 @@ namespace DAFFViz
 		return m_iScaling;
 	}
 
-	void BalloonPlot::SetRange(double dMin, double dMax)
+	void BalloonPlot::SetRange( double dMin, double dMax )
 	{
-		assert( m_pContent != NULL);
+		assert( m_pContent != NULL );
 		assert( dMin < dMax );
-		if (m_iScaling == SCALING_LINEAR) {
-			// Convert from linear to decibel
+		if( m_iScaling == SCALING_LINEAR )
+		{
 			m_dMin = dMin;
 			m_dMax = dMax;
 		}
 		else
-		{ 
-			m_dMin = DecibelToFactor(dMin);
-			m_dMax = DecibelToFactor(dMax);
+		{
+			// Convert from linear to decibel
+			m_dMin = DecibelToFactor( dMin );
+			m_dMax = DecibelToFactor( dMax );
 		}
 		SetScalars();
 	}
@@ -540,26 +542,30 @@ namespace DAFFViz
 		const DAFFContentMS* pContentMS = NULL;
 		const DAFFContentMPS* pContentMPS = NULL;
 
+		float fAbsoluteMaxMagnitude;
 		switch( m_pContent->getProperties()->getContentType() )
 		{
 		case DAFF_DFT_SPECTRUM:
-			pContentDFT = dynamic_cast<const DAFFContentDFT*>( m_pContent );
+			pContentDFT = dynamic_cast< const DAFFContentDFT* >( m_pContent );
+			fAbsoluteMaxMagnitude = pContentDFT->getOverallMagnitudeMaximum();
 			break;
 
 		case DAFF_MAGNITUDE_SPECTRUM:
-			pContentMS = dynamic_cast<const DAFFContentMS*>( m_pContent );
+			pContentMS = dynamic_cast< const DAFFContentMS* >( m_pContent );
+			fAbsoluteMaxMagnitude = pContentMS->getOverallMagnitudeMaximum();
 			break;
 
 		case DAFF_MAGNITUDE_PHASE_SPECTRUM:
-			pContentMPS = dynamic_cast<const DAFFContentMPS*>( m_pContent );
+			pContentMPS = dynamic_cast< const DAFFContentMPS* >( m_pContent );
+			fAbsoluteMaxMagnitude = pContentMS->getOverallMagnitudeMaximum();
 			break;
 		}
 
 		vtkSmartPointer< vtkFloatArray > pMagArray = vtkSmartPointer< vtkFloatArray >::New();
 		
-		pMagArray->SetName("magnitudes");
+		pMagArray->SetName( "magnitudes" );
 		vtkSmartPointer< vtkFloatArray > pPhArray = vtkSmartPointer< vtkFloatArray >::New();
-		pPhArray->SetName("phases");
+		pPhArray->SetName( "phases" );
 
 		float fMag = 0.0f;
 		float fPhase = 0.0f;
@@ -567,19 +573,23 @@ namespace DAFFViz
 		for( int i = 0; i < m_pContent->getProperties()->getNumberOfRecords(); i++ )
 		{
 			// Get the magnitude value
-			if (pContentDFT) {
+			if( pContentDFT )
+			{
 				float fReal, fImag;
-				pContentDFT->getDFTCoeff(i, m_iChannel, m_iFrequency, fReal, fImag);
-				fMag = sqrt( fReal*fReal + fImag*fImag );
-				if (fReal != 0.0) {
-					fPhase = atan(fImag/fReal);
-					if (fReal < 0.0)
-						if (fImag < 0.0)
+				pContentDFT->getDFTCoeff( i, m_iChannel, m_iFrequency, fReal, fImag );
+				fMag = sqrt( fReal * fReal + fImag * fImag );
+				if( fReal != 0.0 )
+				{
+					fPhase = atan( fImag / fReal );
+					if( fReal < 0.0 )
+						if( fImag < 0.0 )
 							fPhase -= PI_F;
 						else
 							fPhase += PI_F;
-				} else {
-					if (fImag < 0.0)
+				}
+				else
+				{
+					if( fImag < 0.0 )
 						fPhase = -HALF_PI_F;
 					else
 						fPhase = HALF_PI_F;
@@ -588,8 +598,7 @@ namespace DAFFViz
 				// Check weather decibel scaling is activated
 				if( m_iScaling == SCALING_DECIBEL )
 				{
-					float fAbsoluteMax = pContentDFT->getOverallMagnitudeMaximum();
-					fMag = FactorToDecibel( fMag / fAbsoluteMax );
+					fMag = FactorToDecibel( fMag / fAbsoluteMaxMagnitude );
 
 					// Decibel boundaries
 					//float DECIBEL_DELTA = 30; // FIXME: should not be hard coded -> GUI
@@ -600,13 +609,14 @@ namespace DAFFViz
 					fMag = std::max( fMag, DECIBEL_LOWER );
 					fMag = std::min( fMag, DECIBEL_UPPER );
 
-					// Normalize the range into the interval [0,1]
+					// Normalize the range into the interval [min,max]
 					fMag = 1 / ( DECIBEL_UPPER - DECIBEL_LOWER )*fMag + DECIBEL_LOWER / ( DECIBEL_LOWER - DECIBEL_UPPER );
 				}
-				else {
+				else
+				{
 					fMag = std::max( fMag, m_dMin );
 					fMag = std::min( fMag, m_dMax );
-					// Normalize the range into the interval [0,1]
+					// Normalize the range into the interval [min,max]
 					fMag = ( fMag - m_dMin ) / ( m_dMax - m_dMin );
 				}
 

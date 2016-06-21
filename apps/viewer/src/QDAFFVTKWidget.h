@@ -138,6 +138,7 @@ public slots:
 		{
 			DAFFContentIR* pContentIR = static_cast< DAFFContentIR* >( pReader->getContent() );
 			m_pDAFFContentCarpet = new DAFFViz::CarpetPlot( m_pSGRootNode, pContentIR );
+			m_pDAFFContentCarpet->SetScaling( DAFFViz::CarpetPlot::SCALING_DECIBEL );
 			m_pSCA->SetVisible( false );
 			m_pCCA->SetVisible( true );
 			break;
@@ -147,6 +148,8 @@ public slots:
 		case DAFF_DFT_SPECTRUM:
 		case DAFF_PHASE_SPECTRUM:
 			m_pDAFFContentBalloon = new DAFFViz::BalloonPlot( m_pSGRootNode, pReader->getContent() );
+			m_pDAFFContentBalloon->SetScaling( DAFFViz::CarpetPlot::SCALING_DECIBEL );
+			m_pDAFFContentBalloon->SetRange( 0.0f, 0.5f );
 			m_pSCA->SetVisible( true );
 			break;
 		}
