@@ -24,6 +24,8 @@
 #include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
 #include <vtkCamera.h>
+#include <vtkPNGWriter.h>
+#include <vtkWindowToImageFilter.h>
 
 #include <iostream>
 
@@ -54,6 +56,7 @@ public:
 		GetRenderWindow()->AddRenderer( m_pRenderer );
 
 		GetRenderWindow()->GetInteractor();
+
     }
 
 	inline ~QDAFFVTKWidget()
@@ -196,6 +199,21 @@ public slots:
 		}
 
 		update();
+	}
+
+	inline void ExportScreenshotPNG( QString sFilePath )
+	{
+		vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
+		windowToImageFilter->SetInput( GetRenderWindow() );
+        windowToImageFilter->SetMagnification( 1 );
+		windowToImageFilter->SetInputBufferTypeToRGBA();
+		windowToImageFilter->ReadFrontBufferOff();
+		windowToImageFilter->Update();
+
+		vtkSmartPointer< vtkPNGWriter > pExportPNG = vtkSmartPointer< vtkPNGWriter >::New();
+		pExportPNG->SetFileName( sFilePath.toStdString().c_str() );
+		pExportPNG->SetInputConnection( windowToImageFilter->GetOutputPort() );
+        pExportPNG->Write();
 	}
 };
 

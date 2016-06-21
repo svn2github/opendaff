@@ -84,6 +84,9 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	connect( this, SIGNAL( SignalThetaChanged( double ) ), ui->doubleSpinBox_Theta, SLOT( setValue( double ) ) );
 	connect( this, SIGNAL( SignalPhiAndThetaOutOfBounds( bool ) ), this, SLOT( SetPhiAndThetaOutOfBoundsIndicator( bool ) ) );
 
+	// Screenshots
+	connect( this, SIGNAL( SignalExportScreenshotPNG( QString ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ExportScreenshotPNG( QString ) ) );
+
 	ui->DAFFStatusBar->showMessage( "No DAFF file loaded." );
 
 	m_qSettings.setValue( "RequestedPath", sPath );
@@ -766,4 +769,21 @@ void QDAFFViewerWindow::on_actionRecent_Clear_triggered()
 {
     m_qSettings.setValue( "RecentFiles", QVariant() );
     UpdateRecentFilesActions();
+}
+
+void QDAFFViewerWindow::on_pushButton_Screenshot_clicked()
+{
+	
+	QString sExportFilePath;
+	if( m_pDAFFReader->isFileOpened() )
+	{
+		QFileInfo oFile( QString::fromStdString( m_pDAFFReader->getFilename() ) );
+		sExportFilePath = oFile.completeBaseName() + ".png";
+	}
+	else
+	{
+		sExportFilePath = "DAFFViewer_3D_Export.png";
+	}
+	emit SignalExportScreenshotPNG( sExportFilePath );
+	ui->DAFFStatusBar->showMessage( "Exported screenshot of 3D plot to file '" + sExportFilePath + "'" );
 }

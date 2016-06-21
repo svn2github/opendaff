@@ -26,6 +26,8 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
@@ -82,8 +84,12 @@ public:
     QDAFFPropertiesTableView *tableView_Properties;
     QVBoxLayout *layout_Visualization;
     QFrame *frame_3DPlot;
-    QGridLayout *gridLayout_2;
+    QHBoxLayout *horizontalLayout_3;
     QDAFFVTKWidget *DAFF3DPlot_VTKWidget;
+    QFrame *frame_3DSettings;
+    QVBoxLayout *verticalLayout_5;
+    QPushButton *pushButton_Screenshot;
+    QSpacerItem *verticalSpacer;
     QHBoxLayout *horizontalLayout_InteractionPanel;
     QGroupBox *groupBox_ObjectView;
     QGridLayout *gridLayout_3;
@@ -304,18 +310,37 @@ public:
         frame_3DPlot->setObjectName(QStringLiteral("frame_3DPlot"));
         frame_3DPlot->setFrameShape(QFrame::StyledPanel);
         frame_3DPlot->setFrameShadow(QFrame::Raised);
-        gridLayout_2 = new QGridLayout(frame_3DPlot);
-        gridLayout_2->setSpacing(6);
-        gridLayout_2->setContentsMargins(11, 11, 11, 11);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        horizontalLayout_3 = new QHBoxLayout(frame_3DPlot);
+        horizontalLayout_3->setSpacing(6);
+        horizontalLayout_3->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
         DAFF3DPlot_VTKWidget = new QDAFFVTKWidget(frame_3DPlot);
         DAFF3DPlot_VTKWidget->setObjectName(QStringLiteral("DAFF3DPlot_VTKWidget"));
         DAFF3DPlot_VTKWidget->setMinimumSize(QSize(400, 300));
         DAFF3DPlot_VTKWidget->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
 
-        gridLayout_2->addWidget(DAFF3DPlot_VTKWidget, 0, 0, 1, 1);
+        horizontalLayout_3->addWidget(DAFF3DPlot_VTKWidget);
 
-        gridLayout_2->setColumnStretch(0, 1);
+        frame_3DSettings = new QFrame(frame_3DPlot);
+        frame_3DSettings->setObjectName(QStringLiteral("frame_3DSettings"));
+        frame_3DSettings->setFrameShape(QFrame::NoFrame);
+        verticalLayout_5 = new QVBoxLayout(frame_3DSettings);
+        verticalLayout_5->setSpacing(6);
+        verticalLayout_5->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
+        pushButton_Screenshot = new QPushButton(frame_3DSettings);
+        pushButton_Screenshot->setObjectName(QStringLiteral("pushButton_Screenshot"));
+
+        verticalLayout_5->addWidget(pushButton_Screenshot);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_5->addItem(verticalSpacer);
+
+
+        horizontalLayout_3->addWidget(frame_3DSettings);
+
+        horizontalLayout_3->setStretch(0, 1);
 
         layout_Visualization->addWidget(frame_3DPlot);
 
@@ -703,6 +728,7 @@ public:
         groupBox_Properties->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>The <span style=\" font-weight:600;\">properties</span> of a DAFF file are definitions of the file that describe the content in detail. Here, the resolution and ranges for Alpha and Beta angles are stored as well the orientation of the data view that has to be applied by DAFF to rotate from the user (object) view. Also the number of channels, the quantization of the data sets and the total number of data points can be queried.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         groupBox_Properties->setTitle(QApplication::translate("DAFFViewer", "DAFF Properties", 0));
+        pushButton_Screenshot->setText(QApplication::translate("DAFFViewer", "Screenshot", 0));
 #ifndef QT_NO_TOOLTIP
         groupBox_ObjectView->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p><span style=\" font-weight:600;\">Views</span> on directional contents are a central property of DAFF. A main problem of spatial content is that everyone uses a representation and coordinate system (a <span style=\" font-style:italic;\">view</span>) that naturally appears to be the best. Therefore a variety of views are in place and a debate about pros and cons is meaningless. DAFF does not claim to solve this circumstance, but provides a conversion between the so called <span style=\" font-style:italic;\">user (or object) view</span> and the <span style=\" font-style:italic;\">data view</span>. The <span style=\" font-weight:600;\">user view</span> is commonly used for HRTFs where the frontal direction is at angles (0\302\260, 0\302\260). It is also called object view because it is the projection of oneself into the object (i.e. looking through the 'eyes' of the dummy head). Here, DAFF uses the term Phi and Theta for azimuth and elevation angle. No matter how the underlying data is orien"
                         "ted, this view is meant for users that require to get the right direction without further knowledge on how the data is actually formatted.</p><p>The data view, in contrast, is more mathematically motivated and is used when creating DAFF content. During creation of DAFF content and to define the rotation of the data into the user (object) view, an orientation can be added that DAFF will apply automatically, if the <span style=\" font-style:italic;\">user view</span> is used.</p></body></html>", 0));

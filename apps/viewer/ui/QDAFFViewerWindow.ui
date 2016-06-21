@@ -218,8 +218,8 @@ font: 75 12pt &quot;Calibri&quot;;</string>
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <layout class="QGridLayout" name="gridLayout_2" columnstretch="1">
-           <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,0">
+           <item>
             <widget class="QDAFFVTKWidget" name="DAFF3DPlot_VTKWidget" native="true">
              <property name="minimumSize">
               <size>
@@ -230,6 +230,35 @@ font: 75 12pt &quot;Calibri&quot;;</string>
              <property name="styleSheet">
               <string notr="true">background-color: rgb(0, 0, 0);</string>
              </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="frame_3DSettings">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <item>
+               <widget class="QPushButton" name="pushButton_Screenshot">
+                <property name="text">
+                 <string>Screenshot</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>

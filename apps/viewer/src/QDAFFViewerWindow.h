@@ -96,6 +96,7 @@ private slots:
 	void on_actionIncrease_theta_triggered();
 	void on_actionDecrease_theta_triggered();
     void on_actionRecent_Clear_triggered();
+    void on_pushButton_Screenshot_clicked();
 
 signals:
 	void SignalReadDAFF( const DAFFReader* pReader );
@@ -109,6 +110,7 @@ signals:
 	void SignalRecordIndexChanged( int iRecordIndex );
 	void SignalFrequencyIndexChanged( int iIndex );
 	void SignalChannelIndexChanged( int iChannelIndex );
+	void SignalExportScreenshotPNG( QString sFilePath );
 
 private:
     Ui::DAFFViewer *ui;
