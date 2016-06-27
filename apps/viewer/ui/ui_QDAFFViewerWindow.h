@@ -358,7 +358,7 @@ public:
         doubleSpinBox_Phi = new QDoubleSpinBox(groupBox_ObjectView);
         doubleSpinBox_Phi->setObjectName(QStringLiteral("doubleSpinBox_Phi"));
         doubleSpinBox_Phi->setAutoFillBackground(false);
-        doubleSpinBox_Phi->setStyleSheet(QLatin1String("background-color: rgb(170, 255, 127);\n"
+        doubleSpinBox_Phi->setStyleSheet(QLatin1String("background-color: rgb(213, 255, 213);\n"
 "font: 75 12pt \"Calibri\";"));
         doubleSpinBox_Phi->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         doubleSpinBox_Phi->setDecimals(1);
@@ -376,7 +376,7 @@ public:
         doubleSpinBox_Theta = new QDoubleSpinBox(groupBox_ObjectView);
         doubleSpinBox_Theta->setObjectName(QStringLiteral("doubleSpinBox_Theta"));
         doubleSpinBox_Theta->setAutoFillBackground(true);
-        doubleSpinBox_Theta->setStyleSheet(QLatin1String("background-color: rgb(170, 255, 127);\n"
+        doubleSpinBox_Theta->setStyleSheet(QLatin1String("background-color: rgb(255, 213, 225);\n"
 "font: 75 12pt \"Calibri\";"));
         doubleSpinBox_Theta->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         doubleSpinBox_Theta->setDecimals(1);
@@ -421,7 +421,7 @@ public:
 
         doubleSpinBox_Alpha = new QDoubleSpinBox(groupBox_DataView);
         doubleSpinBox_Alpha->setObjectName(QStringLiteral("doubleSpinBox_Alpha"));
-        doubleSpinBox_Alpha->setStyleSheet(QLatin1String("background-color: rgb(170, 255, 255);\n"
+        doubleSpinBox_Alpha->setStyleSheet(QLatin1String("background-color: rgb(213, 255, 255);\n"
 "font: 75 12pt \"Calibri\";"));
         doubleSpinBox_Alpha->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         doubleSpinBox_Alpha->setDecimals(1);
@@ -432,7 +432,7 @@ public:
 
         doubleSpinBox_Beta = new QDoubleSpinBox(groupBox_DataView);
         doubleSpinBox_Beta->setObjectName(QStringLiteral("doubleSpinBox_Beta"));
-        doubleSpinBox_Beta->setStyleSheet(QLatin1String("background-color: rgb(170, 255, 255);\n"
+        doubleSpinBox_Beta->setStyleSheet(QLatin1String("background-color: rgb(213, 255, 255);\n"
 "font: 75 12pt \"Calibri\";"));
         doubleSpinBox_Beta->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         doubleSpinBox_Beta->setDecimals(1);
@@ -476,7 +476,7 @@ public:
 
         spinBox_RecordIndex = new QSpinBox(groupBox_Record);
         spinBox_RecordIndex->setObjectName(QStringLiteral("spinBox_RecordIndex"));
-        spinBox_RecordIndex->setStyleSheet(QLatin1String("background-color: rgb(170, 255, 255);\n"
+        spinBox_RecordIndex->setStyleSheet(QLatin1String("background-color: rgb(213, 255, 255);\n"
 "font: 75 12pt \"Calibri\";"));
         spinBox_RecordIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         spinBox_RecordIndex->setMaximum(64800);
@@ -501,7 +501,7 @@ public:
 
         spinBox_ChannelIndex = new QSpinBox(groupBox_Channel);
         spinBox_ChannelIndex->setObjectName(QStringLiteral("spinBox_ChannelIndex"));
-        spinBox_ChannelIndex->setStyleSheet(QLatin1String("background-color: rgb(255, 255, 127);\n"
+        spinBox_ChannelIndex->setStyleSheet(QLatin1String("background-color: rgb(255, 255, 213);\n"
 "font: 75 12pt \"Calibri\";"));
         spinBox_ChannelIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         spinBox_ChannelIndex->setMaximum(64000);
@@ -526,7 +526,7 @@ public:
 
         spinBox_FrequencyIndex = new QSpinBox(groupBox_Frequency);
         spinBox_FrequencyIndex->setObjectName(QStringLiteral("spinBox_FrequencyIndex"));
-        spinBox_FrequencyIndex->setStyleSheet(QLatin1String("background-color: rgb(255, 170, 255);\n"
+        spinBox_FrequencyIndex->setStyleSheet(QLatin1String("background-color: rgb(255, 213, 255);\n"
 "font: 75 12pt \"Calibri\";"));
         spinBox_FrequencyIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
@@ -540,7 +540,7 @@ public:
 
         comboBox_FrequencySelector = new QComboBox(groupBox_Frequency);
         comboBox_FrequencySelector->setObjectName(QStringLiteral("comboBox_FrequencySelector"));
-        comboBox_FrequencySelector->setStyleSheet(QLatin1String("background-color: rgb(255, 170, 255);\n"
+        comboBox_FrequencySelector->setStyleSheet(QLatin1String("background-color: rgb(255, 213, 255);\n"
 "font: 75 12pt \"Calibri\";"));
 
         formLayout_4->setWidget(1, QFormLayout::FieldRole, comboBox_FrequencySelector);

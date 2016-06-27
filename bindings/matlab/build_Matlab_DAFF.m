@@ -30,10 +30,8 @@
 %
 %  ------------------------------------------------------------------------------------
 %
-%
 
-clear all;
-clc;
+%% Library settings
 
 % Determine the C++ compiler configuration
 cxx = mex.getCompilerConfigurations('C++', 'Selected');
@@ -41,13 +39,8 @@ if isempty(cxx)
     error('No C++ compiler installed or selected for Matlab. Please run ''mex -setup''.');
 end
 
-% --= Options =--
-
-% Output directory
-outdir = '../../matlab';
-
 % Output file
-outfile = fullfile(outdir, ['DAFF.' mexext]);
+outfile = fullfile( [ 'DAFFv17.' mexext ] );
 
 % Source files
 srcs = {'DAFFMEX.cpp', ...
@@ -59,9 +52,10 @@ srcs = {'DAFFMEX.cpp', ...
         '../../src/DAFFUtils.cpp', ...
         '../../src/Utils.cpp'};
 
-% ---------------
+    
+%% Build
 
-fprintf('Building OpenDAFF Matlab executable using ''%s''...\n', cxx.Name)
+fprintf( 'Building OpenDAFF Matlab executable\n\tCompiler: ''%s''\n\tOutput: ''%s''\n', cxx.Name, outfile )
 
 % Create the destination directory if it does not exist
 if ~exist(outdir, 'dir'), mkdir(outdir); end
@@ -72,10 +66,12 @@ srcs = sprintf('%s ', srcs{:});
 
 % Note: We need to call mex via 'system' here, because we used the symbol
 % 'mex' with '.' above and Matlab would complain when doing 'mex ...'
-cmd = sprintf('mex -O -I../../include -I../../src %s -output %s', ...
-              srcs, outfile);
+cmd = sprintf('mex -O -I../../include -I../../src %s -output %s', srcs, outfile);
 % Debug: disp(cmd);
-[errorcode, result] = system(cmd, '-echo');
-if (errorcode ~= 0), error('Building OpenDAFF Matlab executable failed'); end;
 
-fprintf('\nOpenDAFF Matlab executable successfully built!\n\nOutput MEX file: ''%s''\n\n', outfile)
+[errorcode, result] = system(cmd, '-echo');
+if (errorcode ~= 0)
+    error('Building OpenDAFF Matlab executable failed')
+end
+
+fprintf( 'OpenDAFF Matlab executable successfully built to ''%s''\n', outfile )

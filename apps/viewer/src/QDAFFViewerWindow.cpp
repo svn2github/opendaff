@@ -62,6 +62,7 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	// Channel index conns
 	connect( this, SIGNAL( SignalChannelIndexChanged( int ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ChangeChannelIndex( int ) ) );
 	connect( this, SIGNAL( SignalChannelIndexChanged( int ) ), ui->spinBox_ChannelIndex, SLOT( setValue( int ) ) );
+	connect( this, SIGNAL( SignalChannelIndexChanged( int ) ), ui->graphicsView_2DDAFFPlot, SLOT( ChangeChannelIndex( int ) ) );
 	connect( ui->spinBox_ChannelIndex, SIGNAL( valueChanged( int ) ), this, SLOT( ChangeChannelIndex( int ) ) );
 
 	// Alpha and beta conns
@@ -74,8 +75,8 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 
 	// Record index conns
 	connect( this, SIGNAL( SignalRecordIndexChanged( int ) ), ui->spinBox_RecordIndex, SLOT( setValue( int ) ) );
+	connect( this, SIGNAL( SignalRecordIndexChanged( int ) ), ui->graphicsView_2DDAFFPlot, SLOT( ChangeRecordIndex( int ) ) );
 	connect( ui->spinBox_RecordIndex, SIGNAL( valueChanged( int ) ), this, SLOT( ChangeRecordIndex( int ) ) );
-	//connect( this, SIGNAL( SignalRecordIndexChanged( int ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ChangeRecordIndex( int ) ) );
 
 	// Phi and theta conns
 	connect( ui->doubleSpinBox_Phi, SIGNAL( valueChanged( double ) ), this, SLOT( ChangePhi( double ) ) );
@@ -531,12 +532,12 @@ void QDAFFViewerWindow::SetPhiAndThetaOutOfBoundsIndicator( bool bOutOfBounds )
 	if( bOutOfBounds )
 	{
 		sToolTip = "Requested direction is out of bounds (not covered by a record data set)";
-		sStyleSheet = "QDoubleSpinBox { background-color: rgb(255, 85, 127); }";
+		sStyleSheet = "QDoubleSpinBox { background-color: rgb(255, 213, 213); }";
 	}
 	else
 	{
 		sToolTip = "Requested direction is within bounds (covered by a record data set)";
-		sStyleSheet = "QDoubleSpinBox { background-color: rgb(170, 255, 127); }";
+		sStyleSheet = "QDoubleSpinBox { background-color: rgb(213, 255, 213); }";
 	}
 
 	ui->doubleSpinBox_Phi->setToolTip( sToolTip );

@@ -148,8 +148,8 @@ public slots:
 		case DAFF_DFT_SPECTRUM:
 		case DAFF_PHASE_SPECTRUM:
 			m_pDAFFContentBalloon = new DAFFViz::BalloonPlot( m_pSGRootNode, pReader->getContent() );
-			m_pDAFFContentBalloon->SetScaling( DAFFViz::CarpetPlot::SCALING_DECIBEL );
-			m_pDAFFContentBalloon->SetRange( 0.0f, 0.5f );
+			//m_pDAFFContentBalloon->SetScaling( DAFFViz::CarpetPlot::SCALING_DECIBEL );
+			//m_pDAFFContentBalloon->SetRange( 0.0f, 0.5f );
 			m_pSCA->SetVisible( true );
 			break;
 		}
