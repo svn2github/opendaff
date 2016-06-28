@@ -929,7 +929,7 @@ function [] = daff_write( varargin )
         % Number of frequencies
         fwrite(fid, props.numDFTCoeffs, 'int32');
         fwrite(fid, props.transformSize, 'int32');
-        fwrite(fid, props.sampleRate, 'int32');
+        fwrite(fid, props.sampleRate, 'float32');
         fwrite(fid, props.globalPeak, 'float32');
     end  
     
