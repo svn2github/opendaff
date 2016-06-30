@@ -32,7 +32,7 @@ function [] = daff_write( varargin )
 %  -- Optional --
 %
 %  userdata     cell        User data that is passed to data function (default: empty cell array)
-%  metadata     struct      Metadata information (see daff_metadata_addKey)
+%  metadata     struct      Metadata information (see daffv17_add_metadata)
 %
 %  alpharange   vector-2    Range of alpha-angles
 %  betarange    vector-2    Range of beta-angles
@@ -261,8 +261,8 @@ function [] = daff_write( varargin )
     
     if isfield(args, 'alphares')
         args.alphapoints = alphaspan / args.alphares;
-        if (ceil(args.alphapoints) ~= args.alphapoints)
-            error('Alpha range and alpha resolution are not an integer multiple')
+        if abs( args.alphapoints - args.alphapoints ) > eps
+            error( 'Alpha range and alpha resolution are not an integer multiple' )
         end
     else
         args.alphares = alphaspan / args.alphapoints;
@@ -351,7 +351,7 @@ function [] = daff_write( varargin )
     
     % Default value for user data is an empty cell
     if ~isfield( args, 'userdata' )
-		args.userdata = [];
+		args.userdata = struct();
 	end;
 	
     % DEBUG: disp( args );
@@ -415,7 +415,9 @@ function [] = daff_write( varargin )
     props.transformSize = 0;
     
     % Generate a list of all individual input data sets
-    x = cell( args.alphapoints, args.betapoints, args.channels );
+    % note: use round here to avoid errors if alphapoints are not exactly
+    % integers but within epsilon
+    x = cell( round( args.alphapoints ), round( args.betapoints ), args.channels );
     for b=1:args.betapoints
         beta = betastart + (b-1)*args.betares;
         
