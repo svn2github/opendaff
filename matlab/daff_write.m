@@ -351,7 +351,7 @@ function [] = daff_write( varargin )
     
     % Default value for user data is an empty cell
     if ~isfield( args, 'userdata' )
-		args.userdata = cell();
+		args.userdata = [];
 	end;
 	
     % DEBUG: disp( args );
