@@ -1,6 +1,9 @@
 function [ data, samplerate, metadata ] = dfMIRO( alpha, beta, miro_obj )
 
     samplerate = miro_obj.fs;
+    if ~isempty( miro_obj.resampleToFS )
+        samplerate = miro_obj.resampleToFS;
+    end
     if strcmp( miro_obj.angles, 'DEG' )
         [ irID, azimuth, elevation ] = closestIr( miro_obj, alpha, beta );
     else
@@ -10,7 +13,7 @@ function [ data, samplerate, metadata ] = dfMIRO( alpha, beta, miro_obj )
         
     nResidual = mod( size( hrir, 1 ), 4 );
     if nResidual > 0
-        data = [ hrir zeros( 2, 4 - nResidual ) ]';
+        data = [ hrir' zeros( 2, 4 - nResidual ) ];
     else
         data = hrir';
     end
