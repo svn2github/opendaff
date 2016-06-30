@@ -9,15 +9,15 @@
 %
 
 filename = ' << Enter your filename here >> ';
-h = DAFF('open', filename);
+h = DAFFv17('open', filename);
 
-props = DAFF('getProperties', h)
-metadata = DAFF('getMetadata', h);
+props = DAFFv17('getProperties', h)
+metadata = DAFFv17('getMetadata', h);
 
 fprintf('Querying %d all records by index ...\n\n', props.numRecords);
 tic;
 for i=1:props.numRecords
-    data = DAFF('getRecordByIndex', h, i);
+    data = DAFFv17('getRecordByIndex', h, i);
 end
 t = toc;
 fprintf('Total runtime: %0.3f ms\n', t*1000);
@@ -35,5 +35,5 @@ fprintf('Total runtime: %0.3f ms\n', t*1000);
 fprintf('Runtime/query: %0.3f us\n\n', t*1000000 / props.numRecords);
 
 
-DAFF('close', h);
-clear DAFF;
+DAFFv17('close', h);
+clear DAFFv17;

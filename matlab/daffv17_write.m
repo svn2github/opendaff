@@ -2,7 +2,7 @@
 %  OpenDAFF
 %
 
-function [] = daff_write( varargin )
+function [] = daffv17_write( varargin )
 %DAFF_WRITE Create DAFF files
 %   ...
 %
@@ -486,7 +486,7 @@ function [] = daff_write( varargin )
                     
                     % Determine the effective bounds
                     for c=1:args.channels
-                        [lwr, upr] = daff_effective_bounds(data(c,:), zthreshold_value);
+                        [lwr, upr] = daffv17_effective_bounds(data(c,:), zthreshold_value);
                         
                         if (lwr == -1)
                             % No bounds. Store everything.
@@ -496,8 +496,8 @@ function [] = daff_write( varargin )
                             % Keep the offset and length a modulo of 4 (16-byte alignment)
                             % (Note: lwr-1 => switch from Matlab indexing to C-indexing)
                             elen = upr-lwr+1;
-                            eoffsets(c) = daff_lwrmul(lwr-1, 4);
-                            elengths(c) = daff_uprmul(elen, 4);
+                            eoffsets(c) = daffv17_lwrmul(lwr-1, 4);
+                            elengths(c) = daffv17_uprmul(elen, 4);
                         end
                     end
                 end     
@@ -1207,9 +1207,9 @@ function [] = daff_write( varargin )
         % write metadata for the whole file
         index = 0;
         if ~isempty(args.metadata)
-            % args.metadata = daff_metadata_addKey(args.metadata, 'version', 'char', FileFormatVersion); 
+            % args.metadata = daffv_metadata_addKey(args.metadata, 'version', 'char', FileFormatVersion); 
             % write something, so args.metadata is not empty
-            daff_write_metadata(fid, args.metadata);  
+            daffv17_write_metadata(fid, args.metadata);  
             index = 1;
         end
         
@@ -1227,7 +1227,7 @@ function [] = daff_write( varargin )
             for a=1:points
                 if ~isempty(x{a,b,1}.metadata) % allways check the first channel for metadata
                     % TODO: validate metadata structure
-                    daff_write_metadata(fid, x{a,b,1}.metadata); 
+                    daffv17_write_metadata(fid, x{a,b,1}.metadata); 
                     for c=1:args.channels % but write index to all channels
                         x{a,b,c}.metadataIndex = index;
                     end

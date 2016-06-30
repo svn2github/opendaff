@@ -2,7 +2,7 @@
 %  OpenDAFF
 %
 
-function [ metadata ] = daff_add_metadata(metadata, keyname, datatype, value)
+function [ metadata ] = daffv17_add_metadata(metadata, keyname, datatype, value)
 %DAFF_METADATA_ADDKEY Adds another key to a DAFF metadata struct
 %   TODO:
 %   ITAToolbox schauen
