@@ -63,67 +63,67 @@ typedef unsigned __int64 uint64_t;
 //! Content types
 enum DAFF_CONTENT_TYPES
 {
-	DAFF_IMPULSE_RESPONSE			=0,	//!@ Impulse response (IR) in the time-domain
-	DAFF_MAGNITUDE_SPECTRUM			=1,	//!@ Magnitude spectrum defined at discrete frequencies
-	DAFF_PHASE_SPECTRUM				=2,	//!@ Phase spectrum defined at discrete frequencies
-	DAFF_MAGNITUDE_PHASE_SPECTRUM	=3,	//!@ Magnitude-phase spectrum defined at discrete frequencies
-	DAFF_DFT_SPECTRUM				=4,	//!@ Discrete Fourier spectrum in the frequency-domain
+	DAFF_IMPULSE_RESPONSE			=0,	//!< Impulse response (IR) in the time-domain
+	DAFF_MAGNITUDE_SPECTRUM			=1,	//!< Magnitude spectrum defined at discrete frequencies
+	DAFF_PHASE_SPECTRUM				=2,	//!< Phase spectrum defined at discrete frequencies
+	DAFF_MAGNITUDE_PHASE_SPECTRUM	=3,	//!< Magnitude-phase spectrum defined at discrete frequencies
+	DAFF_DFT_SPECTRUM				=4,	//!< Discrete Fourier spectrum in the frequency-domain
 };
 
 
 //! Quantization modes
 enum DAFF_QUANTIZATIONS
 {
-	DAFF_INT16		=0,	//!@ 16-Bit signed integer
-	DAFF_INT24		=1,	//!@ 24-Bit signed integer
-	DAFF_FLOAT32	=2,	//!@ 32-Bit floating point
+	DAFF_INT16		=0,	//!< 16-Bit signed integer
+	DAFF_INT24		=1,	//!< 24-Bit signed integer
+	DAFF_FLOAT32	=2,	//!< 32-Bit floating point
 };
 
 
 //! Views on the data (special spherical coordinate system)
 enum DAFF_VIEWS
 {
-	DAFF_DATA_VIEW		=0,	//!@ Data-related view referring to data spherical coordinates (DSC)
-	DAFF_OBJECT_VIEW	=1,	//!@ Object-related view referring to object spherical coordinates (OSC)
+	DAFF_DATA_VIEW		=0,	//!< Data-related view referring to data spherical coordinates (DSC)
+	DAFF_OBJECT_VIEW	=1,	//!< Object-related view referring to object spherical coordinates (OSC)
 };
 
 
 //! Errorcodes
 enum DAFF_ERROR 
 {
-	DAFF_NO_ERROR		=0,					//!@ No error = 0
+	DAFF_NO_ERROR		=0,					//!< No error = 0
 
-	DAFF_MODAL_ERROR	= 10001,			//!@ Modal error (e.g. close a file that is not opened)
-	DAFF_FILE_INVALID,						//!@ Invalid DAFF file, i.e. wrong signature
-	DAFF_FILE_INVALID_MAIN_PARAMETER,		//!@ File has invalid main header parameter (num channels, etc)
-	DAFF_FILE_CONTENT_TYPE_UNKOWN,			//!@ File has unkown content type (IR, MS, DFT, etc)
-	DAFF_FILE_ALPHA_ANGLES_INVALID,			//!@ Invalid alpha angles or range problem
-	DAFF_FILE_BETA_ANGLES_INVALID,			//!@ Invalid beta angles or range problem
-	DAFF_FILE_QUANTIZATION_UNKOWN,			//!@ Data uses unrecognized or wrong quantization
-	DAFF_FILE_FORMAT_VERSION_UNSUPPORTED,	//!@ File format version is not supported by this library version
-	DAFF_FILE_CONTENT_INVALID_PARAMETER,	//!@ Content parameter invalid (sampling rate, num supporting frequencies, etc)
-	DAFF_FILE_NOT_FOUND,					//!@ File not found
-	DAFF_FILE_CORRUPTED,					//!@ Data reading error of an otherwise valid DAFF file
-	DAFF_INVALID_INDEX,						//!@ Invalid index (e.g. record index)
+	DAFF_MODAL_ERROR	= 10001,			//!< Modal error (e.g. close a file that is not opened)
+	DAFF_FILE_INVALID,						//!< Invalid DAFF file, i.e. wrong signature
+	DAFF_FILE_INVALID_MAIN_PARAMETER,		//!< File has invalid main header parameter (num channels, etc)
+	DAFF_FILE_CONTENT_TYPE_UNKOWN,			//!< File has unkown content type (IR, MS, DFT, etc)
+	DAFF_FILE_ALPHA_ANGLES_INVALID,			//!< Invalid alpha angles or range problem
+	DAFF_FILE_BETA_ANGLES_INVALID,			//!< Invalid beta angles or range problem
+	DAFF_FILE_QUANTIZATION_UNKOWN,			//!< Data uses unrecognized or wrong quantization
+	DAFF_FILE_FORMAT_VERSION_UNSUPPORTED,	//!< File format version is not supported by this library version
+	DAFF_FILE_CONTENT_INVALID_PARAMETER,	//!< Content parameter invalid (sampling rate, num supporting frequencies, etc)
+	DAFF_FILE_NOT_FOUND,					//!< File not found
+	DAFF_FILE_CORRUPTED,					//!< Data reading error of an otherwise valid DAFF file
+	DAFF_INVALID_INDEX,						//!< Invalid index (e.g. record index)
 };
 
 
 //! Pure data class that covers version information
 struct DAFF_API DAFFVersion
 {
-	int iVersionMajor;		//!@ Major version (example: 1 for version 1.7)
-	int iVersionMinor;		//!@ Minor version (example: 7 for version 1.7)
-	std::string sVersion;	//!@ String of version (example: "1.7" for version 1.7)
+	int iVersionMajor;		//!< Major version (example: 1 for version 1.7)
+	int iVersionMinor;		//!< Minor version (example: 7 for version 1.7)
+	std::string sVersion;	//!< String of version (example: "1.7" for version 1.7)
 };
 
 
 //! Pure data class that describes the points of a quad by their indices and coordinates
 struct DAFF_API DAFFQuad
 {
-	int iIndex1; //!@ First index point
-	int iIndex2; //!@ Second index point
-	int iIndex3; //!@ Third index point
-	int iIndex4; //!@ Fourth index point
+	int iIndex1; //!< First index point
+	int iIndex2; //!< Second index point
+	int iIndex3; //!< Third index point
+	int iIndex4; //!< Fourth index point
 };
 
 
@@ -137,9 +137,9 @@ struct DAFF_API DAFFQuad
 class DAFF_API DAFFOrientationYPR
 {
 public:
-	float fYawAngleDeg;		//!@ Yaw angle (degrees)
-	float fPitchAngleDeg;		//!@ Pitch angle (degrees)
-	float fRollAngleDeg;		//!@ Roll angle (degrees)
+	float fYawAngleDeg;		//!< Yaw angle (degrees)
+	float fPitchAngleDeg;	//!< Pitch angle (degrees)
+	float fRollAngleDeg;	//!< Roll angle (degrees)
 
 	//! Default constructor
 	inline DAFFOrientationYPR()
@@ -150,7 +150,7 @@ public:
 
 	//! Initializing constructor
 	/**
-	  * @param fInitYawAngleDeg	Initial yaw angle in degree
+	  * @param fInitYawAngleDeg	    Initial yaw angle in degree
 	  * @param fInitPitchAngleDeg	Initial pitch angle in degree
 	  * @param fInitRollAngleDeg	Initial roll angle in degre
 	  */
