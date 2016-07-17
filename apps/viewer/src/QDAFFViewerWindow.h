@@ -96,7 +96,7 @@ private slots:
 	void on_actionIncrease_theta_triggered();
 	void on_actionDecrease_theta_triggered();
     void on_actionRecent_Clear_triggered();
-    void on_pushButton_Screenshot_clicked();
+    void on_pushButton_3DScreenshot_clicked();
 
 signals:
 	void SignalReadDAFF( const DAFFReader* pReader );

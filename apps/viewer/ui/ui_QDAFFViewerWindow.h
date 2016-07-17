@@ -88,7 +88,7 @@ public:
     QDAFFVTKWidget *DAFF3DPlot_VTKWidget;
     QFrame *frame_3DSettings;
     QVBoxLayout *verticalLayout_5;
-    QPushButton *pushButton_Screenshot;
+    QPushButton *pushButton_3DScreenshot;
     QSpacerItem *verticalSpacer;
     QHBoxLayout *horizontalLayout_InteractionPanel;
     QGroupBox *groupBox_ObjectView;
@@ -97,30 +97,26 @@ public:
     QLabel *label_2;
     QDoubleSpinBox *doubleSpinBox_Theta;
     QLabel *label_5;
-    QLabel *label;
     QLabel *label_6;
+    QLabel *label;
     QGroupBox *groupBox_DataView;
     QGridLayout *gridLayout_4;
-    QLabel *label_3;
-    QDoubleSpinBox *doubleSpinBox_Alpha;
+    QLabel *label_7;
     QDoubleSpinBox *doubleSpinBox_Beta;
     QLabel *label_4;
-    QLabel *label_7;
     QLabel *label_8;
-    QGroupBox *groupBox_Record;
-    QVBoxLayout *verticalLayout_3;
+    QDoubleSpinBox *doubleSpinBox_Alpha;
+    QLabel *label_3;
     QLabel *label_9;
     QSpinBox *spinBox_RecordIndex;
-    QGroupBox *groupBox_Channel;
-    QVBoxLayout *verticalLayout_4;
-    QLabel *label_12;
-    QSpinBox *spinBox_ChannelIndex;
     QGroupBox *groupBox_Frequency;
     QFormLayout *formLayout_4;
     QLabel *label_11;
     QSpinBox *spinBox_FrequencyIndex;
     QLabel *label_frequency;
     QComboBox *comboBox_FrequencySelector;
+    QLabel *label_12;
+    QSpinBox *spinBox_ChannelIndex;
     QFrame *frame_2DPlot;
     QGridLayout *gridLayout;
     QDAFF2DPlot *graphicsView_2DDAFFPlot;
@@ -328,10 +324,10 @@ public:
         verticalLayout_5->setSpacing(6);
         verticalLayout_5->setContentsMargins(11, 11, 11, 11);
         verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
-        pushButton_Screenshot = new QPushButton(frame_3DSettings);
-        pushButton_Screenshot->setObjectName(QStringLiteral("pushButton_Screenshot"));
+        pushButton_3DScreenshot = new QPushButton(frame_3DSettings);
+        pushButton_3DScreenshot->setObjectName(QStringLiteral("pushButton_3DScreenshot"));
 
-        verticalLayout_5->addWidget(pushButton_Screenshot);
+        verticalLayout_5->addWidget(pushButton_3DScreenshot);
 
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -376,7 +372,7 @@ public:
         doubleSpinBox_Theta = new QDoubleSpinBox(groupBox_ObjectView);
         doubleSpinBox_Theta->setObjectName(QStringLiteral("doubleSpinBox_Theta"));
         doubleSpinBox_Theta->setAutoFillBackground(true);
-        doubleSpinBox_Theta->setStyleSheet(QLatin1String("background-color: rgb(255, 213, 225);\n"
+        doubleSpinBox_Theta->setStyleSheet(QLatin1String("background-color: rgb(213, 255, 213);\n"
 "font: 75 12pt \"Calibri\";"));
         doubleSpinBox_Theta->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         doubleSpinBox_Theta->setDecimals(1);
@@ -392,17 +388,17 @@ public:
 
         gridLayout_3->addWidget(label_5, 0, 2, 1, 1);
 
-        label = new QLabel(groupBox_ObjectView);
-        label->setObjectName(QStringLiteral("label"));
-        label->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
-
-        gridLayout_3->addWidget(label, 0, 0, 1, 1);
-
         label_6 = new QLabel(groupBox_ObjectView);
         label_6->setObjectName(QStringLiteral("label_6"));
         label_6->setStyleSheet(QStringLiteral("font: 75 12pt \"Calibri\";"));
 
         gridLayout_3->addWidget(label_6, 1, 2, 1, 1);
+
+        label = new QLabel(groupBox_ObjectView);
+        label->setObjectName(QStringLiteral("label"));
+        label->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
+
+        gridLayout_3->addWidget(label, 0, 0, 1, 1);
 
 
         horizontalLayout_InteractionPanel->addWidget(groupBox_ObjectView);
@@ -414,21 +410,11 @@ public:
         gridLayout_4->setSpacing(6);
         gridLayout_4->setContentsMargins(11, 11, 11, 11);
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
-        label_3 = new QLabel(groupBox_DataView);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        label_7 = new QLabel(groupBox_DataView);
+        label_7->setObjectName(QStringLiteral("label_7"));
+        label_7->setStyleSheet(QStringLiteral("font: 75 12pt \"Calibri\";"));
 
-        gridLayout_4->addWidget(label_3, 0, 2, 1, 1);
-
-        doubleSpinBox_Alpha = new QDoubleSpinBox(groupBox_DataView);
-        doubleSpinBox_Alpha->setObjectName(QStringLiteral("doubleSpinBox_Alpha"));
-        doubleSpinBox_Alpha->setStyleSheet(QLatin1String("background-color: rgb(213, 255, 255);\n"
-"font: 75 12pt \"Calibri\";"));
-        doubleSpinBox_Alpha->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-        doubleSpinBox_Alpha->setDecimals(1);
-        doubleSpinBox_Alpha->setMaximum(360);
-        doubleSpinBox_Alpha->setSingleStep(1);
-
-        gridLayout_4->addWidget(doubleSpinBox_Alpha, 0, 3, 1, 1);
+        gridLayout_4->addWidget(label_7, 0, 4, 1, 1);
 
         doubleSpinBox_Beta = new QDoubleSpinBox(groupBox_DataView);
         doubleSpinBox_Beta->setObjectName(QStringLiteral("doubleSpinBox_Beta"));
@@ -446,70 +432,45 @@ public:
 
         gridLayout_4->addWidget(label_4, 1, 2, 1, 1);
 
-        label_7 = new QLabel(groupBox_DataView);
-        label_7->setObjectName(QStringLiteral("label_7"));
-        label_7->setStyleSheet(QStringLiteral("font: 75 12pt \"Calibri\";"));
-
-        gridLayout_4->addWidget(label_7, 0, 4, 1, 1);
-
         label_8 = new QLabel(groupBox_DataView);
         label_8->setObjectName(QStringLiteral("label_8"));
         label_8->setStyleSheet(QStringLiteral("font: 75 12pt \"Calibri\";"));
 
         gridLayout_4->addWidget(label_8, 1, 4, 1, 1);
 
+        doubleSpinBox_Alpha = new QDoubleSpinBox(groupBox_DataView);
+        doubleSpinBox_Alpha->setObjectName(QStringLiteral("doubleSpinBox_Alpha"));
+        doubleSpinBox_Alpha->setStyleSheet(QLatin1String("background-color: rgb(213, 255, 255);\n"
+"font: 75 12pt \"Calibri\";"));
+        doubleSpinBox_Alpha->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        doubleSpinBox_Alpha->setDecimals(1);
+        doubleSpinBox_Alpha->setMaximum(360);
+        doubleSpinBox_Alpha->setSingleStep(1);
 
-        horizontalLayout_InteractionPanel->addWidget(groupBox_DataView);
+        gridLayout_4->addWidget(doubleSpinBox_Alpha, 0, 3, 1, 1);
 
-        groupBox_Record = new QGroupBox(DAFFCentralWidget);
-        groupBox_Record->setObjectName(QStringLiteral("groupBox_Record"));
-        groupBox_Record->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
-        verticalLayout_3 = new QVBoxLayout(groupBox_Record);
-        verticalLayout_3->setSpacing(6);
-        verticalLayout_3->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
-        label_9 = new QLabel(groupBox_Record);
+        label_3 = new QLabel(groupBox_DataView);
+        label_3->setObjectName(QStringLiteral("label_3"));
+
+        gridLayout_4->addWidget(label_3, 0, 2, 1, 1);
+
+        label_9 = new QLabel(groupBox_DataView);
         label_9->setObjectName(QStringLiteral("label_9"));
         label_9->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
 
-        verticalLayout_3->addWidget(label_9);
+        gridLayout_4->addWidget(label_9, 2, 2, 1, 1);
 
-        spinBox_RecordIndex = new QSpinBox(groupBox_Record);
+        spinBox_RecordIndex = new QSpinBox(groupBox_DataView);
         spinBox_RecordIndex->setObjectName(QStringLiteral("spinBox_RecordIndex"));
         spinBox_RecordIndex->setStyleSheet(QLatin1String("background-color: rgb(213, 255, 255);\n"
 "font: 75 12pt \"Calibri\";"));
         spinBox_RecordIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         spinBox_RecordIndex->setMaximum(64800);
 
-        verticalLayout_3->addWidget(spinBox_RecordIndex);
+        gridLayout_4->addWidget(spinBox_RecordIndex, 2, 3, 1, 1);
 
 
-        horizontalLayout_InteractionPanel->addWidget(groupBox_Record);
-
-        groupBox_Channel = new QGroupBox(DAFFCentralWidget);
-        groupBox_Channel->setObjectName(QStringLiteral("groupBox_Channel"));
-        groupBox_Channel->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
-        verticalLayout_4 = new QVBoxLayout(groupBox_Channel);
-        verticalLayout_4->setSpacing(6);
-        verticalLayout_4->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
-        label_12 = new QLabel(groupBox_Channel);
-        label_12->setObjectName(QStringLiteral("label_12"));
-        label_12->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
-
-        verticalLayout_4->addWidget(label_12);
-
-        spinBox_ChannelIndex = new QSpinBox(groupBox_Channel);
-        spinBox_ChannelIndex->setObjectName(QStringLiteral("spinBox_ChannelIndex"));
-        spinBox_ChannelIndex->setStyleSheet(QLatin1String("background-color: rgb(255, 255, 213);\n"
-"font: 75 12pt \"Calibri\";"));
-        spinBox_ChannelIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-        spinBox_ChannelIndex->setMaximum(64000);
-
-        verticalLayout_4->addWidget(spinBox_ChannelIndex);
-
-
-        horizontalLayout_InteractionPanel->addWidget(groupBox_Channel);
+        horizontalLayout_InteractionPanel->addWidget(groupBox_DataView);
 
         groupBox_Frequency = new QGroupBox(DAFFCentralWidget);
         groupBox_Frequency->setObjectName(QStringLiteral("groupBox_Frequency"));
@@ -522,7 +483,7 @@ public:
         label_11->setObjectName(QStringLiteral("label_11"));
         label_11->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
 
-        formLayout_4->setWidget(0, QFormLayout::LabelRole, label_11);
+        formLayout_4->setWidget(1, QFormLayout::LabelRole, label_11);
 
         spinBox_FrequencyIndex = new QSpinBox(groupBox_Frequency);
         spinBox_FrequencyIndex->setObjectName(QStringLiteral("spinBox_FrequencyIndex"));
@@ -530,20 +491,35 @@ public:
 "font: 75 12pt \"Calibri\";"));
         spinBox_FrequencyIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
-        formLayout_4->setWidget(0, QFormLayout::FieldRole, spinBox_FrequencyIndex);
+        formLayout_4->setWidget(1, QFormLayout::FieldRole, spinBox_FrequencyIndex);
 
         label_frequency = new QLabel(groupBox_Frequency);
         label_frequency->setObjectName(QStringLiteral("label_frequency"));
         label_frequency->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
 
-        formLayout_4->setWidget(1, QFormLayout::LabelRole, label_frequency);
+        formLayout_4->setWidget(2, QFormLayout::LabelRole, label_frequency);
 
         comboBox_FrequencySelector = new QComboBox(groupBox_Frequency);
         comboBox_FrequencySelector->setObjectName(QStringLiteral("comboBox_FrequencySelector"));
         comboBox_FrequencySelector->setStyleSheet(QLatin1String("background-color: rgb(255, 213, 255);\n"
 "font: 75 12pt \"Calibri\";"));
 
-        formLayout_4->setWidget(1, QFormLayout::FieldRole, comboBox_FrequencySelector);
+        formLayout_4->setWidget(2, QFormLayout::FieldRole, comboBox_FrequencySelector);
+
+        label_12 = new QLabel(groupBox_Frequency);
+        label_12->setObjectName(QStringLiteral("label_12"));
+        label_12->setStyleSheet(QStringLiteral("font: 12pt \"Calibri\";"));
+
+        formLayout_4->setWidget(0, QFormLayout::LabelRole, label_12);
+
+        spinBox_ChannelIndex = new QSpinBox(groupBox_Frequency);
+        spinBox_ChannelIndex->setObjectName(QStringLiteral("spinBox_ChannelIndex"));
+        spinBox_ChannelIndex->setStyleSheet(QLatin1String("background-color: rgb(255, 255, 213);\n"
+"font: 75 12pt \"Calibri\";"));
+        spinBox_ChannelIndex->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        spinBox_ChannelIndex->setMaximum(64000);
+
+        formLayout_4->setWidget(0, QFormLayout::FieldRole, spinBox_ChannelIndex);
 
 
         horizontalLayout_InteractionPanel->addWidget(groupBox_Frequency);
@@ -728,7 +704,7 @@ public:
         groupBox_Properties->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>The <span style=\" font-weight:600;\">properties</span> of a DAFF file are definitions of the file that describe the content in detail. Here, the resolution and ranges for Alpha and Beta angles are stored as well the orientation of the data view that has to be applied by DAFF to rotate from the user (object) view. Also the number of channels, the quantization of the data sets and the total number of data points can be queried.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         groupBox_Properties->setTitle(QApplication::translate("DAFFViewer", "DAFF Properties", 0));
-        pushButton_Screenshot->setText(QApplication::translate("DAFFViewer", "Screenshot", 0));
+        pushButton_3DScreenshot->setText(QApplication::translate("DAFFViewer", "Screenshot", 0));
 #ifndef QT_NO_TOOLTIP
         groupBox_ObjectView->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p><span style=\" font-weight:600;\">Views</span> on directional contents are a central property of DAFF. A main problem of spatial content is that everyone uses a representation and coordinate system (a <span style=\" font-style:italic;\">view</span>) that naturally appears to be the best. Therefore a variety of views are in place and a debate about pros and cons is meaningless. DAFF does not claim to solve this circumstance, but provides a conversion between the so called <span style=\" font-style:italic;\">user (or object) view</span> and the <span style=\" font-style:italic;\">data view</span>. The <span style=\" font-weight:600;\">user view</span> is commonly used for HRTFs where the frontal direction is at angles (0\302\260, 0\302\260). It is also called object view because it is the projection of oneself into the object (i.e. looking through the 'eyes' of the dummy head). Here, DAFF uses the term Phi and Theta for azimuth and elevation angle. No matter how the underlying data is orien"
                         "ted, this view is meant for users that require to get the right direction without further knowledge on how the data is actually formatted.</p><p>The data view, in contrast, is more mathematically motivated and is used when creating DAFF content. During creation of DAFF content and to define the rotation of the data into the user (object) view, an orientation can be added that DAFF will apply automatically, if the <span style=\" font-style:italic;\">user view</span> is used.</p></body></html>", 0));
@@ -752,36 +728,34 @@ public:
         doubleSpinBox_Theta->setWhatsThis(QApplication::translate("DAFFViewer", "<html><head/><body><p><span style=\" font-weight:600;\">Phi</span> spin box with out of bounds indicator (red background).</p></body></html>", 0));
 #endif // QT_NO_WHATSTHIS
         label_5->setText(QApplication::translate("DAFFViewer", "\302\260", 0));
+        label_6->setText(QApplication::translate("DAFFViewer", "\302\260", 0));
 #ifndef QT_NO_TOOLTIP
         label->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>The <span style=\" font-weight:600;\">Phi</span> angle corresponds to the horizontal direction also referred to as the azimuthal angle or azimuth.</p><p>In DAFF, this angle definition is a value of the <span style=\" font-weight:600;\">user view</span> on the directional data, and a Phi angle of zero degree (0\302\260) is the front direction in horizontal plane. The north and south pole (user view) have an arbitrary Phi angle.</p><p>The default range of the Phi angle is (-180\302\260, 180\302\260], but the nearest neighbour mapping will also accept any other value that will be projected into this range. Range overrun of <span style=\" font-weight:600;\">Phi</span> may influence the <span style=\" font-weight:600;\">Theta</span> angle, too.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         label->setText(QApplication::translate("DAFFViewer", "Phi", 0));
-        label_6->setText(QApplication::translate("DAFFViewer", "\302\260", 0));
 #ifndef QT_NO_TOOLTIP
         groupBox_DataView->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p><span style=\" font-weight:600;\">Views</span> on directional contents are a central property of DAFF. A main problem of spatial content is that everyone uses a representation and coordinate system (a <span style=\" font-style:italic;\">view</span>) that naturally appears to be the best. Therefore a variety of views are in place and a debate about pros and cons is meaningless. DAFF does not claim to solve this circumstance, but provides a conversion between the so called <span style=\" font-style:italic;\">user (or object) view</span> and the <span style=\" font-style:italic;\">data view</span>. The <span style=\" font-weight:600;\">data view</span> is commonly used as a mathematical polar coordinate system, and DAFF uses the terms Alpha and Beta for azimuth and elevation angle. The south pole is represented by a Beta elevation angle of 0\302\260 (an equally appropriate polar coordinate system would use 0\302\260 for the north pole here, but DAFF doesn't). This data view is meant to be us"
                         "ed by the creators of DAFF content. By also providing an orientation, the rotation of the data into the user (object) view can be defined and DAFF will apply this rotation automatically, if the <span style=\" font-style:italic;\">user view</span> is used. By this approach, the user of a DAFF file does not require any further information on the formatting of the underlying directional content.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         groupBox_DataView->setTitle(QApplication::translate("DAFFViewer", "Data view", 0));
-        label_3->setText(QApplication::translate("DAFFViewer", "Alpha", 0));
-        label_4->setText(QApplication::translate("DAFFViewer", "Beta", 0));
         label_7->setText(QApplication::translate("DAFFViewer", "\302\260", 0));
+        label_4->setText(QApplication::translate("DAFFViewer", "Beta", 0));
         label_8->setText(QApplication::translate("DAFFViewer", "\302\260", 0));
+        label_3->setText(QApplication::translate("DAFFViewer", "Alpha", 0));
 #ifndef QT_NO_TOOLTIP
-        groupBox_Record->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>A <span style=\" font-weight:600;\">record data set</span> represents a set of (potentially multi-channel) time series audio samples or frequency values for a <span style=\" font-weight:600;\">certain direction</span>. The index of a record defines where in the memory such a data set can be found. DAFF uses a two-step access to directional data that is not spatially continuous. First, a nearest neighbour search has to be executed, that returns a record index. Then, by using the corresponding index, the data can be requested.</p></body></html>", 0));
+        label_9->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>A <span style=\" font-weight:600;\">record data set</span> represents a set of (potentially multi-channel) time series audio samples or frequency values for a <span style=\" font-weight:600;\">certain direction</span>. The <span style=\" font-weight:600;\">index</span> of a record defines where in the memory such a data set can be found. DAFF uses a two-step access to directional data that is not spatially continuous. First, a nearest neighbour search has to be executed, that returns a record index. Then, by using the corresponding index, the data can be requested.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
-        groupBox_Record->setTitle(QApplication::translate("DAFFViewer", "Record", 0));
         label_9->setText(QApplication::translate("DAFFViewer", "Index", 0));
-#ifndef QT_NO_TOOLTIP
-        groupBox_Channel->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>DAFF provides <span style=\" font-weight:600;\">multi-channel data sets</span>, i.e. for an HRTF two channels are usually needed. The channel spin box chooses which channel should be shown.</p></body></html>", 0));
-#endif // QT_NO_TOOLTIP
-        groupBox_Channel->setTitle(QApplication::translate("DAFFViewer", "Channel", 0));
-        label_12->setText(QApplication::translate("DAFFViewer", "Index", 0));
 #ifndef QT_NO_TOOLTIP
         groupBox_Frequency->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>Depending on the content type, DAFF files have a <span style=\" font-weight:600;\">vector</span> of (potentially multi-channel) data. The base of this data is either a time for a sample in an impule response, or a frequency in a spectrum representation, either as frequency bins in a DFT coefficient vector, or a center frequency in an energetic band spectrum.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
-        groupBox_Frequency->setTitle(QApplication::translate("DAFFViewer", "Sample / Bin / Frequency", 0));
+        groupBox_Frequency->setTitle(QApplication::translate("DAFFViewer", "Selection", 0));
         label_11->setText(QApplication::translate("DAFFViewer", "Index", 0));
         label_frequency->setText(QApplication::translate("DAFFViewer", "Frequency", 0));
+#ifndef QT_NO_TOOLTIP
+        label_12->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>DAFF provides <span style=\" font-weight:600;\">multi-channel data sets</span>, i.e. for an HRTF two channels are usually needed. The channel spin box chooses which channel should be shown.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        label_12->setText(QApplication::translate("DAFFViewer", "Channel", 0));
         menuFile->setTitle(QApplication::translate("DAFFViewer", "File", 0));
         menuRecent->setTitle(QApplication::translate("DAFFViewer", "Recent", 0));
         menuAbout->setTitle(QApplication::translate("DAFFViewer", "About", 0));

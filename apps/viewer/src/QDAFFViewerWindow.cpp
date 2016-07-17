@@ -772,9 +772,8 @@ void QDAFFViewerWindow::on_actionRecent_Clear_triggered()
     UpdateRecentFilesActions();
 }
 
-void QDAFFViewerWindow::on_pushButton_Screenshot_clicked()
-{
-	
+void QDAFFViewerWindow::on_pushButton_3DScreenshot_clicked()
+{	
 	QString sExportFilePath;
 	if( m_pDAFFReader->isFileOpened() )
 	{

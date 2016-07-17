@@ -239,7 +239,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
               <item>
-               <widget class="QPushButton" name="pushButton_Screenshot">
+               <widget class="QPushButton" name="pushButton_3DScreenshot">
                 <property name="text">
                  <string>Screenshot</string>
                 </property>
@@ -371,6 +371,16 @@ font: 75 12pt &quot;Calibri&quot;;</string>
                </property>
               </widget>
              </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="label_6">
+               <property name="styleSheet">
+                <string notr="true">font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
+               <property name="text">
+                <string>°</string>
+               </property>
+              </widget>
+             </item>
              <item row="0" column="0">
               <widget class="QLabel" name="label">
                <property name="toolTip">
@@ -381,16 +391,6 @@ font: 75 12pt &quot;Calibri&quot;;</string>
                </property>
                <property name="text">
                 <string>Phi</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <widget class="QLabel" name="label_6">
-               <property name="styleSheet">
-                <string notr="true">font: 75 12pt &quot;Calibri&quot;;</string>
-               </property>
-               <property name="text">
-                <string>°</string>
                </property>
               </widget>
              </item>
@@ -409,30 +409,13 @@ font: 75 12pt &quot;Calibri&quot;;</string>
              <string>Data view</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_4">
-             <item row="0" column="2">
-              <widget class="QLabel" name="label_3">
-               <property name="text">
-                <string>Alpha</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="3">
-              <widget class="QDoubleSpinBox" name="doubleSpinBox_Alpha">
+             <item row="0" column="4">
+              <widget class="QLabel" name="label_7">
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(213, 255, 255);
-font: 75 12pt &quot;Calibri&quot;;</string>
+                <string notr="true">font: 75 12pt &quot;Calibri&quot;;</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-               <property name="decimals">
-                <number>1</number>
-               </property>
-               <property name="maximum">
-                <double>360.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>1.000000000000000</double>
+               <property name="text">
+                <string>°</string>
                </property>
               </widget>
              </item>
@@ -463,16 +446,6 @@ font: 75 12pt &quot;Calibri&quot;;</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="4">
-              <widget class="QLabel" name="label_7">
-               <property name="styleSheet">
-                <string notr="true">font: 75 12pt &quot;Calibri&quot;;</string>
-               </property>
-               <property name="text">
-                <string>°</string>
-               </property>
-              </widget>
-             </item>
              <item row="1" column="4">
               <widget class="QLabel" name="label_8">
                <property name="styleSheet">
@@ -483,23 +456,38 @@ font: 75 12pt &quot;Calibri&quot;;</string>
                </property>
               </widget>
              </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="groupBox_Record">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A &lt;span style=&quot; font-weight:600;&quot;&gt;record data set&lt;/span&gt; represents a set of (potentially multi-channel) time series audio samples or frequency values for a &lt;span style=&quot; font-weight:600;&quot;&gt;certain direction&lt;/span&gt;. The index of a record defines where in the memory such a data set can be found. DAFF uses a two-step access to directional data that is not spatially continuous. First, a nearest neighbour search has to be executed, that returns a record index. Then, by using the corresponding index, the data can be requested.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
-            </property>
-            <property name="title">
-             <string>Record</string>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_3">
-             <item>
+             <item row="0" column="3">
+              <widget class="QDoubleSpinBox" name="doubleSpinBox_Alpha">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(213, 255, 255);
+font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="decimals">
+                <number>1</number>
+               </property>
+               <property name="maximum">
+                <double>360.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>1.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Alpha</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
               <widget class="QLabel" name="label_9">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A &lt;span style=&quot; font-weight:600;&quot;&gt;record data set&lt;/span&gt; represents a set of (potentially multi-channel) time series audio samples or frequency values for a &lt;span style=&quot; font-weight:600;&quot;&gt;certain direction&lt;/span&gt;. The &lt;span style=&quot; font-weight:600;&quot;&gt;index&lt;/span&gt; of a record defines where in the memory such a data set can be found. DAFF uses a two-step access to directional data that is not spatially continuous. First, a nearest neighbour search has to be executed, that returns a record index. Then, by using the corresponding index, the data can be requested.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
                <property name="styleSheet">
                 <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
                </property>
@@ -508,7 +496,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
                </property>
               </widget>
              </item>
-             <item>
+             <item row="2" column="3">
               <widget class="QSpinBox" name="spinBox_RecordIndex">
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(213, 255, 255);
@@ -526,45 +514,6 @@ font: 75 12pt &quot;Calibri&quot;;</string>
            </widget>
           </item>
           <item>
-           <widget class="QGroupBox" name="groupBox_Channel">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;DAFF provides &lt;span style=&quot; font-weight:600;&quot;&gt;multi-channel data sets&lt;/span&gt;, i.e. for an HRTF two channels are usually needed. The channel spin box chooses which channel should be shown.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
-            </property>
-            <property name="title">
-             <string>Channel</string>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_4">
-             <item>
-              <widget class="QLabel" name="label_12">
-               <property name="styleSheet">
-                <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
-               </property>
-               <property name="text">
-                <string>Index</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="spinBox_ChannelIndex">
-               <property name="styleSheet">
-                <string notr="true">background-color: rgb(255, 255, 213);
-font: 75 12pt &quot;Calibri&quot;;</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-               <property name="maximum">
-                <number>64000</number>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
            <widget class="QGroupBox" name="groupBox_Frequency">
             <property name="toolTip">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Depending on the content type, DAFF files have a &lt;span style=&quot; font-weight:600;&quot;&gt;vector&lt;/span&gt; of (potentially multi-channel) data. The base of this data is either a time for a sample in an impule response, or a frequency in a spectrum representation, either as frequency bins in a DFT coefficient vector, or a center frequency in an energetic band spectrum.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -573,10 +522,10 @@ font: 75 12pt &quot;Calibri&quot;;</string>
              <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
             </property>
             <property name="title">
-             <string>Sample / Bin / Frequency</string>
+             <string>Selection</string>
             </property>
             <layout class="QFormLayout" name="formLayout_4">
-             <item row="0" column="0">
+             <item row="1" column="0">
               <widget class="QLabel" name="label_11">
                <property name="styleSheet">
                 <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -586,7 +535,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
+             <item row="1" column="1">
               <widget class="QSpinBox" name="spinBox_FrequencyIndex">
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(255, 213, 255);
@@ -597,7 +546,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="0">
+             <item row="2" column="0">
               <widget class="QLabel" name="label_frequency">
                <property name="styleSheet">
                 <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -607,11 +556,38 @@ font: 75 12pt &quot;Calibri&quot;;</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="1">
+             <item row="2" column="1">
               <widget class="QComboBox" name="comboBox_FrequencySelector">
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(255, 213, 255);
 font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_12">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;DAFF provides &lt;span style=&quot; font-weight:600;&quot;&gt;multi-channel data sets&lt;/span&gt;, i.e. for an HRTF two channels are usually needed. The channel spin box chooses which channel should be shown.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+               </property>
+               <property name="text">
+                <string>Channel</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QSpinBox" name="spinBox_ChannelIndex">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(255, 255, 213);
+font: 75 12pt &quot;Calibri&quot;;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="maximum">
+                <number>64000</number>
                </property>
               </widget>
              </item>
