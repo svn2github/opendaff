@@ -57,9 +57,6 @@ srcs = {'DAFFMEX.cpp', ...
 
 fprintf( 'Building OpenDAFF Matlab executable\n\tCompiler: ''%s''\n\tOutput: ''%s''\n', cxx.Name, outfile )
 
-% Create the destination directory if it does not exist
-if ~exist(outdir, 'dir'), mkdir(outdir); end
-
 % Compile and link
 srcs = fullfile(srcs);
 srcs = sprintf('%s ', srcs{:});

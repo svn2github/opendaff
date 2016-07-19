@@ -431,58 +431,61 @@ void GetContentType(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) 
 }
 
 // internal: convert DAFFMetadata to matlab struct matrix
-void GetMetadataMatlab(const DAFFMetadata* pMetadata, mxArray *&plhs){
+void GetMetadataMatlab( const DAFFMetadata* pMetadata, mxArray* &plhs )
+{
 	// Get all the metadata keys
-	std::vector<std::string> vsKeys;
-	pMetadata->getKeys(vsKeys);
+	std::vector< std::string > vsKeys;
+	pMetadata->getKeys( vsKeys );
 
-	// Create an unpopulated struct with the keynames
-	int iNumFields = (int) vsKeys.size();
-	const char** ppszFieldNames = new const char*[iNumFields];
-	for (int i=0; i<iNumFields; i++) {
-		// Return field names in lowercase
-		std::transform(vsKeys[i].begin(), vsKeys[i].end(), vsKeys[i].begin(), tolower);
-		ppszFieldNames[i] = vsKeys[i].c_str();
-	}
-
-	plhs = mxCreateStructMatrix(1, 1, iNumFields, ppszFieldNames);
+	// Create struct with required fields
+	mwSize dims[ 2 ] = { 1, ( mwSize ) vsKeys.size() };
+	const char* ppszFieldNames[] = { "datatype", "name", "value" };
+	plhs = mxCreateStructArray( 2, dims, 3, ppszFieldNames );
 
 	// Set the field values
-	for (int i=0; i<iNumFields; i++) {
+	for( size_t i = 0; i < vsKeys.size(); i++ )
+	{
+		const std::string& sKey( vsKeys[ i ] );
+		mxSetFieldByNumber( plhs, i, 1, mxCreateString( sKey.c_str() ) );
+
+		mxArray* pDataType = mxCreateNumericMatrix( 1, 1, mxINT32_CLASS, mxREAL ); // ugly integer passing to Matlab
+		*( ( int32_t* ) mxGetData( pDataType ) ) = pMetadata->getKeyType( sKey );
+		mxSetFieldByNumber( plhs, i, 0, pDataType );
+
 		mxArray* pValue;
-		
-		switch (pMetadata->getKeyType(vsKeys[i])) {
+		switch( pMetadata->getKeyType( sKey ) )
+		{
 			case DAFFMetadata::DAFF_BOOL:
-				pValue = mxCreateLogicalScalar( pMetadata->getKeyBool(vsKeys[i]) );
+				pValue = mxCreateLogicalScalar( pMetadata->getKeyBool( sKey ) );
 				break;
 
 			case DAFFMetadata::DAFF_INT:
-				pValue = mxCreateNumericMatrix(1, 1, mxINT32_CLASS, mxREAL);
-				*((int32_t*) mxGetData(pValue)) = pMetadata->getKeyInt(vsKeys[i]);
+				pValue = mxCreateNumericMatrix( 1, 1, mxINT32_CLASS, mxREAL );
+				*( ( int32_t* ) mxGetData( pValue ) ) = pMetadata->getKeyInt( sKey );
 				break;
 
 			case DAFFMetadata::DAFF_FLOAT:
-				pValue = mxCreateDoubleScalar( pMetadata->getKeyFloat(vsKeys[i]) );
+				pValue = mxCreateDoubleScalar( pMetadata->getKeyFloat( sKey ) );
 				break;
 
 			case DAFFMetadata::DAFF_STRING:
-				pValue = mxCreateString( pMetadata->getKeyString(vsKeys[i]).c_str());
+				pValue = mxCreateString( pMetadata->getKeyString( sKey ).c_str() );
 				break;
 		}
-
-		mxSetFieldByNumber(plhs, 0, i, pValue);
+		mxSetFieldByNumber( plhs, i, 2, pValue );
 	}
 }
 
-void GetMetadata(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
+void GetMetadata( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] )
+{
 
-	if (nrhs != 2)
-		mexErrMsgTxt("This command requires one argument");
+	if( nrhs != 2 )
+		mexErrMsgTxt( "This command requires one argument" );
 
-	DAFFReader* pReader = GetHandleTarget(prhs[1])->pReader;
+	DAFFReader* pReader = GetHandleTarget( prhs[ 1 ] )->pReader;
 	const DAFFMetadata* pMetadata = pReader->getMetadata();
 	
-	GetMetadataMatlab(pMetadata, plhs[0]);
+	GetMetadataMatlab( pMetadata, plhs[ 0 ] );
 }
 
 void GetRecordMetadata(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {

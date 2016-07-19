@@ -242,6 +242,14 @@ namespace DAFFViz
 		//delete m_pPoles;
 	}
 
+	void SphericalCoordinateAssistant::SetAssistanceVisible( bool bVisible )
+	{
+		SetAxesVisible( bVisible );
+		SetEquatorVisible( bVisible );
+		SetMeridiansVisible( bVisible );
+		SetGridVisible( bVisible );
+	}
+
 	void SphericalCoordinateAssistant::UpdateGrid() {
 		bool bWasVisible = GetGridVisible(); 
 		int res = 18*3;
