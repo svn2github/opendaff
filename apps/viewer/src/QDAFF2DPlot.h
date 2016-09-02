@@ -18,6 +18,7 @@
 #include <QGraphicsItem>
 #include <QtOpenGL\qgl.h>
 #include <QKeyEvent>
+#include <QtSvg\qsvggenerator.h>
 
 #include <DAFF.h>
 
@@ -129,7 +130,7 @@ private:
 	void Draw(bool showAllChannels = false,bool showDots = true);
 	void DrawCoordinateSystem();
 	void DrawGraph(int);
-	void ExportImage(QString, float, bool showAllChannels = false, bool showDots = true);
+	void ExportImage(QString, float, bool svg = false, bool showAllChannels = false, bool showDots = true);
 
 	void ShowChannel(int iChannelIndex, bool bShowAllChannels = false, bool showDots = true);
 

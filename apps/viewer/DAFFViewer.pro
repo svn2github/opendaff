@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui svg
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -53,3 +53,5 @@ INCLUDEPATH += X:/VR/dev/ExternalLibs/VTK/VTK-7.0/win32-x64.vc12/include/vtk-7.0
 INCLUDEPATH += C:\dev\ExternalLibs\VTK\VTK-7.0\win32-x64.vc12\include/vtk-7.0
 DEPENDPATH += X:/VR/dev/ExternalLibs/VTK/VTK-7.0/win32-x64.vc12/lib
 DEPENDPATH += C:/dev/ExternalLibs/VTK/VTK-7.0/win32-x64.vc12/lib
+
+
