@@ -118,7 +118,6 @@ if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 	if( FFTW_FOUND )
 		target_link_libraries( DAFF ${FFTW_LIBRARIES} )
 		link_directories( "${FFTW_LIBRARY_DIRS}" )
-		message( "link lib folder ${FFTW_LIBRARY_DIRS}" )
 	endif( FFTW_FOUND )
 
 else( OPENDAFF_BUILD_DAFFLIBS_SHARED )
