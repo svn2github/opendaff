@@ -5,7 +5,8 @@ set( CMAKE_AUTOMOC ON )
 find_package( VTK REQUIRED )
 find_package( FFTW REQUIRED )
 find_package( SndFile REQUIRED )
-find_package( Qt5Widgets REQUIRED )
+find_package( Qt5 REQUIRED COMPONENTS Core Svg Gui Widgets )
+find_package( Qt5 COMPONENTS Svg )
 
 include( ${VTK_USE_FILE} )
 
@@ -34,7 +35,7 @@ if( MSVC )
 endif( MSVC )
 
 add_executable( DAFFViewer ${OPENDAFF_DAFFVIEWER_SOURCES} )
-target_link_libraries( DAFFViewer DAFFViz DAFF ${FFTW_LIBRARIES} ${SNDFILE_LIBRARIES} ${VTK_LIBRARIES} Qt5::Widgets )
+target_link_libraries( DAFFViewer DAFFViz DAFF ${FFTW_LIBRARIES} ${SNDFILE_LIBRARIES} ${VTK_LIBRARIES} Qt5::Widgets Qt5::Svg Qt5::Core )
 install( TARGETS DAFFViewer RUNTIME DESTINATION "bin" )
 
 # Set PATH to run from VS2012
