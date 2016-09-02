@@ -433,16 +433,16 @@ function [] = daffv17_write( varargin )
           
             % --= Impulse responses =--
             
-            if strcmp(args.content, 'IR') 
+            if strcmp( args.content, 'IR' ) 
                 % Get the data
-                [data, samplerate, metadata] = args.datafunc(alpha, beta, args.userdata);
-                [channels, filterlength] = size(data);
+                [ data, samplerate, metadata ] = args.datafunc( alpha, beta, args.userdata );
+                [ channels, filterlength] = size( data );
 
                 if( ~isa( data, 'double' ) )
                     error( 'Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta );
                 end
                 
-                if isfield(props, 'samplerate')
+                if isfield( props, 'samplerate' )
                     if (samplerate ~= props.samplerate)
                         error( 'Dataset (A%0.1f°, B%0.1f°): Sampling rate does not match', alpha, beta );
                     end
@@ -717,32 +717,28 @@ function [] = daffv17_write( varargin )
                 [ data, sampleRate, isSymetric, metadata ] = args.datafunc( alpha, beta, args.userdata );
                 [ channels, numDFTCoeffs ] = size( data );
 
-                if (class(data) ~= 'double')
-                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta) );
+                if( isa( data, 'double' ) )
+                    error( 'Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta );
                 end
                
-                % test something (TODO)
-                if (class(data) ~= 'double')
-                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta) );
-                end
                 
-                if (class(isSymetric) ~= 'logical')
-                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): third parameter isSymetric must be logical', alpha, beta));
+                if( isa( isSymetric, 'logical' ) )
+                    error( 'Dataset (A%0.1f°, B%0.1f°): third parameter isSymetric must be logical', alpha, beta );
                 end
                 
                 if isfield( props, 'samplerate' )
                     if ( sampleRate ~= props.sampleRate )
-                        error( sprintf( 'Dataset (A%0.1f°, B%0.1f°): Sample rate does not match', alpha, beta ) );
+                        error( 'Dataset (A%0.1f°, B%0.1f°): Sample rate does not match', alpha, beta );
                     end
                 end
                 
                 if isfield(props, 'numDFTCoeffs')
                     if (numDFTCoeffs ~= props.numDFTCoeffs)
-                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Number of discrete fourier spectra coefficients is not constant', alpha, beta));
+                        error( 'Dataset (A%0.1f°, B%0.1f°): Number of discrete fourier spectra coefficients is not constant', alpha, beta );
                     end
                 else
-                    if (numDFTCoeffs <= 0)
-                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Number of discrete fourier spectra coefficients must be greater than zero', alpha, beta));
+                    if( numDFTCoeffs <= 0 )
+                        error( 'Dataset (A%0.1f°, B%0.1f°): Number of discrete fourier spectra coefficients must be greater than zero', alpha, beta );
                     end
                     
                     props.numDFTCoeffs = numDFTCoeffs;
@@ -767,7 +763,8 @@ function [] = daffv17_write( varargin )
                     x{a,b,c} = struct('metadata', metadata, ... %'peak', peak, ...
                                       'metadataIndex', 0); 
                 end
-		write_metadatablock = write_metadatablock || ~isempty(metadata);
+                
+                write_metadatablock = write_metadatablock || ~isempty( metadata );
                             
                 % Discard the data
                 clear data; 
@@ -1207,7 +1204,7 @@ function [] = daffv17_write( varargin )
         % write metadata for the whole file
         index = 0;
         if ~isempty(args.metadata)
-            % args.metadata = daffv_metadata_addKey(args.metadata, 'version', 'char', FileFormatVersion); 
+            % args.metadata = daffv17_add_metadata(args.metadata, 'version', 'char', FileFormatVersion); 
             % write something, so args.metadata is not empty
             daffv17_write_metadata(fid, args.metadata);  
             index = 1;
