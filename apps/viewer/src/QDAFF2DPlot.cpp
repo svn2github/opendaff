@@ -34,6 +34,8 @@ QDAFF2DPlot::QDAFF2DPlot( QWidget *parent )
 
 void QDAFF2DPlot::ReadDAFF( const DAFFReader* pReader )
 {
+	m_iRecordIndex = 0;
+	m_iChannelIndex = 0;
 	m_pReader = pReader;
 	Draw();
 }
