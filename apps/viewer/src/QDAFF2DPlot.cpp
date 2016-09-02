@@ -35,9 +35,11 @@ QDAFF2DPlot::QDAFF2DPlot( QWidget *parent )
 void QDAFF2DPlot::ReadDAFF( const DAFFReader* pReader )
 {
 	m_iRecordIndex = 0;
+	m_iFrequencyIndex = 0;
 	m_iChannelIndex = 0;
-	m_pReader = pReader;
-	Draw();
+
+	m_pReader = pReader;	Draw();
+	//ExportImage("C:\\Users\\Nigel\\Pictures\\Saved Pictures\\test1.png",4.0, true, false);
 }
 
 void QDAFF2DPlot::CloseDAFF()
@@ -53,8 +55,8 @@ void QDAFF2DPlot::ChangeRecordIndex( int iRecordIndex )
 
 void QDAFF2DPlot::ChangeChannelIndex(int iChannelIndex)
 {
-    m_iChannelIndex = iChannelIndex;
-    Draw();
+	m_iChannelIndex = iChannelIndex;
+	Draw();
 }
 
 void QDAFF2DPlot::ChangeFrequencyIndex( int iFrequencyIndex )
@@ -63,7 +65,7 @@ void QDAFF2DPlot::ChangeFrequencyIndex( int iFrequencyIndex )
     Draw();
 }
 
-void QDAFF2DPlot::Draw()
+void QDAFF2DPlot::Draw(bool showAllChannels, bool showDots)
 {
 	if (m_iSceneHeight == 0 || m_iSceneWidth == 0 || m_pReader == nullptr)
 		return;
@@ -79,7 +81,7 @@ void QDAFF2DPlot::Draw()
 	//draw plot
 	DrawCoordinateSystem();
 	DrawGraph(m_iRecordIndex);
-	ShowOnlyChannel(m_iChannelIndex);
+	ShowChannel(m_iChannelIndex, showAllChannels, showDots);
 }
 
 void QDAFF2DPlot::DrawCoordinateSystem()
@@ -144,55 +146,55 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 		}
 		//marker 20
 		m_vpXMarkerText[0] = scene()->addText(QString("20"));
-		m_vpXMarkerText[0]->setPos(m_vpXMarker[0]->line().x2(), m_vpXMarker[0]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[0]->setPos(m_vpXMarker[0]->line().x2() - m_vpXMarkerText[0]->boundingRect().width()/2, m_vpXMarker[0]->line().y2() - m_iXMarkerTextOffset);
 		m_vpXMarkerText[0]->setTransform(QTransform().scale(1, -1));
 		//marker 40
 		m_vpXMarkerText[1] = scene()->addText(QString("40"));
-		m_vpXMarkerText[1]->setPos(m_vpXMarker[2]->line().x2(), m_vpXMarker[2]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[1]->setPos(m_vpXMarker[2]->line().x2() - m_vpXMarkerText[1]->boundingRect().width() / 2, m_vpXMarker[2]->line().y2() - m_iXMarkerTextOffset);
 		m_vpXMarkerText[1]->setTransform(QTransform().scale(1, -1));
 		//marker 60
 		m_vpXMarkerText[2] = scene()->addText(QString("60"));
-		m_vpXMarkerText[2]->setPos(m_vpXMarker[4]->line().x2(), m_vpXMarker[4]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[2]->setPos(m_vpXMarker[4]->line().x2() - m_vpXMarkerText[2]->boundingRect().width() / 2, m_vpXMarker[4]->line().y2() - m_iXMarkerTextOffset);
 		m_vpXMarkerText[2]->setTransform(QTransform().scale(1, -1));
 		//marker 100
 		m_vpXMarkerText[3] = scene()->addText(QString("100"));
-		m_vpXMarkerText[3]->setPos(m_vpXMarker[8]->line().x2(), m_vpXMarker[8]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[3]->setPos(m_vpXMarker[8]->line().x2() - m_vpXMarkerText[3]->boundingRect().width() / 2, m_vpXMarker[8]->line().y2() - m_iXMarkerTextOffset);
 		m_vpXMarkerText[3]->setTransform(QTransform().scale(1, -1));
 		//marker 200
 		m_vpXMarkerText[4] = scene()->addText(QString("200"));
-		m_vpXMarkerText[4]->setPos(m_vpXMarker[9]->line().x2(), m_vpXMarker[9]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[4]->setPos(m_vpXMarker[9]->line().x2() - m_vpXMarkerText[4]->boundingRect().width() / 2, m_vpXMarker[9]->line().y2() - m_iXMarkerTextOffset);
 		m_vpXMarkerText[4]->setTransform(QTransform().scale(1, -1));
 		//marker 400
 		m_vpXMarkerText[5] = scene()->addText(QString("400"));
-		m_vpXMarkerText[5]->setPos(m_vpXMarker[11]->line().x2(), m_vpXMarker[11]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[5]->setPos(m_vpXMarker[11]->line().x2() - m_vpXMarkerText[5]->boundingRect().width() / 2, m_vpXMarker[11]->line().y2() - m_iXMarkerTextOffset);
 		m_vpXMarkerText[5]->setTransform(QTransform().scale(1, -1));
 		//marker 600
 		m_vpXMarkerText[6] = scene()->addText(QString("600"));
-		m_vpXMarkerText[6]->setPos(m_vpXMarker[13]->line().x2(), m_vpXMarker[13]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[6]->setPos(m_vpXMarker[13]->line().x2() - m_vpXMarkerText[6]->boundingRect().width() / 2, m_vpXMarker[13]->line().y2() - m_iXMarkerTextOffset);
 		m_vpXMarkerText[6]->setTransform(QTransform().scale(1, -1));
 		//marker 1k
 		m_vpXMarkerText[7] = scene()->addText(QString("1k"));
-		m_vpXMarkerText[7]->setPos(m_vpXMarker[17]->line().x2(), m_vpXMarker[17]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[7]->setPos(m_vpXMarker[17]->line().x2() - m_vpXMarkerText[7]->boundingRect().width() / 2, m_vpXMarker[17]->line().y2() - m_iXMarkerTextOffset);
 		m_vpXMarkerText[7]->setTransform(QTransform().scale(1, -1));
 		//marker 2k
 		m_vpXMarkerText[8] = scene()->addText(QString("2k"));
-		m_vpXMarkerText[8]->setPos(m_vpXMarker[18]->line().x2(), m_vpXMarker[18]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[8]->setPos(m_vpXMarker[18]->line().x2() - m_vpXMarkerText[8]->boundingRect().width() / 2, m_vpXMarker[18]->line().y2() - m_iXMarkerTextOffset);
 		m_vpXMarkerText[8]->setTransform(QTransform().scale(1, -1));
 		//marker 4k
 		m_vpXMarkerText[9] = scene()->addText(QString("4k"));
-		m_vpXMarkerText[9]->setPos(m_vpXMarker[20]->line().x2(), m_vpXMarker[20]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[9]->setPos(m_vpXMarker[20]->line().x2() - m_vpXMarkerText[9]->boundingRect().width() / 2, m_vpXMarker[20]->line().y2() - m_iXMarkerTextOffset);
 		m_vpXMarkerText[9]->setTransform(QTransform().scale(1, -1));
 		//marker 6k
 		m_vpXMarkerText[10] = scene()->addText(QString("6k"));
-		m_vpXMarkerText[10]->setPos(m_vpXMarker[22]->line().x2(), m_vpXMarker[22]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[10]->setPos(m_vpXMarker[22]->line().x2() - m_vpXMarkerText[10]->boundingRect().width() / 2, m_vpXMarker[22]->line().y2() - m_iXMarkerTextOffset);
 		m_vpXMarkerText[10]->setTransform(QTransform().scale(1, -1));
 		//marker 10k
 		m_vpXMarkerText[11] = scene()->addText(QString("10k"));
-		m_vpXMarkerText[11]->setPos(m_vpXMarker[26]->line().x2(), m_vpXMarker[26]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[11]->setPos(m_vpXMarker[26]->line().x2() - m_vpXMarkerText[11]->boundingRect().width() / 2, m_vpXMarker[26]->line().y2() - m_iXMarkerTextOffset);
 		m_vpXMarkerText[11]->setTransform(QTransform().scale(1, -1));
 		//marker 20k
 		m_vpXMarkerText[12] = scene()->addText(QString("20k"));
-		m_vpXMarkerText[12]->setPos(m_vpXMarker[27]->line().x2(), m_vpXMarker[27]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[12]->setPos(m_vpXMarker[27]->line().x2() - m_vpXMarkerText[12]->boundingRect().width() / 2, m_vpXMarker[27]->line().y2() - m_iXMarkerTextOffset);
 		m_vpXMarkerText[12]->setTransform(QTransform().scale(1, -1));		
 		//Draw Tip
 		QGraphicsLineItem *tipLineX, *tipLineY;
@@ -216,7 +218,7 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 		//1st Y Marker
 		m_vpYMarker[0] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1(), m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1()));
 		m_vpYMarkerText[0] = scene()->addText(QString("0"));
-		m_vpYMarkerText[0]->setPos(m_vpYMarker[0]->line().x2() - m_iYMarkerTextOffset, m_vpYMarker[0]->line().y2());
+		m_vpYMarkerText[0]->setPos(m_vpYMarker[0]->line().x2() - m_vpYMarkerText[0]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[0]->line().y2() + m_vpYMarkerText[0]->boundingRect().height() / 2);
 		m_vpYMarkerText[0]->setTransform(QTransform().scale(1, -1));		
 		//other Y Markers
 		offset = (double)m_iYAxisLength / (m_iNYMarker-1);
@@ -224,7 +226,7 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 		{
 			m_vpYMarker[i] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1() + i*offset, m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1() + i*offset));
 			m_vpYMarkerText[i] = scene()->addText(QString(convertFloat((i / (float)(m_iNYMarker - 1))*pContent->getOverallMagnitudeMaximum()).c_str()));
-			m_vpYMarkerText[i]->setPos(m_vpYMarker[i]->line().x2() - m_iYMarkerTextOffset, m_vpYMarker[i]->line().y2());
+			m_vpYMarkerText[i]->setPos(m_vpYMarker[i]->line().x2() - m_vpYMarkerText[i]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[i]->line().y2() + m_vpYMarkerText[i]->boundingRect().height() / 2);
 			m_vpYMarkerText[i]->setTransform(QTransform().scale(1, -1));
 		}	
 		break;
@@ -269,12 +271,12 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 			//1st X Marker
 			m_vpXMarker[0] = scene()->addLine(QLine(m_pXAxis->line().x1(), m_pXAxis->line().y1(), m_pXAxis->line().x1(), m_pXAxis->line().y1() - m_iXMarkerLength));
 			m_vpXMarkerText[0] = scene()->addText(QString("0"));
-			m_vpXMarkerText[0]->setPos(m_vpXMarker[0]->line().x2(), m_vpXMarker[0]->line().y2() - m_iXMarkerTextOffset);
+			m_vpXMarkerText[0]->setPos(m_vpXMarker[0]->line().x2() - m_vpXMarkerText[0]->boundingRect().width() / 2, m_vpXMarker[0]->line().y2() - m_iXMarkerTextOffset);
 			m_vpXMarkerText[0]->setTransform(QTransform().scale(1, -1));
 			//1st Y Marker
 			m_vpYMarker[0] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1(), m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1()));
 			m_vpYMarkerText[0] = scene()->addText(QString("-1"));
-			m_vpYMarkerText[0]->setPos(m_vpYMarker[0]->line().x2() - m_iYMarkerTextOffset, m_vpYMarker[0]->line().y2());
+			m_vpYMarkerText[0]->setPos(m_vpYMarker[0]->line().x2() - m_vpYMarkerText[0]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[0]->line().y2() + m_vpYMarkerText[0]->boundingRect().height() / 2);
 			m_vpYMarkerText[0]->setTransform(QTransform().scale(1, -1));
 			//other X Markers
 			offset = (double)m_iXAxisLength / (m_iNXMarker - 1);
@@ -284,7 +286,7 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 			{
 				m_vpXMarker[i] = scene()->addLine(QLine(m_pXAxis->line().x1() + offset*i, m_pXAxis->line().y1(), m_pXAxis->line().x1() + offset*i, m_pXAxis->line().y1() - m_iXMarkerLength));
 				m_vpXMarkerText[i] = scene()->addText(QString(std::to_string((int)(markerValueRatio*i)).c_str()));
-				m_vpXMarkerText[i]->setPos(m_vpXMarker[i]->line().x2(), m_vpXMarker[i]->line().y2() - m_iXMarkerTextOffset);
+				m_vpXMarkerText[i]->setPos(m_vpXMarker[i]->line().x2() - m_vpXMarkerText[i]->boundingRect().width()/2, m_vpXMarker[i]->line().y2() - m_iXMarkerTextOffset);
 				m_vpXMarkerText[i]->setTransform(QTransform().scale(1, -1));
 			}
 			//other Y Markers
@@ -293,81 +295,85 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 			{
 				m_vpYMarker[i] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1() + i*offset, m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1() + i*offset));
 				m_vpYMarkerText[i] = scene()->addText(QString(convertFloat(((i / (float)(m_iNYMarker - 1))*2)-1).c_str()));
-				m_vpYMarkerText[i]->setPos(m_vpYMarker[i]->line().x2() - m_iYMarkerTextOffset, m_vpYMarker[i]->line().y2());
+				m_vpYMarkerText[i]->setPos(m_vpYMarker[i]->line().x2() - m_vpYMarkerText[i]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[i]->line().y2() + m_vpYMarkerText[i]->boundingRect().height()/2);
 				m_vpYMarkerText[i]->setTransform(QTransform().scale(1, -1));
 			}
 			break;
 		}
-	//case DAFF_DFT_SPECTRUM:
-	//{
-	//	//Draw Axis
-	//	m_pXAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iXAxisLength + m_iAxisOffsetLeft, m_iAxisOffsetDown));
-	//	m_pYAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iAxisOffsetLeft, m_iYAxisLength + m_iAxisOffsetDown));
-	//	//Draw Grid
-	//	int nXGrid = m_iXAxisLength / m_iGridXOffset;
-	//	int nYGrid = m_iYAxisLength / m_iGridYOffset;
-	//	m_vpXGrid.resize(nXGrid);
-	//	m_vpYGrid.resize(nYGrid);
-	//	for (int i = 0; i < nXGrid; i++)
-	//	{
-	//		  m_vpXGrid[i] = scene()->addLine(QLine(m_pYAxis->line().x1() + (i + 1)*m_iGridXOffset, m_pYAxis->line().y1(), m_pYAxis->line().x1() + (i + 1)*m_iGridXOffset, m_pYAxis->line().y1() + m_iYAxisLength), QPen(Qt::lightGray));
-	//	}
-	//	for (int i = 0; i < nYGrid; i++)
-	//	{
-	//		  m_vpXGrid[i] = scene()->addLine(QLine(m_pXAxis->line().x1(), m_pXAxis->line().y1() + (i + 1)*m_iGridYOffset, m_pXAxis->line().x1() + m_iXAxisLength, m_pXAxis->line().y2() + (i + 1)*m_iGridYOffset), QPen(Qt::lightGray));
-	//	}
-	//	//Draw Tip
-	//	QGraphicsLineItem *tipLineX, *tipLineY;
-	//	tipLineX = scene()->addLine(QLine(m_pXAxis->line().x2(), m_pXAxis->line().y2(), m_pXAxis->line().x2() + m_iTipDistanceX, m_pXAxis->line().y2()));
-	//	tipLineY = scene()->addLine(QLine(m_pYAxis->line().x2(), m_pYAxis->line().y2(), m_pYAxis->line().x2(), m_pYAxis->line().y2() + m_iTipDistanceX));
-	//	QPolygonF tipX, tipY;
-	//	tipX << QPointF(tipLineX->line().x2(), tipLineX->line().y2()) << QPointF(tipLineX->line().x2(), tipLineX->line().y2() + m_iTipWidth) << QPointF(tipLineX->line().x2() + m_iTipLength, tipLineX->line().y2()) << QPointF(tipLineX->line().x2(), tipLineX->line().y2() - m_iTipWidth);
-	//	tipY << QPointF(tipLineY->line().x2(), tipLineY->line().y2()) << QPointF(tipLineY->line().x2() + m_iTipWidth, tipLineY->line().y2()) << QPointF(tipLineY->line().x2(), tipLineY->line().y2() + m_iTipLength) << QPointF(tipLineY->line().x2() - m_iTipWidth, tipLineY->line().y2());
-	//	scene()->addPolygon(tipX, QPen(), QBrush(Qt::black));
-	//	scene()->addPolygon(tipY, QPen(), QBrush(Qt::black));
-	//	//Draw Axis Title
-	//	QGraphicsTextItem *xText, *yText;
-	//	xText = scene()->addText(QString("f/Hz"));
-	//	xText->setPos(tipX.back());
-	//	xText->setTransform(QTransform().scale(1, -1));
-	//	yText = scene()->addText(QString("A"));
-	//	yText->setPos(tipY[1]);
-	//	yText->setTransform(QTransform().scale(1, -1));
-	//	//Draw Marker
-	//	DAFFContentDFT* pContent = dynamic_cast< DAFFContentDFT* >(m_pReader->getContent());
-	//	//1st X Marker
-	//	m_vpXMarker[0] = scene()->addLine(QLine(m_pXAxis->line().x1(), m_pXAxis->line().y1(), m_pXAxis->line().x1(), m_pXAxis->line().y1() - m_iXMarkerLength));
-	//	m_vpXMarkerText[0] = scene()->addText(QString("0"));
-	//	m_vpXMarkerText[0]->setPos(m_vpXMarker[0]->line().x2(), m_vpXMarker[0]->line().y2() - m_iXMarkerTextOffset);
-	//	m_vpXMarkerText[0]->setTransform(QTransform().scale(1, -1));
-	//	//1st Y Marker
-	//	m_vpYMarker[0] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1(), m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1()));
-	//	m_vpYMarkerText[0] = scene()->addText(QString("0"));
-	//	m_vpYMarkerText[0]->setPos(m_vpYMarker[0]->line().x2() - m_iYMarkerTextOffset, m_vpYMarker[0]->line().y2());
-	//	m_vpYMarkerText[0]->setTransform(QTransform().scale(1, -1));
-	//	//other X Markers
-	//	float markerPixelRatio = m_iXAxisLength / (m_iNXMarker - 1);
-	//	float indexValueRatio = pContent->getFrequencyBandwidth();
-	//	float markerValueRatio = (pContent->getNumDFTCoeffs()*indexValueRatio) / (m_iNXMarker - 1);
-	//	for (int i = 1; i < m_iNXMarker; i++)
-	//	{
-	//		m_vpXMarker[i] = scene()->addLine(QLine(m_pXAxis->line().x1() + markerPixelRatio*i, m_pXAxis->line().y1(), m_pXAxis->line().x1() + markerPixelRatio*i, m_pXAxis->line().y1() - m_iXMarkerLength));
-	//		m_vpXMarkerText[i] = scene()->addText(QString(convertFloat(((i / (float)(markerValueRatio*i)) * 2) - 1).c_str()));
-	//		m_vpXMarkerText[i]->setPos(m_vpXMarker[i]->line().x2(), m_vpXMarker[i]->line().y2() - m_iXMarkerTextOffset);
-	//		m_vpXMarkerText[i]->setTransform(QTransform().scale(1, -1));
-	//	}
-	//	//other Y Markers
-	//	float indexPixelRatio = m_iYAxisLength / (m_iNYMarker - 1);
-	//	indexValueRatio = pContent->getOverallMagnitudeMaximum() / (m_iNYMarker - 1);
-	//	for (int i = 1; i < m_iNYMarker; i++)
-	//	{
-	//		m_vpYMarker[i] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1() + i*indexPixelRatio, m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1() + i*indexPixelRatio));
-	//		m_vpYMarkerText[i] = scene()->addText(QString(convertFloat(i*indexValueRatio).c_str()));
-	//		m_vpYMarkerText[i]->setPos(m_vpYMarker[i]->line().x2() - m_iYMarkerTextOffset, m_vpYMarker[i]->line().y2());
-	//		m_vpYMarkerText[i]->setTransform(QTransform().scale(1, -1));
-	//	}
-	//	break;
-	//}
+	case DAFF_DFT_SPECTRUM:
+	{
+		//Draw Axis
+		m_pXAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iXAxisLength + m_iAxisOffsetLeft, m_iAxisOffsetDown));
+		m_pYAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iAxisOffsetLeft, m_iYAxisLength + m_iAxisOffsetDown));
+		//Draw Grid
+		int nXGrid = m_iXAxisLength / m_iGridXOffset;
+		int nYGrid = m_iYAxisLength / m_iGridYOffset;
+		m_vpXGrid.resize(nXGrid);
+		m_vpYGrid.resize(nYGrid);
+		for (int i = 0; i < nXGrid; i++)
+		{
+			  m_vpXGrid[i] = scene()->addLine(QLine(m_pYAxis->line().x1() + (i + 1)*m_iGridXOffset, m_pYAxis->line().y1(), m_pYAxis->line().x1() + (i + 1)*m_iGridXOffset, m_pYAxis->line().y1() + m_iYAxisLength), QPen(Qt::lightGray));
+		}
+		for (int i = 0; i < nYGrid; i++)
+		{
+			  m_vpXGrid[i] = scene()->addLine(QLine(m_pXAxis->line().x1(), m_pXAxis->line().y1() + (i + 1)*m_iGridYOffset, m_pXAxis->line().x1() + m_iXAxisLength, m_pXAxis->line().y2() + (i + 1)*m_iGridYOffset), QPen(Qt::lightGray));
+		}
+		//Draw Tip
+		QGraphicsLineItem *tipLineX, *tipLineY;
+		tipLineX = scene()->addLine(QLine(m_pXAxis->line().x2(), m_pXAxis->line().y2(), m_pXAxis->line().x2() + m_iTipDistanceX, m_pXAxis->line().y2()));
+		tipLineY = scene()->addLine(QLine(m_pYAxis->line().x2(), m_pYAxis->line().y2(), m_pYAxis->line().x2(), m_pYAxis->line().y2() + m_iTipDistanceX));
+		QPolygonF tipX, tipY;
+		tipX << QPointF(tipLineX->line().x2(), tipLineX->line().y2()) << QPointF(tipLineX->line().x2(), tipLineX->line().y2() + m_iTipWidth) << QPointF(tipLineX->line().x2() + m_iTipLength, tipLineX->line().y2()) << QPointF(tipLineX->line().x2(), tipLineX->line().y2() - m_iTipWidth);
+		tipY << QPointF(tipLineY->line().x2(), tipLineY->line().y2()) << QPointF(tipLineY->line().x2() + m_iTipWidth, tipLineY->line().y2()) << QPointF(tipLineY->line().x2(), tipLineY->line().y2() + m_iTipLength) << QPointF(tipLineY->line().x2() - m_iTipWidth, tipLineY->line().y2());
+		scene()->addPolygon(tipX, QPen(), QBrush(Qt::black));
+		scene()->addPolygon(tipY, QPen(), QBrush(Qt::black));
+		//Draw Axis Title
+		QGraphicsTextItem *xText, *yText;
+		xText = scene()->addText(QString("f/Hz"));
+		xText->setPos(tipX.back());
+		xText->setTransform(QTransform().scale(1, -1));
+		yText = scene()->addText(QString("A"));
+		yText->setPos(tipY[1]);
+		yText->setTransform(QTransform().scale(1, -1));
+		//Draw Marker
+		DAFFContentDFT* pContent = dynamic_cast< DAFFContentDFT* >(m_pReader->getContent());
+		//1st X Marker
+		m_vpXMarker[0] = scene()->addLine(QLine(m_pXAxis->line().x1(), m_pXAxis->line().y1(), m_pXAxis->line().x1(), m_pXAxis->line().y1() - m_iXMarkerLength));
+		m_vpXMarkerText[0] = scene()->addText(QString("0"));
+		m_vpXMarkerText[0]->setPos(m_vpXMarker[0]->line().x2(), m_vpXMarker[0]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[0]->setTransform(QTransform().scale(1, -1));
+		//1st Y Marker
+		m_vpYMarker[0] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1(), m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1()));
+		m_vpYMarkerText[0] = scene()->addText(QString("0"));
+		m_vpYMarkerText[0]->setPos(m_vpYMarker[0]->line().x2() - m_iYMarkerTextOffset, m_vpYMarker[0]->line().y2());
+		m_vpYMarkerText[0]->setTransform(QTransform().scale(1, -1));
+		//other X Markers
+		float markerPixelRatio = m_iXAxisLength / (m_iNXMarker - 1);
+		float a = pContent->getSamplerate();
+		float b = pContent->getNumDFTCoeffs();
+		float c = pContent->getTransformSize();
+		float indexValueRatio = pContent->getFrequencyBandwidth();
+		float markerValueRatio = (pContent->getNumDFTCoeffs()*indexValueRatio) / (m_iNXMarker - 1);
+		for (int i = 1; i < m_iNXMarker; i++)
+		{
+			m_vpXMarker[i] = scene()->addLine(QLine(m_pXAxis->line().x1() + markerPixelRatio*i, m_pXAxis->line().y1(), m_pXAxis->line().x1() + markerPixelRatio*i, m_pXAxis->line().y1() - m_iXMarkerLength));
+			//m_vpXMarkerText[i] = scene()->addText(QString(convertFloat(((i / (float)(markerValueRatio*i)) * 2) - 1).c_str()));
+			m_vpXMarkerText[i] = scene()->addText(QString(convertFloat(i*markerValueRatio).c_str()));
+			m_vpXMarkerText[i]->setPos(m_vpXMarker[i]->line().x2(), m_vpXMarker[i]->line().y2() - m_iXMarkerTextOffset);
+			m_vpXMarkerText[i]->setTransform(QTransform().scale(1, -1));
+		}
+		//other Y Markers
+		float indexPixelRatio = m_iYAxisLength / (m_iNYMarker - 1);
+		indexValueRatio = pContent->getOverallMagnitudeMaximum() / (m_iNYMarker - 1);
+		for (int i = 1; i < m_iNYMarker; i++)
+		{
+			m_vpYMarker[i] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1() + i*indexPixelRatio, m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1() + i*indexPixelRatio));
+			m_vpYMarkerText[i] = scene()->addText(QString(convertFloat(i*indexValueRatio).c_str()));
+			m_vpYMarkerText[i]->setPos(m_vpYMarker[i]->line().x2() - m_iYMarkerTextOffset, m_vpYMarker[i]->line().y2());
+			m_vpYMarkerText[i]->setTransform(QTransform().scale(1, -1));
+		}
+		break;
+	}
 	}
 }
 
@@ -513,44 +519,88 @@ void QDAFF2DPlot::DrawGraph(int recordIndex)
 	}
 }
 
-void QDAFF2DPlot::ShowOnlyChannel(int iChannelIndex)
+void QDAFF2DPlot::ExportImage(QString filePath, float factor, bool showAllChannels, bool showDots){
+	m_iSceneWidth *= factor;
+	m_iSceneHeight *= factor;
+	scene()->setSceneRect(0, 0, m_iSceneWidth, m_iSceneHeight);
+	Draw(showAllChannels, showDots);
+	QImage img(m_iSceneWidth, m_iSceneHeight, QImage::Format_ARGB32_Premultiplied);
+	QPainter p(&img);
+	scene()->render(&p);
+	p.end();
+	img.mirrored(false, true).save(filePath);
+	m_iSceneWidth /= factor;
+	m_iSceneHeight /= factor;
+	Draw();
+}
+
+void QDAFF2DPlot::ShowChannel(int iChannelIndex, bool bShowAllChannels, bool showDots)
 {
-	for (int i = 0; i < m_vvpGraphs.size(); i++)
+	if (m_pReader->getContentType() == DAFF_DFT_SPECTRUM)
+		return;
+
+	if (bShowAllChannels)
 	{
-		if (i == iChannelIndex)
-		{
+		for (int i = 0; i < m_vvpGraphs.size(); i++)
+		{			
 			for (int j = 0; j < m_vvpGraphs[i].size(); j++)
 			{
 				m_vvpGraphs[i][j]->show();
-			}
+			}			
 		}
-		else
-		{
-			for (int j = 0; j < m_vvpGraphs[i].size(); j++)
-			{
-				m_vvpGraphs[i][j]->hide();
-			}
-		}
-	}
-	for (int i = 0; i < m_vvpPoints.size(); i++)
-	{
-		if (i == iChannelIndex)
-		{
+		for (int i = 0; i < m_vvpPoints.size(); i++)
+		{			
 			for (int j = 0; j < m_vvpPoints[i].size(); j++)
 			{
-				if (m_vvpPoints[i][j] != nullptr)
+				if (m_vvpPoints[i][j] != nullptr && showDots)
 					m_vvpPoints[i][j]->show();
-			}
-		}
-		else
-		{
-			for (int j = 0; j < m_vvpPoints[i].size(); j++)
-			{
-				if (m_vvpPoints[i][j] != nullptr)
+				else if (m_vvpPoints[i][j] != nullptr && !showDots)
 					m_vvpPoints[i][j]->hide();
 			}
 		}
 	}
+	else
+	{
+		for (int i = 0; i < m_vvpGraphs.size(); i++)
+		{
+			if (i == iChannelIndex)
+			{
+				for (int j = 0; j < m_vvpGraphs[i].size(); j++)
+				{
+					m_vvpGraphs[i][j]->show();
+				}
+			}
+			else
+			{
+				for (int j = 0; j < m_vvpGraphs[i].size(); j++)
+				{
+					m_vvpGraphs[i][j]->hide();
+				}
+			}
+		}
+		for (int i = 0; i < m_vvpPoints.size(); i++)
+		{
+			if (i == iChannelIndex)
+			{
+				for (int j = 0; j < m_vvpPoints[i].size(); j++)
+				{
+					if (m_vvpPoints[i][j] != nullptr&& showDots)
+						m_vvpPoints[i][j]->show();
+					else if (m_vvpPoints[i][j] != nullptr && !showDots)
+						m_vvpPoints[i][j]->hide();
+				}
+			}
+			else
+			{
+				for (int j = 0; j < m_vvpPoints[i].size(); j++)
+				{
+					if (m_vvpPoints[i][j] != nullptr)
+						m_vvpPoints[i][j]->hide();
+				}
+			}
+		}
+	}
+	
 }
 
 void QDAFF2DPlot::keyReleaseEvent(QKeyEvent * event)

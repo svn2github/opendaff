@@ -126,11 +126,13 @@ private:
 	const DAFFReader* m_pReader;
 
 	//help Functions
-	void Draw();
+	void Draw(bool showAllChannels = false,bool showDots = true);
 	void DrawCoordinateSystem();
 	void DrawGraph(int);
+	void ExportImage(QString, float, bool showAllChannels = false, bool showDots = true);
 
-	void ShowOnlyChannel(int);
+	void ShowChannel(int iChannelIndex, bool bShowAllChannels = false, bool showDots = true);
+
 	const std::string convertFloat(float);
 
 	//items
@@ -179,7 +181,7 @@ private:
 	const int m_iXMarkerLength = 5;
 	const int m_iYMarkerLength = 5;
 	const int m_iXMarkerTextOffset = 0;
-	const int m_iYMarkerTextOffset = 20;
+	const int m_iYMarkerTextOffset = 0;
 	//points
 	const int m_iPointDiameter = 4;
 	
