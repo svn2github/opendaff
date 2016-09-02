@@ -704,7 +704,8 @@ function [] = daffv17_write( varargin )
                     x{a,b,c} = struct('metadata', metadata, ... %'peak', peak, ...
                                       'metadataIndex', 0); 
                 end
-		write_metadatablock = write_metadatablock || ~isempty(metadata);
+                
+                write_metadatablock = write_metadatablock || ~isempty(metadata);
                             
                 % Discard the data
                 clear data; 
@@ -712,17 +713,20 @@ function [] = daffv17_write( varargin )
             
             % --= DFT spectra =--
             
-            if strcmp(args.content, 'DFT') 
+            if strcmp( args.content, 'DFT' )
                 % Get the data
                 [ data, sampleRate, isSymetric, metadata ] = args.datafunc( alpha, beta, args.userdata );
                 [ channels, numDFTCoeffs ] = size( data );
 
-                if( isa( data, 'double' ) )
+                if( isa( data, 'double' ) == 0 )
                     error( 'Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta );
                 end
                
+                if( channels ~= args.channels )
+                    error( 'Dataset (A%0.1f°, B%0.1f°): Data function must deliver matching channel numbers (%d != %d) ', alpha, beta, args.channels, channels );
+                end
                 
-                if( isa( isSymetric, 'logical' ) )
+                if( isa( isSymetric, 'logical' ) == 0 )
                     error( 'Dataset (A%0.1f°, B%0.1f°): third parameter isSymetric must be logical', alpha, beta );
                 end
                 
@@ -732,8 +736,8 @@ function [] = daffv17_write( varargin )
                     end
                 end
                 
-                if isfield(props, 'numDFTCoeffs')
-                    if (numDFTCoeffs ~= props.numDFTCoeffs)
+                if( isfield( props, 'numDFTCoeffs' ) )
+                    if( numDFTCoeffs ~= props.numDFTCoeffs )
                         error( 'Dataset (A%0.1f°, B%0.1f°): Number of discrete fourier spectra coefficients is not constant', alpha, beta );
                     end
                 else
@@ -751,15 +755,15 @@ function [] = daffv17_write( varargin )
                         props.transformSize = numDFTCoeffs;
                     end
                     
-                    fprintf('Global properties: Sampling rate = %d Hz, dft length = %d, transform size = %d\n',...
-                            props.sampleRate, props.numDFTCoeffs, props.transformSize);
+                    fprintf( 'Global properties: Sampling rate = %d Hz, dft length = %d, transform size = %d\n',...
+                             props.sampleRate, props.numDFTCoeffs, props.transformSize );
                 end
-                                     
-                % Determine the peak value
-                peak = max(max(abs(data)));
-                props.globalPeak = max([props.globalPeak peak]);
                 
-                for c=1:args.channels
+                % Determine the peak value
+                peak = max( max( abs( data ) ) );
+                props.globalPeak = max( [ props.globalPeak peak ] );
+                
+                for c = 1:args.channels
                     x{a,b,c} = struct('metadata', metadata, ... %'peak', peak, ...
                                       'metadataIndex', 0); 
                 end
@@ -774,7 +778,7 @@ function [] = daffv17_write( varargin )
         end
     end
         
-    fprintf('Global peak: %+0.1f dB (%0.6f)\n', 20*log10(props.globalPeak), props.globalPeak);
+    fprintf( 'Global peak: %+0.1f dB (%0.6f)\n', 20*log10(props.globalPeak), props.globalPeak );
   
     if strcmp(args.content, 'IR')
         % Calculate to overall storage saving

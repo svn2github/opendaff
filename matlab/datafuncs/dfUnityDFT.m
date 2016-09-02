@@ -3,14 +3,15 @@ function [ data, sampleRate, isSymetric, metadata ] = dfUnityDFT( ~, ~, ~ )
     
     channels = 1;
     bins = 128;
-    data = zeros( channels, length( bins ) );
+    
+    data = zeros( channels, bins );
     metadata = [];
-    isSymetric = true;
+    isSymetric = false;
     sampleRate = 44100;
     
-    for c=1:channels
-        for f=1:length( bins )
-            data( c, f ) = 1.0 + 1i*0.0;
+    for c = 1:channels
+        for n = 1:bins
+            data( c, n ) = 1.0 + 1i*0.0;
         end
     end   
 end
