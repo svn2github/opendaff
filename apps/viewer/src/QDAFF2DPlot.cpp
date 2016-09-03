@@ -483,7 +483,7 @@ void QDAFF2DPlot::DrawGraph(int recordIndex)
 					text = QString("Amplitude: ").append(QString::number(coeffs[j])).append("\nSample Time: ").append(QString::number((j)*indexValueRatio));
 					m_vvpPoints[i][j] = new QGraphicsPoint(text, m_vvpGraphs[i][j]->line().x1(), m_vvpGraphs[i][j]->line().y1(), m_iPointDiameter);
 				}
-				int j = m_vvpGraphs[i].size();
+				size_t j = m_vvpGraphs[i].size();
 				text = QString("Amplitude: ").append(QString::number(coeffs[j])).append("\nSample Time: ").append(QString::number((j)*indexValueRatio));
 				m_vvpPoints[i][j] = new QGraphicsPoint(text, m_vvpGraphs[i][j-1]->line().x2(), m_vvpGraphs[i][j-1]->line().y2(), m_iPointDiameter);
 				for (int j = 0; j < m_vvpPoints[i].size(); j++)
@@ -632,7 +632,7 @@ void QDAFF2DPlot::keyReleaseEvent(QKeyEvent * event)
 void QDAFF2DPlot::keyPressEvent(QKeyEvent * event)
 {
 	int key = event->key();
-	switch (event->key())
+    switch( key )
 	{
 	case 16777249: //Ctrl Key
 	{

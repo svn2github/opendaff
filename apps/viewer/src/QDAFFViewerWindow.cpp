@@ -85,8 +85,14 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	connect( this, SIGNAL( SignalThetaChanged( double ) ), ui->doubleSpinBox_Theta, SLOT( setValue( double ) ) );
 	connect( this, SIGNAL( SignalPhiAndThetaOutOfBounds( bool ) ), this, SLOT( SetPhiAndThetaOutOfBoundsIndicator( bool ) ) );
 
-	// Screenshots
+
+	// 2D settings
+
+	// 3D settings
 	connect( this, SIGNAL( SignalExportScreenshotPNG( QString ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ExportScreenshotPNG( QString ) ) );
+	connect( ui->checkBox_3DSettings_CoordinateAssistance, SIGNAL( clicked( bool ) ), ui->DAFF3DPlot_VTKWidget, SLOT( SetCoordinateAssistanceEnabled( bool ) ) );
+	connect( ui->checkBox_3DSettings_SelectionIndicator, SIGNAL( clicked( bool ) ), ui->DAFF3DPlot_VTKWidget, SLOT( SetDirectionIndicatorEnabled( bool ) ) );
+//	connect( ui->checkBox_3DSettings_DirectionIndicator, SIGNAL( clicked( bool ) ), ui->DAFF3DPlot_VTKWidget, SLOT( SetViewUpArrowsEnabled( bool ) ) );
 
 	ui->DAFFStatusBar->showMessage( "No DAFF file loaded." );
 
