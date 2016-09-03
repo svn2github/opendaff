@@ -575,8 +575,8 @@ font: 75 12pt &quot;Calibri&quot;;</string>
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <layout class="QGridLayout" name="gridLayout">
-           <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="5">
+           <item>
             <widget class="QDAFF2DPlot" name="graphicsView_2DDAFFPlot"/>
            </item>
           </layout>
@@ -608,9 +608,18 @@ font: 75 12pt &quot;Calibri&quot;;</string>
      <addaction name="actionRecent_Clear"/>
      <addaction name="separator"/>
     </widget>
+    <widget class="QMenu" name="menuExport">
+     <property name="title">
+      <string>Export</string>
+     </property>
+     <addaction name="actionExport2DPlot"/>
+     <addaction name="actionExport3DPlot"/>
+    </widget>
     <addaction name="actionOpen"/>
     <addaction name="actionClose"/>
     <addaction name="menuRecent"/>
+    <addaction name="separator"/>
+    <addaction name="menuExport"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -663,9 +672,31 @@ font: 75 12pt &quot;Calibri&quot;;</string>
     <addaction name="actionDownload"/>
     <addaction name="actionCreate"/>
    </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <widget class="QMenu" name="menu2D_plot">
+     <property name="title">
+      <string>2D plot</string>
+     </property>
+     <addaction name="action2DShowAllChannels"/>
+    </widget>
+    <widget class="QMenu" name="menu3D_plot">
+     <property name="title">
+      <string>3D plot</string>
+     </property>
+     <addaction name="action3DShowArrows"/>
+     <addaction name="action3DShowPoles"/>
+     <addaction name="actionShowCircles"/>
+    </widget>
+    <addaction name="menu2D_plot"/>
+    <addaction name="menu3D_plot"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuContent"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuSettings"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="DAFFStatusBar"/>
@@ -862,6 +893,78 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    </property>
    <property name="shortcut">
     <string>R, C</string>
+   </property>
+  </action>
+  <action name="actionExport3DPlot">
+   <property name="text">
+    <string>3D plot image</string>
+   </property>
+   <property name="shortcut">
+    <string>E, 3</string>
+   </property>
+  </action>
+  <action name="actionExport2DPlot">
+   <property name="text">
+    <string>2D plot image</string>
+   </property>
+   <property name="shortcut">
+    <string>E, 2</string>
+   </property>
+  </action>
+  <action name="action2DShowAllChannels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show all channels</string>
+   </property>
+   <property name="shortcut">
+    <string>=, A</string>
+   </property>
+  </action>
+  <action name="action3DShowArrows">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show arrows</string>
+   </property>
+   <property name="shortcut">
+    <string>=, R</string>
+   </property>
+  </action>
+  <action name="action3DShowPoles">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show poles</string>
+   </property>
+   <property name="shortcut">
+    <string>=, P</string>
+   </property>
+  </action>
+  <action name="actionShowCircles">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show circles</string>
+   </property>
+   <property name="shortcut">
+    <string>=, C</string>
    </property>
   </action>
  </widget>

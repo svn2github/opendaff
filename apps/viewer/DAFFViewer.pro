@@ -15,7 +15,8 @@ TEMPLATE = app
 SOURCES += \
     src/DAFFViewer.cpp \
     src/QDAFFViewerWindow.cpp \
-    src/QDAFF2DPlot.cpp
+    src/QDAFF2DPlot.cpp \
+    src/QDAFFVTKWidget.cpp 
 
 HEADERS  += \
     src/QDAFF2DPlot.h \
@@ -24,10 +25,10 @@ HEADERS  += \
     src/QDAFFPropertiesTable.h \
     src/QDAFFHeaderGroupBox.h\
     src/QDAFFVTKWidget.h \
-    src/QDAFF2DPlot.h
+    src/QDAFF2DPlot.h 
 
 FORMS    += \
-    ui/QDAFFViewerWindow.ui
+    ui/QDAFFViewerWindow.ui 
 
 INCLUDEPATH += src
 

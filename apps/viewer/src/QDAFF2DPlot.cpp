@@ -392,7 +392,6 @@ void QDAFF2DPlot::DrawGraph(int recordIndex)
 		DAFFContentMS* pContent = dynamic_cast< DAFFContentMS* >(m_pReader->getContent());
 		float amplitudePixelRatio = m_iYAxisLength / pContent->getOverallMagnitudeMaximum();
 		float mag1;
-		QInfoBox* box;
 		QString text;
 		m_vvpGraphs = std::vector<std::vector<QGraphicsLineItem*>>(pContent->getProperties()->getNumberOfChannels());
 		m_vvpPoints = std::vector<std::vector<QGraphicsPoint*>>(pContent->getProperties()->getNumberOfChannels());
@@ -635,9 +634,9 @@ void QDAFF2DPlot::keyPressEvent(QKeyEvent * event)
     switch( key )
 	{
 	case 16777249: //Ctrl Key
-	{
-		m_bScrollHorizontally = false;
-	}
+        {
+            m_bScrollHorizontally = false;
+        }
 	}
 	event->accept();
 }

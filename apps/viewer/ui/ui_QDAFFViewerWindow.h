@@ -26,8 +26,6 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
@@ -64,6 +62,12 @@ public:
     QAction *actionIncrease_beta;
     QAction *actionDecrease_beta;
     QAction *actionRecent_Clear;
+    QAction *actionExport3DPlot;
+    QAction *actionExport2DPlot;
+    QAction *action2DShowAllChannels;
+    QAction *action3DShowArrows;
+    QAction *action3DShowPoles;
+    QAction *actionShowCircles;
     QWidget *DAFFCentralWidget;
     QHBoxLayout *horizontalLayout_2;
     QHBoxLayout *horizontalLayout;
@@ -86,10 +90,6 @@ public:
     QFrame *frame_3DPlot;
     QHBoxLayout *horizontalLayout_3;
     QDAFFVTKWidget *DAFF3DPlot_VTKWidget;
-    QFrame *frame_3DSettings;
-    QVBoxLayout *verticalLayout_5;
-    QPushButton *pushButton_3DScreenshot;
-    QSpacerItem *verticalSpacer;
     QHBoxLayout *horizontalLayout_InteractionPanel;
     QGroupBox *groupBox_ObjectView;
     QGridLayout *gridLayout_3;
@@ -118,16 +118,20 @@ public:
     QLabel *label_12;
     QSpinBox *spinBox_ChannelIndex;
     QFrame *frame_2DPlot;
-    QGridLayout *gridLayout;
+    QHBoxLayout *horizontalLayout_4;
     QDAFF2DPlot *graphicsView_2DDAFFPlot;
     QMenuBar *DAFFMenuBar;
     QMenu *menuFile;
     QMenu *menuRecent;
+    QMenu *menuExport;
     QMenu *menuAbout;
     QMenu *menuContent;
     QMenu *menuObject_view;
     QMenu *menuData_view;
     QMenu *menuEdit;
+    QMenu *menuSettings;
+    QMenu *menu2D_plot;
+    QMenu *menu3D_plot;
     QStatusBar *DAFFStatusBar;
 
     void setupUi(QMainWindow *DAFFViewer)
@@ -181,6 +185,26 @@ public:
         actionDecrease_beta->setObjectName(QStringLiteral("actionDecrease_beta"));
         actionRecent_Clear = new QAction(DAFFViewer);
         actionRecent_Clear->setObjectName(QStringLiteral("actionRecent_Clear"));
+        actionExport3DPlot = new QAction(DAFFViewer);
+        actionExport3DPlot->setObjectName(QStringLiteral("actionExport3DPlot"));
+        actionExport2DPlot = new QAction(DAFFViewer);
+        actionExport2DPlot->setObjectName(QStringLiteral("actionExport2DPlot"));
+        action2DShowAllChannels = new QAction(DAFFViewer);
+        action2DShowAllChannels->setObjectName(QStringLiteral("action2DShowAllChannels"));
+        action2DShowAllChannels->setCheckable(true);
+        action2DShowAllChannels->setChecked(true);
+        action3DShowArrows = new QAction(DAFFViewer);
+        action3DShowArrows->setObjectName(QStringLiteral("action3DShowArrows"));
+        action3DShowArrows->setCheckable(true);
+        action3DShowArrows->setChecked(true);
+        action3DShowPoles = new QAction(DAFFViewer);
+        action3DShowPoles->setObjectName(QStringLiteral("action3DShowPoles"));
+        action3DShowPoles->setCheckable(true);
+        action3DShowPoles->setChecked(true);
+        actionShowCircles = new QAction(DAFFViewer);
+        actionShowCircles->setObjectName(QStringLiteral("actionShowCircles"));
+        actionShowCircles->setCheckable(true);
+        actionShowCircles->setChecked(true);
         DAFFCentralWidget = new QWidget(DAFFViewer);
         DAFFCentralWidget->setObjectName(QStringLiteral("DAFFCentralWidget"));
         DAFFCentralWidget->setEnabled(true);
@@ -317,26 +341,7 @@ public:
 
         horizontalLayout_3->addWidget(DAFF3DPlot_VTKWidget);
 
-        frame_3DSettings = new QFrame(frame_3DPlot);
-        frame_3DSettings->setObjectName(QStringLiteral("frame_3DSettings"));
-        frame_3DSettings->setFrameShape(QFrame::NoFrame);
-        verticalLayout_5 = new QVBoxLayout(frame_3DSettings);
-        verticalLayout_5->setSpacing(6);
-        verticalLayout_5->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
-        pushButton_3DScreenshot = new QPushButton(frame_3DSettings);
-        pushButton_3DScreenshot->setObjectName(QStringLiteral("pushButton_3DScreenshot"));
-
-        verticalLayout_5->addWidget(pushButton_3DScreenshot);
-
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        verticalLayout_5->addItem(verticalSpacer);
-
-
-        horizontalLayout_3->addWidget(frame_3DSettings);
-
-        horizontalLayout_3->setStretch(0, 1);
+        horizontalLayout_3->setStretch(0, 5);
 
         layout_Visualization->addWidget(frame_3DPlot);
 
@@ -531,15 +536,16 @@ public:
         frame_2DPlot->setObjectName(QStringLiteral("frame_2DPlot"));
         frame_2DPlot->setFrameShape(QFrame::StyledPanel);
         frame_2DPlot->setFrameShadow(QFrame::Raised);
-        gridLayout = new QGridLayout(frame_2DPlot);
-        gridLayout->setSpacing(6);
-        gridLayout->setContentsMargins(11, 11, 11, 11);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        horizontalLayout_4 = new QHBoxLayout(frame_2DPlot);
+        horizontalLayout_4->setSpacing(6);
+        horizontalLayout_4->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
         graphicsView_2DDAFFPlot = new QDAFF2DPlot(frame_2DPlot);
         graphicsView_2DDAFFPlot->setObjectName(QStringLiteral("graphicsView_2DDAFFPlot"));
 
-        gridLayout->addWidget(graphicsView_2DDAFFPlot, 0, 0, 1, 1);
+        horizontalLayout_4->addWidget(graphicsView_2DDAFFPlot);
 
+        horizontalLayout_4->setStretch(0, 5);
 
         layout_Visualization->addWidget(frame_2DPlot);
 
@@ -561,6 +567,8 @@ public:
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuRecent = new QMenu(menuFile);
         menuRecent->setObjectName(QStringLiteral("menuRecent"));
+        menuExport = new QMenu(menuFile);
+        menuExport->setObjectName(QStringLiteral("menuExport"));
         menuAbout = new QMenu(DAFFMenuBar);
         menuAbout->setObjectName(QStringLiteral("menuAbout"));
         menuContent = new QMenu(DAFFMenuBar);
@@ -571,6 +579,12 @@ public:
         menuData_view->setObjectName(QStringLiteral("menuData_view"));
         menuEdit = new QMenu(DAFFMenuBar);
         menuEdit->setObjectName(QStringLiteral("menuEdit"));
+        menuSettings = new QMenu(DAFFMenuBar);
+        menuSettings->setObjectName(QStringLiteral("menuSettings"));
+        menu2D_plot = new QMenu(menuSettings);
+        menu2D_plot->setObjectName(QStringLiteral("menu2D_plot"));
+        menu3D_plot = new QMenu(menuSettings);
+        menu3D_plot->setObjectName(QStringLiteral("menu3D_plot"));
         DAFFViewer->setMenuBar(DAFFMenuBar);
         DAFFStatusBar = new QStatusBar(DAFFViewer);
         DAFFStatusBar->setObjectName(QStringLiteral("DAFFStatusBar"));
@@ -579,14 +593,19 @@ public:
         DAFFMenuBar->addAction(menuFile->menuAction());
         DAFFMenuBar->addAction(menuContent->menuAction());
         DAFFMenuBar->addAction(menuEdit->menuAction());
+        DAFFMenuBar->addAction(menuSettings->menuAction());
         DAFFMenuBar->addAction(menuAbout->menuAction());
         menuFile->addAction(actionOpen);
         menuFile->addAction(actionClose);
         menuFile->addAction(menuRecent->menuAction());
         menuFile->addSeparator();
+        menuFile->addAction(menuExport->menuAction());
+        menuFile->addSeparator();
         menuFile->addAction(actionQuit);
         menuRecent->addAction(actionRecent_Clear);
         menuRecent->addSeparator();
+        menuExport->addAction(actionExport2DPlot);
+        menuExport->addAction(actionExport3DPlot);
         menuAbout->addAction(actionAboutDAFFViewer);
         menuAbout->addAction(actionAboutOpenDAFF);
         menuAbout->addAction(actionOpenDAFFWebsite);
@@ -611,6 +630,12 @@ public:
         menuData_view->addAction(actionDecrease_beta);
         menuEdit->addAction(actionDownload);
         menuEdit->addAction(actionCreate);
+        menuSettings->addAction(menu2D_plot->menuAction());
+        menuSettings->addAction(menu3D_plot->menuAction());
+        menu2D_plot->addAction(action2DShowAllChannels);
+        menu3D_plot->addAction(action3DShowArrows);
+        menu3D_plot->addAction(action3DShowPoles);
+        menu3D_plot->addAction(actionShowCircles);
 
         retranslateUi(DAFFViewer);
 
@@ -689,6 +714,18 @@ public:
         actionRecent_Clear->setToolTip(QApplication::translate("DAFFViewer", "Clear recent DAFF file history", 0));
 #endif // QT_NO_TOOLTIP
         actionRecent_Clear->setShortcut(QApplication::translate("DAFFViewer", "R, C", 0));
+        actionExport3DPlot->setText(QApplication::translate("DAFFViewer", "3D plot image", 0));
+        actionExport3DPlot->setShortcut(QApplication::translate("DAFFViewer", "E, 3", 0));
+        actionExport2DPlot->setText(QApplication::translate("DAFFViewer", "2D plot image", 0));
+        actionExport2DPlot->setShortcut(QApplication::translate("DAFFViewer", "E, 2", 0));
+        action2DShowAllChannels->setText(QApplication::translate("DAFFViewer", "Show all channels", 0));
+        action2DShowAllChannels->setShortcut(QApplication::translate("DAFFViewer", "=, A", 0));
+        action3DShowArrows->setText(QApplication::translate("DAFFViewer", "Show arrows", 0));
+        action3DShowArrows->setShortcut(QApplication::translate("DAFFViewer", "=, R", 0));
+        action3DShowPoles->setText(QApplication::translate("DAFFViewer", "Show poles", 0));
+        action3DShowPoles->setShortcut(QApplication::translate("DAFFViewer", "=, P", 0));
+        actionShowCircles->setText(QApplication::translate("DAFFViewer", "Show circles", 0));
+        actionShowCircles->setShortcut(QApplication::translate("DAFFViewer", "=, C", 0));
 #ifndef QT_NO_TOOLTIP
         groupBox_Reader->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>The DAFF <span style=\" font-weight:600;\">reader</span> opens a DAFF file and gives access to general information like file name, content type, file format version and global metadata.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
@@ -704,7 +741,6 @@ public:
         groupBox_Properties->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p>The <span style=\" font-weight:600;\">properties</span> of a DAFF file are definitions of the file that describe the content in detail. Here, the resolution and ranges for Alpha and Beta angles are stored as well the orientation of the data view that has to be applied by DAFF to rotate from the user (object) view. Also the number of channels, the quantization of the data sets and the total number of data points can be queried.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         groupBox_Properties->setTitle(QApplication::translate("DAFFViewer", "DAFF Properties", 0));
-        pushButton_3DScreenshot->setText(QApplication::translate("DAFFViewer", "Screenshot", 0));
 #ifndef QT_NO_TOOLTIP
         groupBox_ObjectView->setToolTip(QApplication::translate("DAFFViewer", "<html><head/><body><p><span style=\" font-weight:600;\">Views</span> on directional contents are a central property of DAFF. A main problem of spatial content is that everyone uses a representation and coordinate system (a <span style=\" font-style:italic;\">view</span>) that naturally appears to be the best. Therefore a variety of views are in place and a debate about pros and cons is meaningless. DAFF does not claim to solve this circumstance, but provides a conversion between the so called <span style=\" font-style:italic;\">user (or object) view</span> and the <span style=\" font-style:italic;\">data view</span>. The <span style=\" font-weight:600;\">user view</span> is commonly used for HRTFs where the frontal direction is at angles (0\302\260, 0\302\260). It is also called object view because it is the projection of oneself into the object (i.e. looking through the 'eyes' of the dummy head). Here, DAFF uses the term Phi and Theta for azimuth and elevation angle. No matter how the underlying data is orien"
                         "ted, this view is meant for users that require to get the right direction without further knowledge on how the data is actually formatted.</p><p>The data view, in contrast, is more mathematically motivated and is used when creating DAFF content. During creation of DAFF content and to define the rotation of the data into the user (object) view, an orientation can be added that DAFF will apply automatically, if the <span style=\" font-style:italic;\">user view</span> is used.</p></body></html>", 0));
@@ -758,11 +794,15 @@ public:
         label_12->setText(QApplication::translate("DAFFViewer", "Channel", 0));
         menuFile->setTitle(QApplication::translate("DAFFViewer", "File", 0));
         menuRecent->setTitle(QApplication::translate("DAFFViewer", "Recent", 0));
+        menuExport->setTitle(QApplication::translate("DAFFViewer", "Export", 0));
         menuAbout->setTitle(QApplication::translate("DAFFViewer", "About", 0));
         menuContent->setTitle(QApplication::translate("DAFFViewer", "Edit", 0));
         menuObject_view->setTitle(QApplication::translate("DAFFViewer", "Object view", 0));
         menuData_view->setTitle(QApplication::translate("DAFFViewer", "Data view", 0));
         menuEdit->setTitle(QApplication::translate("DAFFViewer", "Content", 0));
+        menuSettings->setTitle(QApplication::translate("DAFFViewer", "Settings", 0));
+        menu2D_plot->setTitle(QApplication::translate("DAFFViewer", "2D plot", 0));
+        menu3D_plot->setTitle(QApplication::translate("DAFFViewer", "3D plot", 0));
     } // retranslateUi
 
 };

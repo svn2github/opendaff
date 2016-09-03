@@ -68,7 +68,7 @@ public:
 		delete m_pBox;
 	}
 
-	void QGraphicsPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+    void QGraphicsPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget* )
 	{
 		painter->setBrush(QBrush(Qt::black));
 		painter->drawEllipse(-m_iDiameter / 2, -m_iDiameter / 2, m_iDiameter, m_iDiameter);
@@ -81,7 +81,7 @@ public:
 
 protected:
 
-	void hoverEnterEvent(QGraphicsSceneHoverEvent * event)
+    void hoverEnterEvent( QGraphicsSceneHoverEvent* )
 	{
 		if (m_pBox == nullptr)
 			m_pBox = new QInfoBox(m_oText);	
@@ -90,7 +90,7 @@ protected:
 		scene()->addItem(m_pBox);
 	}
 
-	void hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent* )
 	{
 		scene()->removeItem(m_pBox);
 	}

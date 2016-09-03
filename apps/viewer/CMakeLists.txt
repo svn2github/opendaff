@@ -24,6 +24,7 @@ set( OPENDAFF_DAFFVIEWER_SOURCES
 	"src/QDAFFMetadataTable.h"
 	"src/QDAFFPropertiesTable.h"
 	"src/QDAFFVTKWidget.h"
+	"src/QDAFFVTKWidget.cpp"
 	"src/QDAFF2DPlot.h"
 	"src/QDAFF2DPlot.cpp"
 	)
