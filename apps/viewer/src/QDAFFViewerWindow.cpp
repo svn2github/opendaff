@@ -31,7 +31,8 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	, m_dPhiThetaIncrementDeg( 1.0f )
 {
 	ui->setupUi( this );
-    showMaximized(); // does not work with QGraphicsView
+
+	RestoreWindowSize();
 
 	// Read DAFF header conns
 	connect( this, SIGNAL( SignalReadDAFF( const DAFFReader* ) ), ui->groupBox_Reader, SLOT( ReadDAFF( const DAFFReader* ) ) );
@@ -109,8 +110,8 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 
 QDAFFViewerWindow::~QDAFFViewerWindow()
 {
-    m_qSettings.setValue( "geometry", saveGeometry() );
-    m_qSettings.setValue( "windowState", saveState() );
+	m_qSettings.setValue( "WindowGeometry", saveGeometry() );
+	m_qSettings.setValue( "WindowState", saveState() );
 
 	m_qSettings.setValue( "PhiThetaIncrementDeg", m_dPhiThetaIncrementDeg );
 
@@ -120,6 +121,12 @@ QDAFFViewerWindow::~QDAFFViewerWindow()
         m_pDAFFReader->closeFile();
 
     delete m_pDAFFReader;
+}
+
+void QDAFFViewerWindow::RestoreWindowSize()
+{
+	restoreGeometry( m_qSettings.value( "WindowGeometry" ).toByteArray() );
+	restoreState( m_qSettings.value( "WindowState" ).toByteArray() );
 }
 
 void QDAFFViewerWindow::UpdateRecentFilesActions()

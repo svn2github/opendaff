@@ -125,6 +125,8 @@ private:
 	int m_iShowChannel; //!< Requested channel
 	int m_iShowDAFFView; //!< Show DAFF object or data view
 	int m_iShowRecordIndex; //!< Show DAFF record index / data of file
+
+	void RestoreWindowSize();
 };
 
 #endif // QDAFFVIEWERWINDOW_H
