@@ -1,0 +1,14 @@
+<RCC>
+	<qresource prefix="/icons">
+		<!-- <file>DAFFTool_Icon.ico</file> -->
+		<file>DAFFViewer_Icon.gif</file>
+		<file>DAFFViewer_Icon_File.ico</file>
+		<file>DAFFViewer_Window_Icon_16x16.gif</file>
+		<file>DAFFViewer_Window_Icon_16x16.png</file>
+		<file>OpenDAFF_Icon.ico</file>
+	</qresource>
+	<qresource prefix="/banners">
+		<file>DAFFViewer_Banner.gif</file>
+		<file>DAFFViewer_Banner.jpg</file>
+	</qresource>
+</RCC>

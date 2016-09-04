@@ -1,5 +1,7 @@
 cmake_minimum_required( VERSION 2.9 )
 
+project( OpenDAFF )
+
 set( CMAKE_AUTOMOC ON )
 
 find_package( VTK REQUIRED )
@@ -16,7 +18,6 @@ include_directories( "${FFTW_INCLUDE_DIR}" )
 include_directories( "${SNDFILE_INCLUDE_DIR}" )
 
 set( OPENDAFF_DAFFVIEWER_SOURCES
-	"res/DAFFViewerRes.h"
 	"src/DAFFViewer.cpp"
 	"src/QDAFFViewerWindow.cpp"
 	"src/QDAFFViewerWindow.h"
@@ -27,19 +28,18 @@ set( OPENDAFF_DAFFVIEWER_SOURCES
 	"src/QDAFFVTKWidget.cpp"
 	"src/QDAFF2DPlot.h"
 	"src/QDAFF2DPlot.cpp"
+	"ui/QDAFFViewerWindow.ui"
 	)
 
-# Add ui include for VS2012
-if( MSVC )
-	list( APPEND OPENDAFF_DAFFVIEWER_SOURCES "ui/ui_QDAFFViewerWindow.h" )
-	include_directories( "ui" )
-endif( MSVC )
+qt5_wrap_ui( "ui_QDAFFViewerWindow.h" "ui/QDAFFViewerWindow.ui" ) # Qt UI form compiler
+qt5_add_resources( OPENDAFF_DAFFVIEWER_RESOURCES "res/QDAFFViewer.qrc" ) # Qt resources
+include_directories( "${CMAKE_BINARY_DIR}/apps/viewer" ) # Gt UI form compiler generates files into this folder
 
-add_executable( DAFFViewer ${OPENDAFF_DAFFVIEWER_SOURCES} )
+add_executable( DAFFViewer ${OPENDAFF_DAFFVIEWER_SOURCES} ${OPENDAFF_DAFFVIEWER_RESOURCES} )
 target_link_libraries( DAFFViewer DAFFViz DAFF ${FFTW_LIBRARIES} ${SNDFILE_LIBRARIES} ${VTK_LIBRARIES} Qt5::Widgets Qt5::Svg Qt5::Core )
 install( TARGETS DAFFViewer RUNTIME DESTINATION "bin" )
 
-# Set PATH to run from VS2012
+# Set PATH to run DAFFFViewer from Visual Studio
 if( MSVC )
 	set( USER_FILE DAFFViewer.vcxproj.user )
 	set( OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/${USER_FILE} )

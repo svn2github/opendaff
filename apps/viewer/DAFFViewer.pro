@@ -4,6 +4,14 @@
 #
 #-------------------------------------------------
 
+#-------------------------------------------------
+#
+# DEPRECATED! This project file was only used 
+# during GUI development. Please import OpenDAFF
+# into Qt Creator with the CMake importer.
+#
+#-------------------------------------------------
+
 QT       += core gui svg
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
