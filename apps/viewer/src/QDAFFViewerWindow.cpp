@@ -823,14 +823,15 @@ void QDAFFViewerWindow::on_actionExport2DPlot_triggered()
 		QString sExportFilePath = dialog.GetExportPath();
 		bool bIncludeAllChannels = dialog.ExportAllChannels();
 		bool bShowDataPointDots = dialog.ShowDataPointDots();
+		float fScalingFactor = dialog.GetScalingFactor();
 		if( dialog.GetExportType() == QDAFFDialogExport2DPlot::EXPORT_TYPE_PNG )
 		{
-			ui->graphicsView_2DDAFFPlot->ExportImagePNG( sExportFilePath, bIncludeAllChannels, bShowDataPointDots );
+			ui->graphicsView_2DDAFFPlot->ExportImagePNG( sExportFilePath, fScalingFactor, bIncludeAllChannels, bShowDataPointDots );
 			ui->DAFFStatusBar->showMessage( "Exported plot to " + sExportFilePath );
 		}
 		else if( dialog.GetExportType() == QDAFFDialogExport2DPlot::EXPORT_TYPE_SVG )
 		{
-			ui->graphicsView_2DDAFFPlot->ExportImageSVG( sExportFilePath, bIncludeAllChannels, bShowDataPointDots );
+			ui->graphicsView_2DDAFFPlot->ExportImageSVG( sExportFilePath, fScalingFactor, bIncludeAllChannels, bShowDataPointDots );
 			ui->DAFFStatusBar->showMessage( "Exported plot to " + sExportFilePath );
 		}
 		else

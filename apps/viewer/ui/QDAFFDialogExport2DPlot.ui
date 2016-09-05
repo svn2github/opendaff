@@ -7,31 +7,35 @@
     <x>0</x>
     <y>0</y>
     <width>609</width>
-    <height>94</height>
+    <height>144</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="1">
-    <widget class="QPushButton" name="pushButton_Browse">
-     <property name="styleSheet">
-      <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
-     </property>
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLineEdit" name="lineEdit_ExportPath">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_Browse">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Select</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item row="0" column="0">
-    <widget class="QLineEdit" name="lineEdit_ExportPath">
-     <property name="styleSheet">
-      <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
+   <item>
     <widget class="QCheckBox" name="checkBox_IncludeAllChannels">
      <property name="styleSheet">
       <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -44,7 +48,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item>
     <widget class="QCheckBox" name="checkBox_ShowDataPointDots">
      <property name="styleSheet">
       <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -57,7 +61,31 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
+     <item>
+      <widget class="QDoubleSpinBox" name="doubleSpinBox_ScalingFactor">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+       <property name="minimum">
+        <double>1.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Scaling factor</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QPushButton" name="pushButton_Export">
      <property name="styleSheet">
       <string notr="true">font: 12pt &quot;Calibri&quot;;</string>

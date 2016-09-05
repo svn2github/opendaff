@@ -29,6 +29,7 @@ public:
 	QString GetExportPath() const;
 	bool ExportAllChannels() const;
 	bool ShowDataPointDots() const;
+	float GetScalingFactor() const;
 	int GetExportType() const;
 
 private slots:

@@ -21,6 +21,9 @@ QDAFFDialogExport2DPlot::QDAFFDialogExport2DPlot(QWidget *parent, const QDir& oB
 	iState = Qt::CheckState( m_qSettings.value( "Export2DPlot/ShowDataPointDots", Qt::Checked ).toInt() );
 	ui->checkBox_ShowDataPointDots->setCheckState( iState );
 
+	float fScalingFactor = m_qSettings.value( "Export2DPlot/ScalingFactor", 1.0f ).toFloat();
+	ui->doubleSpinBox_ScalingFactor->setValue( fScalingFactor );
+
     if( m_oBasePath.exists() )
     {
 		if( !m_oBasePath.isAbsolute() )
@@ -41,6 +44,7 @@ QDAFFDialogExport2DPlot::~QDAFFDialogExport2DPlot()
 {
 	m_qSettings.setValue( "Export2DPlot/IncludeAllChannels", ui->checkBox_IncludeAllChannels->checkState() );
 	m_qSettings.setValue( "Export2DPlot/ShowDataPointDots", ui->checkBox_ShowDataPointDots->checkState() );
+	m_qSettings.setValue( "Export2DPlot/ScalingFactor", ui->doubleSpinBox_ScalingFactor->value() );
 	m_qSettings.setValue( "Export2DPlot/FileType", GetExportType() );
     delete ui;
 }
@@ -71,6 +75,11 @@ bool QDAFFDialogExport2DPlot::ShowDataPointDots() const
 		return false;
 	else
 		return true;
+}
+
+float QDAFFDialogExport2DPlot::GetScalingFactor() const
+{
+	return ui->doubleSpinBox_ScalingFactor->value();
 }
 
 int QDAFFDialogExport2DPlot::GetExportType() const
