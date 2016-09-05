@@ -27,14 +27,14 @@
 class QInfoBox :public QGraphicsTextItem
 {
 public:
-	QInfoBox(QString text) :QGraphicsTextItem(text){}
+	inline QInfoBox(QString text) :QGraphicsTextItem(text){}
 
-	QRectF boundingRect() const
+	inline QRectF boundingRect() const
 	{
 		return QGraphicsTextItem::boundingRect().adjusted(-2, -2, +2, +2);
 	}
 
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+	inline void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 	{
 		painter->setPen(Qt::black);
 		painter->setBrush(Qt::white);
@@ -53,7 +53,7 @@ public:
 	m_pBox = box;
 	setAcceptHoverEvents(true);
 	}*/
-	QGraphicsPoint(QString text, double x, double y, int diameter)
+	inline QGraphicsPoint(QString text, double x, double y, int diameter)
 	{
 		m_pBox = nullptr;
 		m_oText = text;
@@ -63,25 +63,25 @@ public:
 	}
 
 
-	~QGraphicsPoint()
+	inline ~QGraphicsPoint()
 	{
 		delete m_pBox;
 	}
 
-    void QGraphicsPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget* )
+    inline void QGraphicsPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget* )
 	{
 		painter->setBrush(QBrush(Qt::black));
 		painter->drawEllipse(-m_iDiameter / 2, -m_iDiameter / 2, m_iDiameter, m_iDiameter);
 	}
 
-	QRectF QGraphicsPoint::boundingRect() const
+	inline QRectF QGraphicsPoint::boundingRect() const
 	{
 		return QRectF(-m_iDiameter / 2, -m_iDiameter / 2, m_iDiameter, m_iDiameter);
 	}
 
 protected:
 
-    void hoverEnterEvent( QGraphicsSceneHoverEvent* )
+    inline void hoverEnterEvent( QGraphicsSceneHoverEvent* )
 	{
 		if (m_pBox == nullptr)
 			m_pBox = new QInfoBox(m_oText);	
@@ -90,7 +90,7 @@ protected:
 		scene()->addItem(m_pBox);
 	}
 
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent* )
+    inline void hoverLeaveEvent(QGraphicsSceneHoverEvent* )
 	{
 		scene()->removeItem(m_pBox);
 	}
@@ -108,6 +108,8 @@ class QDAFF2DPlot : public QGraphicsView
 
 public:
 	QDAFF2DPlot( QWidget *parent = Q_NULLPTR );
+	void ExportImagePNG( QFile oTarget, float fScaling = 1.0f, bool bShowAllChannels = false, bool bShowDataPointDots = true );
+	void ExportImageSVG( QFile oTarget, float fScaling = 1.0f, bool bShowAllChannels = false, bool bShowDataPointDots = true );
 
 public slots:
      void ReadDAFF( const DAFFReader* pReader );
@@ -123,14 +125,12 @@ private:
 	void showEvent(QShowEvent * event);
 	void wheelEvent(QWheelEvent * event);
 
-private:
 	const DAFFReader* m_pReader;
 
 	//help Functions
 	void Draw(bool showAllChannels = false,bool showDots = true);
 	void DrawCoordinateSystem();
 	void DrawGraph(int);
-	void ExportImage(QString, float, bool svg = false, bool showAllChannels = false, bool showDots = true);
 
 	void ShowChannel(int iChannelIndex, bool bShowAllChannels = false, bool showDots = true);
 

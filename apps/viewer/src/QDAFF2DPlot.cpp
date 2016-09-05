@@ -40,7 +40,6 @@ void QDAFF2DPlot::ReadDAFF( const DAFFReader* pReader )
 
 	m_pReader = pReader;	
 	Draw();
-	ExportImage("C:\\Users\\Nigel\\Pictures\\Saved Pictures\\test1.svg",4.0, true ,true, false);
 }
 
 void QDAFF2DPlot::CloseDAFF()
@@ -519,29 +518,41 @@ void QDAFF2DPlot::DrawGraph(int recordIndex)
 	}
 }
 
-void QDAFF2DPlot::ExportImage(QString filePath, float factor, bool svg, bool showAllChannels, bool showDots){
+void QDAFF2DPlot::ExportImagePNG( QFile filePath, float factor, bool showAllChannels, bool showDots )
+{
 	m_iSceneWidth *= factor;
 	m_iSceneHeight *= factor;
-	scene()->setSceneRect(0, 0, m_iSceneWidth, m_iSceneHeight);
-	Draw(showAllChannels, showDots);
-	if (svg)
-	{
-		QSvgGenerator generator;
-		generator.setFileName(filePath);
-		generator.setSize(QSize(m_iSceneWidth, m_iSceneHeight));
-		QPainter p;
-		p.begin(&generator);
-		scene()->render(&p);
-		p.end();
-	}
-	else
-	{
-		QImage img(m_iSceneWidth, m_iSceneHeight, QImage::Format_ARGB32_Premultiplied);
-		QPainter p(&img);
-		scene()->render(&p);
-		p.end();
-		img.mirrored(false, true).save(filePath);
-	}
+	scene()->setSceneRect( 0, 0, m_iSceneWidth, m_iSceneHeight );
+	Draw( showAllChannels, showDots );
+
+	QImage img( m_iSceneWidth, m_iSceneHeight, QImage::Format_ARGB32_Premultiplied );
+	QPainter p( &img );
+	scene()->render( &p );
+	p.end();
+	img.mirrored( false, true ).save( filePath.fileName() );
+	
+	m_iSceneWidth /= factor;
+	m_iSceneHeight /= factor;
+
+	Draw();
+}
+
+void QDAFF2DPlot::ExportImageSVG( QFile filePath, float factor, bool showAllChannels, bool showDots )
+{
+	m_iSceneWidth *= factor;
+	m_iSceneHeight *= factor;
+	scene()->setSceneRect( 0, 0, m_iSceneWidth, m_iSceneHeight );
+	Draw( showAllChannels, showDots );
+	
+	QSvgGenerator generator;
+	generator.setFileName( filePath.fileName() );
+	generator.setSize( QSize( m_iSceneWidth, m_iSceneHeight ) );
+	QPainter p;
+	p.begin( &generator );
+	scene()->render( &p );
+	p.end();
+	
+
 	m_iSceneWidth /= factor;
 	m_iSceneHeight /= factor;
 	Draw();
