@@ -108,8 +108,8 @@ class QDAFF2DPlot : public QGraphicsView
 
 public:
 	QDAFF2DPlot( QWidget *parent = Q_NULLPTR );
-	void ExportImagePNG( QFile oTarget, float fScaling = 1.0f, bool bShowAllChannels = false, bool bShowDataPointDots = true );
-	void ExportImageSVG( QFile oTarget, float fScaling = 1.0f, bool bShowAllChannels = false, bool bShowDataPointDots = true );
+	void ExportImagePNG( const QString& sTargetFilePath, float fScaling = 1.0f, bool bShowAllChannels = false, bool bShowDataPointDots = true );
+	void ExportImageSVG( const QString& sTargetFilePath, float fScaling = 1.0f, bool bShowAllChannels = false, bool bShowDataPointDots = true );
 
 public slots:
      void ReadDAFF( const DAFFReader* pReader );

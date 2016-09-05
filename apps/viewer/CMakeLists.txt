@@ -18,7 +18,7 @@ include_directories( "${FFTW_INCLUDE_DIR}" )
 include_directories( "${SNDFILE_INCLUDE_DIR}" )
 
 set( OPENDAFF_DAFFVIEWER_SOURCES
-	"src/DAFFViewer.cpp"
+	"src/QDAFFViewer.cpp"
 	"src/QDAFFViewerWindow.cpp"
 	"src/QDAFFViewerWindow.h"
 	"src/QDAFFHeaderGroupBox.h"
@@ -26,14 +26,21 @@ set( OPENDAFF_DAFFVIEWER_SOURCES
 	"src/QDAFFPropertiesTable.h"
 	"src/QDAFFVTKWidget.h"
 	"src/QDAFFVTKWidget.cpp"
-	"src/QDAFF2DPlot.h"
-	"src/QDAFF2DPlot.cpp"
-	"ui/QDAFFViewerWindow.ui"
+    "src/QDAFF2DPlot.h"
+    "src/QDAFF2DPlot.cpp"
+    "src/QDAFFDialogExport2DPlot.cpp"
+    "src/QDAFFDialogExport2DPlot.h"
+    "ui/QDAFFViewerWindow.ui"
+    "ui/QDAFFDialogExport2DPlot.ui"
 	)
-
-qt5_wrap_ui( "ui_QDAFFViewerWindow.h" "ui/QDAFFViewerWindow.ui" ) # Qt UI form compiler
-qt5_add_resources( OPENDAFF_DAFFVIEWER_RESOURCES "res/QDAFFViewer.qrc" ) # Qt resources
+	
+# Qt UI form compiler
+qt5_wrap_ui( "ui_QDAFFViewerWindow.h" "ui/QDAFFViewerWindow.ui" ) 
+qt5_wrap_ui( "ui_QDAFFDialogExport2DPlot.h" "ui/QDAFFDialogExport2DPlot.ui" )
 include_directories( "${CMAKE_BINARY_DIR}/apps/viewer" ) # Gt UI form compiler generates files into this folder
+
+# Qt resources
+qt5_add_resources( OPENDAFF_DAFFVIEWER_RESOURCES "res/QDAFFViewer.qrc" )
 
 add_executable( DAFFViewer ${OPENDAFF_DAFFVIEWER_SOURCES} ${OPENDAFF_DAFFVIEWER_RESOURCES} )
 target_link_libraries( DAFFViewer DAFFViz DAFF ${FFTW_LIBRARIES} ${SNDFILE_LIBRARIES} ${VTK_LIBRARIES} Qt5::Widgets Qt5::Svg Qt5::Core )

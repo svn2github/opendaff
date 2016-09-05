@@ -518,7 +518,7 @@ void QDAFF2DPlot::DrawGraph(int recordIndex)
 	}
 }
 
-void QDAFF2DPlot::ExportImagePNG( QFile filePath, float factor, bool showAllChannels, bool showDots )
+void QDAFF2DPlot::ExportImagePNG( const QString& filePath, float factor, bool showAllChannels, bool showDots )
 {
 	m_iSceneWidth *= factor;
 	m_iSceneHeight *= factor;
@@ -529,7 +529,7 @@ void QDAFF2DPlot::ExportImagePNG( QFile filePath, float factor, bool showAllChan
 	QPainter p( &img );
 	scene()->render( &p );
 	p.end();
-	img.mirrored( false, true ).save( filePath.fileName() );
+	img.mirrored( false, true ).save( filePath );
 	
 	m_iSceneWidth /= factor;
 	m_iSceneHeight /= factor;
@@ -537,7 +537,7 @@ void QDAFF2DPlot::ExportImagePNG( QFile filePath, float factor, bool showAllChan
 	Draw();
 }
 
-void QDAFF2DPlot::ExportImageSVG( QFile filePath, float factor, bool showAllChannels, bool showDots )
+void QDAFF2DPlot::ExportImageSVG( const QString& filePath, float factor, bool showAllChannels, bool showDots )
 {
 	m_iSceneWidth *= factor;
 	m_iSceneHeight *= factor;
@@ -545,13 +545,12 @@ void QDAFF2DPlot::ExportImageSVG( QFile filePath, float factor, bool showAllChan
 	Draw( showAllChannels, showDots );
 	
 	QSvgGenerator generator;
-	generator.setFileName( filePath.fileName() );
+	generator.setFileName( filePath );
 	generator.setSize( QSize( m_iSceneWidth, m_iSceneHeight ) );
 	QPainter p;
 	p.begin( &generator );
 	scene()->render( &p );
 	p.end();
-	
 
 	m_iSceneWidth /= factor;
 	m_iSceneHeight /= factor;

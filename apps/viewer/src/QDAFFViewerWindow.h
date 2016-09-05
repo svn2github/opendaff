@@ -98,6 +98,8 @@ private slots:
     void on_actionRecent_Clear_triggered();
     void on_pushButton_3DScreenshot_clicked();
 
+    void on_actionExport2DPlot_triggered();
+
 signals:
 	void SignalReadDAFF( const DAFFReader* pReader );
 	void SignalContentLoaded( const DAFFContent* pContent );

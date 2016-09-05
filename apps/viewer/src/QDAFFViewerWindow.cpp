@@ -1,6 +1,7 @@
 #include "QDAFFViewerWindow.h"
 #include <ui_QDAFFViewerWindow.h>
 #include "QDAFFVTKWidget.h"
+#include "QDAFFDialogExport2DPlot.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -799,4 +800,51 @@ void QDAFFViewerWindow::on_pushButton_3DScreenshot_clicked()
 	}
 	emit SignalExportScreenshotPNG( sExportFilePath );
 	ui->DAFFStatusBar->showMessage( "Exported screenshot of 3D plot to file '" + sExportFilePath + "'" );
+}
+
+void QDAFFViewerWindow::on_actionExport2DPlot_triggered()
+{
+
+	if( m_pDAFFReader->isFileOpened() == false )
+	{
+		QErrorMessage qe;
+		QString sError = "Please load a DAFF file before trying to export plots";
+		qe.showMessage( sError );
+		ui->DAFFStatusBar->showMessage( sError );
+		qe.exec();
+		return;
+	}
+
+	QFileInfo oFile( m_pDAFFReader->getFilename().c_str() );    
+    QDAFFDialogExport2DPlot dialog( this, oFile.dir(), oFile.baseName() );
+
+    if( dialog.exec() )
+    {
+		QString sExportFilePath = dialog.GetExportPath();
+		bool bIncludeAllChannels = dialog.ExportAllChannels();
+		bool bShowDataPointDots = dialog.ShowDataPointDots();
+		if( dialog.GetExportType() == QDAFFDialogExport2DPlot::EXPORT_TYPE_PNG )
+		{
+			ui->graphicsView_2DDAFFPlot->ExportImagePNG( sExportFilePath, bIncludeAllChannels, bShowDataPointDots );
+			ui->DAFFStatusBar->showMessage( "Exported plot to " + sExportFilePath );
+		}
+		else if( dialog.GetExportType() == QDAFFDialogExport2DPlot::EXPORT_TYPE_SVG )
+		{
+			ui->graphicsView_2DDAFFPlot->ExportImageSVG( sExportFilePath, bIncludeAllChannels, bShowDataPointDots );
+			ui->DAFFStatusBar->showMessage( "Exported plot to " + sExportFilePath );
+		}
+		else
+		{
+			QErrorMessage qe;
+			QString sError = "Unkown export type, supported types are: svg, png";
+			qe.showMessage( sError );
+			ui->DAFFStatusBar->showMessage( sError );
+			qe.exec();
+			return;
+		}
+    }
+	else
+	{
+		ui->DAFFStatusBar->showMessage( "Export aborted." );
+	}
 }
