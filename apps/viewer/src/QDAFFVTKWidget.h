@@ -42,15 +42,23 @@ private:
 
 public slots:
 
-	void CloseDAFF();
-	void ReadDAFF( const DAFFReader* pReader );
+void ReadDAFF( const DAFFReader* pReader );
+void CloseDAFF();
+
 	void ChangeFrequencyIndex( int iFrequencyIndex );
 	void ChangeChannelIndex( int iChannelIndex );
 	void ChangeAlpha( double dAlphaDeg );
 	void ChangeBeta( double dBetaDeg );
+
 	void ExportScreenshotPNG( QString sFilePath );
-	void SetCoordinateAssistanceEnabled( bool bClicked );
-	void SetDirectionIndicatorEnabled( bool bClicked );
+
+	void SetCoordinateAssistanceVisible( bool );
+	void SetDirectionIndicatorVisible( bool );
+	void SetArrowsVisible( bool );
+	void SetPolesVisible( bool );
+	void SetCirclesVisible( bool ) {};
+	void SetEquatorVisible( bool ) {};
+	void SetMeridianVisible( bool ) {};
 };
 
 #endif // QDAFFVTKWIDGET_H

@@ -118,6 +118,8 @@ public slots:
      void ChangeChannelIndex( int );
      void ChangeFrequencyIndex( int );
 
+	 void SetAllChannelsVisible( bool bVisible );
+
 private:
 	void keyPressEvent(QKeyEvent * event);
 	void keyReleaseEvent(QKeyEvent * event);

@@ -65,7 +65,12 @@ void QDAFF2DPlot::ChangeFrequencyIndex( int iFrequencyIndex )
     Draw();
 }
 
-void QDAFF2DPlot::Draw(bool showAllChannels, bool showDots)
+void QDAFF2DPlot::SetAllChannelsVisible( bool bVisible )
+{
+	ShowChannel( m_iChannelIndex, bVisible );
+}
+
+void QDAFF2DPlot::Draw( bool showAllChannels, bool showDots )
 {
 	if (m_iSceneHeight == 0 || m_iSceneWidth == 0 || m_pReader == nullptr)
 		return;
@@ -577,6 +582,9 @@ void QDAFF2DPlot::ExportImageSVG( const QString& filePath, float factor, bool sh
 
 void QDAFF2DPlot::ShowChannel(int iChannelIndex, bool bShowAllChannels, bool showDots)
 {
+	if( !m_pReader )
+		return;
+
 	if (m_pReader->getContentType() == DAFF_DFT_SPECTRUM)
 		return;
 

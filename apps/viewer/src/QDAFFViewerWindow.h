@@ -43,6 +43,10 @@ private slots:
     void on_actionAboutOpenDAFF_triggered();
     void on_actionAboutDAFFViewer_triggered();
     void on_actionDownload_triggered();
+	void on_action3DShowArrows_triggered( bool);
+	void on_action3DShowPoles_triggered( bool );
+	void on_actionShowCircles_triggered( bool );
+	void on_action2DShowAllChannels_triggered( bool );
 
 	void OpenDAFFFileRecent();
 
@@ -96,8 +100,6 @@ private slots:
 	void on_actionIncrease_theta_triggered();
 	void on_actionDecrease_theta_triggered();
     void on_actionRecent_Clear_triggered();
-    void on_pushButton_3DScreenshot_clicked();
-
     void on_actionExport2DPlot_triggered();
 
 signals:

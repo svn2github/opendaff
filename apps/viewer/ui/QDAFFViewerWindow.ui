@@ -686,9 +686,26 @@ font: 75 12pt &quot;Calibri&quot;;</string>
      <property name="title">
       <string>3D plot</string>
      </property>
-     <addaction name="action3DShowArrows"/>
-     <addaction name="action3DShowPoles"/>
-     <addaction name="actionShowCircles"/>
+     <widget class="QMenu" name="menuCarpet_plot">
+      <property name="title">
+       <string>Carpet plot</string>
+      </property>
+      <addaction name="action3DCarpetShowWarp"/>
+     </widget>
+     <widget class="QMenu" name="menuSpherical_plot">
+      <property name="title">
+       <string>Spherical plot</string>
+      </property>
+      <addaction name="action3DSphericalShowArrows"/>
+      <addaction name="action3DSphericalShowPoles"/>
+      <addaction name="action3DSphericalShowCircles"/>
+      <addaction name="action3DSphericalShowEquator"/>
+      <addaction name="action3DSphericalShowMeridian"/>
+     </widget>
+     <addaction name="menuSpherical_plot"/>
+     <addaction name="menuCarpet_plot"/>
+     <addaction name="action3DShowCoordinateAssistance"/>
+     <addaction name="action3DUseLogScale"/>
     </widget>
     <addaction name="menu2D_plot"/>
     <addaction name="menu3D_plot"/>
@@ -922,10 +939,10 @@ font: 75 12pt &quot;Calibri&quot;;</string>
     <string>Show all channels</string>
    </property>
    <property name="shortcut">
-    <string>=, A</string>
+    <string>#</string>
    </property>
   </action>
-  <action name="action3DShowArrows">
+  <action name="action3DSphericalShowArrows">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -935,11 +952,8 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    <property name="text">
     <string>Show arrows</string>
    </property>
-   <property name="shortcut">
-    <string>=, R</string>
-   </property>
   </action>
-  <action name="action3DShowPoles">
+  <action name="action3DSphericalShowPoles">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -949,11 +963,8 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    <property name="text">
     <string>Show poles</string>
    </property>
-   <property name="shortcut">
-    <string>=, P</string>
-   </property>
   </action>
-  <action name="actionShowCircles">
+  <action name="action3DSphericalShowCircles">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -963,8 +974,69 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    <property name="text">
     <string>Show circles</string>
    </property>
+  </action>
+  <action name="action3DShowCoordinateAssistance">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show coordinate assistance</string>
+   </property>
    <property name="shortcut">
-    <string>=, C</string>
+    <string>H</string>
+   </property>
+  </action>
+  <action name="action3DSphericalShowEquator">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show equator</string>
+   </property>
+  </action>
+  <action name="action3DSphericalShowMeridian">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show meridian</string>
+   </property>
+  </action>
+  <action name="action3DCarpetShowWarp">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Warp</string>
+   </property>
+   <property name="shortcut">
+    <string>W</string>
+   </property>
+  </action>
+  <action name="action3DUseLogScale">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Use log scale (dB)</string>
+   </property>
+   <property name="shortcut">
+    <string>L</string>
    </property>
   </action>
  </widget>

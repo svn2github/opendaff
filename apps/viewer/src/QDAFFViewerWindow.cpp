@@ -786,22 +786,6 @@ void QDAFFViewerWindow::on_actionRecent_Clear_triggered()
     UpdateRecentFilesActions();
 }
 
-void QDAFFViewerWindow::on_pushButton_3DScreenshot_clicked()
-{	
-	QString sExportFilePath;
-	if( m_pDAFFReader->isFileOpened() )
-	{
-		QFileInfo oFile( QString::fromStdString( m_pDAFFReader->getFilename() ) );
-		sExportFilePath = oFile.completeBaseName() + ".png";
-	}
-	else
-	{
-		sExportFilePath = "DAFFViewer_3D_Export.png";
-	}
-	emit SignalExportScreenshotPNG( sExportFilePath );
-	ui->DAFFStatusBar->showMessage( "Exported screenshot of 3D plot to file '" + sExportFilePath + "'" );
-}
-
 void QDAFFViewerWindow::on_actionExport2DPlot_triggered()
 {
 
@@ -848,4 +832,24 @@ void QDAFFViewerWindow::on_actionExport2DPlot_triggered()
 	{
 		ui->DAFFStatusBar->showMessage( "Export aborted." );
 	}
+}
+
+void QDAFFViewerWindow::on_action3DShowArrows_triggered( bool bChecked )
+{
+	ui->DAFF3DPlot_VTKWidget->SetArrowsVisible( bChecked );
+}
+
+void QDAFFViewerWindow::on_action3DShowPoles_triggered( bool bChecked )
+{
+	ui->DAFF3DPlot_VTKWidget->SetPolesVisible( bChecked );
+}
+
+void QDAFFViewerWindow::on_actionShowCircles_triggered( bool bChecked )
+{
+	ui->DAFF3DPlot_VTKWidget->SetCirclesVisible( bChecked );
+}
+
+void QDAFFViewerWindow::on_action2DShowAllChannels_triggered( bool bChecked )
+{
+    ui->graphicsView_2DDAFFPlot->SetAllChannelsVisible( bChecked );
 }

@@ -185,24 +185,45 @@ void QDAFFVTKWidget::ExportScreenshotPNG( QString sFilePath )
     pExportPNG->Write();
 }
 
-void QDAFFVTKWidget::SetCoordinateAssistanceEnabled( bool bClicked )
+void QDAFFVTKWidget::SetCoordinateAssistanceVisible( bool bVisible )
 {
-	bool bEnabled = bClicked;
 	if( m_pSCA )
 	{
-		m_pSCA->SetAssistanceVisible( bEnabled );
+		m_pSCA->SetAssistanceVisible( bVisible );
 	}
 
 	if( m_pCCA )
 	{
-		m_pCCA->SetAxesVisible( bEnabled );
+		m_pCCA->SetAxesVisible( bVisible );
 	}
 
 	update();
 }
 
-void QDAFFVTKWidget::SetDirectionIndicatorEnabled( bool bClicked )
+void QDAFFVTKWidget::SetDirectionIndicatorVisible( bool bVisible )
 {
+	update();
+}
+
+
+void QDAFFVTKWidget::SetArrowsVisible( bool bVisible )
+{
+	if( m_pSCA )
+	{
+		m_pSCA->SetViewUpVectorsVisible( bVisible );
+	}
+
+	update();
+}
+
+
+void QDAFFVTKWidget::SetPolesVisible( bool bVisible )
+{
+	if( m_pSCA )
+	{
+		m_pSCA->SetEquatorVisible( bVisible );
+	}
+
 	update();
 }
 
