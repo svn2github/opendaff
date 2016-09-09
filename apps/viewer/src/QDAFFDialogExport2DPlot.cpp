@@ -12,7 +12,8 @@ QDAFFDialogExport2DPlot::QDAFFDialogExport2DPlot(QWidget *parent, const QDir& oB
 {
     ui->setupUi(this);
 
-	QStringList vsSupportedFileTypes = { "png", "svg", "jpg" };
+	QStringList vsSupportedFileTypes;
+	vsSupportedFileTypes <<"png"<< "svg"<< "jpg";
 	int iExportType = m_qSettings.value( "Export2DPlot/FileType", EXPORT_TYPE_SVG ).toInt();
 
 	Qt::CheckState iState = Qt::CheckState( m_qSettings.value( "Export2DPlot/IncludeAllChannels", Qt::Checked ).toInt() );

@@ -306,17 +306,17 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 		m_pXAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iXAxisLength + m_iAxisOffsetLeft, m_iAxisOffsetDown));
 		m_pYAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iAxisOffsetLeft, m_iYAxisLength + m_iAxisOffsetDown));
 		//Draw Grid
-		int nXGrid = m_iXAxisLength / m_iGridXOffset;
-		int nYGrid = m_iYAxisLength / m_iGridYOffset;
-		m_vpXGrid.resize(nXGrid);
-		m_vpYGrid.resize(nYGrid);
-		for (int i = 0; i < nXGrid; i++)
+		m_vpXGrid.resize(m_iNXGrid);
+		m_vpYGrid.resize(m_iNYGrid);
+		double offset = (double)m_iYAxisLength / m_iNYGrid;
+		for (int i = 0; i < m_vpYGrid.size(); i++)
 		{
-			  m_vpXGrid[i] = scene()->addLine(QLine(m_pYAxis->line().x1() + (i + 1)*m_iGridXOffset, m_pYAxis->line().y1(), m_pYAxis->line().x1() + (i + 1)*m_iGridXOffset, m_pYAxis->line().y1() + m_iYAxisLength), QPen(Qt::lightGray));
+			m_vpYGrid[i] = scene()->addLine(QLine(m_pXAxis->line().x1(), m_pXAxis->line().y1() + (i + 1)*offset, m_pXAxis->line().x1() + m_iXAxisLength, m_pXAxis->line().y2() + (i + 1)*offset), QPen(Qt::lightGray));
 		}
-		for (int i = 0; i < nYGrid; i++)
+		offset = (double)m_iXAxisLength / m_iNXGrid;
+		for (int i = 0; i < m_vpXGrid.size(); i++)
 		{
-			  m_vpXGrid[i] = scene()->addLine(QLine(m_pXAxis->line().x1(), m_pXAxis->line().y1() + (i + 1)*m_iGridYOffset, m_pXAxis->line().x1() + m_iXAxisLength, m_pXAxis->line().y2() + (i + 1)*m_iGridYOffset), QPen(Qt::lightGray));
+			m_vpXGrid[i] = scene()->addLine(QLine(m_pXAxis->line().x1() + (i + 1)*offset, m_pXAxis->line().y1(), m_pXAxis->line().x1() + (i + 1)*offset, m_pXAxis->line().y2() + m_iYAxisLength), QPen(Qt::lightGray));
 		}
 		//Draw Tip
 		QGraphicsLineItem *tipLineX, *tipLineY;
@@ -340,36 +340,31 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 		//1st X Marker
 		m_vpXMarker[0] = scene()->addLine(QLine(m_pXAxis->line().x1(), m_pXAxis->line().y1(), m_pXAxis->line().x1(), m_pXAxis->line().y1() - m_iXMarkerLength));
 		m_vpXMarkerText[0] = scene()->addText(QString("0"));
-		m_vpXMarkerText[0]->setPos(m_vpXMarker[0]->line().x2(), m_vpXMarker[0]->line().y2() - m_iXMarkerTextOffset);
+		m_vpXMarkerText[0]->setPos(m_vpXMarker[0]->line().x2() - m_vpXMarkerText[0]->boundingRect().width() / 2, m_vpXMarker[0]->line().y2() - m_iXMarkerTextOffset);
 		m_vpXMarkerText[0]->setTransform(QTransform().scale(1, -1));
 		//1st Y Marker
 		m_vpYMarker[0] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1(), m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1()));
 		m_vpYMarkerText[0] = scene()->addText(QString("0"));
-		m_vpYMarkerText[0]->setPos(m_vpYMarker[0]->line().x2() - m_iYMarkerTextOffset, m_vpYMarker[0]->line().y2());
+		m_vpYMarkerText[0]->setPos(m_vpYMarker[0]->line().x2() - m_vpYMarkerText[0]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[0]->line().y2() + m_vpYMarkerText[0]->boundingRect().height() / 2);
 		m_vpYMarkerText[0]->setTransform(QTransform().scale(1, -1));
 		//other X Markers
-		float markerPixelRatio = m_iXAxisLength / (m_iNXMarker - 1);
-		float a = pContent->getSamplerate();
-		float b = pContent->getNumDFTCoeffs();
-		float c = pContent->getTransformSize();
-		float indexValueRatio = pContent->getFrequencyBandwidth();
-		float markerValueRatio = (pContent->getNumDFTCoeffs()*indexValueRatio) / (m_iNXMarker - 1);
+		offset = (double)m_iXAxisLength / (m_iNXMarker - 1);
+		float coeffMarkerRatio = (float)pContent->getNumDFTCoeffs() / (m_iNXMarker-1);
 		for (int i = 1; i < m_iNXMarker; i++)
 		{
-			m_vpXMarker[i] = scene()->addLine(QLine(m_pXAxis->line().x1() + markerPixelRatio*i, m_pXAxis->line().y1(), m_pXAxis->line().x1() + markerPixelRatio*i, m_pXAxis->line().y1() - m_iXMarkerLength));
-			//m_vpXMarkerText[i] = scene()->addText(QString(convertFloat(((i / (float)(markerValueRatio*i)) * 2) - 1).c_str()));
-			m_vpXMarkerText[i] = scene()->addText(QString(convertFloat(i*markerValueRatio).c_str()));
-			m_vpXMarkerText[i]->setPos(m_vpXMarker[i]->line().x2(), m_vpXMarker[i]->line().y2() - m_iXMarkerTextOffset);
+			m_vpXMarker[i] = scene()->addLine(QLine(m_pXAxis->line().x1() + offset*i, m_pXAxis->line().y1(), m_pXAxis->line().x1() + offset*i, m_pXAxis->line().y1() - m_iXMarkerLength));
+			m_vpXMarkerText[i] = scene()->addText(QString(std::to_string((int)(coeffMarkerRatio*i*pContent->getFrequencyBandwidth())).c_str()));
+			m_vpXMarkerText[i]->setPos(m_vpXMarker[i]->line().x2() - m_vpXMarkerText[i]->boundingRect().width() / 2, m_vpXMarker[i]->line().y2() - m_iXMarkerTextOffset);
 			m_vpXMarkerText[i]->setTransform(QTransform().scale(1, -1));
 		}
 		//other Y Markers
-		float indexPixelRatio = m_iYAxisLength / (m_iNYMarker - 1);
-		indexValueRatio = pContent->getOverallMagnitudeMaximum() / (m_iNYMarker - 1);
+		offset = (double)m_iYAxisLength / (m_iNYMarker - 1);
+		float indexMarkerRatio = (float)pContent->getOverallMagnitudeMaximum()/ (m_iNYMarker - 1);
 		for (int i = 1; i < m_iNYMarker; i++)
 		{
-			m_vpYMarker[i] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1() + i*indexPixelRatio, m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1() + i*indexPixelRatio));
-			m_vpYMarkerText[i] = scene()->addText(QString(convertFloat(i*indexValueRatio).c_str()));
-			m_vpYMarkerText[i]->setPos(m_vpYMarker[i]->line().x2() - m_iYMarkerTextOffset, m_vpYMarker[i]->line().y2());
+			m_vpYMarker[i] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1() + i*offset, m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1() + i*offset));
+			m_vpYMarkerText[i] = scene()->addText(QString(convertFloat((float)indexMarkerRatio*i).c_str()));
+			m_vpYMarkerText[i]->setPos(m_vpYMarker[i]->line().x2() - m_vpYMarkerText[i]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[i]->line().y2() + m_vpYMarkerText[i]->boundingRect().height() / 2);
 			m_vpYMarkerText[i]->setTransform(QTransform().scale(1, -1));
 		}
 		break;
@@ -492,29 +487,52 @@ void QDAFF2DPlot::DrawGraph(int recordIndex)
 		}
 		break;
 	}
-	/*case DAFF_DFT_SPECTRUM:
+	case DAFF_DFT_SPECTRUM:
 	{
 		DAFFContentDFT* pContent = dynamic_cast< DAFFContentDFT* >(m_pReader->getContent());
-		std::vector<float> coeffs = std::vector<float>(2 * pContent->getNumDFTCoeffs());
-		float amplitudePixelRatio = m_iYAxisLength / pContent->getOverallMagnitudeMaximum();
+		std::vector<float> coeffs = std::vector<float>(pContent->getNumDFTCoeffs()*2);
+		float amplitudePixelRatio = (float)m_iYAxisLength/pContent->getOverallMagnitudeMaximum();
+		float coeffPixelRatio = (float)m_iXAxisLength / pContent->getNumDFTCoeffs();
+		QString text;
 		m_vvpGraphs = std::vector<std::vector<QGraphicsLineItem*>>(pContent->getProperties()->getNumberOfChannels());
+		m_vvpPoints = std::vector<std::vector<QGraphicsPoint*>>(pContent->getProperties()->getNumberOfChannels());
 		for (int i = 0; i < m_vvpGraphs.size(); i++)
 		{
 			pContent->getDFTCoeffs(recordIndex, i, &coeffs[0]);
-			std::vector<float> aCoeffs = std::vector<float>(pContent->getNumDFTCoeffs());
-			for (int j = 0; j < aCoeffs.size(); j++)
-			{
-				aCoeffs[j] = (coeffs[2 * j] * coeffs[2 * j]) + (coeffs[(2 * j) + 1] * coeffs[(2 * j) + 1]);
-			}
-			m_vvpGraphs[i] = std::vector<QGraphicsLineItem*>(aCoeffs.size() - 1);
-			float indexPixelRatio = (float)m_iXAxisLength / aCoeffs.size();
-			for (int j = 0; j < m_vvpGraphs[i].size(); j++)
-			{
-				m_vvpGraphs[i][j] = scene()->addLine(QLine(m_pXAxis->line().x1() + j*indexPixelRatio, m_pXAxis->line().y1() + (aCoeffs[j]) * amplitudePixelRatio, m_pXAxis->line().x1() + (j + 1)*indexPixelRatio, m_pXAxis->line().y1() + coeffs[j + 1] * amplitudePixelRatio), QPen(m_voColors[i % 10]));
-			}
+			m_vvpGraphs[i] = std::vector<QGraphicsLineItem*>(pContent->getNumDFTCoeffs() - 1);
+			m_vvpPoints[i] = std::vector<QGraphicsPoint*>(pContent->getNumDFTCoeffs());
+		  //for (int j = 0; j < m_vvpPoints[i].size(); j++)
+		  //{
+		  //	text = QString("Amplitude: ").append(QString::number(coeffs[j])).append("\nSample Time: ").append(QString::number(j*indexValueRatio));
+		  //	m_vvpPoints[i][j] = new QGraphicsPoint(text, m_pXAxis->line().x1() + j*offset, m_pXAxis->line().y1() + (coeffs[j] + 1) * amplitudePixelRatio, m_iPointDiameter);
+		  //}
+		  //for (int j = 0; j < m_vvpGraphs[i].size(); j++)
+		  //{
+		  //	m_vvpGraphs[i][j] = scene()->addLine(QLine(m_vvpPoints[i][j]->pos().x(), m_vvpPoints[i][j]->pos().y(), m_vvpPoints[i][j + 1]->pos().x(), m_vvpPoints[i][j + 1]->pos().y()), QPen(m_voColors[i % 10]));
+		  //}
+		
+		  for (int j = 0; j < m_vvpGraphs[i].size(); j++)
+		  {
+			  m_vvpGraphs[i][j] = scene()->addLine(QLine(m_pXAxis->line().x1() + (j+0.5)*coeffPixelRatio, m_pXAxis->line().y1() + sqrt(coeffs[2 * j] * coeffs[2 * j] + coeffs[2 * j + 1] * coeffs[2 * j + 1]) * amplitudePixelRatio, m_pXAxis->line().x1() + (j + 1.5)*coeffPixelRatio, m_pXAxis->line().y1() + sqrt(coeffs[2 * (j + 1)] * coeffs[2 * (j + 1)] + coeffs[2 * (j + 1) + 1] * coeffs[2 * (j + 1) + 1]) * amplitudePixelRatio), QPen(m_voColors[i % 10]));
+		  }
+		  if (m_vvpPoints[i].size()*(m_iPointDiameter + 3) < m_iXAxisLength)
+		  {
+			  for (int j = 0; j < m_vvpGraphs[i].size(); j++)
+			  {
+				  text = QString("Amplitude: ").append(QString::number(sqrt(coeffs[2 * j] * coeffs[2 * j] + coeffs[2 * j + 1] * coeffs[2 * j + 1]))).append("\nfrequency bin: ").append(QString::number(j*pContent->getFrequencyBandwidth())).append(" - ").append(QString::number((j+1)*pContent->getFrequencyBandwidth()));
+				  m_vvpPoints[i][j] = new QGraphicsPoint(text, m_vvpGraphs[i][j]->line().x1(), m_vvpGraphs[i][j]->line().y1(), m_iPointDiameter);
+			  }
+			  size_t j = m_vvpGraphs[i].size();
+			  text = QString("Amplitude: ").append(QString::number(sqrt(coeffs[2 * j] * coeffs[2 * j] + coeffs[2 * j + 1] * coeffs[2 * j + 1]))).append("\nfrequency bin: ").append(QString::number(j*pContent->getFrequencyBandwidth())).append(" - ").append(QString::number((j + 1)*pContent->getFrequencyBandwidth()));;
+			  m_vvpPoints[i][j] = new QGraphicsPoint(text, m_vvpGraphs[i][j - 1]->line().x2(), m_vvpGraphs[i][j - 1]->line().y2(), m_iPointDiameter);
+			  for (int j = 0; j < m_vvpPoints[i].size(); j++)
+			  {
+				  scene()->addItem(m_vvpPoints[i][j]);
+			  }
+		  }
 		}
 		break;
-	}*/
+	}
 	}
 }
 
