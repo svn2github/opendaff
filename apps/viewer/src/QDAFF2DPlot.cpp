@@ -550,6 +550,7 @@ void QDAFF2DPlot::ExportImagePNG( const QString& filePath, float factor, bool sh
 
 	QImage img( m_iSceneWidth, m_iSceneHeight, QImage::Format_ARGB32_Premultiplied );
 	QPainter p( &img );
+	p.setRenderHint(QPainter::Antialiasing);
 	scene()->render( &p );
 	p.end();
 	img.mirrored( false, true ).save( filePath );
@@ -572,6 +573,7 @@ void QDAFF2DPlot::ExportImageSVG( const QString& filePath, float factor, bool sh
 	generator.setSize( QSize( m_iSceneWidth, m_iSceneHeight ) );
 	QPainter p;
 	p.begin( &generator );
+	//p.scale(1, -1);
 	scene()->render( &p );
 	p.end();
 
