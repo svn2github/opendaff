@@ -1,4 +1,15 @@
-﻿#ifndef IW_DAFFVIZQTTESTWINDOW
+﻿/*
+ * -------------------------------------------------------------------------------------
+ *
+ *  OpenDAFF - A free, open source software package for directional audio data
+ *  Copyright 2016 Institute of Technical Acoustics, RWTH Aachen University
+ *  OpenDAFF is distributed under the Apache License Version 2.0.
+ *
+ *  ------------------------------------------------------------------------------------
+ *
+ */
+
+#ifndef IW_DAFFVIZQTTESTWINDOW
 #define IW_DAFFVIZQTTESTWINDOW
 
 #include <vtkSmartPointer.h> 
