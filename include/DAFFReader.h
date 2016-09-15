@@ -28,15 +28,15 @@ class DAFFProperties;
  * visiting the project website at http://www.opendaff.org to get in touch with DAFF. It
  * comes with detailed explanations, nice and supportive figures and tables and
  * some little tutorials and code examples.
- * 
+ *
  *
  *		Agreements
- * 
+ *
  * All angles in the DAFF Reader Interface and all angles in a daff file are in gradients [&deg;]!
- * If not marked otherwise, we use right-hand rotation. 
- * The default coordinate system and it's cartesian representation:  * 
+ * If not marked otherwise, we use right-hand rotation.
+ * The default coordinate system and it's cartesian representation:  *
  *		- front is negative Z axis
- *		- up    is positive X axis 
+ *		- up    is positive X axis
  *		- left  is positive Y axis
  *		- right is negative Y axis
  *		- down  is negative X axis
@@ -51,7 +51,7 @@ class DAFFProperties;
  *		  around Y axis (or right-hand rotation around negative Y axis!).
  *		  The front direction is represented with 90&deg;.
  * for object view:
- *		- phi is the angle on horizontal plane beginning at -180&deg; (not included) (back direction) 
+ *		- phi is the angle on horizontal plane beginning at -180&deg; (not included) (back direction)
  *		  and ends with +180&deg; (included) (also back direction) in right-hand rotation around X axis.
  *		  The front direction is represented with 0&deg;
  *		- beta is the angle on vertical plane beginning at down direction (south pole) with -90&deg; (included)
@@ -71,7 +71,7 @@ class DAFFProperties;
  * OpenDAFF differentiates heavily between the data view and the object view. The data
  * view has its own coordinate system (Data Spherical Coordinate system, DSC) represented by the
  * angles alpha and beta. It describes in which way your data has been recorded, measured or generated.
- * The object view uses the azimuth and elevation nominclature with phi and theta angles for representation 
+ * The object view uses the azimuth and elevation nominclature with phi and theta angles for representation
  * of the object (Object Spherical Coordinate system, OSC). It is invented to access your data
  * without bothering how it is saved, you simply request a point on the sphere grid of your object
  * and the transformation from object view to data view is covered by the library. Both the data and the object
@@ -80,18 +80,18 @@ class DAFFProperties;
  * the object view. If you are generating daff files from your records you have to define the correct
  * orientation once (according to you setup) and never have to think about it anymore.
  *
- * 
+ *
  *		Reference parameter
- * 
+ *
  * A daff file version 0.1 can only save one record set of a fixed distance. If not specified, it will
  * assume a distance of 1 meter for simplification matters. Anyway it's up to your software application
  * if you use multiple distances and how you pay respect on displacement.
  * Same applies for sound pressure level reference.
  *
- * 
+ *
  *		Interpolation
  *
- * When using the methods getNearestNeighbour or getCell, the library will always work on data view 
+ * When using the methods getNearestNeighbour or getCell, the library will always work on data view
  * coordinate system. If you are using the object view (which is recommended in any case) it will
  * transform from OSC to DSC first and then interpolate the requested angular pair or cell and then
  * return the appripriate index of the record. This can lead to some difficulties especially if
@@ -125,10 +125,11 @@ public:
 	//! Destructor
 	inline virtual ~DAFFReader() {};
 
+
 	// --= File handling =--
 
 	//! Returns whether a file is opened
-	virtual bool isFileOpened() const=0;
+	virtual bool isFileOpened() const = 0;
 
 	//! Opens a DAFF file for reading
 	/**
@@ -137,40 +138,48 @@ public:
 	 *
 	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 */
-	virtual int openFile(const std::string& sFilename)=0;
+	virtual int openFile( const std::string& sFilePath ) = 0;
 
 	//! Closes an opened DAFF file
 	/**
 	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
 	 */
-	virtual void closeFile()=0;
+	virtual void closeFile() = 0;
 
 	//! Returns the name of the opened DAFF file
-	virtual std::string getFilename() const=0;
+	virtual std::string getFilename() const = 0;
+
+
+	// --= Serialization methods =--
+
+	//! Deserializes DAFF content from a byte buffer
+	virtual int deserialize( char* pDAFFDataBuffer ) = 0;
+
+	virtual bool isValid() const=0;
 
 
 	// --= Properties =--
 
 	//! Returns the DAFF version of the file format
-	virtual int getFileFormatVersion() const=0;
+	virtual int getFileFormatVersion() const = 0;
 
 	//! Returns the content type
-	virtual int getContentType() const=0;
+	virtual int getContentType() const = 0;
 
 	//! Returns the content
-	virtual DAFFContent* getContent() const=0;
+	virtual DAFFContent* getContent() const = 0;
 
 	//! Returns the metadata
-	virtual const DAFFMetadata* getMetadata() const=0;
+	virtual const DAFFMetadata* getMetadata() const = 0;
 
 	//! Returns the properties of the file
-	virtual DAFFProperties* getProperties() const=0;
+	virtual DAFFProperties* getProperties() const = 0;
 
 
 	// --= Utility & helper methods =--
 
 	//! Returns string with information about the reader
-	virtual std::string toString() const=0;	
+	virtual std::string toString() const = 0;
 };
 
 #endif // IW_DAFF_READER

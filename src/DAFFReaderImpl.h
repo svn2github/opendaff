@@ -32,9 +32,12 @@ public:
 	~DAFFReaderImpl();
 
 	bool isFileOpened() const;
-	int openFile(const std::string& sFilename);
+	int openFile( const std::string& );
 	void closeFile();
 	std::string getFilename() const;
+
+	int deserialize( char* pDAFFDataBuffer );
+	bool isValid() const;
 
 	int getFileFormatVersion() const;
 	int getContentType() const;
@@ -123,8 +126,9 @@ public:
 	int getDFTCoeffs(int iRecordIndex, int iChannel, float* pfDest) const;
 
 private:
-	bool m_bFileOpened;							//!@ File state
-	std::string m_sFilename;					//!@ Filename
+	bool m_bDAFFObjectValid;					//!@ Indicates if DAFF data is present and valid
+	bool m_bDAFFObjectFromFileValid;			//!@ Indicates if DAFF data is present and valid and loaded from a file source
+	std::string m_sFilePath;					//!@ Filename
 	FILE* m_file;								//!@ File handle
 	DAFFFileHeader m_fileHeader;				//!@ File header
 	DAFFMainHeader* m_pMainHeader;				//!@ Main header
@@ -155,6 +159,55 @@ private:
 	float m_fAlphaResolution;					//!@ Alpha resolution [&deg;]
 	float m_fBetaResolution;					//!@ Beta resolution [&deg;]
 	DAFFSCTransform m_tTrans;			 		//!@ Spherical coordinates transformer
+
+	//! Loads the file header from memory block
+	/**
+	* @return DAFFError if not readable
+	*/
+	int loadFileHeader();
+
+	//! Loads the file block table from memory block
+	/**
+	* @return DAFFError if not readable
+	*/
+	int loadFileBlockTable();
+
+	//! Loads the DAFF main header from memory block
+	/**
+	* @return DAFFError if not readable
+	*/
+	int loadMainHeader();
+
+	//! Loads the DAFF content header from memory block
+	/**
+	* @return DAFFError if not readable
+	*/
+	int loadContentHeader();
+
+	//! Loads the DAFF record descriptor from memory block
+	/**
+	* @return DAFFError if not readable
+	*/
+	int loadRecordDescriptor();
+
+	//! Loads the DAFF record data from memory block
+	/**
+	* @return DAFFError if not readable
+	*/
+	int loadRecordData();
+
+	//! Loads the DAFF metadata from given buffer
+	/**
+	* @return DAFFError if not readable
+	*/
+	int loadMetadata( char* );
+
+	//! Verifies and fixes the angle ranges
+	/**
+	 * @return DAFFError if not readable
+	 */
+	void fixAngleRanges();
+	
 
 	//! Search for the first file block that matches the given ID
 	/* @return Total number of matching file blocks)
