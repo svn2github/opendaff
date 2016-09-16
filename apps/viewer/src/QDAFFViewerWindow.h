@@ -43,9 +43,9 @@ private slots:
     void on_actionAboutOpenDAFF_triggered();
     void on_actionAboutDAFFViewer_triggered();
     void on_actionDownload_triggered();
-	void on_action3DShowArrows_triggered( bool);
-	void on_action3DShowPoles_triggered( bool );
-	void on_actionShowCircles_triggered( bool );
+	void on_action3DSphericalShowArrows_triggered( bool );
+	void on_action3DSphericalShowPoles_triggered( bool );
+	void on_action3DSphericalShowCircles_triggered( bool );
 	void on_action2DShowAllChannels_triggered( bool );
 
 	void OpenDAFFFileRecent();

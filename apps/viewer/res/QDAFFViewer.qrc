@@ -7,8 +7,11 @@
 		<file>DAFFViewer_Window_Icon_16x16.png</file>
 		<file>OpenDAFF_Icon.ico</file>
 	</qresource>
-	<qresource prefix="/banners">
-		<file>DAFFViewer_Banner.gif</file>
-		<file>DAFFViewer_Banner.jpg</file>
-	</qresource>
+  <qresource prefix="/banners">
+    <file>DAFFViewer_Banner.gif</file>
+    <file>DAFFViewer_Banner.jpg</file>
+  </qresource>
+  <qresource prefix="/files">
+    <!--<file>ITA-Kunstkopf_HRIR_AP11_Pressure_Equalized_3x3_256.v17.ir.daff</file>-->
+  </qresource>
 </RCC>

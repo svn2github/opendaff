@@ -109,13 +109,12 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 		m_pCCA->SetVisible( true );
 		break;
 	}
+	case DAFF_DFT_SPECTRUM:
 	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
 	case DAFF_MAGNITUDE_SPECTRUM:
-	case DAFF_DFT_SPECTRUM:
 	case DAFF_PHASE_SPECTRUM:
 		m_pDAFFContentBalloon = new DAFFViz::BalloonPlot( m_pSGRootNode, pReader->getContent() );
-		//m_pDAFFContentBalloon->SetScaling( DAFFViz::CarpetPlot::SCALING_DECIBEL );
-		//m_pDAFFContentBalloon->SetRange( 0.0f, 0.5f );
+		m_pDAFFContentBalloon->SetScaling( DAFFViz::CarpetPlot::SCALING_LINEAR );
 		m_pSCA->SetVisible( true );
 		break;
 	}

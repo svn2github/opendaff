@@ -88,6 +88,8 @@ namespace DAFFViz
 			break;
 
 		case DAFF_MAGNITUDE_SPECTRUM:
+		case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+		case DAFF_PHASE_SPECTRUM:
 			m_iNumFrequencies = dynamic_cast< const DAFFContentMS* >( m_pContent )->getNumFrequencies();
 			break;
 		}

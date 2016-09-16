@@ -1565,14 +1565,13 @@ int DAFFReaderImpl::getMagnitudes( int iRecordIndex, int iChannel, float* pfData
 	return DAFF_NO_ERROR;
 }
 
-int DAFFReaderImpl::getMagnitude( int iRecordIndex, int iChannel, int iFreqIndex, float& fMag ) const {
+int DAFFReaderImpl::getMagnitude( int iRecordIndex, int iChannel, int iFreqIndex, float& fMag ) const
+{
 	assert( ( iRecordIndex >= 0 ) && ( iRecordIndex < m_pMainHeader->iNumRecords ) );
 	assert( ( iChannel >= 0 ) && ( iChannel < m_pMainHeader->iNumChannels ) );
-	assert( ( iFreqIndex >= 0 ) && ( iFreqIndex < m_pContentHeaderMS->iNumFreqs ) );
 
 	if( ( iRecordIndex < 0 ) || ( iRecordIndex >= m_pMainHeader->iNumRecords ) ||
-		( iChannel < 0 ) || ( iChannel >= m_pMainHeader->iNumChannels ) ||
-		( iFreqIndex < 0 ) || ( iFreqIndex >= m_pContentHeaderMS->iNumFreqs ) )
+		( iChannel < 0 ) || ( iChannel >= m_pMainHeader->iNumChannels ) )
 		return DAFF_INVALID_INDEX;
 
 	DAFFRecordChannelDescDefault* pDesc = reinterpret_cast< DAFFRecordChannelDescDefault* >( getRecordChannelDescPtr( iRecordIndex, iChannel ) );
@@ -1581,11 +1580,17 @@ int DAFFReaderImpl::getMagnitude( int iRecordIndex, int iChannel, int iFreqIndex
 	switch( m_pMainHeader->iContentType )
 	{
 	case DAFF_MAGNITUDE_SPECTRUM:
-		pfSrc = reinterpret_cast< float* >( reinterpret_cast< char* >( m_pDataBlock ) +pDesc->ui64DataOffset );
+		if( ( iFreqIndex < 0 ) || ( iFreqIndex >= m_pContentHeaderMS->iNumFreqs ) )
+			return DAFF_INVALID_INDEX;
+
+		pfSrc = reinterpret_cast< float* >( reinterpret_cast< char* >( m_pDataBlock ) + pDesc->ui64DataOffset );
 		fMag = pfSrc[ iFreqIndex ];
 		break;
 	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
-		pfSrc = reinterpret_cast< float* >( reinterpret_cast< char* >( m_pDataBlock ) +pDesc->ui64DataOffset );
+		if( ( iFreqIndex < 0 ) || ( iFreqIndex >= m_pContentHeaderMPS->iNumFreqs ) )
+			return DAFF_INVALID_INDEX;
+
+		pfSrc = reinterpret_cast< float* >( reinterpret_cast< char* >( m_pDataBlock ) + pDesc->ui64DataOffset );
 		fMag = pfSrc[ 2 * iFreqIndex ];
 		break;
 	default:
@@ -1595,7 +1600,8 @@ int DAFFReaderImpl::getMagnitude( int iRecordIndex, int iChannel, int iFreqIndex
 	return DAFF_NO_ERROR;
 }
 
-int DAFFReaderImpl::getPhases( int iRecordIndex, int iChannel, float* pfData ) const {
+int DAFFReaderImpl::getPhases( int iRecordIndex, int iChannel, float* pfData ) const
+{
 	assert( ( iRecordIndex >= 0 ) && ( iRecordIndex < m_pMainHeader->iNumRecords ) );
 	assert( ( iChannel >= 0 ) && ( iChannel < m_pMainHeader->iNumChannels ) );
 
@@ -1608,14 +1614,14 @@ int DAFFReaderImpl::getPhases( int iRecordIndex, int iChannel, float* pfData ) c
 	DAFFRecordChannelDescDefault* pDesc = reinterpret_cast< DAFFRecordChannelDescDefault* >( getRecordChannelDescPtr( iRecordIndex, iChannel ) );
 	float* pfSrc = 0;
 
-	switch( m_pMainHeader->iContentType ) {
+	switch( m_pMainHeader->iContentType )
+	{
 	case DAFF_PHASE_SPECTRUM:
 		pfSrc = reinterpret_cast< float* >( reinterpret_cast< char* >( m_pDataBlock ) +pDesc->ui64DataOffset );
-		memcpy( pfData, pfSrc, m_pContentHeaderPS->iNumFreqs*sizeof( float ) );
+		memcpy( pfData, pfSrc, m_pContentHeaderPS->iNumFreqs * sizeof( float ) );
 		break;
 	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
 		pfSrc = reinterpret_cast< float* >( reinterpret_cast< char* >( m_pDataBlock ) +pDesc->ui64DataOffset );
-		// TODO: maybe find a better way to do this
 		for( int i = 0; i <= m_pContentHeaderMPS->iNumFreqs; i++ )
 			pfData[ i ] = pfSrc[ 2 * i + 1 ];
 		break;
@@ -1625,14 +1631,13 @@ int DAFFReaderImpl::getPhases( int iRecordIndex, int iChannel, float* pfData ) c
 	return DAFF_NO_ERROR;
 }
 
-int DAFFReaderImpl::getPhase( int iRecordIndex, int iChannel, int iFreqIndex, float& fPhase ) const {
+int DAFFReaderImpl::getPhase( int iRecordIndex, int iChannel, int iFreqIndex, float& fPhase ) const
+{
 	assert( ( iRecordIndex >= 0 ) && ( iRecordIndex < m_pMainHeader->iNumRecords ) );
 	assert( ( iChannel >= 0 ) && ( iChannel < m_pMainHeader->iNumChannels ) );
-	assert( ( iFreqIndex >= 0 ) && ( iFreqIndex < m_pContentHeaderMS->iNumFreqs ) );
 
 	if( ( iRecordIndex < 0 ) || ( iRecordIndex >= m_pMainHeader->iNumRecords ) ||
-		( iChannel < 0 ) || ( iChannel >= m_pMainHeader->iNumChannels ) ||
-		( iFreqIndex < 0 ) || ( iFreqIndex >= m_pContentHeaderMS->iNumFreqs ) )
+		( iChannel < 0 ) || ( iChannel >= m_pMainHeader->iNumChannels ) )
 		return DAFF_INVALID_INDEX;
 
 	DAFFRecordChannelDescDefault* pDesc = reinterpret_cast< DAFFRecordChannelDescDefault* >( getRecordChannelDescPtr( iRecordIndex, iChannel ) );
@@ -1640,10 +1645,16 @@ int DAFFReaderImpl::getPhase( int iRecordIndex, int iChannel, int iFreqIndex, fl
 
 	switch( m_pMainHeader->iContentType ) {
 	case DAFF_PHASE_SPECTRUM:
+		if( ( iFreqIndex < 0 ) || ( iFreqIndex >= m_pContentHeaderPS->iNumFreqs ) )
+			return DAFF_INVALID_INDEX;
+
 		pfSrc = reinterpret_cast< float* >( reinterpret_cast< char* >( m_pDataBlock ) +pDesc->ui64DataOffset );
 		fPhase = pfSrc[ iFreqIndex ];
 		break;
 	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+		if( ( iFreqIndex < 0 ) || ( iFreqIndex >= m_pContentHeaderMPS->iNumFreqs ) )
+			return DAFF_INVALID_INDEX;
+
 		pfSrc = reinterpret_cast< float* >( reinterpret_cast< char* >( m_pDataBlock ) +pDesc->ui64DataOffset );
 		fPhase = pfSrc[ 2 * iFreqIndex + 1 ];
 		break;

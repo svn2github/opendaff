@@ -90,11 +90,10 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 
 	// 2D settings
 
+
 	// 3D settings
 	connect( this, SIGNAL( SignalExportScreenshotPNG( QString ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ExportScreenshotPNG( QString ) ) );
-    //connect( ui->checkBox_3DSettings_CoordinateAssistance, SIGNAL( clicked( bool ) ), ui->DAFF3DPlot_VTKWidget, SLOT( SetCoordinateAssistanceEnabled( bool ) ) );
-    //connect( ui->checkBox_3DSettings_SelectionIndicator, SIGNAL( clicked( bool ) ), ui->DAFF3DPlot_VTKWidget, SLOT( SetDirectionIndicatorEnabled( bool ) ) );
-    //connect( ui->checkBox_3DSettings_DirectionIndicator, SIGNAL( clicked( bool ) ), ui->DAFF3DPlot_VTKWidget, SLOT( SetViewUpArrowsEnabled( bool ) ) );
+   
 
 	ui->DAFFStatusBar->showMessage( "No DAFF file loaded." );
 
@@ -182,11 +181,15 @@ void QDAFFViewerWindow::on_actionQuit_triggered()
 
 void QDAFFViewerWindow::OpenDAFFFile( QString sPath, bool bQuiet )
 {
+
 	if( m_pDAFFReader->isFileOpened() )
 	{
+		ui->DAFFStatusBar->showMessage( "Closing current DAFF file " );
 		emit SignalCloseDAFF();
 		m_pDAFFReader->closeFile();
 	}
+
+	ui->DAFFStatusBar->showMessage( "Opening DAFF file " + sPath );
 
     QFileInfo oPassedFile( sPath );
     int iError = DAFF_NO_ERROR;
@@ -834,17 +837,17 @@ void QDAFFViewerWindow::on_actionExport2DPlot_triggered()
 	}
 }
 
-void QDAFFViewerWindow::on_action3DShowArrows_triggered( bool bChecked )
+void QDAFFViewerWindow::on_action3DSphericalShowArrows_triggered( bool bChecked )
 {
 	ui->DAFF3DPlot_VTKWidget->SetArrowsVisible( bChecked );
 }
 
-void QDAFFViewerWindow::on_action3DShowPoles_triggered( bool bChecked )
+void QDAFFViewerWindow::on_action3DSphericalShowPoles_triggered( bool bChecked )
 {
 	ui->DAFF3DPlot_VTKWidget->SetPolesVisible( bChecked );
 }
 
-void QDAFFViewerWindow::on_actionShowCircles_triggered( bool bChecked )
+void QDAFFViewerWindow::on_action3DSphericalShowCircles_triggered( bool bChecked )
 {
 	ui->DAFF3DPlot_VTKWidget->SetCirclesVisible( bChecked );
 }
