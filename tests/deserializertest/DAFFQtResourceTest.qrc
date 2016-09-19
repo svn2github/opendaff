@@ -1,0 +1,9 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+	<qresource>
+		<file>ExampleUnityOmni.v17.ms.daff</file>
+	</qresource>
+	<qresource prefix="/daff">
+		<file alias="unity_ms">ExampleUnityOmni.v17.ms.daff</file>
+	</qresource>
+</RCC>
