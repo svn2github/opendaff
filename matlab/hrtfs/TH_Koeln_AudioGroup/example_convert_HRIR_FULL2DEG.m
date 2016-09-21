@@ -31,7 +31,7 @@ load( file_path ) % makes HRIR_FULL2DEG available in workspace
 daffv17_convert_from_miro( HRIR_FULL2DEG );
 
 % ... with file name
-daffv17_convert_from_miro( HRIR_FULL2DEG, 'HRIR_FULL2DEG.ir.v17.daff' );
+daffv17_convert_from_miro( HRIR_FULL2DEG, 'HRIR_FULL2DEG.v17.ir.daff' );
 
 % ... with extra metadata
 additional_metadata = daffv17_add_metadata( [], 'Conversion date', 'String', date );
@@ -39,4 +39,8 @@ additional_metadata = daffv17_add_metadata( additional_metadata, 'Web resource',
 additional_metadata = daffv17_add_metadata( additional_metadata, 'License', 'String', 'CC BY-SA 3.0' );
 additional_metadata = daffv17_add_metadata( additional_metadata, 'License URL', 'String', 'http://creativecommons.org/licenses/by-sa/3.0/legalcode' );
 additional_metadata = daffv17_add_metadata( additional_metadata, 'CC license deed', 'String', 'https://creativecommons.org/licenses/by-sa/3.0/' );
-daffv17_convert_from_miro( HRIR_FULL2DEG, 'HRIR_FULL2DEG_web.ir.v17.daff', additional_metadata );
+daffv17_convert_from_miro( HRIR_FULL2DEG, 'HRIR_FULL2DEG_48kHz_web.v17.ir.daff', additional_metadata );
+
+% ... with resampling to common 44.1 kHz
+HRIR_FULL2DEG.resampleToFS = 44.1e3;
+daffv17_convert_from_miro( HRIR_FULL2DEG, 'HRIR_FULL2DEG_44kHz_web.v17.ir.daff', additional_metadata );
