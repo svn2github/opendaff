@@ -65,7 +65,6 @@ int main( int, char** )
 	oRootNode.AddChildNode( &cca );
 
 	DAFFViz::SphericalCoordinateAssistant sca;
-	sca.SetAxesVisible( true );
 	sca.SetEquatorVisible( true );
 	sca.SetGridVisible( true );
 	sca.SetMeridiansVisible( true );

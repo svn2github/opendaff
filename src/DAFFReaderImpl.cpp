@@ -1514,8 +1514,10 @@ float DAFFReaderImpl::getOverallMagnitudeMaximum() const {
 	return 0.0; // error!
 }
 
-float DAFFReaderImpl::getOverallPeak() {
-	if( !m_bOverallPeakInitialized ) {
+float DAFFReaderImpl::getOverallPeak()
+{
+	if( !m_bOverallPeakInitialized )
+	{
 		// lazy initialization
 		float *pBuf;
 		int iOffs = 0, iLen = 0, iSize = getMaxEffectiveFilterLength();

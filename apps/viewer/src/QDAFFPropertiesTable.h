@@ -84,25 +84,25 @@ public:
 			case 3:
 				return ( index.column() == 0 ? QString( "Alpha points" ) : QString::number( m_pContent->getAlphaPoints() ) );
 			case 4:
-				return ( index.column() == 0 ? QString( "Alpha resolution" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getAlphaResolution() ) );
+				return ( index.column() == 0 ? QString( "Alpha resolution" ) : QStringLiteral( "%1°" ).arg( m_pContent->getAlphaResolution() ) );
 			case 5:
-				return ( index.column() == 0 ? QString( "Alpha start" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getAlphaStart() ) );
+				return ( index.column() == 0 ? QString( "Alpha start" ) : QStringLiteral( "%1°" ).arg( m_pContent->getAlphaStart() ) );
 			case 6:
-				return ( index.column() == 0 ? QString( "Alpha end" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getAlphaEnd() ) );
+				return ( index.column() == 0 ? QString( "Alpha end" ) : QStringLiteral( "%1°" ).arg( m_pContent->getAlphaEnd() ) );
 			case 7:
-				return ( index.column() == 0 ? QString( "Alpha span" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getAlphaSpan() ) );
+				return ( index.column() == 0 ? QString( "Alpha span" ) : QStringLiteral( "%1°" ).arg( m_pContent->getAlphaSpan() ) );
 			case 8:
 				return ( index.column() == 0 ? QString( "Alpha full range" ) : m_pContent->coversFullAlphaRange() ? QString( "yes" ) : QString( "no" ) );
 			case 9:
 				return ( index.column() == 0 ? QString( "Beta points" ) : QString::number( m_pContent->getBetaPoints() ) );
 			case 10:
-				return ( index.column() == 0 ? QString( "Beta resolution" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getBetaResolution() ) );
+				return ( index.column() == 0 ? QString( "Beta resolution" ) : QStringLiteral( "%1°" ).arg( m_pContent->getBetaResolution() ) );
 			case 11:
-				return ( index.column() == 0 ? QString( "Beta start" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getBetaStart() ) );
+				return ( index.column() == 0 ? QString( "Beta start" ) : QStringLiteral( "%1°" ).arg( m_pContent->getBetaStart() ) );
 			case 12:
-				return ( index.column() == 0 ? QString( "Beta end" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getBetaEnd() ) );
+				return ( index.column() == 0 ? QString( "Beta end" ) : QStringLiteral( "%1°" ).arg( m_pContent->getBetaEnd() ) );
 			case 13:
-				return ( index.column() == 0 ? QString( "Beta span" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getBetaSpan() ) );
+				return ( index.column() == 0 ? QString( "Beta span" ) : QStringLiteral( "%1°" ).arg( m_pContent->getBetaSpan() ) );
 			case 14:
 				return ( index.column() == 0 ? QString( "Beta full range" ) : m_pContent->coversFullBetaRange() ? QString( "yes" ) : QString( "no" ) );
 			case 15:
@@ -111,13 +111,13 @@ public:
 			{
 				DAFFOrientationYPR o;
 				m_pContent->getDefaultOrientation( o );
-				return ( index.column() == 0 ? QString( "Default orientation YPR" ) : QStringLiteral( "%1° , %2°, %3° (deg)" ).arg( o.fYawAngleDeg ).arg( o.fPitchAngleDeg ).arg( o.fRollAngleDeg ) );
+				return ( index.column() == 0 ? QString( "Default orientation YPR" ) : QStringLiteral( "%1°, %2°, %3°" ).arg( o.fYawAngleDeg ).arg( o.fPitchAngleDeg ).arg( o.fRollAngleDeg ) );
 			}
 			case 17:
 			{
 				DAFFOrientationYPR o;
 				m_pContent->getOrientation( o );
-				return ( index.column() == 0 ? QString( "Current orientation YPR (deg)" ) : QStringLiteral( "%1° , %2°, %3° (deg)" ).arg( o.fYawAngleDeg ).arg( o.fPitchAngleDeg ).arg( o.fRollAngleDeg ) );
+				return ( index.column() == 0 ? QString( "Current orientation YPR" ) : QStringLiteral( "%1°, %2°, %3°" ).arg( o.fYawAngleDeg ).arg( o.fPitchAngleDeg ).arg( o.fRollAngleDeg ) );
 			}
 			}
 		}
@@ -171,9 +171,9 @@ public slots:
 			return;
 
 		m_pModel = new DAFFPropertiesModel( this, pReader->getProperties()  );
-		this->setModel( m_pModel );
-		this->verticalHeader()->hide();
-        this->horizontalHeader()->resizeSections( QHeaderView::ResizeToContents );
+		setModel( m_pModel );
+		verticalHeader()->hide();
+		horizontalHeader()->resizeSections( QHeaderView::Stretch );
     }
 private:
 	DAFFPropertiesModel*  m_pModel;

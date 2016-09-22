@@ -156,9 +156,9 @@ public slots:
 			return;
 
 		m_pModel = new DAFFMetadataModel( this, pReader->getMetadata()  );
-		this->setModel( m_pModel );
-		this->verticalHeader()->hide();
-        this->horizontalHeader()->resizeSections( QHeaderView::ResizeToContents );
+		setModel( m_pModel );
+		verticalHeader()->hide();
+		horizontalHeader()->resizeSections( QHeaderView::Stretch );
     }
 private:
 	DAFFMetadataModel*  m_pModel;

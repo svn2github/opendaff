@@ -46,6 +46,8 @@ qt5_add_resources( OPENDAFF_DAFFVIEWER_RESOURCES "res/QDAFFViewer.qrc" OPTIONS -
 add_executable( DAFFViewer ${OPENDAFF_DAFFVIEWER_SOURCES} ${OPENDAFF_DAFFVIEWER_RESOURCES} )
 target_link_libraries( DAFFViewer DAFFViz DAFF ${FFTW_LIBRARIES} ${SNDFILE_LIBRARIES} ${VTK_LIBRARIES} Qt5::Widgets Qt5::Svg Qt5::Core )
 install( TARGETS DAFFViewer RUNTIME DESTINATION "bin" )
+set_property( TARGET DAFFViewer PROPERTY WIN32_EXECUTABLE true )
+
 
 # Set PATH to run DAFFFViewer from Visual Studio
 if( MSVC )

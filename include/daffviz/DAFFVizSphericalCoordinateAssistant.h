@@ -43,10 +43,7 @@ namespace DAFFViz
 		// --= object related methods =--
 
 		//! Enables/Disables all graphical assistance
-		void SetAssistanceVisible(bool bVisible);
-
-		//! Enables/Disables axes
-		void SetAxesVisible(bool bVisible);
+		void SetAssistanceVisible(bool bVisible);;
 
 		//! Enables/Disables view/up vector
 		void SetViewUpVectorsVisible(bool bVisible);
@@ -56,6 +53,9 @@ namespace DAFFViz
 
 		//! Enables/Disables equator
 		void SetEquatorVisible(bool bVisible);
+
+		//! Enables/disables poles
+		void SetPolesVisible( bool bVisible );
 
 		//! Enables/Disables grid lines
 		void SetGridVisible(bool bVisible);
@@ -69,7 +69,7 @@ namespace DAFFViz
 		// --= general methods =--
 
 		//! Set visibility
-		void SetVisible(bool bVisible);
+		void SetVisible( bool bVisible );
 	
 		bool GetGridVisible() const;
 		bool GetAxesVisible() const;

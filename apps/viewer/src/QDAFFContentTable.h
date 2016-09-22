@@ -342,9 +342,9 @@ public slots:
 		}
 		}		
 		
-		this->setModel( m_pModel );
-		this->verticalHeader()->hide();
-        this->horizontalHeader()->resizeSections( QHeaderView::ResizeToContents );
+		setModel( m_pModel );
+		verticalHeader()->hide();
+		horizontalHeader()->resizeSections( QHeaderView::Stretch );
     }
 private:
 	DAFFContentModel*  m_pModel;
