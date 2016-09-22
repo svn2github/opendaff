@@ -37,17 +37,19 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 
 	// Read DAFF header conns
 	connect( this, SIGNAL( SignalReadDAFF( const DAFFReader* ) ), ui->groupBox_Reader, SLOT( ReadDAFF( const DAFFReader* ) ) );
-	connect( this, SIGNAL( SignalReadDAFF( const DAFFReader* ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ReadDAFF( const DAFFReader* ) ) );
 	connect( this, SIGNAL( SignalReadDAFF( const DAFFReader* ) ), ui->tableView_Metadata, SLOT( ReadDAFF( const DAFFReader* ) ) );
 	connect( this, SIGNAL( SignalReadDAFF( const DAFFReader* ) ), ui->tableView_Properties, SLOT( ReadDAFF( const DAFFReader* ) ) );
-    connect( this, SIGNAL( SignalReadDAFF( const DAFFReader* ) ), ui->graphicsView_2DDAFFPlot, SLOT( ReadDAFF( const DAFFReader* ) ) );
+	connect( this, SIGNAL( SignalReadDAFF( const DAFFReader* ) ), ui->tableView_Content, SLOT( ReadDAFF( const DAFFReader* ) ) );
+	connect( this, SIGNAL( SignalReadDAFF( const DAFFReader* ) ), ui->graphicsView_2DDAFFPlot, SLOT( ReadDAFF( const DAFFReader* ) ) );
+	connect( this, SIGNAL( SignalReadDAFF( const DAFFReader* ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ReadDAFF( const DAFFReader* ) ) );
 
 	// Close DAFF file conns
 	connect( this, SIGNAL( SignalCloseDAFF() ), ui->groupBox_Reader, SLOT( CloseDAFF() ) );
-	connect( this, SIGNAL( SignalCloseDAFF() ), ui->DAFF3DPlot_VTKWidget, SLOT( CloseDAFF() ) );
 	connect( this, SIGNAL( SignalCloseDAFF() ), ui->tableView_Metadata, SLOT( CloseDAFF() ) );
 	connect( this, SIGNAL( SignalCloseDAFF() ), ui->tableView_Properties, SLOT( CloseDAFF() ) );
+	connect( this, SIGNAL( SignalCloseDAFF() ), ui->tableView_Content, SLOT( CloseDAFF() ) );
 	connect( this, SIGNAL( SignalCloseDAFF() ), ui->graphicsView_2DDAFFPlot, SLOT( CloseDAFF() ) );
+	connect( this, SIGNAL( SignalCloseDAFF() ), ui->DAFF3DPlot_VTKWidget, SLOT( CloseDAFF() ) );
 
 	// Load & prepare DAFF content conns
 	connect( this, SIGNAL( SignalContentLoaded( const DAFFContent* ) ), this, SLOT( LoadContent( const DAFFContent* ) ) );
@@ -87,11 +89,10 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	connect( this, SIGNAL( SignalThetaChanged( double ) ), ui->doubleSpinBox_Theta, SLOT( setValue( double ) ) );
 	connect( this, SIGNAL( SignalPhiAndThetaOutOfBounds( bool ) ), this, SLOT( SetPhiAndThetaOutOfBoundsIndicator( bool ) ) );
 
+	// 2D conns
+	// .. nothing further yet.
 
-	// 2D settings
-
-
-	// 3D settings
+	// 3D conns
 	connect( this, SIGNAL( SignalExportScreenshotPNG( QString ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ExportScreenshotPNG( QString ) ) );
    
 
@@ -132,9 +133,20 @@ void QDAFFViewerWindow::RestoreWindowSize()
 void QDAFFViewerWindow::UpdateRecentFilesActions()
 {
 	QStringList vsRecentFiles = m_qSettings.value( "RecentFiles" ).toStringList();
-	QList< QAction*> lActions = ui->menuRecent->actions();
+	QList< QAction* > lActions = ui->menuRecent->actions();
 
-	for( size_t i = 0; i < std::min( 9, vsRecentFiles.size() ); i++ )
+	const int iMaxElems = 9;
+
+	// Clear?
+	if( vsRecentFiles.empty() && lActions.size() > 2 )
+	{
+		// Skip first to elems ('Clear' action and horizontal devider)
+		for( size_t i = 2; i < lActions.size(); i++ )
+			ui->menuRecent->removeAction( lActions[ int( i ) ] );
+	}
+
+	// Cyclic shift with pop front
+	for( size_t i = 0; i < std::min( int( iMaxElems ), int( vsRecentFiles.size() ) ); i++ )
 	{
 		QFileInfo oCurrentFileInfo( vsRecentFiles.at( int( i ) ) );
 		QAction* pAction = new QAction( this );
@@ -144,8 +156,10 @@ void QDAFFViewerWindow::UpdateRecentFilesActions()
 		pAction->setData( oCurrentFileInfo.filePath() );
 		connect( pAction, SIGNAL( triggered() ), this, SLOT( OpenDAFFFileRecent() ) );
 
-		if( lActions.size() > i + 1 )
-            ui->menuRecent->removeAction( lActions[ int( i + 1 ) ] );
+		// Skip 'Clear' action and horizontal devider (+2) and then shift/replace
+		if( lActions.size() > i + 2 )
+            ui->menuRecent->removeAction( lActions[ int( i + 2 ) ] );
+
 		ui->menuRecent->addAction( pAction );
 	}
 }
@@ -512,6 +526,9 @@ void QDAFFViewerWindow::LoadContent( const DAFFContent* pContent )
 		ui->comboBox_FrequencySelector->setCurrentIndex( 0 );
 	}
 	}
+
+	// Initially set front direction
+	ChangePhiAndTheta( 0.0f, 0.0f );
 }
 
 void QDAFFViewerWindow::ChangeRecordIndex( int iRecordIndex )
@@ -847,9 +864,19 @@ void QDAFFViewerWindow::on_action3DSphericalShowPoles_triggered( bool bChecked )
 	ui->DAFF3DPlot_VTKWidget->SetPolesVisible( bChecked );
 }
 
-void QDAFFViewerWindow::on_action3DSphericalShowCircles_triggered( bool bChecked )
+void QDAFFViewerWindow::on_action3DSphericalShowGrid_triggered( bool bChecked )
 {
-	ui->DAFF3DPlot_VTKWidget->SetCirclesVisible( bChecked );
+	ui->DAFF3DPlot_VTKWidget->SetGridVisible( bChecked );
+}
+
+void QDAFFViewerWindow::on_action3DSphericalShowMeridians_triggered( bool bChecked )
+{
+	ui->DAFF3DPlot_VTKWidget->SetMeridiansVisible( bChecked );
+}
+
+void QDAFFViewerWindow::on_action3DSphericalShowEquator_triggered( bool bChecked )
+{
+	ui->DAFF3DPlot_VTKWidget->SetEquatorVisible( bChecked );
 }
 
 void QDAFFViewerWindow::on_action2DShowAllChannels_triggered( bool bChecked )

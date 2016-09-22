@@ -30,13 +30,13 @@ class DAFFPropertiesModel : public QAbstractTableModel
 public:
 	inline DAFFPropertiesModel( QObject* pParent, const DAFFProperties* pProps ) 
 		: QAbstractTableModel( pParent )
-	, m_pProps( pProps ) 
+	, m_pContent( pProps ) 
 	{
 	};
 
     inline int rowCount( const QModelIndex& ) const
 	{
-		return 16;
+		return 18;
 	};
     inline int columnCount( const QModelIndex& ) const
 	{
@@ -76,44 +76,48 @@ public:
 			switch( index.row() )
 			{
 			case 0:
-				return ( index.column() == 0 ? QString( "Number of channels" ) : QString::number( m_pProps->getNumberOfChannels() ) );
+				return ( index.column() == 0 ? QString( "Number of channels" ) : QString::number( m_pContent->getNumberOfChannels() ) );
 			case 1:
-				return ( index.column() == 0 ? QString( "Number of records" ) : QString::number( m_pProps->getNumberOfRecords() ) );
+				return ( index.column() == 0 ? QString( "Number of records" ) : QString::number( m_pContent->getNumberOfRecords() ) );
 			case 2:
-				return ( index.column() == 0 ? QString( "Quantization" ) : QString::fromStdString( DAFFUtils::StrQuantizationType( m_pProps->getQuantization() ) ) );
+				return ( index.column() == 0 ? QString( "Quantization" ) : QString::fromStdString( DAFFUtils::StrQuantizationType( m_pContent->getQuantization() ) ) );
 			case 3:
-				return ( index.column() == 0 ? QString( "Alpha points" ) : QString::number( m_pProps->getAlphaPoints() ) );
+				return ( index.column() == 0 ? QString( "Alpha points" ) : QString::number( m_pContent->getAlphaPoints() ) );
 			case 4:
-				return ( index.column() == 0 ? QString( "Alpha start (deg)" ) : QString::number( m_pProps->getAlphaStart() ) );
+				return ( index.column() == 0 ? QString( "Alpha resolution" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getAlphaResolution() ) );
 			case 5:
-				return ( index.column() == 0 ? QString( "Alpha end (deg)" ) : QString::number( m_pProps->getAlphaEnd() ) );
+				return ( index.column() == 0 ? QString( "Alpha start" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getAlphaStart() ) );
 			case 6:
-				return ( index.column() == 0 ? QString( "Alpha span (deg)" ) : QString::number( m_pProps->getAlphaSpan() ) );
+				return ( index.column() == 0 ? QString( "Alpha end" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getAlphaEnd() ) );
 			case 7:
-				return ( index.column() == 0 ? QString( "Alpha full range" ) : m_pProps->coversFullAlphaRange() ? QString( "yes" ) : QString( "no" ) );
+				return ( index.column() == 0 ? QString( "Alpha span" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getAlphaSpan() ) );
 			case 8:
-				return ( index.column() == 0 ? QString( "Beta points" ) : QString::number( m_pProps->getBetaPoints() ) );
+				return ( index.column() == 0 ? QString( "Alpha full range" ) : m_pContent->coversFullAlphaRange() ? QString( "yes" ) : QString( "no" ) );
 			case 9:
-				return ( index.column() == 0 ? QString( "Beta start (deg)" ) : QString::number( m_pProps->getBetaStart() ) );
+				return ( index.column() == 0 ? QString( "Beta points" ) : QString::number( m_pContent->getBetaPoints() ) );
 			case 10:
-				return ( index.column() == 0 ? QString( "Beta end (deg)" ) : QString::number( m_pProps->getBetaEnd() ) );
+				return ( index.column() == 0 ? QString( "Beta resolution" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getBetaResolution() ) );
 			case 11:
-				return ( index.column() == 0 ? QString( "Beta span (deg)" ) : QString::number( m_pProps->getBetaSpan() ) );
+				return ( index.column() == 0 ? QString( "Beta start" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getBetaStart() ) );
 			case 12:
-				return ( index.column() == 0 ? QString( "Beta full range" ) : m_pProps->coversFullBetaRange() ? QString( "yes" ) : QString( "no" ) );
+				return ( index.column() == 0 ? QString( "Beta end" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getBetaEnd() ) );
 			case 13:
-				return ( index.column() == 0 ? QString( "Covers full sphere" ) : m_pProps->coversFullSphere() ? QString( "yes" ) : QString( "no" ) );
+				return ( index.column() == 0 ? QString( "Beta span" ) : QStringLiteral( "%1° (deg)" ).arg( m_pContent->getBetaSpan() ) );
 			case 14:
-			{
-				DAFFOrientationYPR o;
-				m_pProps->getDefaultOrientation( o );
-				return ( index.column() == 0 ? QString( "Default orientation YPR (deg)" ) : QString( "%1, %2, %3" ).arg( o.fYawAngleDeg ).arg( o.fPitchAngleDeg ).arg( o.fRollAngleDeg ) );
-			}
+				return ( index.column() == 0 ? QString( "Beta full range" ) : m_pContent->coversFullBetaRange() ? QString( "yes" ) : QString( "no" ) );
 			case 15:
+				return ( index.column() == 0 ? QString( "Covers full sphere" ) : m_pContent->coversFullSphere() ? QString( "yes" ) : QString( "no" ) );
+			case 16:
 			{
 				DAFFOrientationYPR o;
-				m_pProps->getOrientation( o );
-				return ( index.column() == 0 ? QString( "Current orientation YPR (deg)" ) : QString( "%1, %2, %3" ).arg( o.fYawAngleDeg ).arg( o.fPitchAngleDeg ).arg( o.fRollAngleDeg ) );
+				m_pContent->getDefaultOrientation( o );
+				return ( index.column() == 0 ? QString( "Default orientation YPR" ) : QStringLiteral( "%1° , %2°, %3° (deg)" ).arg( o.fYawAngleDeg ).arg( o.fPitchAngleDeg ).arg( o.fRollAngleDeg ) );
+			}
+			case 17:
+			{
+				DAFFOrientationYPR o;
+				m_pContent->getOrientation( o );
+				return ( index.column() == 0 ? QString( "Current orientation YPR (deg)" ) : QStringLiteral( "%1° , %2°, %3° (deg)" ).arg( o.fYawAngleDeg ).arg( o.fPitchAngleDeg ).arg( o.fRollAngleDeg ) );
 			}
 			}
 		}
@@ -141,7 +145,7 @@ public:
 		return QVariant();
 	};
 private:
-	const DAFFProperties* m_pProps;
+	const DAFFProperties* m_pContent;
 };
 
 

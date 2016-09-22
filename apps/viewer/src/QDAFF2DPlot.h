@@ -130,11 +130,11 @@ private:
 	const DAFFReader* m_pReader;
 
 	//help Functions
-	void Draw(bool showAllChannels = false,bool showDots = true);
+	void Draw( bool showAllChannels = true, bool showDots = true );
 	void DrawCoordinateSystem();
 	void DrawGraph(int);
 
-	void ShowChannel(int iChannelIndex, bool bShowAllChannels = false, bool showDots = true);
+	void ShowChannel( int iChannelIndex, bool bShowAllChannels = true, bool showDots = true );
 
 	const std::string convertFloat(float);
 

@@ -89,7 +89,9 @@ public:
 				switch( m_pMetadata->getKeyType( sKey ) )
 				{
 				case DAFFMetadata::DAFF_STRING:
-					return QString::fromStdString( m_pMetadata->getKeyString( sKey ) );
+				{
+					return QString::fromLatin1( m_pMetadata->getKeyString( sKey ).c_str() );
+				}
 				case DAFFMetadata::DAFF_BOOL:
 					return QString::fromStdString( m_pMetadata->getKeyBool( sKey ) ? "True" : "False" );
 				case DAFFMetadata::DAFF_FLOAT:

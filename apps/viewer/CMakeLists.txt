@@ -22,6 +22,7 @@ set( OPENDAFF_DAFFVIEWER_SOURCES
 	"src/QDAFFViewerWindow.cpp"
 	"src/QDAFFViewerWindow.h"
 	"src/QDAFFHeaderGroupBox.h"
+	"src/QDAFFContentTable.h"
 	"src/QDAFFMetadataTable.h"
 	"src/QDAFFPropertiesTable.h"
 	"src/QDAFFVTKWidget.h"

@@ -56,9 +56,9 @@ void CloseDAFF();
 	void SetDirectionIndicatorVisible( bool );
 	void SetArrowsVisible( bool );
 	void SetPolesVisible( bool );
-	void SetCirclesVisible( bool ) {};
-	void SetEquatorVisible( bool ) {};
-	void SetMeridianVisible( bool ) {};
+	void SetGridVisible( bool );
+	void SetEquatorVisible( bool );
+	void SetMeridiansVisible( bool );
 };
 
 #endif // QDAFFVTKWIDGET_H

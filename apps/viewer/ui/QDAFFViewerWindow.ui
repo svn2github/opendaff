@@ -39,7 +39,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,6">
       <item>
-       <layout class="QVBoxLayout" name="layout_StaticInfo" stretch="0,1,1">
+       <layout class="QVBoxLayout" name="layout_StaticInfo" stretch="0,1,1,1">
         <item>
          <widget class="QDAFFHeaderGroupBox" name="groupBox_Reader">
           <property name="minimumSize">
@@ -202,6 +202,24 @@ font: 75 12pt &quot;Calibri&quot;;</string>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
             <widget class="QDAFFPropertiesTableView" name="tableView_Properties"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_DAFFContent">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The &lt;span style=&quot; font-weight:600;&quot;&gt;content&lt;/span&gt; of a DAFF file is the actual data -which can be of different type. These additional properties are shown here, because they are content-depending.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+          </property>
+          <property name="title">
+           <string>DAFF Content</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QDAFFContentTableView" name="tableView_Content"/>
            </item>
           </layout>
          </widget>
@@ -698,9 +716,9 @@ font: 75 12pt &quot;Calibri&quot;;</string>
       </property>
       <addaction name="action3DSphericalShowArrows"/>
       <addaction name="action3DSphericalShowPoles"/>
-      <addaction name="action3DSphericalShowCircles"/>
+      <addaction name="action3DSphericalShowGrid"/>
       <addaction name="action3DSphericalShowEquator"/>
-      <addaction name="action3DSphericalShowMeridian"/>
+      <addaction name="action3DSphericalShowMeridians"/>
      </widget>
      <addaction name="menuSpherical_plot"/>
      <addaction name="menuCarpet_plot"/>
@@ -964,7 +982,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
     <string>Show poles</string>
    </property>
   </action>
-  <action name="action3DSphericalShowCircles">
+  <action name="action3DSphericalShowGrid">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -972,7 +990,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show circles</string>
+    <string>Show grid</string>
    </property>
   </action>
   <action name="action3DShowCoordinateAssistance">
@@ -1000,7 +1018,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
     <string>Show equator</string>
    </property>
   </action>
-  <action name="action3DSphericalShowMeridian">
+  <action name="action3DSphericalShowMeridians">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1008,7 +1026,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show meridian</string>
+    <string>Show meridians</string>
    </property>
   </action>
   <action name="action3DCarpetShowWarp">
@@ -1068,6 +1086,11 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    <class>QDAFF2DPlot</class>
    <extends>QGraphicsView</extends>
    <header>QDAFF2DPlot.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QDAFFContentTableView</class>
+   <extends>QTableView</extends>
+   <header>QDAFFContentTable.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

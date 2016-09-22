@@ -45,7 +45,9 @@ private slots:
     void on_actionDownload_triggered();
 	void on_action3DSphericalShowArrows_triggered( bool );
 	void on_action3DSphericalShowPoles_triggered( bool );
-	void on_action3DSphericalShowCircles_triggered( bool );
+	void on_action3DSphericalShowGrid_triggered( bool );
+	void on_action3DSphericalShowMeridians_triggered( bool );
+	void on_action3DSphericalShowEquator_triggered( bool );
 	void on_action2DShowAllChannels_triggered( bool );
 
 	void OpenDAFFFileRecent();

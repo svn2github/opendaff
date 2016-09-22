@@ -7,6 +7,7 @@
 #include <vtkCamera.h>
 #include <vtkPNGWriter.h>
 #include <vtkWindowToImageFilter.h>
+#include <vtkInteractorStyleTerrain.h>
 
 #include <iostream>
 
@@ -31,8 +32,8 @@ QDAFFVTKWidget::QDAFFVTKWidget( QWidget *parent )
 		
 	GetRenderWindow()->AddRenderer( m_pRenderer );
 
-	GetRenderWindow()->GetInteractor();
-
+	vtkSmartPointer< vtkInteractorStyleTerrain > pCustomInteractorStyle = vtkSmartPointer< vtkInteractorStyleTerrain >::New();
+	GetRenderWindow()->GetInteractor()->SetInteractorStyle( pCustomInteractorStyle );
 }
 
 QDAFFVTKWidget::~QDAFFVTKWidget()
@@ -220,9 +221,38 @@ void QDAFFVTKWidget::SetPolesVisible( bool bVisible )
 {
 	if( m_pSCA )
 	{
+		m_pSCA->SetPolesVisible( bVisible );
+	}
+
+	update();
+}
+
+void QDAFFVTKWidget::SetGridVisible( bool  bVisible )
+{
+	if( m_pSCA )
+	{
+		m_pSCA->SetGridVisible( bVisible );
+	}
+
+	update();
+}
+
+void QDAFFVTKWidget::SetEquatorVisible( bool bVisible )
+{
+	if( m_pSCA )
+	{
 		m_pSCA->SetEquatorVisible( bVisible );
 	}
 
 	update();
 }
 
+void QDAFFVTKWidget::SetMeridiansVisible( bool bVisible )
+{
+	if( m_pSCA )
+	{
+		m_pSCA->SetMeridiansVisible( bVisible );
+	}
+
+	update();
+}
