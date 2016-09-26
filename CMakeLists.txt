@@ -8,8 +8,10 @@ set( CMAKE_DEBUG_POSTFIX "D" )
 find_package( Doxygen QUIET )
 find_package( FFTW QUIET )
 find_package( SndFile QUIET )
-find_package( VTK QUIET )
 find_package( Matlab QUIET )
+find_package( Qt5 COMPONENTS Core Widgets Gui Sql Svg QUIET )
+find_package( VTK QUIET )
+
 
 if( NOT DEFINED OPENDAFF_BUILD_DAFFLIBS_SHARED )
 	set( OPENDAFF_BUILD_DAFFLIBS_SHARED OFF CACHE BOOL "Build OpenDAFF as a shared library" )
@@ -36,7 +38,7 @@ if( NOT DEFINED OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
 endif( NOT DEFINED OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
 
 if( NOT DEFINED OPENDAFF_BUILD_DAFF_DOCUMENTATION )
-	set( OPENDAFF_BUILD_DAFF_DOCUMENTATION ${DOXYGEN_FOUND} CACHE BOOL "Build OpenDAFF with Doxygen documentation (requires third party libraries)" )
+	set( OPENDAFF_BUILD_DAFF_DOCUMENTATION OFF CACHE BOOL "Build OpenDAFF with Doxygen documentation (requires third party libraries)" )
 endif( NOT DEFINED OPENDAFF_BUILD_DAFF_DOCUMENTATION )
 
 if( FFTW_FOUND )

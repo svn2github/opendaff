@@ -438,7 +438,7 @@ function [] = daffv17_write( varargin )
                 [ data, samplerate, metadata ] = args.datafunc( alpha, beta, args.userdata );
                 [ channels, filterlength] = size( data );
 
-                if( ~isa( data, 'double' ) )
+                if( ~isa( data, 'numeric' ) )
                     error( 'Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta );
                 end
                 
@@ -462,7 +462,7 @@ function [] = daffv17_write( varargin )
 
                     % Check filter length for 16-byte alignment
                     if( mod( filterlength, 4 ) ~= 0 )
-                        error( 'Dataset (A%0.1f°, B%0.1f°): Filter length is not a multiple of 4 (this is required for memory alignment)', alpha, beta );
+                        error( 'Dataset (A%0.1f°, B%0.1f°): Filter length is %d which is not a multiple of 4 (this is required for memory alignment)', alpha, beta, filterlength );
                     end
 
                     fprintf('Global properties: Sampling rate = %d Hz, filter length = %d\n',...
@@ -537,13 +537,13 @@ function [] = daffv17_write( varargin )
                 [ freqs, data, metadata ] = args.datafunc( alpha, beta, args.userdata );
                 [channels, numfreqs] = size(data);
 
-                if (class(data) ~= 'double')
-                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values') );
+                if ~isa( data, 'numeric' ) 
+                    error( 'Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta );
                 end
                 
-                if isfield(props, 'freqs')
-                    if (freqs ~= props.freqs)
-                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Frequency support does not match', alpha, beta) );
+                if isfield( props, 'freqs' )
+                    if freqs ~= props.freqs
+                        error( 'Dataset (A%0.1f°, B%0.1f°): Frequency support does not match', alpha, beta );
                     end
 
                     if (channels ~= args.channels)
@@ -590,7 +590,8 @@ function [] = daffv17_write( varargin )
                                     'metadata', metadata, ...
                                     'metadataIndex', 0); 
                 end
-		write_metadatablock = write_metadatablock || ~isempty(metadata);
+		
+				write_metadatablock = write_metadatablock || ~isempty(metadata);
                             
                 % Discard the data
                 clear data; 
@@ -649,7 +650,8 @@ function [] = daffv17_write( varargin )
                     x{a,b,c} = struct('metadata', metadata, ...
                                       'metadataIndex', 0); 
                 end
-		write_metadatablock = write_metadatablock || ~isempty(metadata);
+                
+                write_metadatablock = write_metadatablock || ~isempty(metadata);
                             
                 % Discard the data
                 clear data; 
@@ -662,30 +664,30 @@ function [] = daffv17_write( varargin )
                 [ freqs, data, metadata ] = args.datafunc( alpha, beta, args.userdata );
                 [channels, numfreqs] = size(data);
 
-                if (class(data) ~= 'double')
-                    error( sprintf('Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta) );
+                if ~isa( data, 'numeric' )
+                    error( 'Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta );
                 end
                 
-                if isfield(props, 'freqs')
-                    if (freqs ~= props.freqs)
-                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Frequency support does not match', alpha, beta) );
+                if isfield( props, 'freqs' )
+                    if freqs ~= props.freqs
+                        error( 'Dataset (A%0.1f°, B%0.1f°): Frequency support does not match', alpha, beta );
                     end
 
-                    if (channels ~= args.channels)
-                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Number of channels does not match', alpha, beta) );
+                    if channels ~= args.channels
+                        error( 'Dataset (A%0.1f°, B%0.1f°): Number of channels does not match', alpha, beta );
                     end
                 else
                     % Checks on the frequency support
-                    if (min(freqs) <= 0)
-                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Support frequencies must be greater zero', alpha, beta) );
+                    if min(freqs) <= 0
+                        error( 'Dataset (A%0.1f°, B%0.1f°): Support frequencies must be greater zero', alpha, beta );
                     end;
             
-                    if (sort(freqs) ~= freqs)
-                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Support frequencies must be stricly increasing', alpha, beta) );
+                    if sort(freqs) ~= freqs
+                        error( 'Dataset (A%0.1f°, B%0.1f°): Support frequencies must be stricly increasing', alpha, beta );
                     end   
         
-                    if (length(unique(freqs)) ~= length(freqs))
-                        error( sprintf('Dataset (A%0.1f°, B%0.1f°): Support frequencies must be unique', alpha, beta) );
+                    if length(unique(freqs)) ~= length(freqs)
+                        error( 'Dataset (A%0.1f°, B%0.1f°): Support frequencies must be unique', alpha, beta );
                     end  
                     
                     % Now set the global properties, if they have not been set yet
@@ -693,12 +695,12 @@ function [] = daffv17_write( varargin )
                     props.freqs = freqs;
                     props.elementsPerRecord = length(freqs);
 
-                    fprintf('Global properties: Number of frequencies = %d\n', numfreqs);
+                    fprintf( 'Global properties: Number of frequencies = %d\n', numfreqs );
                 end
                 
                 % Determine the peak value
-                peak = max(max(abs(data)));
-                props.globalPeak = max([props.globalPeak peak]);
+                peak = max( max( abs( data ) ) );
+                props.globalPeak = max( [ props.globalPeak peak ] );
                     
                 for c=1:args.channels
                     x{a,b,c} = struct('metadata', metadata, ... %'peak', peak, ...
@@ -718,15 +720,15 @@ function [] = daffv17_write( varargin )
                 [ data, sampleRate, isSymetric, metadata ] = args.datafunc( alpha, beta, args.userdata );
                 [ channels, numDFTCoeffs ] = size( data );
 
-                if( isa( data, 'double' ) == 0 )
+                if ~isa( data, 'double' )
                     error( 'Dataset (A%0.1f°, B%0.1f°): Data function must deliver double values', alpha, beta );
                 end
                
-                if( channels ~= args.channels )
+                if channels ~= args.channels 
                     error( 'Dataset (A%0.1f°, B%0.1f°): Data function must deliver matching channel numbers (%d != %d) ', alpha, beta, args.channels, channels );
                 end
                 
-                if( isa( isSymetric, 'logical' ) == 0 )
+                if isa( isSymetric, 'logical' ) == 0 
                     error( 'Dataset (A%0.1f°, B%0.1f°): third parameter isSymetric must be logical', alpha, beta );
                 end
                 
@@ -736,7 +738,7 @@ function [] = daffv17_write( varargin )
                     end
                 end
                 
-                if( isfield( props, 'numDFTCoeffs' ) )
+                if isfield( props, 'numDFTCoeffs' )
                     if( numDFTCoeffs ~= props.numDFTCoeffs )
                         error( 'Dataset (A%0.1f°, B%0.1f°): Number of discrete fourier spectra coefficients is not constant', alpha, beta );
                     end
