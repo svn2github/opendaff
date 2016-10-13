@@ -1355,7 +1355,8 @@ int DAFFReaderImpl::getMaxEffectiveFilterLength() const {
 	return m_pContentHeaderIR->iMaxEffectiveFilterLength;
 }
 
-int DAFFReaderImpl::getFilterCoeffs( int iRecordIndex, int iChannel, float* pfDest, float fGain ) const {
+int DAFFReaderImpl::getFilterCoeffs( int iRecordIndex, int iChannel, float* pfDest, float fGain ) const
+{
 	int iOffset;
 	int iEffectiveLength;
 	int iError;
@@ -1364,34 +1365,40 @@ int DAFFReaderImpl::getFilterCoeffs( int iRecordIndex, int iChannel, float* pfDe
 	if( iError != DAFF_NO_ERROR ) return iError;
 
 	// Place zeros before the data
-	for( int i = 0; i < iOffset; i++ ) pfDest[ i ] = 0;
+	for( int i = 0; i < iOffset; i++ )
+		pfDest[ i ] = 0;
 
 	// Insert the data
 	iError = getEffectiveFilterCoeffs( iRecordIndex, iChannel, pfDest + iOffset, fGain );
 	if( iError != DAFF_NO_ERROR ) return iError;
 
 	// Place zeros behind the data
-	for( int i = iOffset + iEffectiveLength; i < getFilterLength(); i++ ) pfDest[ i ] = 0;
+	for( int i = iOffset + iEffectiveLength; i < getFilterLength(); i++ )
+		pfDest[ i ] = 0;
 
 	return DAFF_NO_ERROR;
 }
 
-int DAFFReaderImpl::addFilterCoeffs( int iRecordIndex, int iChannel, float* pfDest, float fGain ) const {
+int DAFFReaderImpl::addFilterCoeffs( int iRecordIndex, int iChannel, float* pfDest, float fGain ) const
+{
 	int iOffset;
 	int iEffectiveLength;
 	int iError;
 
 	iError = getEffectiveFilterBounds( iRecordIndex, iChannel, iOffset, iEffectiveLength );
-	if( iError != DAFF_NO_ERROR ) return iError;
+	if( iError != DAFF_NO_ERROR )
+		return iError;
 
 	// Insert the data
 	iError = addEffectiveFilterCoeffs( iRecordIndex, iChannel, pfDest + iOffset, fGain );
-	if( iError != DAFF_NO_ERROR ) return iError;
+	if( iError != DAFF_NO_ERROR )
+		return iError;
 
 	return DAFF_NO_ERROR;
 }
 
-int DAFFReaderImpl::getEffectiveFilterBounds( int iRecordIndex, int iChannel, int& iOffset, int& iLength ) const {
+int DAFFReaderImpl::getEffectiveFilterBounds( int iRecordIndex, int iChannel, int& iOffset, int& iLength ) const
+{
 	assert( ( iRecordIndex >= 0 ) && ( iRecordIndex < m_pMainHeader->iNumRecords ) );
 	assert( ( iChannel >= 0 ) && ( iChannel < m_pMainHeader->iNumChannels ) );
 
@@ -1403,11 +1410,11 @@ int DAFFReaderImpl::getEffectiveFilterBounds( int iRecordIndex, int iChannel, in
 	iOffset = pDesc->iLeadingZeros;
 	iLength = pDesc->iElementLength;
 
-
 	return DAFF_NO_ERROR;
 }
 
-int DAFFReaderImpl::getEffectiveFilterCoeffs( int iRecordIndex, int iChannel, float* pfDest, float fGain ) const {
+int DAFFReaderImpl::getEffectiveFilterCoeffs( int iRecordIndex, int iChannel, float* pfDest, float fGain ) const
+{
 	assert( ( iRecordIndex >= 0 ) && ( iRecordIndex < m_pMainHeader->iNumRecords ) );
 	assert( ( iChannel >= 0 ) && ( iChannel < m_pMainHeader->iNumChannels ) );
 
@@ -1415,15 +1422,17 @@ int DAFFReaderImpl::getEffectiveFilterCoeffs( int iRecordIndex, int iChannel, fl
 		( iChannel < 0 ) || ( iChannel >= m_pMainHeader->iNumChannels ) )
 		return DAFF_INVALID_INDEX;
 
-	if( pfDest == NULL ) return DAFF_NO_ERROR;
+	if( pfDest == NULL )
+		return DAFF_NO_ERROR;
 
 	DAFFRecordChannelDescIR* pDesc = reinterpret_cast< DAFFRecordChannelDescIR* >( getRecordChannelDescPtr( iRecordIndex, iChannel ) );
 	// Check data offset for buffer overruns
 	assert( pDesc->ui64DataOffset < m_pDataFileBlock->ui64Size );
-	void* pData = reinterpret_cast< char* >( m_pDataBlock ) +pDesc->ui64DataOffset;
+	void* pData = reinterpret_cast< char* >( m_pDataBlock ) + pDesc->ui64DataOffset;
 
 	// Data type conversion
-	switch( m_pMainHeader->iQuantization ) {
+	switch( m_pMainHeader->iQuantization )
+	{
 	case DAFF_INT16:
 		DAFF::stc_sint16_to_float( pfDest, ( const short* ) pData, pDesc->iElementLength, 1, 1, fGain );
 		break;
@@ -1434,9 +1443,11 @@ int DAFFReaderImpl::getEffectiveFilterCoeffs( int iRecordIndex, int iChannel, fl
 
 	case DAFF_FLOAT32:
 		if( fGain == 1 )
-			// Direct copy
-			memcpy( pfDest, pData, pDesc->iElementLength*sizeof( float ) );
-		else {
+		{	// Direct copy
+			memcpy( pfDest, pData, pDesc->iElementLength * sizeof( float ) );
+		}
+		else
+		{
 			// Copy with gain multiplication
 			float* pfData = ( float* ) pData;
 			for( int i = 0; i < pDesc->iElementLength; i++ )
@@ -1448,7 +1459,8 @@ int DAFFReaderImpl::getEffectiveFilterCoeffs( int iRecordIndex, int iChannel, fl
 	return DAFF_NO_ERROR;
 }
 
-int DAFFReaderImpl::addEffectiveFilterCoeffs( int iRecordIndex, int iChannel, float* pfDest, float fGain ) const {
+int DAFFReaderImpl::addEffectiveFilterCoeffs( int iRecordIndex, int iChannel, float* pfDest, float fGain ) const
+{
 	assert( ( iRecordIndex >= 0 ) && ( iRecordIndex < m_pMainHeader->iNumRecords ) );
 	assert( ( iChannel >= 0 ) && ( iChannel < m_pMainHeader->iNumChannels ) );
 

@@ -901,14 +901,18 @@ void QDAFFViewerWindow::on_actionExport3DPlotImageSeries_triggered()
 
 	if( dialog.exec() )
 	{
-		QString sExportFilePath = dialog.GetExportPath();
+		QString sExportDirectory = dialog.GetExportPath();
+		QString sFileBaseName = dialog.GetFileBaseName();
 
-		int iNumFrames = 12;
-		int iWidth = 1920;
-		int iHeight = 1080;
+		if( sFileBaseName.isEmpty() )
+			sFileBaseName = oFile.baseName();
+
+		int iNumFrames = dialog.GetNumFrames();
+		int iWidth = dialog.GetWidth();
+		int iHeight = dialog.GetHeight();
 		
 		ui->DAFFStatusBar->showMessage( "Starting screenshot series, this may take a while." );
-		ui->DAFF3DPlot_VTKWidget->ExportScrenshotSeriesPNG( sFileBasePath, iNumFrames, iWidth, iHeight );
+		ui->DAFF3DPlot_VTKWidget->ExportScrenshotSeriesPNG( sExportDirectory, sFileBaseName, iNumFrames, iWidth, iHeight );
 		ui->DAFFStatusBar->showMessage( "Exported screenshot series to folder " + oFile.absolutePath() );
 	}
 	else

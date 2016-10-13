@@ -3,36 +3,33 @@
 
 #include <QFileDialog>
 
-QDAFFDialogExport3DPlotImageSeries::QDAFFDialogExport3DPlotImageSeries(QWidget *parent, const QDir& oBasePath, const QString& sFileBaseName )
-    : QDialog(parent),
-    ui(new Ui::QDAFFDialogExport3DPlotImageSeries)
-  , m_oBasePath( oBasePath )
-  , m_sFileBaseName( sFileBaseName )
-  , m_bExport( false )
+QDAFFDialogExport3DPlotImageSeries::QDAFFDialogExport3DPlotImageSeries( QWidget *parent, const QDir& oBasePath, const QString& sFileBaseName )
+	: QDialog( parent ),
+	ui( new Ui::QDAFFDialogExport3DPlotImageSeries )
+	, m_oBasePath( oBasePath )
+	, m_sFileBaseName( sFileBaseName )
+	, m_bExport( false )
 {
-    ui->setupUi(this);
+	ui->setupUi( this );
 
 	QStringList vsSupportedFileTypes;
-	vsSupportedFileTypes <<"png";
+	vsSupportedFileTypes << "png";
 
 	int iWidth = m_qSettings.value( "Export3DPlotImage/Width", 1920 ).toInt();
 	int iHeight = m_qSettings.value( "Export3DPlotImage/Height", 1080 ).toInt();
 
 	ui->spinBox_Width->setValue( iWidth );
 	ui->spinBox_Height->setValue( iHeight );
+	
+	ui->lineEdit_FileBaseName->setText( sFileBaseName );
 
-    if( m_oBasePath.exists() )
-    {
+	if( m_oBasePath.exists() )
+	{
 		if( !m_oBasePath.isAbsolute() )
 			m_oBasePath.makeAbsolute();
 
-		QString sSuffix = "svg";
-
-		QFile oFile;
-		oFile.setFileName( m_oBasePath.absolutePath() + QDir::separator() + m_sFileBaseName + "." + sSuffix );
-
-        ui->lineEdit_ExportPath->setText( oFile.fileName() );
-    }
+		ui->lineEdit_ExportPath->setText( m_oBasePath.absolutePath() );
+	}
 }
 
 QDAFFDialogExport3DPlotImageSeries::~QDAFFDialogExport3DPlotImageSeries()
@@ -52,6 +49,26 @@ QString QDAFFDialogExport3DPlotImageSeries::GetExportPath() const
 		return "";
 }
 
+int QDAFFDialogExport3DPlotImageSeries::GetNumFrames() const
+{
+	return ui->spinBox->value();
+}
+
+int QDAFFDialogExport3DPlotImageSeries::GetHeight() const
+{
+	return ui->spinBox_Height->value();
+}
+
+int QDAFFDialogExport3DPlotImageSeries::GetWidth() const
+{
+	return ui->spinBox_Width->value();
+}
+
+QString QDAFFDialogExport3DPlotImageSeries::GetFileBaseName() const
+{
+	return ui->lineEdit_FileBaseName->text();
+}
+
 void QDAFFDialogExport3DPlotImageSeries::on_pushButton_Export_clicked()
 {
 	m_bExport = true;
@@ -63,6 +80,8 @@ void QDAFFDialogExport3DPlotImageSeries::on_pushButton_Browse_clicked()
 {
 	QFileDialog fd;
 	fd.setNameFilter( "Export folder" );
+	fd.setFileMode( QFileDialog::Directory );
+	fd.setOption( QFileDialog::ShowDirsOnly );
 
 	if( m_oBasePath.exists() )
 		fd.setDirectory( m_oBasePath );

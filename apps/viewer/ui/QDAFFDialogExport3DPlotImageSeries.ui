@@ -37,7 +37,7 @@
    </item>
    <item>
     <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
+     <item row="1" column="0">
       <widget class="QLabel" name="width">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -47,7 +47,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="height">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -57,7 +57,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
+     <item row="1" column="1">
       <widget class="QSpinBox" name="spinBox_Width">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -73,7 +73,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="2" column="1">
       <widget class="QSpinBox" name="spinBox_Height">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -86,6 +86,49 @@
        </property>
        <property name="value">
         <number>1080</number>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Frames</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QSpinBox" name="spinBox">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>999999999</number>
+       </property>
+       <property name="value">
+        <number>75</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="lineEdit_FileBaseName">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_FileBaseName">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+       <property name="text">
+        <string>File base name</string>
        </property>
       </widget>
      </item>

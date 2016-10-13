@@ -224,10 +224,11 @@ void free_aligned16(void* ptr) {
 // --= Sample type conversion =--
 
 
-void stc_sint16_to_float(float* dest, const short* src, size_t count, int input_stride, int output_stride, float gain) {
+void stc_sint16_to_float( float* dest, const short* src, size_t count, int input_stride, int output_stride, float gain )
+{
 	float c = gain / 32767.0F;
-	for (size_t i=0; i<count; i++)
-		dest[i*output_stride] = (float) src[i*input_stride] * c;
+	for( size_t i = 0; i < count; i++ )
+		dest[ i*output_stride ] = ( float ) src[ i*input_stride ] * c;
 }
 
 void stc_sint16_to_float_add(float* dest, const short* src, size_t count, int input_stride, int output_stride, float gain) {

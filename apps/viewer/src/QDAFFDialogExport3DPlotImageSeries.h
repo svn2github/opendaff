@@ -19,7 +19,12 @@ public:
     explicit QDAFFDialogExport3DPlotImageSeries(QWidget *parent, const QDir& oBasePath, const QString& sFileBaseName );
     ~QDAFFDialogExport3DPlotImageSeries();
 
+	QString GetFileBaseName() const;
 	QString GetExportPath() const;
+
+	int GetNumFrames() const;
+	int GetWidth() const;
+	int GetHeight() const;
 
 private slots:
     void on_pushButton_Export_clicked();

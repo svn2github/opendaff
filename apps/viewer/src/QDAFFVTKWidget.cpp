@@ -2,6 +2,7 @@
 
 #include <QKeyEvent>
 #include <QFileInfo>
+#include <QDir>
 
 #include <vtkAssembly.h>
 #include <vtkRenderWindow.h>
@@ -197,7 +198,7 @@ void QDAFFVTKWidget::ExportScreenshotPNG( QString sFilePath, int iWidth, int iHe
     pExportPNG->Write();
 }
 
-void QDAFFVTKWidget::ExportScrenshotSeriesPNG( QString sFileBasePath , int iNumFrames, int iWidth, int iHeight )
+void QDAFFVTKWidget::ExportScrenshotSeriesPNG( QString sFileBasePath, QString sFileBaseName, int iNumFrames, int iWidth, int iHeight )
 {
 	if( iNumFrames < 0 )
 		return;
@@ -207,9 +208,7 @@ void QDAFFVTKWidget::ExportScrenshotSeriesPNG( QString sFileBasePath , int iNumF
 	pImageRenderer->SetActiveCamera( m_pRenderer->GetActiveCamera() );
 
 	vtkSmartPointer<vtkRenderWindow> pImageRenderWin = vtkSmartPointer<vtkRenderWindow>::New();
-	QFileInfo oFile( sFileBasePath );
-	std::string sFileBaseName = "Exporting image series for " + oFile.baseName().toStdString();
-	pImageRenderWin->SetWindowName( sFileBaseName.c_str() );
+	pImageRenderWin->SetWindowName( sFileBaseName.toStdString().c_str() );
 	pImageRenderWin->SetSize( iWidth, iHeight );
 	pImageRenderWin->AddRenderer( pImageRenderer );
 	pImageRenderWin->Render();
@@ -232,9 +231,12 @@ void QDAFFVTKWidget::ExportScrenshotSeriesPNG( QString sFileBasePath , int iNumF
 		pFilter->Modified();
 
 		std::stringstream ss;
-		ss << sFileBasePath.toStdString() << "_f" << std::setfill( '0' ) << std::setw( 4 ) << i << ".png";
+		ss << sFileBaseName.toStdString() << "_f" << std::setfill( '0' ) << std::setw( 4 ) << i << ".png";
 
-		pExportPNG->SetFileName( ss.str().c_str() );
+		QDir oDir( sFileBasePath );
+		QFileInfo oFile( oDir, ss.str().c_str() );
+
+		pExportPNG->SetFileName( oFile.absoluteFilePath().toStdString().c_str() );
 		pExportPNG->Write();
 	}
 }
