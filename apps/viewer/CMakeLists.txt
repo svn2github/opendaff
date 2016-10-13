@@ -31,13 +31,21 @@ set( OPENDAFF_DAFFVIEWER_SOURCES
     "src/QDAFF2DPlot.cpp"
     "src/QDAFFDialogExport2DPlot.cpp"
     "src/QDAFFDialogExport2DPlot.h"
+    "src/QDAFFDialogExport3DPlotImage.cpp"
+    "src/QDAFFDialogExport3DPlotImage.h"
+    "src/QDAFFDialogExport3DPlotImageSeries.cpp"
+    "src/QDAFFDialogExport3DPlotImageSeries.h"
     "ui/QDAFFViewerWindow.ui"
     "ui/QDAFFDialogExport2DPlot.ui"
+    "ui/QDAFFDialogExport3DPlotImage.ui"
+    "ui/QDAFFDialogExport3DPlotImageSeries.ui"
 	)
 	
 # Qt UI form compiler
 qt5_wrap_ui( "ui_QDAFFViewerWindow.h" "ui/QDAFFViewerWindow.ui" ) 
 qt5_wrap_ui( "ui_QDAFFDialogExport2DPlot.h" "ui/QDAFFDialogExport2DPlot.ui" )
+qt5_wrap_ui( "ui_QDAFFDialogExport3DPlotImage.h" "ui/QDAFFDialogExport3DPlotImage.ui" )
+qt5_wrap_ui( "ui_QDAFFDialogExport3DPlotImageSeries.h" "ui/QDAFFDialogExport3DPlotImageSeries.ui" )
 include_directories( "${CMAKE_BINARY_DIR}/apps/viewer" ) # Gt UI form compiler generates files into this folder
 
 # Qt resources
@@ -60,3 +68,6 @@ if( MSVC )
 	list( APPEND DAFFUSERTEMPLATE_PATHES "${_qt5Core_install_prefix}/bin/" )
 	configure_file( DAFFUserTemplate.vcxproj.user.proto ${USER_FILE} @ONLY )
 endif( MSVC )
+
+# Qt Creator: Open CMakeLists.txt as project and add directories to external libs, i.e.
+#	-DCMAKE_MODULE_PATH=C:\dev\ExternalLibs\OpenDAFF\opendaff-v1.7\opendaff_withcred\cmake -DVTK_DIR=C:\dev\ExternalLibs\VTK\VTK-7.0\win32-x64.vc12\lib\cmake\vtk-7.0 -DFFTW_DIR=C:\dev\ExternalLibs\fftw\fftw-3.3.3\win32-x64 -DSNDFILE_DIR=C:\dev\ExternalLibs\libsndfile\libsndfile-1.0.25\win32-x64

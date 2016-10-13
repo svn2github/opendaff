@@ -101,8 +101,10 @@ private slots:
 	void on_actionDecrease_phi_triggered();
 	void on_actionIncrease_theta_triggered();
 	void on_actionDecrease_theta_triggered();
-    void on_actionRecent_Clear_triggered();
-    void on_actionExport2DPlot_triggered();
+	void on_actionRecent_Clear_triggered();
+	void on_actionExport2DPlot_triggered();
+	void on_actionExport3DPlot_triggered();
+	void on_actionExport3DPlotImageSeries_triggered();
 
 signals:
 	void SignalReadDAFF( const DAFFReader* pReader );

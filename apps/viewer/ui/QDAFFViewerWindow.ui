@@ -632,6 +632,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
      </property>
      <addaction name="actionExport2DPlot"/>
      <addaction name="actionExport3DPlot"/>
+     <addaction name="actionExport3DPlotImageSeries"/>
     </widget>
     <addaction name="actionOpen"/>
     <addaction name="actionClose"/>
@@ -1055,6 +1056,14 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    </property>
    <property name="shortcut">
     <string>L</string>
+   </property>
+  </action>
+  <action name="actionExport3DPlotImageSeries">
+   <property name="text">
+    <string>3D plot image series</string>
+   </property>
+   <property name="shortcut">
+    <string>E, 4</string>
    </property>
   </action>
  </widget>

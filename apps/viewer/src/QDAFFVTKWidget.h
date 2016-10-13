@@ -50,7 +50,8 @@ void CloseDAFF();
 	void ChangeAlpha( double dAlphaDeg );
 	void ChangeBeta( double dBetaDeg );
 
-	void ExportScreenshotPNG( QString sFilePath );
+	void ExportScreenshotPNG( QString sFilePath, int iWidth = 1920, int iHeight = 1080 );
+	void ExportScrenshotSeriesPNG( QString sFilePath, int iNumFrames = 360, int iWidth = 1920, int iHeight = 1080 );
 
 	void SetCoordinateAssistanceVisible( bool );
 	void SetDirectionIndicatorVisible( bool );

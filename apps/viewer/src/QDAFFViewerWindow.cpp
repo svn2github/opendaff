@@ -2,6 +2,8 @@
 #include <ui_QDAFFViewerWindow.h>
 #include "QDAFFVTKWidget.h"
 #include "QDAFFDialogExport2DPlot.h"
+#include "QDAFFDialogExport3DPlotImage.h"
+#include "QDAFFDialogExport3DPlotImageSeries.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -808,7 +810,6 @@ void QDAFFViewerWindow::on_actionRecent_Clear_triggered()
 
 void QDAFFViewerWindow::on_actionExport2DPlot_triggered()
 {
-
 	if( m_pDAFFReader->isFileOpened() == false )
 	{
 		QErrorMessage qe;
@@ -819,11 +820,11 @@ void QDAFFViewerWindow::on_actionExport2DPlot_triggered()
 		return;
 	}
 
-	QFileInfo oFile( m_pDAFFReader->getFilename().c_str() );    
-    QDAFFDialogExport2DPlot dialog( this, oFile.dir(), oFile.baseName() );
+	QFileInfo oFile( m_pDAFFReader->getFilename().c_str() );
+	QDAFFDialogExport2DPlot dialog( this, oFile.dir(), oFile.baseName() );
 
-    if( dialog.exec() )
-    {
+	if( dialog.exec() )
+	{
 		QString sExportFilePath = dialog.GetExportPath();
 		bool bIncludeAllChannels = dialog.ExportAllChannels();
 		bool bShowDataPointDots = dialog.ShowDataPointDots();
@@ -847,7 +848,69 @@ void QDAFFViewerWindow::on_actionExport2DPlot_triggered()
 			qe.exec();
 			return;
 		}
-    }
+	}
+	else
+	{
+		ui->DAFFStatusBar->showMessage( "Export aborted." );
+	}
+}
+
+void QDAFFViewerWindow::on_actionExport3DPlot_triggered()
+{
+	if( m_pDAFFReader->isFileOpened() == false )
+	{
+		QErrorMessage qe;
+		QString sError = "Please load a DAFF file before trying to export plots";
+		qe.showMessage( sError );
+		ui->DAFFStatusBar->showMessage( sError );
+		qe.exec();
+		return;
+	}
+
+	QFileInfo oFile( m_pDAFFReader->getFilename().c_str() );
+	QDAFFDialogExport3DPlotImage dialog( this, oFile.dir(), oFile.baseName() );
+
+	if( dialog.exec() )
+	{
+		QString sExportFilePath = dialog.GetExportPath();		
+		ui->DAFF3DPlot_VTKWidget->ExportScreenshotPNG( sExportFilePath, dialog.GetWidth(), dialog.GetHeight() );
+		ui->DAFFStatusBar->showMessage( "Exported plot to " + sExportFilePath );
+	}
+	else
+	{
+		ui->DAFFStatusBar->showMessage( "Export aborted." );
+	}
+}
+
+void QDAFFViewerWindow::on_actionExport3DPlotImageSeries_triggered()
+{
+	if( m_pDAFFReader->isFileOpened() == false )
+	{
+		QErrorMessage qe;
+		QString sError = "Please load a DAFF file before trying to export plots";
+		qe.showMessage( sError );
+		ui->DAFFStatusBar->showMessage( sError );
+		qe.exec();
+		return;
+	}
+
+	QFileInfo oFile( m_pDAFFReader->getFilename().c_str() );
+	QString sFileBasePath = oFile.absolutePath() + QDir::separator() + oFile.baseName();
+
+	QDAFFDialogExport3DPlotImageSeries dialog( this, oFile.dir(), oFile.baseName() );
+
+	if( dialog.exec() )
+	{
+		QString sExportFilePath = dialog.GetExportPath();
+
+		int iNumFrames = 12;
+		int iWidth = 1920;
+		int iHeight = 1080;
+		
+		ui->DAFFStatusBar->showMessage( "Starting screenshot series, this may take a while." );
+		ui->DAFF3DPlot_VTKWidget->ExportScrenshotSeriesPNG( sFileBasePath, iNumFrames, iWidth, iHeight );
+		ui->DAFFStatusBar->showMessage( "Exported screenshot series to folder " + oFile.absolutePath() );
+	}
 	else
 	{
 		ui->DAFFStatusBar->showMessage( "Export aborted." );

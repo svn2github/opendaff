@@ -1,15 +1,19 @@
 #include "QDAFFVTKWidget.h"
 
 #include <QKeyEvent>
+#include <QFileInfo>
 
 #include <vtkAssembly.h>
 #include <vtkRenderWindow.h>
 #include <vtkCamera.h>
 #include <vtkPNGWriter.h>
+#include <vtkAVIWriter.h>
 #include <vtkWindowToImageFilter.h>
 #include <vtkInteractorStyleTerrain.h>
+#include <vtkImageMagnify.h>
 
 #include <iostream>
+#include <sstream>
 
 QDAFFVTKWidget::QDAFFVTKWidget( QWidget *parent )
 	: QVTKWidget( parent )
@@ -170,19 +174,69 @@ void QDAFFVTKWidget::ChangeBeta( double dBetaDeg )
 	update();
 }
 
-void QDAFFVTKWidget::ExportScreenshotPNG( QString sFilePath )
+void QDAFFVTKWidget::ExportScreenshotPNG( QString sFilePath, int iWidth, int iHeight )
 {
-	vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
-	windowToImageFilter->SetInput( GetRenderWindow() );
-    windowToImageFilter->SetMagnification( 1 );
-	windowToImageFilter->SetInputBufferTypeToRGBA();
-	windowToImageFilter->ReadFrontBufferOff();
-	windowToImageFilter->Update();
+	vtkSmartPointer< vtkRenderer > pImageRenderer = vtkSmartPointer< vtkRenderer >::New();
+	pImageRenderer->AddActor( m_pSGRootNode->GetNodeAssembly() );
+	pImageRenderer->SetActiveCamera( m_pRenderer->GetActiveCamera() );
+
+	vtkSmartPointer< vtkRenderWindow > pImageRenderWin = vtkSmartPointer< vtkRenderWindow >::New();
+	pImageRenderWin->SetSize( iWidth, iHeight );
+	pImageRenderWin->AddRenderer( pImageRenderer );
+	pImageRenderWin->Render();
+
+	vtkSmartPointer< vtkWindowToImageFilter > pFilter = vtkSmartPointer< vtkWindowToImageFilter >::New();
+	pFilter->SetInput( pImageRenderWin );
+	pFilter->SetInputBufferTypeToRGBA();
+	pFilter->ReadFrontBufferOff();
+	pFilter->Update();
 
 	vtkSmartPointer< vtkPNGWriter > pExportPNG = vtkSmartPointer< vtkPNGWriter >::New();
 	pExportPNG->SetFileName( sFilePath.toStdString().c_str() );
-	pExportPNG->SetInputConnection( windowToImageFilter->GetOutputPort() );
+	pExportPNG->SetInputConnection( pFilter->GetOutputPort() );
     pExportPNG->Write();
+}
+
+void QDAFFVTKWidget::ExportScrenshotSeriesPNG( QString sFileBasePath , int iNumFrames, int iWidth, int iHeight )
+{
+	if( iNumFrames < 0 )
+		return;
+
+	vtkSmartPointer<vtkRenderer> pImageRenderer = vtkSmartPointer<vtkRenderer>::New();
+	pImageRenderer->AddActor( m_pSGRootNode->GetNodeAssembly() );
+	pImageRenderer->SetActiveCamera( m_pRenderer->GetActiveCamera() );
+
+	vtkSmartPointer<vtkRenderWindow> pImageRenderWin = vtkSmartPointer<vtkRenderWindow>::New();
+	QFileInfo oFile( sFileBasePath );
+	std::string sFileBaseName = "Exporting image series for " + oFile.baseName().toStdString();
+	pImageRenderWin->SetWindowName( sFileBaseName.c_str() );
+	pImageRenderWin->SetSize( iWidth, iHeight );
+	pImageRenderWin->AddRenderer( pImageRenderer );
+	pImageRenderWin->Render();
+			
+	vtkSmartPointer<vtkWindowToImageFilter> pFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
+	pFilter->SetInputBufferTypeToRGBA();
+	pFilter->ReadFrontBufferOff();
+	pFilter->SetInput( pImageRenderWin );
+
+	vtkSmartPointer< vtkPNGWriter > pExportPNG = vtkSmartPointer< vtkPNGWriter >::New();
+	pExportPNG->SetInputConnection( pFilter->GetOutputPort() );
+
+	double dAngularResolutionDegree = 360.0f / double( iNumFrames );
+	for( int i = 0; i < iNumFrames; i++ )
+	{
+		m_pSGRootNode->SetOrientationYPR( i * dAngularResolutionDegree, 0.0f, 0.0f );
+		pImageRenderWin->Render();
+
+		// This is required to update the filter, otherwise you have a still image
+		pFilter->Modified();
+
+		std::stringstream ss;
+		ss << sFileBasePath.toStdString() << "_f" << std::setfill( '0' ) << std::setw( 4 ) << i << ".png";
+
+		pExportPNG->SetFileName( ss.str().c_str() );
+		pExportPNG->Write();
+	}
 }
 
 void QDAFFVTKWidget::SetCoordinateAssistanceVisible( bool bVisible )
