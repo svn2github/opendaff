@@ -311,17 +311,10 @@ function [] = daffv17_write( varargin )
     end 
     
     % Quantization
-    if ~isfield(args, 'quantization')
-		if (contentType == 0)
-			% For time-domain data => 16-Bit signed integer
-			args.quantization = 'int16';
-		else
-			% For all other data => 32-Bit floating points
-			args.quantization = 'float32';
-		end
-	end
+    args.quantization = 'float32'; % Default except for IR
+    quantizationType = 2; % DAFF_FLOAT32
 		
-    if isfield(args, 'quantization')
+    if isfield( args, 'quantization' ) && strcmp( args.content, 'IR' )
         args.quantization = lower(args.quantization);
         switch args.quantization
             case 'int16'
@@ -337,15 +330,18 @@ function [] = daffv17_write( varargin )
                 quantizationType = 2; % DAFF_FLOAT32
 
             otherwise
-                error(['Invalid quantization (' args.quantization ')']);
+                error( 'Invalid quantization (%s)', args.quantization );
         end
     end  
     
-    if strcmp(args.content, 'IR')
+    if strcmp( args.content, 'IR' )
         % Validation for IR content
     
         % Zero-threshold (default value)
-        if ~isfield(args, 'zthreshold'), args.zthreshold = -inf; end;
+        if ~isfield(args, 'zthreshold')
+            args.zthreshold = -inf;
+        end
+        
         zthreshold_value = 10^(args.zthreshold/20);    
     end
     
@@ -576,19 +572,20 @@ function [] = daffv17_write( varargin )
                 end
 
                 % Important: Negative magnitudes are forbidden
-                if (min(min(data)) < 0)
+                if min( min( data ) ) < 0
                     error( 'Dataset (A%0.1f°, B%0.1f°): Contains negative magnitudes', alpha, beta );
                 end
                 
                 
-                for c=1:args.channels
+                for c = 1:args.channels
                     % Determine the peak value
-                    peak = max(max(data(c,:)));
-                    props.globalPeak = max([props.globalPeak peak]);
-
-                    x{a,b,c} = struct('peak', peak, ...
-                                    'metadata', metadata, ...
-                                    'metadataIndex', 0); 
+                    peak = max( max( data( c, : ) ) );
+                    props.globalPeak = max( [ props.globalPeak peak ] );
+                    
+                    x{a,b,c} = struct(  'peak', peak, ...
+                                        'metadata', metadata, ...
+                                        'metadataIndex', 0 ...
+                                        ); 
                 end
 		
 				write_metadatablock = write_metadatablock || ~isempty(metadata);
@@ -1002,7 +999,7 @@ function [] = daffv17_write( varargin )
  
                 % Clipping check
                 peak = max(max(abs(data)));
-                if ((peak > 1) && (~args.quiet))
+                if ( peak > 1 ) && ( ~args.quiet ) && ( quantizationType ~= 2 )
                     warning( 'Dataset (A%0.1f°, B%0.1f°): Clipping occured (peak %0.3f)', alpha, beta, peak );
                 end
                    
@@ -1019,7 +1016,7 @@ function [] = daffv17_write( varargin )
                     case 'int16'
                         % Dynamic range: 2^15-1 = 32767
                         cdata = int16( data(c,i1:i2)*32767 );
-                        fwrite(fid, cdata, 'int16');
+                        fwrite( fid, cdata, 'int16' );
 
                     case 'int24'
                         % Dynamic range: 2^23-1 = 8388607
@@ -1059,8 +1056,8 @@ function [] = daffv17_write( varargin )
  
                 % Clipping check
                 peak = max(max(data));
-                if ((peak > 1) && (~args.quiet))
-                    warning( sprintf('Dataset (A%0.1f°, B%0.1f°): Clipping occured (peak %0.3f)', alpha, beta, peak) );
+                if ( peak > 1.0 ) && ( ~args.quiet ) && ( quantizationType ~= 2 )
+                    warning( 'Dataset (A%0.1f°, B%0.1f°): Clipping occured (peak %0.3f)', alpha, beta, peak );
                 end
                    
                 %x{a,b}.dataOffset = zeros(1, args.channels); 
