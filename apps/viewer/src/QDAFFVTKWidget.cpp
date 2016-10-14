@@ -28,7 +28,7 @@ QDAFFVTKWidget::QDAFFVTKWidget( QWidget *parent )
 {
 	m_pSGRootNode = new DAFFViz::SGNode();
 	m_pSCA = new DAFFViz::SphericalCoordinateAssistant( m_pSGRootNode );
-	m_pCCA = new DAFFViz::CartesianCoordinateAssistant(  ); // causes dark VTK widget if added to SGNode ... why?
+	m_pCCA = new DAFFViz::CartesianCoordinateAssistant(); // causes dark VTK widget if added to SGNode ... why?
 
 	m_pSDI = new DAFFViz::SphericalDirectionIndicator( m_pSGRootNode );
 	m_pSDI->SetVisible( false );
@@ -68,6 +68,8 @@ void QDAFFVTKWidget::CloseDAFF()
 		m_pSGRootNode->RemoveChildNode( m_pDAFFContentBalloon );
 		delete m_pDAFFContentBalloon;
 		m_pDAFFContentBalloon = NULL;
+
+		m_pSGRootNode->RemoveChildNode( m_pSCA );
 	}
 
 	// Clear current carpet plot
@@ -78,8 +80,8 @@ void QDAFFVTKWidget::CloseDAFF()
 		m_pDAFFContentCarpet = NULL;
 	}
 
-	m_pCCA->SetVisible( false );
-	m_pSCA->SetVisible( true );
+	// Restore default settings
+	m_pSGRootNode->AddChildNode( m_pSCA );
 
 	update();
 }
@@ -92,7 +94,6 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 		m_pSGRootNode->RemoveChildNode( m_pDAFFContentBalloon );
 		delete m_pDAFFContentBalloon;
 		m_pDAFFContentBalloon = NULL;
-		m_pSCA->SetVisible( false );
 	}
 
 	// Clear current carpet plot
@@ -101,12 +102,16 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 		m_pSGRootNode->RemoveChildNode( m_pDAFFContentCarpet );
 		delete m_pDAFFContentCarpet;
 		m_pDAFFContentCarpet = NULL;
-		m_pCCA->SetVisible( false );
-		m_pSCA->SetVisible( true ); // default
 	}
 
 	if( pReader == nullptr )
 		return;
+
+	if( m_pSCA->HasParentNode() )
+		m_pSGRootNode->RemoveChildNode( m_pSCA );
+
+	if( m_pCCA->HasParentNode() )
+		m_pSGRootNode->RemoveChildNode( m_pCCA );
 
 	switch( pReader->getContentType() )
 	{
@@ -115,8 +120,7 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 		DAFFContentIR* pContentIR = static_cast< DAFFContentIR* >( pReader->getContent() );
 		m_pDAFFContentCarpet = new DAFFViz::CarpetPlot( m_pSGRootNode, pContentIR );
 		m_pDAFFContentCarpet->SetScaling( DAFFViz::CarpetPlot::SCALING_DECIBEL );
-		m_pSCA->SetVisible( false );
-		m_pCCA->SetVisible( true );
+		m_pSGRootNode->AddChildNode( m_pCCA );
 		break;
 	}
 	case DAFF_DFT_SPECTRUM:
@@ -125,7 +129,7 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 	case DAFF_PHASE_SPECTRUM:
 		m_pDAFFContentBalloon = new DAFFViz::BalloonPlot( m_pSGRootNode, pReader->getContent() );
 		m_pDAFFContentBalloon->SetScaling( DAFFViz::CarpetPlot::SCALING_LINEAR );
-		m_pSCA->SetVisible( true );
+		m_pSGRootNode->AddChildNode( m_pSCA );
 		break;
 	}
 
