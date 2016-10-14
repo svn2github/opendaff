@@ -24,7 +24,7 @@ namespace DAFFViz
 	}
 
 	SGNode::SGNode( DAFFViz::SGNode* pParentNode )
-		: m_pParentNode( pParentNode )
+		: m_pParentNode( NULL )
 	{
 		m_pNodeAssembly = vtkSmartPointer< vtkAssembly >::New();
 
@@ -134,7 +134,8 @@ namespace DAFFViz
 			vpChildren[ i ] = m_vpChildNodes[ i ];
 	}
 
-	bool SGNode::AddChildNode( DAFFViz::SGNode* pChild ) {
+	bool SGNode::AddChildNode( DAFFViz::SGNode* pChild )
+	{
 		/*
 		 *  Wichtig: Der Knoten darf nur dann hinzugefügt werden, falls er nicht
 		 *           bereits Unterknoten in einem anderen (Teil)baum ist. Dies
@@ -149,8 +150,10 @@ namespace DAFFViz
 		assert( pChild != this );
 		if( pChild == this ) return false;
 
+		// Child already has a parent (root) node
 		assert( pChild->IsRoot() );
-		if( !pChild->IsRoot() ) return false;
+		if( !pChild->IsRoot() )
+			return false;
 
 		// Intern den Unterbaum verknüpfen
 		m_vpChildNodes.push_back( pChild );
