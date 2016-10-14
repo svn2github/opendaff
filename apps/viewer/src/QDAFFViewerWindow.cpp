@@ -98,7 +98,22 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	connect( this, SIGNAL( SignalExportScreenshotPNG( QString ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ExportScreenshotPNG( QString ) ) );
    
 
-	ui->DAFFStatusBar->showMessage( "No DAFF file loaded." );
+	// Menu settings
+	ui->action3DSphericalShowArrows->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/ShowArrows", true ).toBool() );
+	ui->action3DSphericalShowPoles->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/ShowPoles", true ).toBool() );
+	ui->action3DSphericalShowGrid->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/ShowGrid", false ).toBool() );
+	ui->action3DSphericalShowEquator->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/ShowEquator", true ).toBool() );
+	ui->action3DSphericalShowMeridians->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/ShowMeridians", false ).toBool() );
+	
+	ui->DAFF3DPlot_VTKWidget->SetArrowsVisible( ui->action3DSphericalShowArrows->isChecked() );
+	ui->DAFF3DPlot_VTKWidget->SetPolesVisible( ui->action3DSphericalShowPoles->isChecked() );
+	ui->DAFF3DPlot_VTKWidget->SetGridVisible( ui->action3DSphericalShowGrid->isChecked() );
+	ui->DAFF3DPlot_VTKWidget->SetEquatorVisible( ui->action3DSphericalShowEquator->isChecked() );
+	ui->DAFF3DPlot_VTKWidget->SetMeridiansVisible( ui->action3DSphericalShowMeridians->isChecked() );
+	
+	// Other
+
+	ui->DAFFStatusBar->showMessage( "No DAFF file loaded. Shortcut for opening DAFF files: 'o' as in 'open'. 'Esc' will exit DAFFViewer." );
 
 	m_qSettings.setValue( "RequestedPath", sPath );
 	m_qSettings.value( "PhiThetaIncrementDeg", m_dPhiThetaIncrementDeg );
@@ -117,6 +132,12 @@ QDAFFViewerWindow::~QDAFFViewerWindow()
 	m_qSettings.setValue( "WindowState", saveState() );
 
 	m_qSettings.setValue( "PhiThetaIncrementDeg", m_dPhiThetaIncrementDeg );
+
+	m_qSettings.setValue( "Settings/3DPlot/Spherical/ShowArrows", ui->action3DSphericalShowArrows->isChecked() );
+	m_qSettings.setValue( "Settings/3DPlot/Spherical/ShowPoles", ui->action3DSphericalShowPoles->isChecked() );
+	m_qSettings.setValue( "Settings/3DPlot/Spherical/ShowGrid", ui->action3DSphericalShowGrid->isChecked() );
+	m_qSettings.setValue( "Settings/3DPlot/Spherical/ShowEquator", ui->action3DSphericalShowEquator->isChecked() );
+	m_qSettings.setValue( "Settings/3DPlot/Spherical/ShowMeridians", ui->action3DSphericalShowMeridians->isChecked() );
 
     delete ui;
 
