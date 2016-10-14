@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>609</width>
-    <height>144</height>
+    <width>858</width>
+    <height>655</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -100,7 +100,7 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QSpinBox" name="spinBox">
+      <widget class="QSpinBox" name="spinBox_frames">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
        </property>
@@ -131,6 +131,265 @@
         <string>File base name</string>
        </property>
       </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QCheckBox" name="checkBox_yaw">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Yaw animation</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QCheckBox" name="checkBox_pitch">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Pitch animation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QCheckBox" name="checkBox_frequencies">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Toggle through frequencies animation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QCheckBox" name="checkBox_channels">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Toggle through channels animation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QCheckBox" name="checkBox_ele">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Elevation angle animation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QDoubleSpinBox" name="doubleSpinBox_AnimationYawStart">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <double>180.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+         <property name="text">
+          <string>to</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="doubleSpinBox_AnimationYawEnd">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <double>360.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>360.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="5" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QDoubleSpinBox" name="doubleSpinBox_AnimationPitchStart">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
+         <property name="minimum">
+          <double>-90.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>90.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>-90.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+         <property name="text">
+          <string>to</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="doubleSpinBox_AnimationPitchEnd">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
+         <property name="minimum">
+          <double>-90.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>90.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>90.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="6" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QSpinBox" name="spinBox_AnimationFreqStartIndex">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+         <property name="text">
+          <string>to</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_AnimationFreqEndIndex">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="7" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QSpinBox" name="spinBox_AnimationChannelStartIndex">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+         <property name="text">
+          <string>to</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_AnimationChannelEndIndex">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="8" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="QDoubleSpinBox" name="doubleSpinBox_AnimationEleStart">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
+         <property name="minimum">
+          <double>-90.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>90.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>-90.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+         <property name="text">
+          <string>to</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="doubleSpinBox_AnimationEleEnd">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+         </property>
+         <property name="decimals">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <double>90.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>90.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

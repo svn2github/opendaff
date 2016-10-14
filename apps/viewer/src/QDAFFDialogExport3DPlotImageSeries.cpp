@@ -51,7 +51,7 @@ QString QDAFFDialogExport3DPlotImageSeries::GetExportPath() const
 
 int QDAFFDialogExport3DPlotImageSeries::GetNumFrames() const
 {
-	return ui->spinBox->value();
+	return ui->spinBox_frames->value();
 }
 
 int QDAFFDialogExport3DPlotImageSeries::GetHeight() const

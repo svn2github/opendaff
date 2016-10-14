@@ -41,6 +41,7 @@
 // Sophisticated objects
 #include "DAFFVizCartesianCoordinateAssistant.h"
 #include "DAFFVizSphericalCoordinateAssistant.h"
+#include "DAFFVizSphericalDirectionIndicator.h"
 
 // Plots
 #include "DAFFVizBalloonPlot.h"

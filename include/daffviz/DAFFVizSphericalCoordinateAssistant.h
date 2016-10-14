@@ -43,44 +43,44 @@ namespace DAFFViz
 		// --= object related methods =--
 
 		//! Enables/Disables all graphical assistance
-		void SetAssistanceVisible(bool bVisible);;
+		void SetAssistanceVisible( bool bVisible );
 
 		//! Enables/Disables view/up vector
-		void SetViewUpVectorsVisible(bool bVisible);
+		void SetViewUpVectorsVisible( bool bVisible );
 
 		//! Enables/Disables meridians
-		void SetMeridiansVisible(bool bVisible);
+		void SetMeridiansVisible( bool bVisible );
 
 		//! Enables/Disables equator
-		void SetEquatorVisible(bool bVisible);
+		void SetEquatorVisible( bool bVisible );
 
 		//! Enables/disables poles
 		void SetPolesVisible( bool bVisible );
 
 		//! Enables/Disables grid lines
-		void SetGridVisible(bool bVisible);
+		void SetGridVisible( bool bVisible );
 
 		//! Set reference level
-		void SetReferenceLevel(double dLevel);
-	
+		void SetReferenceLevel( double dLevel );
+
 		//! Set reference opacity
-		void SetReferenceOpacity(double dOpacity);
+		void SetReferenceOpacity( double dOpacity );
 
 		// --= general methods =--
 
 		//! Set visibility
 		void SetVisible( bool bVisible );
-	
+
 		bool GetGridVisible() const;
 		bool GetAxesVisible() const;
 		bool GetViewUpVectorsVisible() const;
 		bool GetVisible() const;
 
 		// --= grid get/set methods =--
-		void SetMin(double);
-		void SetMax(double);
-		void SetRResolution(double);
-		void SetPhiResolution(double);
+		void SetMin( double );
+		void SetMax( double );
+		void SetRResolution( double );
+		void SetPhiResolution( double );
 		double GetMin() const;
 		double GetMax() const;
 		double GetRResolution() const;
@@ -89,7 +89,7 @@ namespace DAFFViz
 		void UpdateReference();
 
 	private:
-		virtual void OnSetFollowerCamera(vtkCamera* pCamera);
+		virtual void OnSetFollowerCamera( vtkCamera* pCamera );
 
 		SGNode* m_pViewUpVectors;
 		SGNode* m_pPoles;

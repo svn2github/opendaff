@@ -36,19 +36,19 @@
    +---------------------------------------------------+ */
 
 //! DAFF Version 1: Main header
-static const int FILEBLOCK_DAFF1_MAIN_HEADER_ID    = 0x0001;
+static const int FILEBLOCK_DAFF1_MAIN_HEADER_ID = 0x0001;
 
 //! DAFF Version 1: Content header
 static const int FILEBLOCK_DAFF1_CONTENT_HEADER_ID = 0x0002;
 
 //! DAFF Version 1: Record descriptor block
-static const int FILEBLOCK_DAFF1_RECORD_DESC_ID    = 0x0003;
+static const int FILEBLOCK_DAFF1_RECORD_DESC_ID = 0x0003;
 
 //! DAFF Version 1: Data block
-static const int FILEBLOCK_DAFF1_DATA_ID           = 0x0004;
+static const int FILEBLOCK_DAFF1_DATA_ID = 0x0004;
 
 //! DAFF Version 1: Metadata block
-static const int FILEBLOCK_DAFF1_METADATA_ID       = 0x0005;
+static const int FILEBLOCK_DAFF1_METADATA_ID = 0x0005;
 
 
 /* +---------------------------------------------------+
@@ -61,19 +61,19 @@ static const int FILEBLOCK_DAFF1_METADATA_ID       = 0x0005;
 struct DAFFFileHeader
 {
 #pragma pack(push,1)
-	uint8_t pcSignature[2];			//!@ The magical signature
+	uint8_t pcSignature[ 2 ];			//!@ The magical signature
 	int32_t iFileFormatVersion;		//!@ Version of file format
-	                                //!@ (digits 0-2 => minor version, other digits => major version)
+	//!@ (digits 0-2 => minor version, other digits => major version)
 	int32_t iNumFileBlocks;			//!@ Number of file blocks
-	
+
 	// << From here file block entries succeed >>
 #pragma pack(pop)
 
 	//! Convert the little-endian file format into the systems endianness
 	inline void fixEndianness()
 	{
-		DAFF::le2se_4byte(&iFileFormatVersion, 1);
-		DAFF::le2se_4byte(&iNumFileBlocks, 1);
+		DAFF::le2se_4byte( &iFileFormatVersion, 1 );
+		DAFF::le2se_4byte( &iNumFileBlocks, 1 );
 	};
 } DAFF_PACK_ATTR;
 
@@ -90,9 +90,9 @@ struct DAFFFileBlockEntry
 	//! Convert the little-endian file format into the systems endianness
 	inline void fixEndianness()
 	{
-		DAFF::le2se_4byte(&iID, 1);
-		DAFF::le2se_8byte(&ui64Offset, 1);
-		DAFF::le2se_8byte(&ui64Size, 1);
+		DAFF::le2se_4byte( &iID, 1 );
+		DAFF::le2se_8byte( &ui64Offset, 1 );
+		DAFF::le2se_8byte( &ui64Size, 1 );
 	};
 } DAFF_PACK_ATTR;
 
@@ -117,7 +117,7 @@ struct DAFFMainHeader
 	float fAlphaStart, fAlphaEnd;	//!@ Alpha range boundaries
 	int32_t iBetaPoints;			//!@ Number of measurement points in beta range [0&deg;, 180&deg;]
 	float fBetaStart, fBetaEnd;		//!@ Beta range boundaries
-	
+
 	float fOrientYaw;				//!@ Yaw angle of the orientation [&deg;]
 	float fOrientPitch;				//!@ Pitch angle of the orientation [&deg;]
 	float fOrientRoll;				//!@ Roll angle of the orientation [&deg;]
@@ -127,23 +127,23 @@ struct DAFFMainHeader
 	//! Convert the little-endian file format into the systems endianness
 	inline void fixEndianness()
 	{
-		DAFF::le2se_4byte(&iContentType, 1);
-		DAFF::le2se_4byte(&iQuantization, 1);
-		DAFF::le2se_4byte(&iNumChannels, 1);
-		DAFF::le2se_4byte(&iNumRecords, 1);
-		DAFF::le2se_4byte(&iElementsPerRecord, 1);
-		DAFF::le2se_4byte(&iMetadataIndex, 1);
+		DAFF::le2se_4byte( &iContentType, 1 );
+		DAFF::le2se_4byte( &iQuantization, 1 );
+		DAFF::le2se_4byte( &iNumChannels, 1 );
+		DAFF::le2se_4byte( &iNumRecords, 1 );
+		DAFF::le2se_4byte( &iElementsPerRecord, 1 );
+		DAFF::le2se_4byte( &iMetadataIndex, 1 );
 
-		DAFF::le2se_4byte(&iAlphaPoints, 1);
-		DAFF::le2se_4byte(&fAlphaStart, 1);
-		DAFF::le2se_4byte(&fAlphaEnd, 1);
-		DAFF::le2se_4byte(&iBetaPoints, 1);
-		DAFF::le2se_4byte(&fBetaStart, 1);
-		DAFF::le2se_4byte(&fBetaEnd, 1);
+		DAFF::le2se_4byte( &iAlphaPoints, 1 );
+		DAFF::le2se_4byte( &fAlphaStart, 1 );
+		DAFF::le2se_4byte( &fAlphaEnd, 1 );
+		DAFF::le2se_4byte( &iBetaPoints, 1 );
+		DAFF::le2se_4byte( &fBetaStart, 1 );
+		DAFF::le2se_4byte( &fBetaEnd, 1 );
 
-		DAFF::le2se_4byte(&fOrientYaw, 1);
-		DAFF::le2se_4byte(&fOrientPitch, 1);
-		DAFF::le2se_4byte(&fOrientRoll, 1);
+		DAFF::le2se_4byte( &fOrientYaw, 1 );
+		DAFF::le2se_4byte( &fOrientPitch, 1 );
+		DAFF::le2se_4byte( &fOrientRoll, 1 );
 	};
 } DAFF_PACK_ATTR;
 
@@ -159,9 +159,9 @@ struct DAFFContentHeaderIR
 	//! Convert the little-endian file format into the systems endianness
 	inline void fixEndianness()
 	{
-		DAFF::le2se_4byte(&fSamplerate, 1);
-		DAFF::le2se_4byte(&iMinFilterOffset, 1);
-		DAFF::le2se_4byte(&iMaxEffectiveFilterLength, 1);
+		DAFF::le2se_4byte( &fSamplerate, 1 );
+		DAFF::le2se_4byte( &iMinFilterOffset, 1 );
+		DAFF::le2se_4byte( &iMaxEffectiveFilterLength, 1 );
 	};
 } DAFF_PACK_ATTR;
 
@@ -171,15 +171,15 @@ struct DAFFContentHeaderMS
 #pragma pack(push,1)
 	float fMax;				//!@ Maximum magnitude value over all records/channels/frequencies
 	int32_t iNumFreqs;		//!@ Number of support frequencies
-	
+
 	// Next: Support frequency values [in Hertz] (float)
 #pragma pack(pop)
 
 	//! Convert the little-endian file format into the systems endianness
 	inline void fixEndianness()
 	{
-		DAFF::le2se_4byte(&fMax, 1);
-		DAFF::le2se_4byte(&iNumFreqs, 1);
+		DAFF::le2se_4byte( &fMax, 1 );
+		DAFF::le2se_4byte( &iNumFreqs, 1 );
 	};
 } DAFF_PACK_ATTR;
 
@@ -188,13 +188,13 @@ struct DAFFContentHeaderPS
 {
 #pragma pack(push,1)
 	int32_t iNumFreqs;		//!@ Number of support frequencies
-	
+
 #pragma pack(pop)
 
 	//! Convert the little-endian file format into the systems endianness
 	inline void fixEndianness()
 	{
-		DAFF::le2se_4byte(&iNumFreqs, 1);
+		DAFF::le2se_4byte( &iNumFreqs, 1 );
 	};
 } DAFF_PACK_ATTR;
 
@@ -204,14 +204,14 @@ struct DAFFContentHeaderMPS
 #pragma pack(push,1)
 	float fMax;				//!@ Maximum magnitude value over all records/channels/frequencies
 	int32_t iNumFreqs;		//!@ Number of support frequencies
-	
+
 #pragma pack(pop)
 
 	//! Convert the little-endian file format into the systems endianness
 	inline void fixEndianness()
 	{
-		DAFF::le2se_4byte(&fMax, 1);
-		DAFF::le2se_4byte(&iNumFreqs, 1);
+		DAFF::le2se_4byte( &fMax, 1 );
+		DAFF::le2se_4byte( &iNumFreqs, 1 );
 	};
 } DAFF_PACK_ATTR;
 
@@ -228,10 +228,10 @@ struct DAFFContentHeaderDFT
 	//! Convert the little-endian file format into the systems endianness
 	inline void fixEndianness()
 	{
-		DAFF::le2se_4byte(&iNumDFTCoeffs, 1);
-		DAFF::le2se_4byte(&iTransformSize, 1);
-		DAFF::le2se_4byte(&fSamplerate, 1);
-		DAFF::le2se_4byte(&fMax, 1);
+		DAFF::le2se_4byte( &iNumDFTCoeffs, 1 );
+		DAFF::le2se_4byte( &iTransformSize, 1 );
+		DAFF::le2se_4byte( &fSamplerate, 1 );
+		DAFF::le2se_4byte( &fMax, 1 );
 	};
 } DAFF_PACK_ATTR;
 

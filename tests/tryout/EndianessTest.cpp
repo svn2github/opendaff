@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include "../../src/Utils.h"
+#include "../../src/Utils.cpp"
 
 using namespace std;
 

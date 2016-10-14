@@ -24,10 +24,14 @@ QDAFFVTKWidget::QDAFFVTKWidget( QWidget *parent )
 	, m_pDAFFContentBalloon( NULL )
 	, m_pCCA( NULL )
 	, m_pDAFFContentCarpet( NULL )
+	, m_pSDI( NULL )
 {
 	m_pSGRootNode = new DAFFViz::SGNode();
 	m_pSCA = new DAFFViz::SphericalCoordinateAssistant( m_pSGRootNode );
 	m_pCCA = new DAFFViz::CartesianCoordinateAssistant(  ); // causes dark VTK widget if added to SGNode ... why?
+
+	m_pSDI = new DAFFViz::SphericalDirectionIndicator( m_pSGRootNode );
+	m_pSDI->SetVisible( false );
 
 	m_pRenderer = vtkSmartPointer< vtkRenderer >::New();
 	m_pRenderer->AddActor( m_pSGRootNode->GetNodeAssembly() );

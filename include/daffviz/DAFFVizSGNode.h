@@ -67,16 +67,13 @@ namespace DAFFViz
 	class DAFF_API SGNode
 	{
 	public:
-		//! Standard constructor
-		SGNode();
-
-		//! Linking constructor
+		//! Constructor with optional linking to a parent node
 		/** 
-		 * Generates a node and connects it with the given parent node
+		 * Generates a node and connects it with the given parent node [optional]
 		 *
 		 * @param [in] pParentNode Parent scene graph node of this child
 		 */
-		SGNode( DAFFViz::SGNode* pParentNode );
+		SGNode( DAFFViz::SGNode* pParentNode = NULL );
 
 		//! Destructor
 		/**

@@ -29,20 +29,10 @@ namespace DAFFViz
 
 	class DAFF_API Plane : public DAFFViz::SGNode {
 	public:
-		Plane();
+		Plane( SGNode* pParentNode = NULL );
 		Plane(double x1, double y1, double z1, double x2, double y2, double z2, double n1, double n2, double n3);
 		Plane(DAFFViz::SGNode* pParentNode, double x1, double y1, double z1, double x2, double y2, double z2, double n1, double n2, double n3);
 		~Plane();
-	
-		// --= object related methods =--
-		// TODO Jonas
-
-		//void SetLengthX(double dLength);
-		//double GetLengthX() const;
-
-		//void SetLengthY(double dLength);
-		//double GetLengthY() const;
-
 
 		// --= general methods =--
 
@@ -65,9 +55,9 @@ namespace DAFFViz
 		bool IsVisible() const;
 
 	private:
-		vtkPlaneSource*		m_pSource;
-		vtkPolyDataMapper*  m_pMapper;
-		vtkActor*			m_pActor;
+		vtkSmartPointer< vtkPlaneSource > m_pSource;
+		vtkSmartPointer< vtkPolyDataMapper >  m_pMapper;
+		vtkSmartPointer< vtkActor >			m_pActor;
 
 		// The initializer generates dynamic objects like source, mapper, actor ...
 		void init();

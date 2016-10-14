@@ -14,7 +14,7 @@
 
 #include <DAFFDefs.h>
 #include <DAFFProperties.h>
-#include <../src/DAFFSCTransform.h>
+#include <DAFFSCTransform.h>
 #include <cassert>
 #include <cstdlib>
 

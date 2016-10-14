@@ -76,6 +76,7 @@ set( OPENDAFF_DAFFLIB_HEADER_FILES
 	"include/DAFFMetadata.h"
 	"include/DAFFProperties.h"
 	"include/DAFFReader.h"
+	"include/DAFFSCTransform.h"
 	"include/DAFFUtils.h"
 )
 
@@ -87,7 +88,6 @@ set( OPENDAFF_DAFFLIB_SOURCE_FILES
 	"src/DAFFReader.cpp"
 	"src/DAFFReaderImpl.h"
 	"src/DAFFReaderImpl.cpp"
-	"src/DAFFSCTransform.h"
 	"src/DAFFSCTransform.cpp"
 	"src/DAFFUtils.cpp"
 	"src/Utils.h"
@@ -163,6 +163,7 @@ set( OPENDAFF_DAFFVIZ_HEADER_FILES
 	"include/daffviz/DAFFVizSGNode.h"
 	"include/daffviz/DAFFVizSphere.h"
 	"include/daffviz/DAFFVizSphericalCoordinateAssistant.h"
+	"include/daffviz/DAFFVizSphericalDirectionIndicator.h"
 )
 
 set( OPENDAFF_DAFFVIZ_SOURCE_FILES
@@ -179,6 +180,7 @@ set( OPENDAFF_DAFFVIZ_SOURCE_FILES
 	"src/daffviz/DAFFVizSGNode.cpp"
 	"src/daffviz/DAFFVizSphere.cpp"
 	"src/daffviz/DAFFVizSphericalCoordinateAssistant.cpp"
+	"src/daffviz/DAFFVizSphericalDirectionIndicator.cpp"
 )
 
 set( DAFFVIZLIB_FILES ${OPENDAFF_DAFFVIZ_HEADER_FILES} ${OPENDAFF_DAFFVIZ_SOURCE_FILES} )

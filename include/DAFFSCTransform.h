@@ -20,26 +20,28 @@
  * expressed in spherical coordinates.
  */
 
-class DAFFSCTransform
+class DAFF_API DAFFSCTransform
 {
 public:
 	//! Constructor
-	DAFFSCTransform();
-	DAFFSCTransform(const DAFFOrientationYPR& orient);
+	inline DAFFSCTransform() {};
+
+	//! Constructor with initial orientation
+	DAFFSCTransform( const DAFFOrientationYPR& orient );
 
 	//! Return the OSC->DSC orientation (yaw-pitch-roll)
-	void getOrientation(DAFFOrientationYPR& orient) const;
-	
+	void getOrientation( DAFFOrientationYPR& orient ) const;
+
 	//! Sets the OSC->DSC orientation (yaw-pitch-roll)
-	void setOrientation(const DAFFOrientationYPR& orient);
+	void setOrientation( const DAFFOrientationYPR& orient );
 
 	//! Transform coordinates from OSC -> DSC (including coordinate system rotation)
-	void transformOSC2DSC( float azimuth_in,  float elevation_in,
-					      float& alpha_out, float& beta_out) const;
+	void transformOSC2DSC( float azimuth_in, float elevation_in,
+		float& alpha_out, float& beta_out ) const;
 
 	//! Transform coordinates from DSC -> OSC (including coordinate system rotation)
-	void transformDSC2OSC( float alpha_in,  float beta_in,
-					      float& azimuth_out, float& elevation_out) const;
+	void transformDSC2OSC( float alpha_in, float beta_in,
+		float& azimuth_out, float& elevation_out ) const;
 
 private:
 	//! Cached trigenometric terms of yaw-pitch-roll angles
@@ -49,7 +51,7 @@ private:
 		double t1, t2, t3, t4, t5, t6, t7, t8, t9;
 
 		//! Initialize constants (Angles in degrees [&deg;])
-		void init( double yaw,  double pitch,  double roll);
+		void init( double yaw, double pitch, double roll );
 	};
 
 	DAFFOrientationYPR m_orient;	//!@ Orientation

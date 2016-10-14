@@ -9,36 +9,25 @@
 namespace DAFFViz
 {
 
-	Plane::Plane()
-		: SGNode(), m_pSource( NULL )
-		, m_pMapper( NULL )
-		, m_pActor( NULL )
-	{
-		init();
-	}
-
-	Plane::Plane( double x1, double y1, double z1, double x2, double y2, double z2, double n1, double n2, double n3 )
-	: SGNode()
-	, m_pSource( NULL )
-	, m_pMapper( NULL )
-	, m_pActor( NULL )
-	{
-		init();
-		m_pSource->SetPoint1( x1, y1, z1 );
-		m_pSource->SetPoint2( x2, y2, z2 );
-		m_pSource->SetNormal( n1, n2, n3 );
-	}
-
-    Plane::Plane( DAFFViz::SGNode* pParentNode, double x1, double y1, double z1, double x2, double y2, double z2, double n1, double n2, double n3 )
+	Plane::Plane( SGNode* pParentNode )
 		: SGNode( pParentNode )
 		, m_pSource( NULL )
 		, m_pMapper( NULL )
 		, m_pActor( NULL )
 	{
 		init();
-		m_pSource->SetPoint1( x1, y1, z1 );
-		m_pSource->SetPoint2( x2, y2, z2 );
-		m_pSource->SetNormal( n1, n2, n3 );
+	}
+
+    Plane::Plane( SGNode* pParentNode, double x1, double y1, double z1, double x2, double y2, double z2, double n1, double n2, double n3 )
+		: SGNode( pParentNode )
+		, m_pSource( NULL )
+		, m_pMapper( NULL )
+		, m_pActor( NULL )
+	{
+		init();
+		m_pSource->SetCenter( 1.0, 0.0, 0.0 );
+		m_pSource->SetNormal( 1.0, 0.0, 1.0 );
+		m_pSource->Update();
 	}
 
 	Plane::~Plane()

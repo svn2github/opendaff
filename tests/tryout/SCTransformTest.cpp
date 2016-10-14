@@ -14,8 +14,7 @@
 
 #include <DAFFDefs.h>
 #include <DAFFUtils.h>
-
-#include "../../src/DAFFSCTransform.h"
+#include <DAFFSCTransform.h>
 
 using namespace std;
 

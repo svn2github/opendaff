@@ -38,6 +38,7 @@ private:
 	DAFFViz::SphericalCoordinateAssistant* m_pSCA;
 	DAFFViz::BalloonPlot* m_pDAFFContentBalloon;
 	DAFFViz::CartesianCoordinateAssistant* m_pCCA;
+	DAFFViz::SphericalDirectionIndicator* m_pSDI;
 	DAFFViz::CarpetPlot* m_pDAFFContentCarpet;
 
 public slots:

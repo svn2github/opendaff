@@ -12,7 +12,8 @@
 #include <algorithm>
 #include <iostream>
 #include "../../src/DAFFMetadataImpl.h"
-#include "../../src/DAFFMetadataImpl.h"
+#include "../../src/DAFFMetadataImpl.cpp"
+#include "../../src/Utils.cpp"
 
 using namespace std;
 

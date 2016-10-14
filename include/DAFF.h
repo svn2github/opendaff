@@ -41,6 +41,7 @@
 #include <DAFFContentDFT.h>
 
 #include <DAFFUtils.h>
+#include <DAFFSCTransform.h>
 
 
 /*!
