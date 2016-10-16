@@ -22,7 +22,7 @@
 #include "DAFFHeader.h"
 #include <DAFFProperties.h>
 #include <DAFFReader.h>
-#include "DAFFSCTransform.h"
+#include <DAFFSCTransform.h>
 
 class DAFFMetadataImpl;
 
