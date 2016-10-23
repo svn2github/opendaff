@@ -169,7 +169,8 @@ private:
     int m_iChannelIndex;
     int m_iRecordIndex;
     int m_iFrequencyIndex;
-	int m_iZoomIndex;
+	int m_iZoomIndexX;
+	int m_iZoomIndexY;
 
 	//parameters
 	//axis

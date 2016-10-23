@@ -28,7 +28,8 @@ QDAFF2DPlot::QDAFF2DPlot( QWidget *parent )
 	//indices
 	m_iChannelIndex = 0;
 	m_iRecordIndex = 0;
-	m_iZoomIndex = 0;
+	m_iZoomIndexX = 0;
+	m_iZoomIndexY = 0;
 	//scene
 	//setScene( new QGraphicsScene() );
 	scale(1, -1);
@@ -108,10 +109,10 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 	if (m_pReader == nullptr)
 		return;
 
-	m_vpXMarker.resize((m_iNXMarker*std::pow(2, m_iZoomIndex)));
-	m_vpXMarkerText.resize((m_iNXMarker*std::pow(2, m_iZoomIndex)));
-	m_vpYMarker.resize(m_iNYMarker);
-	m_vpYMarkerText.resize(m_iNYMarker);
+	m_vpXMarker.resize((m_iNXMarker*std::pow(2, m_iZoomIndexX)));
+	m_vpXMarkerText.resize((m_iNXMarker*std::pow(2, m_iZoomIndexX)));
+	m_vpYMarker.resize(m_iNYMarker*std::pow(2, m_iZoomIndexY));
+	m_vpYMarkerText.resize(m_iNYMarker*std::pow(2, m_iZoomIndexY));
 	switch (m_pReader->getContentType())
 	{
 	case DAFF_MAGNITUDE_SPECTRUM:
@@ -124,8 +125,8 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 		m_pXAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iXAxisLength + m_iAxisOffsetLeft, m_iAxisOffsetDown));
 		m_pYAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iAxisOffsetLeft, m_iYAxisLength + m_iAxisOffsetDown));
 		//Draw Grid
-		m_vpYGrid.resize(m_iNYGrid);
-		double offset = (double)m_iYAxisLength / m_iNYGrid;
+		m_vpYGrid.resize(m_iNYGrid*std::pow(2, m_iZoomIndexY));
+		double offset = (double)m_iYAxisLength / (m_iNYGrid*std::pow(2, m_iZoomIndexY));
 		for (int i = 0; i < m_iNYGrid; i++)
 		{
 			m_vpYGrid[i] = scene()->addLine(QLine(m_pXAxis->line().x1(), m_pXAxis->line().y1() + (i + 1)*offset, m_pXAxis->line().x1() + m_iXAxisLength, m_pXAxis->line().y2() + (i + 1)*offset), QPen(Qt::lightGray));
@@ -240,11 +241,11 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 		m_vpYMarkerText[0]->setPos(m_vpYMarker[0]->line().x2() - m_vpYMarkerText[0]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[0]->line().y2() + m_vpYMarkerText[0]->boundingRect().height() / 2);
 		m_vpYMarkerText[0]->setTransform(QTransform().scale(1, -1));		
 		//other Y Markers
-		offset = (double)m_iYAxisLength / (m_iNYMarker-1);
-		for (int i = 1; i < m_iNYMarker; i++)
+		offset = (double)m_iYAxisLength / ((m_iNYMarker - 1)*std::pow(2, m_iZoomIndexY));
+		for (int i = 1; i < (m_iNYMarker - 1)*std::pow(2, m_iZoomIndexY)+1; i++)
 		{
 			m_vpYMarker[i] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1() + i*offset, m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1() + i*offset));
-			m_vpYMarkerText[i] = scene()->addText(QString(convertFloat((i / (float)(m_iNYMarker - 1))*pContent->getOverallMagnitudeMaximum()).c_str()));
+			m_vpYMarkerText[i] = scene()->addText(QString::number((i / ((m_iNYMarker - 1)*std::pow(2, m_iZoomIndexY)))*pContent->getOverallMagnitudeMaximum(), 10, 2));
 			m_vpYMarkerText[i]->setPos(m_vpYMarker[i]->line().x2() - m_vpYMarkerText[i]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[i]->line().y2() + m_vpYMarkerText[i]->boundingRect().height() / 2);
 			m_vpYMarkerText[i]->setTransform(QTransform().scale(1, -1));
 		}	
@@ -256,14 +257,14 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 			m_pXAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iXAxisLength + m_iAxisOffsetLeft, m_iAxisOffsetDown));
 			m_pYAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iAxisOffsetLeft, m_iYAxisLength + m_iAxisOffsetDown));
 			//Draw Grid
-			m_vpXGrid.resize(m_iNXGrid*std::pow(2, m_iZoomIndex));
-			m_vpYGrid.resize(m_iNYGrid);
-			double offset = (double)m_iYAxisLength / m_iNYGrid;
+			m_vpXGrid.resize(m_iNXGrid*std::pow(2, m_iZoomIndexX));
+			m_vpYGrid.resize(m_iNYGrid*std::pow(2, m_iZoomIndexY));
+			double offset = (double)m_iYAxisLength / (m_iNYGrid*std::pow(2, m_iZoomIndexY));
 			for (int i = 0; i < m_vpYGrid.size(); i++)
 			{
 				m_vpYGrid[i] = scene()->addLine(QLine(m_pXAxis->line().x1(), m_pXAxis->line().y1() + (i + 1)*offset, m_pXAxis->line().x1() + m_iXAxisLength, m_pXAxis->line().y2() + (i + 1)*offset), QPen(Qt::lightGray));
 			}
-			offset = (double)m_iXAxisLength / (m_iNXGrid*std::pow(2,m_iZoomIndex));
+			offset = (double)m_iXAxisLength / (m_iNXGrid*std::pow(2,m_iZoomIndexX));
 			for (int i = 0; i < m_vpXGrid.size(); i++)
 			{
 				m_vpXGrid[i] = scene()->addLine(QLine(m_pXAxis->line().x1() + (i + 1)*offset, m_pXAxis->line().y1(), m_pXAxis->line().x1() + (i + 1)*offset, m_pXAxis->line().y2() + m_iYAxisLength), QPen(Qt::lightGray));
@@ -298,22 +299,22 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 			m_vpYMarkerText[0]->setPos(m_vpYMarker[0]->line().x2() - m_vpYMarkerText[0]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[0]->line().y2() + m_vpYMarkerText[0]->boundingRect().height() / 2);
 			m_vpYMarkerText[0]->setTransform(QTransform().scale(1, -1));
 			//other X Markers
-			offset = (double)m_iXAxisLength / ((m_iNXMarker-1)*std::pow(2, m_iZoomIndex));
+			offset = (double)m_iXAxisLength / ((m_iNXMarker-1)*std::pow(2, m_iZoomIndexX));
 			float indexValueRatio = 1000000 / (pContent->getSamplerate());
-			float markerValueRatio = ((pContent->getFilterLength() - 1)*indexValueRatio) / ((m_iNXMarker - 1)*std::pow(2, m_iZoomIndex));
-			for (int i = 1; i < (m_iNXMarker-1)*std::pow(2, m_iZoomIndex)+1; i++)
+			float markerValueRatio = ((pContent->getFilterLength() - 1)*indexValueRatio) / ((m_iNXMarker - 1)*std::pow(2, m_iZoomIndexX));
+			for (int i = 1; i < (m_iNXMarker-1)*std::pow(2, m_iZoomIndexX)+1; i++)
 			{
 				m_vpXMarker[i] = scene()->addLine(QLine(m_pXAxis->line().x1() + offset*i, m_pXAxis->line().y1(), m_pXAxis->line().x1() + offset*i, m_pXAxis->line().y1() - m_iXMarkerLength));
-				m_vpXMarkerText[i] = scene()->addText(QString(std::to_string((int)(markerValueRatio*i)).c_str()));
+				m_vpXMarkerText[i] = scene()->addText(QString::number((int)(markerValueRatio*i)));
 				m_vpXMarkerText[i]->setPos(m_vpXMarker[i]->line().x2() - m_vpXMarkerText[i]->boundingRect().width()/2, m_vpXMarker[i]->line().y2() - m_iXMarkerTextOffset);
 				m_vpXMarkerText[i]->setTransform(QTransform().scale(1, -1));
 			}
 			//other Y Markers
-			offset = (double)m_iYAxisLength / (m_iNYMarker - 1);
-			for (int i = 1; i < m_iNYMarker; i++)
+			offset = (double)m_iYAxisLength / ((m_iNYMarker - 1)*std::pow(2, m_iZoomIndexY));
+			for (int i = 1; i < (m_iNYMarker-1)*std::pow(2, m_iZoomIndexY)+1; i++)
 			{
 				m_vpYMarker[i] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1() + i*offset, m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1() + i*offset));
-				m_vpYMarkerText[i] = scene()->addText(QString(convertFloat(((i / (float)(m_iNYMarker - 1))*2)-1).c_str()));
+				m_vpYMarkerText[i] = scene()->addText(QString::number(((i / (float)((m_iNYMarker - 1)*std::pow(2, m_iZoomIndexY) + 1)) * 2) - 1, 10, 2));
 				m_vpYMarkerText[i]->setPos(m_vpYMarker[i]->line().x2() - m_vpYMarkerText[i]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[i]->line().y2() + m_vpYMarkerText[i]->boundingRect().height()/2);
 				m_vpYMarkerText[i]->setTransform(QTransform().scale(1, -1));
 			}
@@ -325,14 +326,14 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 		m_pXAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iXAxisLength + m_iAxisOffsetLeft, m_iAxisOffsetDown));
 		m_pYAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iAxisOffsetLeft, m_iYAxisLength + m_iAxisOffsetDown));
 		//Draw Grid
-		m_vpXGrid.resize(m_iNXGrid*std::pow(2, m_iZoomIndex));
-		m_vpYGrid.resize(m_iNYGrid);
-		double offset = (double)m_iYAxisLength / m_iNYGrid;
+		m_vpXGrid.resize(m_iNXGrid*std::pow(2, m_iZoomIndexX));
+		m_vpYGrid.resize(m_iNYGrid*std::pow(2, m_iZoomIndexY));
+		double offset = (double)m_iYAxisLength / (m_iNYGrid*std::pow(2, m_iZoomIndexY));
 		for (int i = 0; i < m_vpYGrid.size(); i++)
 		{
 			m_vpYGrid[i] = scene()->addLine(QLine(m_pXAxis->line().x1(), m_pXAxis->line().y1() + (i + 1)*offset, m_pXAxis->line().x1() + m_iXAxisLength, m_pXAxis->line().y2() + (i + 1)*offset), QPen(Qt::lightGray));
 		}
-		offset = (double)m_iXAxisLength / (m_iNXGrid*std::pow(2, m_iZoomIndex));
+		offset = (double)m_iXAxisLength / (m_iNXGrid*std::pow(2, m_iZoomIndexX));
 		for (int i = 0; i < m_vpXGrid.size(); i++)
 		{
 			m_vpXGrid[i] = scene()->addLine(QLine(m_pXAxis->line().x1() + (i + 1)*offset, m_pXAxis->line().y1(), m_pXAxis->line().x1() + (i + 1)*offset, m_pXAxis->line().y2() + m_iYAxisLength), QPen(Qt::lightGray));
@@ -367,22 +368,22 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 		m_vpYMarkerText[0]->setPos(m_vpYMarker[0]->line().x2() - m_vpYMarkerText[0]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[0]->line().y2() + m_vpYMarkerText[0]->boundingRect().height() / 2);
 		m_vpYMarkerText[0]->setTransform(QTransform().scale(1, -1));
 		//other X Markers
-		offset = (double)m_iXAxisLength / ((m_iNXMarker - 1)*std::pow(2, m_iZoomIndex));
-		float coeffMarkerRatio = (float)pContent->getNumDFTCoeffs() / ((m_iNXMarker - 1)*std::pow(2, m_iZoomIndex));
-		for (int i = 1; i < (m_iNXMarker - 1)*std::pow(2, m_iZoomIndex) + 1; i++)
+		offset = (double)m_iXAxisLength / ((m_iNXMarker - 1)*std::pow(2, m_iZoomIndexX));
+		float coeffMarkerRatio = (float)pContent->getNumDFTCoeffs() / ((m_iNXMarker - 1)*std::pow(2, m_iZoomIndexX));
+		for (int i = 1; i < (m_iNXMarker - 1)*std::pow(2, m_iZoomIndexX) + 1; i++)
 		{
 			m_vpXMarker[i] = scene()->addLine(QLine(m_pXAxis->line().x1() + offset*i, m_pXAxis->line().y1(), m_pXAxis->line().x1() + offset*i, m_pXAxis->line().y1() - m_iXMarkerLength));
-			m_vpXMarkerText[i] = scene()->addText(QString(std::to_string((int)(coeffMarkerRatio*i*pContent->getFrequencyBandwidth())).c_str()));
+			m_vpXMarkerText[i] = scene()->addText(QString::number((int)(coeffMarkerRatio*i*pContent->getFrequencyBandwidth())));
 			m_vpXMarkerText[i]->setPos(m_vpXMarker[i]->line().x2() - m_vpXMarkerText[i]->boundingRect().width() / 2, m_vpXMarker[i]->line().y2() - m_iXMarkerTextOffset);
 			m_vpXMarkerText[i]->setTransform(QTransform().scale(1, -1));
 		}
 		//other Y Markers
-		offset = (double)m_iYAxisLength / (m_iNYMarker - 1);
-		float indexMarkerRatio = (float)pContent->getOverallMagnitudeMaximum()/ (m_iNYMarker - 1);
-		for (int i = 1; i < m_iNYMarker; i++)
+		offset = (double)m_iYAxisLength / ((m_iNYMarker - 1)*std::pow(2, m_iZoomIndexY));
+		float indexMarkerRatio = (float)pContent->getOverallMagnitudeMaximum() / ((m_iNYMarker - 1)*std::pow(2, m_iZoomIndexY));
+		for (int i = 1; i < (m_iNYMarker - 1)*std::pow(2, m_iZoomIndexY)+1; i++)
 		{
 			m_vpYMarker[i] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1() + i*offset, m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1() + i*offset));
-			m_vpYMarkerText[i] = scene()->addText(QString(convertFloat((float)indexMarkerRatio*i).c_str()));
+			m_vpYMarkerText[i] = scene()->addText(QString::number((float)indexMarkerRatio*i,10,2));
 			m_vpYMarkerText[i]->setPos(m_vpYMarker[i]->line().x2() - m_vpYMarkerText[i]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[i]->line().y2() + m_vpYMarkerText[i]->boundingRect().height() / 2);
 			m_vpYMarkerText[i]->setTransform(QTransform().scale(1, -1));
 		}
@@ -399,9 +400,9 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 		m_pXAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iXAxisLength + m_iAxisOffsetLeft, m_iAxisOffsetDown));
 		m_pYAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iAxisOffsetLeft, m_iYAxisLength + m_iAxisOffsetDown));
 		//Draw Grid
-		m_vpYGrid.resize(m_iNYGrid);
-		double offset = (double)m_iYAxisLength / m_iNYGrid;
-		for (int i = 0; i < m_iNYGrid; i++)
+		m_vpYGrid.resize(m_iNYGrid*std::pow(2, m_iZoomIndexY));
+		double offset = (double)m_iYAxisLength / (m_iNYGrid*std::pow(2, m_iZoomIndexY));
+		for (int i = 0; i < m_vpYGrid.size(); i++)
 		{
 			m_vpYGrid[i] = scene()->addLine(QLine(m_pXAxis->line().x1(), m_pXAxis->line().y1() + (i + 1)*offset, m_pXAxis->line().x1() + m_iXAxisLength, m_pXAxis->line().y2() + (i + 1)*offset), QPen(Qt::lightGray));
 		}
@@ -510,11 +511,11 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 		//Draw Marker
 		DAFFContentPS* pContent = dynamic_cast< DAFFContentPS* >(m_pReader->getContent());
 		//Y Markers
-		offset = (double)m_iYAxisLength / m_iNYGrid;
-		for (int j = 0; j < m_iNYGrid+1; j++)
+		offset = (double)m_iYAxisLength / ((m_iNYMarker - 1)*std::pow(2, m_iZoomIndexY));
+		for (int j = 0; j < (m_iNYMarker - 1)*std::pow(2, m_iZoomIndexY) + 1; j++)
 		{
 			m_vpYMarker[j] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1() + j*offset, m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1() + j*offset));
-			m_vpYMarkerText[j] = scene()->addText(QString::number(-180 + j * 360/m_iNYGrid).append(QChar(0x00B0)));
+			m_vpYMarkerText[j] = scene()->addText(QString::number(-180 + j * 360 / ((m_iNYMarker - 1)*std::pow(2, m_iZoomIndexY)), 10, 0).append(QChar(0x00B0)));
 			m_vpYMarkerText[j]->setPos(m_vpYMarker[j]->line().x2() - m_vpYMarkerText[j]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[j]->line().y2() + m_vpYMarkerText[j]->boundingRect().height() / 2);
 			m_vpYMarkerText[j]->setTransform(QTransform().scale(1, -1));
 		}
@@ -530,8 +531,8 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 		m_pXAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iXAxisLength + m_iAxisOffsetLeft, m_iAxisOffsetDown));
 		m_pYAxis = scene()->addLine(QLine(m_iAxisOffsetLeft, m_iAxisOffsetDown, m_iAxisOffsetLeft, m_iYAxisLength + m_iAxisOffsetDown));
 		//Draw Grid
-		m_vpYGrid.resize(m_iNYGrid);
-		double offset = (double)m_iYAxisLength / m_iNYGrid;
+		m_vpYGrid.resize(m_iNYGrid*std::pow(2, m_iZoomIndexY));
+		double offset = (double)m_iYAxisLength / (m_iNYGrid*std::pow(2, m_iZoomIndexY));
 		for (int i = 0; i < m_iNYGrid; i++)
 		{
 			m_vpYGrid[i] = scene()->addLine(QLine(m_pXAxis->line().x1(), m_pXAxis->line().y1() + (i + 1)*offset, m_pXAxis->line().x1() + m_iXAxisLength, m_pXAxis->line().y2() + (i + 1)*offset), QPen(Qt::lightGray));
@@ -639,18 +640,18 @@ void QDAFF2DPlot::DrawCoordinateSystem()
 		yText->setPos(tipY[1]);
 		yText->setTransform(QTransform().scale(1, -1));
 		//Draw Marker
-		DAFFContentMPS* pContent = dynamic_cast< DAFFContentMPS* >(m_pReader->getContent());
+		DAFFContentMS* pContent = dynamic_cast< DAFFContentMS* >(m_pReader->getContent());
 		//1st Y Marker
 		m_vpYMarker[0] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1(), m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1()));
 		m_vpYMarkerText[0] = scene()->addText(QString("0"));
 		m_vpYMarkerText[0]->setPos(m_vpYMarker[0]->line().x2() - m_vpYMarkerText[0]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[0]->line().y2() + m_vpYMarkerText[0]->boundingRect().height() / 2);
 		m_vpYMarkerText[0]->setTransform(QTransform().scale(1, -1));
 		//other Y Markers
-		offset = (double)m_iYAxisLength / (m_iNYMarker - 1);
-		for (int i = 1; i < m_iNYMarker; i++)
+		offset = (double)m_iYAxisLength / ((m_iNYMarker - 1)*std::pow(2, m_iZoomIndexY));
+		for (int i = 1; i < (m_iNYMarker - 1)*std::pow(2, m_iZoomIndexY) + 1; i++)
 		{
 			m_vpYMarker[i] = scene()->addLine(QLine(m_pYAxis->line().x1(), m_pYAxis->line().y1() + i*offset, m_pYAxis->line().x1() - m_iYMarkerLength, m_pYAxis->line().y1() + i*offset));
-			m_vpYMarkerText[i] = scene()->addText(QString(convertFloat((i / (float)(m_iNYMarker - 1))*pContent->getOverallMagnitudeMaximum()).c_str()));
+			m_vpYMarkerText[i] = scene()->addText(QString::number((i / ((m_iNYMarker - 1)*std::pow(2, m_iZoomIndexY)))*pContent->getOverallMagnitudeMaximum(), 10, 2));
 			m_vpYMarkerText[i]->setPos(m_vpYMarker[i]->line().x2() - m_vpYMarkerText[i]->boundingRect().width() - m_iYMarkerTextOffset, m_vpYMarker[i]->line().y2() + m_vpYMarkerText[i]->boundingRect().height() / 2);
 			m_vpYMarkerText[i]->setTransform(QTransform().scale(1, -1));
 		}
@@ -1222,7 +1223,9 @@ void QDAFF2DPlot::wheelEvent(QWheelEvent * event)
 			Draw();
 		}
 		if (m_iSceneWidth > rect().width())
-			m_iZoomIndex = (int)std::log2(m_iSceneWidth / rect().width());
+			m_iZoomIndexX = (int)std::log2(m_iSceneWidth / rect().width());
+		if (m_iSceneHeight > rect().height())
+			m_iZoomIndexY = (int)std::log2(m_iSceneHeight / rect().height());
 		event->accept();
 	}
 }
