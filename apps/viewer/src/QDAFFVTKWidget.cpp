@@ -121,6 +121,7 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 		m_pDAFFContentCarpet = new DAFFViz::CarpetPlot( m_pSGRootNode, pContentIR );
 		m_pDAFFContentCarpet->SetScaling( DAFFViz::CarpetPlot::SCALING_DECIBEL );
 		m_pSGRootNode->AddChildNode( m_pCCA );
+		SetDirectionIndicatorVisible(false);
 		break;
 	}
 	case DAFF_DFT_SPECTRUM:
@@ -130,6 +131,7 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 		m_pDAFFContentBalloon = new DAFFViz::BalloonPlot( m_pSGRootNode, pReader->getContent() );
 		m_pDAFFContentBalloon->SetScaling( DAFFViz::CarpetPlot::SCALING_LINEAR );
 		m_pSGRootNode->AddChildNode( m_pSCA );
+		SetDirectionIndicatorVisible(true);
 		break;
 	}
 
@@ -180,6 +182,15 @@ void QDAFFVTKWidget::ChangeBeta( double dBetaDeg )
 			m_pDAFFContentCarpet->SetSelectedAngle( dBetaDeg );
 	}
 
+	update();
+}
+
+void QDAFFVTKWidget::ChangeDirection(double dAlphaDeg, double dBetaDeg)
+{
+	if (m_pSDI)
+	{
+		m_pSDI->SetOrientationYPR(dAlphaDeg + 90, 0, dBetaDeg - 90);
+	}		
 	update();
 }
 
@@ -266,6 +277,9 @@ void QDAFFVTKWidget::SetCoordinateAssistanceVisible( bool bVisible )
 
 void QDAFFVTKWidget::SetDirectionIndicatorVisible( bool bVisible )
 {
+	if (m_pSDI)
+		m_pSDI->SetVisible(bVisible);
+
 	update();
 }
 

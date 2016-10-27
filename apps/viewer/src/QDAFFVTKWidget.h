@@ -50,6 +50,7 @@ void CloseDAFF();
 	void ChangeChannelIndex( int iChannelIndex );
 	void ChangeAlpha( double dAlphaDeg );
 	void ChangeBeta( double dBetaDeg );
+	void ChangeDirection(double dPhiDeg, double dThetaDeg);
 
 	void ExportScreenshotPNG( QString sFilePath, int iWidth = 1920, int iHeight = 1080 );
 	void ExportScrenshotSeriesPNG( QString sExportDirectory, QString sFileBaseName, int iNumFrames = 360, int iWidth = 1920, int iHeight = 1080 );

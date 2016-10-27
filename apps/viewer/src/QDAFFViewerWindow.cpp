@@ -78,7 +78,7 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	connect( ui->doubleSpinBox_Beta, SIGNAL( valueChanged( double ) ), this, SLOT( ChangeBeta( double ) ) );
 	connect( this, SIGNAL( SignalBetaChanged( double ) ), ui->doubleSpinBox_Beta, SLOT( setValue( double ) ) );
 	connect( this, SIGNAL( SignalBetaChanged( double ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ChangeBeta( double ) ) );
-
+	
 	// Record index conns
 	connect( this, SIGNAL( SignalRecordIndexChanged( int ) ), ui->spinBox_RecordIndex, SLOT( setValue( int ) ) );
 	connect( this, SIGNAL( SignalRecordIndexChanged( int ) ), ui->graphicsView_2DDAFFPlot, SLOT( ChangeRecordIndex( int ) ) );
@@ -90,6 +90,7 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	connect( ui->doubleSpinBox_Theta, SIGNAL( valueChanged( double ) ), this, SLOT( ChangeTheta( double ) ) );
 	connect( this, SIGNAL( SignalThetaChanged( double ) ), ui->doubleSpinBox_Theta, SLOT( setValue( double ) ) );
 	connect( this, SIGNAL( SignalPhiAndThetaOutOfBounds( bool ) ), this, SLOT( SetPhiAndThetaOutOfBoundsIndicator( bool ) ) );
+	connect(this, SIGNAL(SignalDirectionChanged(double, double)), ui->DAFF3DPlot_VTKWidget, SLOT(ChangeDirection(double, double)));
 
 	// 2D conns
 	// .. nothing further yet.
@@ -689,6 +690,7 @@ void QDAFFViewerWindow::ChangeAlphaAndBeta( double dAlphaDeg, double dBetaDeg )
 
 	emit SignalAlphaChanged( m_dShowAlphaDeg );
 	emit SignalBetaChanged( m_dShowBetaDeg );
+	emit SignalDirectionChanged(m_dShowPhiDeg, m_dShowThetaDeg);
 }
 
 void QDAFFViewerWindow::ChangePhiAndTheta( double dPhiDeg, double dThetaDeg )

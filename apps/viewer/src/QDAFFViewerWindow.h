@@ -112,6 +112,7 @@ signals:
 	void SignalCloseDAFF();
 	void SignalAlphaChanged( double dAlphaDegree );
 	void SignalBetaChanged( double dBetaDegree );
+	void SignalDirectionChanged(double dPhiDegree, double dThetaDegree);
 	void SignalPhiChanged( double dPhiDeg );
 	void SignalThetaChanged( double dThetaDeg );
 	void SignalPhiAndThetaOutOfBounds( bool );

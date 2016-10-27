@@ -34,11 +34,11 @@ namespace DAFFViz
 		m_pDirectionArrow->SetColor( 1, 0, 0 );
 		m_pDirectionArrow->SetAlpha( 0.4f );
 
-		m_pDirectionCell = new Plane( this, 0.01f, 0.01f, 1.05f, -0.01f, -0.01f, 1.05f, 0.0f, 0.0f, 1.0f );
+		/*m_pDirectionCell = new Plane( this, 0.01f, 0.01f, 1.05f, -0.01f, -0.01f, 1.05f, 0.0f, 0.0f, 1.0f );
 		m_pDirectionCell->SetColor( 1, 0, 0 );
 		m_pDirectionCell->SetAlpha( 0.4f );
 
-		m_pDirectionCell->SetScale( 10, 1, 2 );
+		m_pDirectionCell->SetScale( 10, 1, 2 );*/
 	}
 
 	SphericalDirectionIndicator::~SphericalDirectionIndicator()
@@ -64,7 +64,7 @@ namespace DAFFViz
 	{
 		DAFFVIZ_LOCK_VTK;
 		m_pDirectionArrow->SetColor( r, g, b );
-		m_pDirectionCell->SetColor( r, g, b );
+		//m_pDirectionCell->SetColor( r, g, b );
 		DAFFVIZ_UNLOCK_VTK;
 	}
 
@@ -82,7 +82,7 @@ namespace DAFFViz
 	{
 		DAFFVIZ_LOCK_VTK;
 		m_pDirectionArrow->SetAlpha( a );
-		m_pDirectionCell->SetAlpha( a );
+		//m_pDirectionCell->SetAlpha( a );
 		DAFFVIZ_UNLOCK_VTK;
 	}
 

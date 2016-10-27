@@ -49,6 +49,7 @@ void QDAFF2DPlot::ReadDAFF( const DAFFReader* pReader )
 
 void QDAFF2DPlot::CloseDAFF()
 {
+	scene()->clear();
 	m_pReader = NULL;
 }
 
