@@ -47,8 +47,10 @@ private slots:
 	void on_action3DSphericalShowPoles_triggered( bool );
 	void on_action3DSphericalShowGrid_triggered( bool );
 	void on_action3DSphericalShowMeridians_triggered( bool );
-	void on_action3DSphericalShowEquator_triggered( bool );
-	void on_action2DShowAllChannels_triggered( bool );
+    void on_action3DSphericalShowEquator_triggered( bool );
+    void on_action3DShowDirectionIndicator_triggered( bool );
+
+    void on_action2DShowAllChannels_triggered( bool );
 
 	void OpenDAFFFileRecent();
 
@@ -104,7 +106,7 @@ private slots:
 	void on_actionRecent_Clear_triggered();
 	void on_actionExport2DPlot_triggered();
 	void on_actionExport3DPlot_triggered();
-	void on_actionExport3DPlotImageSeries_triggered();
+    void on_actionExport3DPlotImageSeries_triggered();
 
 signals:
 	void SignalReadDAFF( const DAFFReader* pReader );

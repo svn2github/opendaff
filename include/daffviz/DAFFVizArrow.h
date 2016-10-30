@@ -31,11 +31,14 @@ namespace DAFFViz
 	class DAFF_API Arrow : public DAFFViz::SGNode
 	{
 	public:
-		Arrow();
-		Arrow( double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution );
-		Arrow( DAFFViz::SGNode* pParentNode, double dTipLength, double dTipRadius, int iTipResolution, double dShaftRadius, int iShaftResolution );
-		~Arrow();
-
+		//! Constructor
+		/**
+		  * Creates an arrow pointing aling X axis
+		  *
+		  * \note Rotate around yaw by +90 to let arrow point to "front" direction at -Z (OpenGL)
+		  */
+		Arrow( DAFFViz::SGNode* pParentNode = NULL, double dTipLength = .15f, double dTipRadius = .06f, int iTipResolution = 36, double dShaftRadius = .02f, int iShaftResolution = 36);
+		virtual ~Arrow();
 		// --= object related methods =--
 
 		//! Tip length getter

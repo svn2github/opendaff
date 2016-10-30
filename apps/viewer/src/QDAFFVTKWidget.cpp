@@ -31,7 +31,7 @@ QDAFFVTKWidget::QDAFFVTKWidget( QWidget *parent )
 	m_pCCA = new DAFFViz::CartesianCoordinateAssistant(); // causes dark VTK widget if added to SGNode ... why?
 
 	m_pSDI = new DAFFViz::SphericalDirectionIndicator( m_pSGRootNode );
-	m_pSDI->SetVisible( false );
+	m_pSDI->SetVisible( true );
 
 	m_pRenderer = vtkSmartPointer< vtkRenderer >::New();
 	m_pRenderer->AddActor( m_pSGRootNode->GetNodeAssembly() );
@@ -185,12 +185,21 @@ void QDAFFVTKWidget::ChangeBeta( double dBetaDeg )
 	update();
 }
 
-void QDAFFVTKWidget::ChangeDirection(double dAlphaDeg, double dBetaDeg)
+void QDAFFVTKWidget::ChangePhi( double dPhiDeg )
 {
-	if (m_pSDI)
+	if( m_pSDI )
 	{
-		m_pSDI->SetOrientationYPR(dAlphaDeg + 90, 0, dBetaDeg - 90);
-	}		
+		m_pSDI->SetDirectionPhiDeg( dPhiDeg );
+	}
+	update();
+}
+
+void QDAFFVTKWidget::ChangeTheta( double dThetaDeg )
+{
+	if( m_pSDI )
+	{
+		m_pSDI->SetDirectionThetaDeg( dThetaDeg );
+	}
 	update();
 }
 
@@ -283,13 +292,10 @@ void QDAFFVTKWidget::SetDirectionIndicatorVisible( bool bVisible )
 	update();
 }
 
-
 void QDAFFVTKWidget::SetArrowsVisible( bool bVisible )
 {
 	if( m_pSCA )
-	{
 		m_pSCA->SetViewUpVectorsVisible( bVisible );
-	}
 
 	update();
 }
@@ -298,9 +304,7 @@ void QDAFFVTKWidget::SetArrowsVisible( bool bVisible )
 void QDAFFVTKWidget::SetPolesVisible( bool bVisible )
 {
 	if( m_pSCA )
-	{
 		m_pSCA->SetPolesVisible( bVisible );
-	}
 
 	update();
 }
@@ -308,9 +312,7 @@ void QDAFFVTKWidget::SetPolesVisible( bool bVisible )
 void QDAFFVTKWidget::SetGridVisible( bool  bVisible )
 {
 	if( m_pSCA )
-	{
 		m_pSCA->SetGridVisible( bVisible );
-	}
 
 	update();
 }
@@ -318,9 +320,7 @@ void QDAFFVTKWidget::SetGridVisible( bool  bVisible )
 void QDAFFVTKWidget::SetEquatorVisible( bool bVisible )
 {
 	if( m_pSCA )
-	{
 		m_pSCA->SetEquatorVisible( bVisible );
-	}
 
 	update();
 }
@@ -328,9 +328,7 @@ void QDAFFVTKWidget::SetEquatorVisible( bool bVisible )
 void QDAFFVTKWidget::SetMeridiansVisible( bool bVisible )
 {
 	if( m_pSCA )
-	{
 		m_pSCA->SetMeridiansVisible( bVisible );
-	}
 
 	update();
 }

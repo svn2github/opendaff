@@ -1,6 +1,7 @@
 #include <DAFFSCTransform.h>
 
 #include "Utils.h"
+#include <DAFFUtils.h>
 
 #include <cmath>
 
@@ -18,7 +19,7 @@ void DAFFSCTransform::setOrientation( const DAFFOrientationYPR& orient )
 {
 	m_orient = orient;
 	m_orient_index = 0;
-	m_const.init( m_orient.fYawAngleDeg, m_orient.fPitchAngleDeg, m_orient.fRollAngleDeg );
+	m_const.Init( m_orient.fYawAngleDeg, m_orient.fPitchAngleDeg, m_orient.fRollAngleDeg );
 }
 
 /* Transformation functions
@@ -51,12 +52,18 @@ void DAFFSCTransform::setOrientation( const DAFFOrientationYPR& orient )
 	[Frank Wefers, 2010-02-01]
 
 	*/
-
 void DAFFSCTransform::transformOSC2DSC( float azimuth_in, float elevation_in, float& alpha_out, float& beta_out ) const
 {
+	double a, b;
+	transformOSC2DSC( double( azimuth_in ), double( elevation_in ), a, b );
+	alpha_out = float( a );
+	beta_out = float( b );
+}
 
+void DAFFSCTransform::transformOSC2DSC( double azimuth_in, double elevation_in, double& alpha_out, double& beta_out ) const
+{
 	// Internally in this method we use radians (not degrees)
-	double ai = DAFF::grad2radf( azimuth_in ), ei = DAFF::grad2radf( elevation_in );
+	double ai = DAFFUtils::grad2rad( azimuth_in ), ei = DAFFUtils::grad2rad( elevation_in );
 	double ao, eo;
 
 	// Base terms
@@ -71,14 +78,22 @@ void DAFFSCTransform::transformOSC2DSC( float azimuth_in, float elevation_in, fl
 		m_const.t4*sa_ce - m_const.t5*se + m_const.t6*ca_ce );
 	eo = asin( m_const.t7*sa_ce + m_const.t8*se + m_const.t9*ca_ce );
 
-	alpha_out = ( float ) DAFF::rad2grad( ao );
-	beta_out = ( float ) DAFF::rad2grad( eo ) + 90.0F;	// Translate into DSC (b=e+90)
+	alpha_out = DAFFUtils::rad2grad( ao );
+	beta_out = DAFFUtils::rad2grad( eo ) + 90.0F;	// Translate into DSC (b=e+90)
 }
 
 void DAFFSCTransform::transformDSC2OSC( float alpha_in, float beta_in, float& azimuth_out, float& elevation_out ) const
 {
+	double a, e;
+	transformDSC2OSC( double( alpha_in ), double( beta_in ), a, e );
+	azimuth_out = float( a );
+	elevation_out = float( e );
+}
+
+void DAFFSCTransform::transformDSC2OSC( double alpha_in, double beta_in, double& azimuth_out, double& elevation_out ) const
+{
 	// Internally in this method we use radians (not degrees)
-	double ai = DAFF::grad2radf( alpha_in ), ei = DAFF::grad2radf( beta_in - 90.0F ); // Translate into OSC (e=b-90)
+	double ai = DAFFUtils::grad2rad( alpha_in ), ei = DAFFUtils::grad2rad( beta_in - 90.0F ); // Translate into OSC (e=b-90)
 	double ao, eo;
 
 	// Base terms
@@ -93,16 +108,15 @@ void DAFFSCTransform::transformDSC2OSC( float alpha_in, float beta_in, float& az
 		m_const.t3*sa_ce + m_const.t9*se + m_const.t6*ca_ce );
 	eo = -asin( m_const.t2*sa_ce - m_const.t8*se + m_const.t5*ca_ce );
 
-	azimuth_out = ( float ) DAFF::rad2grad( ao );
-	elevation_out = ( float ) DAFF::rad2grad( eo );
+	azimuth_out = DAFFUtils::rad2grad( ao );
+	elevation_out = DAFFUtils::rad2grad( eo );
 }
 
-void DAFFSCTransform::RotationConstants::init( double yaw, double pitch, double roll )
+void DAFFSCTransform::RotationConstants::Init( double yaw, double pitch, double roll )
 {
-
-	double y = DAFF::grad2rad( yaw );
-	double p = DAFF::grad2rad( pitch );
-	double r = DAFF::grad2rad( roll );
+	double y = DAFFUtils::grad2rad( yaw );
+	double p = DAFFUtils::grad2rad( pitch );
+	double r = DAFFUtils::grad2rad( roll );
 
 	double sy = sin( y ), cy = cos( y );
 	double sp = sin( p ), cp = cos( p );

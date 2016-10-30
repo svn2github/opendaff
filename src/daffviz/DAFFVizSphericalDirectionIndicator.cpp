@@ -11,60 +11,53 @@
 namespace DAFFViz
 {
 
-	SphericalDirectionIndicator::SphericalDirectionIndicator()
-		: SGNode()
-		, m_pDirectionArrow( NULL )
-		, m_pDirectionCell( NULL )
-	{
-		init();
-	}
-
 	SphericalDirectionIndicator::SphericalDirectionIndicator( DAFFViz::SGNode* pParentNode )
 		: SGNode( pParentNode )
 		, m_pDirectionArrow( NULL )
-		, m_pDirectionCell( NULL )
+		, m_dPhiDeg( 0.0f )
+		, m_dThetaDeg( 0.0f )
+		, m_dAlphaDeg( 0.0f )
+		, m_dBetaDeg( 0.0f )
 	{
-		init();
+		Init();
 	}
 
-	void SphericalDirectionIndicator::init()
+	void SphericalDirectionIndicator::Init()
 	{
-		m_pDirectionArrow = new Arrow( this, 0.02f, 0.02f, 4, 0.01f, 4 );
-		m_pDirectionArrow->SetScale( 1.1, 1, 1 );
-		m_pDirectionArrow->SetColor( 1, 0, 0 );
-		m_pDirectionArrow->SetAlpha( 0.4f );
-
-		/*m_pDirectionCell = new Plane( this, 0.01f, 0.01f, 1.05f, -0.01f, -0.01f, 1.05f, 0.0f, 0.0f, 1.0f );
-		m_pDirectionCell->SetColor( 1, 0, 0 );
-		m_pDirectionCell->SetAlpha( 0.4f );
-
-		m_pDirectionCell->SetScale( 10, 1, 2 );*/
+		m_pDirectionArrow = new Arrow( this, .1f, .04f, 24, .005f, 12 );
+		m_pDirectionArrow->SetScale( 1.2f, 1, 1 );
+		m_pDirectionArrow->SetColor( 0, 1, 0 );
+		m_pDirectionArrow->SetOrientationYPR( 90, 0, 0 );
 	}
 
-	SphericalDirectionIndicator::~SphericalDirectionIndicator()
+	void SphericalDirectionIndicator::UpdateOrientation()
 	{
+		SetOrientationYPR( m_dPhiDeg, m_dThetaDeg, .0f );
 	}
 
-	void SphericalDirectionIndicator::SetDirectionObjectView( double dPhi, double dTheta )
+	void SphericalDirectionIndicator::SetDirectionDeg( double dPhiDeg, double dThetaDeg )
 	{
-
+		m_dPhiDeg = dPhiDeg;
+		m_dThetaDeg = dThetaDeg;
+		UpdateOrientation();
 	}
 
-	void SphericalDirectionIndicator::SetDirectionDataView( double dPhi, double dTheta )
+	void SphericalDirectionIndicator::SetDirectionPhiDeg( double dPhiDeg )
 	{
-
+		m_dPhiDeg = dPhiDeg;
+		UpdateOrientation();
 	}
 
-	void SphericalDirectionIndicator::SetOrientationOfData( const DAFFOrientationYPR& oOrientDeg )
+	void SphericalDirectionIndicator::SetDirectionThetaDeg( double dThetaDeg )
 	{
-
+		m_dThetaDeg = dThetaDeg;
+		UpdateOrientation();
 	}
 
 	void SphericalDirectionIndicator::SetColor( const double r, const double g, const double b )
 	{
 		DAFFVIZ_LOCK_VTK;
 		m_pDirectionArrow->SetColor( r, g, b );
-		//m_pDirectionCell->SetColor( r, g, b );
 		DAFFVIZ_UNLOCK_VTK;
 	}
 
@@ -82,7 +75,6 @@ namespace DAFFViz
 	{
 		DAFFVIZ_LOCK_VTK;
 		m_pDirectionArrow->SetAlpha( a );
-		//m_pDirectionCell->SetAlpha( a );
 		DAFFVIZ_UNLOCK_VTK;
 	}
 

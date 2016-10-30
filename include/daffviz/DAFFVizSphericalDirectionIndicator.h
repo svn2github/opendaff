@@ -32,18 +32,17 @@ namespace DAFFViz
 	class DAFF_API SphericalDirectionIndicator : public DAFFViz::SGNode
 	{
 	public:
-		SphericalDirectionIndicator();
-		SphericalDirectionIndicator( SGNode* );
-		~SphericalDirectionIndicator();
+		SphericalDirectionIndicator( SGNode* = NULL );
+		inline ~SphericalDirectionIndicator() {};
 
 		//! Sets the direction in object view angles
-		void SetDirectionObjectView( double dPhi, double dTheta );
+		void SetDirectionDeg( double dPhiDeg, double dThetaDeg );
 
-		//! Sets the direction in data view angles
-		void SetDirectionDataView( double dAlpha, double dBeta );
+		//! Sets the phi direction in object view angles
+		void SetDirectionPhiDeg( double dPhiDeg );
 
-		//! Sets the orientation of the data object
-		void SetOrientationOfData( const DAFFOrientationYPR& oOrientDeg );
+		//! Sets the theta direction in object view angles
+		void SetDirectionThetaDeg( double dThetaDeg );
 
 		//! Color getter
 		void GetColor( double& r, double& g, double& b );
@@ -59,11 +58,15 @@ namespace DAFFViz
 
 	private:
 		Arrow*  m_pDirectionArrow;
-		Plane* m_pDirectionCell;
-		DAFFOrientationYPR m_oDataOrientation;
+		DAFFSCTransform m_oTransform;
+		double m_dPhiDeg;
+		double m_dThetaDeg;
+		double m_dAlphaDeg;
+		double m_dBetaDeg;
 
 		//! The initializer generates dynamic objects like source, mapper, actor ...
-		void init();
+		void Init();
+		void UpdateOrientation();
 	};
 
 } // End of namespace "DAFFViz"

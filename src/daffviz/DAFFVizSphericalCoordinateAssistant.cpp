@@ -30,11 +30,6 @@ namespace DAFFViz
 	{
 		init();
 	}
-	SphericalCoordinateAssistant::SphericalCoordinateAssistant( double dMin, double dMax, double dPrec, double dScaleRes )
-		: SGNode(), m_dMin( dMin ), m_dMax( dMax ), m_dPrecision( dPrec ), m_pCamera( 0 ), m_dScaleRes( dScaleRes )
-	{
-		init();
-	}
 
 	void SphericalCoordinateAssistant::init()
 	{
@@ -42,7 +37,7 @@ namespace DAFFViz
 		m_pViewUpVectors = new SGNode( this );
 		Arrow* view = new Arrow( m_pViewUpVectors, 0.15, 0.06, 36, 0.02, 36 );
 		view->SetColor( 1, 1, 0 );
-		view->SetOrientationYPR( +90, 0, 0 );
+		view->SetOrientationYPR( 90, 0, 0 );
 		view->SetScale( 1.21, 1.0, 1.0 );
 
 		Arrow* up = new Arrow( m_pViewUpVectors, 0.15, 0.06, 36, 0.02, 36 );

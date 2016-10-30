@@ -612,7 +612,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
      <x>0</x>
      <y>0</y>
      <width>1341</width>
-     <height>38</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -715,6 +715,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
       <property name="title">
        <string>Spherical plot</string>
       </property>
+      <addaction name="action3DShowDirectionIndicator"/>
       <addaction name="action3DSphericalShowArrows"/>
       <addaction name="action3DSphericalShowPoles"/>
       <addaction name="action3DSphericalShowGrid"/>
@@ -1064,6 +1065,20 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    </property>
    <property name="shortcut">
     <string>E, 4</string>
+   </property>
+  </action>
+  <action name="action3DShowDirectionIndicator">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show direction indicator</string>
+   </property>
+   <property name="shortcut">
+    <string>I</string>
    </property>
   </action>
  </widget>

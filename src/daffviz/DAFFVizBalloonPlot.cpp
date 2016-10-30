@@ -1,4 +1,5 @@
 #include <daffviz/DAFFVizBalloonPlot.h>
+#include <DAFFUtils.h>
 
 // Todo: strip required
 #include <vtkActor.h>
@@ -35,12 +36,6 @@
 
 namespace DAFFViz
 {
-
-	static float PI_F = acos( -1.0f );
-	static float HALF_PI_F = acos( -1.0f ) / 2.0f;
-
-	double grad2rad(double dAngleGrad);
-
 	BalloonPlot::BalloonPlot(SGNode* pParentNode, const DAFFContent* pContent)
 	: SGNode(pParentNode),
 	m_pContent(pContent), 
@@ -311,8 +306,8 @@ namespace DAFFViz
 
 		double* pos = m_pProbe->GetPosition();
 		//double r = grad2rad();
-		double p = grad2rad(m_dProbeBeta);
-		double y = grad2rad(m_dProbeAlpha);
+		double p = DAFFUtils::grad2rad(m_dProbeBeta);
+		double y = DAFFUtils::grad2rad( m_dProbeAlpha );
 
 		// Translation matrix: to origin
 		vtkSmartPointer< vtkMatrix4x4 > mOrigin = vtkSmartPointer< vtkMatrix4x4 >::New();
@@ -410,14 +405,14 @@ namespace DAFFViz
 				fPhase = atan(fImag/fReal);
 				if (fReal < 0.0)
 					if (fImag < 0.0)
-						fPhase -= PI_F;
+						fPhase -= DAFF::PI_F;
 					else
-						fPhase += PI_F;
+						fPhase += DAFF::PI_F;
 			} else {
 				if (fImag < 0.0)
-					fPhase = -HALF_PI_F;
+					fPhase = -DAFF::HALF_PI_F;
 				else
-					fPhase = HALF_PI_F;
+					fPhase = DAFF::HALF_PI_F;
 			}
 			if( m_iScaling == SCALING_DECIBEL )
 			{
@@ -577,14 +572,14 @@ namespace DAFFViz
 					fPhase = atan(fImag/fReal);
 					if (fReal < 0.0)
 						if (fImag < 0.0)
-							fPhase -= PI_F;
+							fPhase -= DAFF::PI_F;
 						else
-							fPhase += PI_F;
+							fPhase += DAFF::PI_F;
 				} else {
 					if (fImag < 0.0)
-						fPhase = -HALF_PI_F;
+						fPhase = -DAFF::HALF_PI_F;
 					else
-						fPhase = HALF_PI_F;
+						fPhase = DAFF::HALF_PI_F;
 				}
 
 				// Check weather decibel scaling is activated
@@ -639,9 +634,9 @@ namespace DAFFViz
 
 	void BalloonPlot::sph2cart( double phi, double theta, double& x, double& y, double& z )
 	{
-		x = -sin( ( theta + 90 )*PI_F / 180.0 ) * sin( phi*PI_F / 180.0 );
-		y = -cos( ( theta + 90 )*PI_F / 180.0 );
-		z = -sin( ( theta + 90 )*PI_F / 180.0 ) * cos( phi*PI_F / 180.0 );
+		x = -sin( ( theta + 90 )*DAFF::PI_F / 180.0 ) * sin( phi*DAFF::PI_F / 180.0 );
+		y = -cos( ( theta + 90 )*DAFF::PI_F / 180.0 );
+		z = -sin( ( theta + 90 )*DAFF::PI_F / 180.0 ) * cos( phi*DAFF::PI_F / 180.0 );
 	}
 
 	float BalloonPlot::FactorToDecibel( float x ) const
@@ -690,9 +685,9 @@ namespace DAFFViz
 		if (bUse) {
 			m_pMapper->SelectColorArray("phases");
 			vtkSmartPointer< vtkColorTransferFunction > colors = vtkSmartPointer< vtkColorTransferFunction >::New();
-			colors->AddRGBPoint(-PI_F, 0, 0, 1);
+			colors->AddRGBPoint( -DAFF::PI_F, 0, 0, 1 );
 			colors->AddRGBPoint(0, 1, 1, 1);
-			colors->AddRGBPoint(PI_F, 1, 0, 0);
+			colors->AddRGBPoint( DAFF::PI_F, 1, 0, 0 );
 			m_pMapper->SetLookupTable(colors);
 		} else {
 			m_pMapper->SelectColorArray("magnitudes");

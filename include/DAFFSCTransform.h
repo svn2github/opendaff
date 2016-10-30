@@ -43,6 +43,14 @@ public:
 	void transformDSC2OSC( float alpha_in, float beta_in,
 		float& azimuth_out, float& elevation_out ) const;
 
+	//! Transform coordinates from OSC -> DSC (including coordinate system rotation)
+	void transformOSC2DSC( double azimuth_in, double elevation_in,
+		double& alpha_out, double& beta_out ) const;
+
+	//! Transform coordinates from DSC -> OSC (including coordinate system rotation)
+	void transformDSC2OSC( double alpha_in, double beta_in,
+		double& azimuth_out, double& elevation_out ) const;
+
 private:
 	//! Cached trigenometric terms of yaw-pitch-roll angles
 	class RotationConstants
@@ -51,7 +59,7 @@ private:
 		double t1, t2, t3, t4, t5, t6, t7, t8, t9;
 
 		//! Initialize constants (Angles in degrees [&deg;])
-		void init( double yaw, double pitch, double roll );
+		void Init( double yaw, double pitch, double roll );
 	};
 
 	DAFFOrientationYPR m_orient;	//!@ Orientation

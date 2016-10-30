@@ -87,10 +87,11 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	// Phi and theta conns
 	connect( ui->doubleSpinBox_Phi, SIGNAL( valueChanged( double ) ), this, SLOT( ChangePhi( double ) ) );
 	connect( this, SIGNAL( SignalPhiChanged( double ) ), ui->doubleSpinBox_Phi, SLOT( setValue( double ) ) );
+	connect( this, SIGNAL( SignalPhiChanged( double ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ChangePhi( double ) ) );
 	connect( ui->doubleSpinBox_Theta, SIGNAL( valueChanged( double ) ), this, SLOT( ChangeTheta( double ) ) );
 	connect( this, SIGNAL( SignalThetaChanged( double ) ), ui->doubleSpinBox_Theta, SLOT( setValue( double ) ) );
+	connect( this, SIGNAL( SignalThetaChanged( double ) ), ui->DAFF3DPlot_VTKWidget, SLOT( ChangeTheta( double ) ) );
 	connect( this, SIGNAL( SignalPhiAndThetaOutOfBounds( bool ) ), this, SLOT( SetPhiAndThetaOutOfBoundsIndicator( bool ) ) );
-	connect(this, SIGNAL(SignalDirectionChanged(double, double)), ui->DAFF3DPlot_VTKWidget, SLOT(ChangeDirection(double, double)));
 
 	// 2D conns
 	// .. nothing further yet.
@@ -972,4 +973,9 @@ void QDAFFViewerWindow::on_action3DSphericalShowEquator_triggered( bool bChecked
 void QDAFFViewerWindow::on_action2DShowAllChannels_triggered( bool bChecked )
 {
     ui->graphicsView_2DDAFFPlot->SetAllChannelsVisible( bChecked );
+}
+
+void QDAFFViewerWindow::on_action3DShowDirectionIndicator_triggered( bool bChecked )
+{
+    ui->DAFF3DPlot_VTKWidget->SetDirectionIndicatorVisible( bChecked );
 }

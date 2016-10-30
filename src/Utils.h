@@ -11,25 +11,10 @@
 
 namespace DAFF
 {
-
 	// Define necessary roundf for Microsoft compilers
 	#ifdef _MSC_VER 
 	#define roundf(x) (x<0?ceil((x)-0.5f):floor((x)+0.5f));
 	#endif // _MSC_VER
-
-	// --= Global constants =--
-
-	static const float PI_F = acos(-1.0F);
-	static const float HALF_PI_F = PI_F/2;
-	static const float TWO_PI_F = 2*PI_F;
-
-	// --= Angle conversion and normalization =--
-
-	float grad2radf(float phi);
-	float rad2gradf(float phi);
-
-	double grad2rad(double phi);
-	double rad2grad(double phi);
 
 	// --= Complex number conversion =--
 

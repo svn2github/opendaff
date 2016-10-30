@@ -286,3 +286,23 @@ void DAFFUtils::NormalizeDirection( int iView, float fAngle1In, float fAngle2In,
 	// Invalid view
 	assert( false );
 }
+
+float DAFFUtils::grad2radf( float phi )
+{
+	return phi * DAFF::PI_F / 180.0f;
+}
+
+double DAFFUtils::grad2rad( double phi )
+{
+	return phi * DAFF::PI_D / 180.0f;
+}
+
+float DAFFUtils::rad2gradf( float phi )
+{
+	return phi * 180.0f / DAFF::PI_F;
+}
+
+double DAFFUtils::rad2grad( double phi )
+{
+	return phi * 180.0f / DAFF::PI_D;
+}

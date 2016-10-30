@@ -258,7 +258,7 @@ namespace DAFFViz
 		*
 		* @see SetOrientationYPR()
 		*/
-		void GetOrientationYPR(double& dYawDeg, double& dPitchDeg, double& dRollDeg);
+		void GetOrientationYPR( double& dYawDeg, double& dPitchDeg, double& dRollDeg );
 
 		//! Sets the orientation of the node assembly based on view- and up-vectors
 		/**

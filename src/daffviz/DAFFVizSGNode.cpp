@@ -1,6 +1,6 @@
 #include <daffviz/DAFFVizSGNode.h>
-
 #include <daffviz/DAFFVizGlobalLock.h>
+#include <DAFFUtils.h>
 
 #include <cassert>
 #include <math.h>
@@ -15,14 +15,6 @@
 
 namespace DAFFViz
 {
-
-	static float PI_F = std::acos( -1.0f );
-
-	double grad2rad( double dAngleGrad )
-	{
-		return dAngleGrad * PI_F / 180.0f;
-	}
-
 	SGNode::SGNode( DAFFViz::SGNode* pParentNode )
 		: m_pParentNode( NULL )
 	{
@@ -237,11 +229,11 @@ namespace DAFFViz
 
 	void SGNode::SetOrientationYPR( double yaw, double pitch, double roll )
 	{
-
 		double* pos = m_pNodeAssembly->GetPosition();
-		double r = grad2rad( roll );
-		double p = grad2rad( pitch );
-		double y = grad2rad( yaw );
+
+		double r = DAFFUtils::grad2rad( roll );
+		double p = DAFFUtils::grad2rad( pitch );
+		double y = DAFFUtils::grad2rad( yaw );
 
 		// Translation matrix: to origin
 		vtkSmartPointer< vtkMatrix4x4 > mOrigin = vtkSmartPointer< vtkMatrix4x4 >::New();
@@ -372,6 +364,109 @@ namespace DAFFViz
 		return;
 	}
 
+	void SGNode::GetOrientationVU( double& vx, double& vy, double& vz, double& ux, double& uy, double& uz )
+	{
+		vtkSmartPointer< vtkMatrix4x4 > pM = m_pNodeAssembly->GetUserMatrix();
+
+		std::vector< double > vdView( 4 );
+		std::vector< double > vdDefaultView( 4 );
+		vdDefaultView[ 2 ] = -1.0f;
+		vdDefaultView[ 3 ] = 1.0f;
+		if( pM )
+		{
+			vdView[0] = *pM->MultiplyDoublePoint( &vdDefaultView[0] );
+			vx = vdView[ 0 ];
+			vy = vdView[ 1 ];
+			vz = vdView[ 2 ];
+		}
+		else
+		{
+			for( size_t i = 0; i < 4; i++ )
+				vdView[ i ] = vdDefaultView[ i ];
+		}
+
+		std::vector< double > vdUp( 4 );
+		std::vector< double > vdDefaultUp( 4 );
+		vdDefaultUp[ 1 ] = vdDefaultUp[ 3 ] = 1.0f;
+		if( pM )
+		{
+			vdUp[0] = *pM->MultiplyDoublePoint( &vdDefaultUp[0] );
+			ux = vdUp[ 0 ];
+			uy = vdUp[ 1 ];
+			uz = vdUp[ 2 ];
+		}
+		else
+		{
+			for( size_t i = 0; i < 4; i++ )
+				vdUp[ i ] = vdDefaultUp[ i ];
+		}
+	}
+
+	void SGNode::GetOrientationYPR( double& dYawDeg, double& dPitchDeg, double& dRollDeg )
+	{
+		double dEps = DAFF::EPSILON_D;
+		double dPi = DAFF::PI_D;
+
+		double vx, vy, vz, ux, uy, uz, yaw, pitch, roll;
+		GetOrientationVU( vx, vy, vz, ux, uy, uz );
+
+		if( vy >= ( 1 - dEps ) )
+		{
+			yaw = atan2( ux, uz );
+			pitch = dPi;
+			roll = 0;
+
+			dYawDeg = DAFFUtils::rad2grad( yaw );
+			dPitchDeg = DAFFUtils::rad2grad( pitch );
+			dRollDeg = DAFFUtils::rad2grad( roll );
+
+			return;
+		}
+
+		if( vy <= -( 1 - dEps ) )
+		{
+			yaw = atan2( -ux, -uz );
+			pitch = -dPi;
+			roll = 0;
+			
+			dYawDeg = DAFFUtils::rad2grad( yaw );
+			dPitchDeg = DAFFUtils::rad2grad( pitch );
+			dRollDeg = DAFFUtils::rad2grad( roll );
+
+			return;
+		}
+
+		yaw = atan2( -vx, -vz );
+		pitch = asin( vy );
+
+		double zy = vz*ux - vx*uz;
+
+		if( ( uy <= dEps ) && ( uy >= -dEps ) ) {
+			// y-component of cross production v x u
+			double zy = vz*ux - vx*uz;
+			roll = ( zy <= 0 ? dPi: -dPi );
+
+			dYawDeg = DAFFUtils::rad2grad( yaw );
+			dPitchDeg = DAFFUtils::rad2grad( pitch );
+			dRollDeg = DAFFUtils::rad2grad( roll );
+
+			return;
+		}
+
+		// Hint: cos(pitch) = cos( arcsin(vy) ) = sqrt(1-vy^2)
+		double cp = sqrt( 1 - vy*vy );
+		double uy_by_cp = uy / cp;
+		if( std::fabs( uy_by_cp - 1 ) < dEps )
+			roll = 0;
+		else
+			roll = ( zy <= 0 ? acos( uy_by_cp ) : -acos( uy_by_cp ) );
+		
+		dYawDeg = DAFFUtils::rad2grad( yaw );
+		dPitchDeg = DAFFUtils::rad2grad( pitch );
+		dRollDeg = DAFFUtils::rad2grad( roll );
+
+		return;
+	}
 
 	void SGNode::GetScale( double& sx, double& sy, double& sz ) const
 	{

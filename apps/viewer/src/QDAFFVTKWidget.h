@@ -28,6 +28,7 @@ class QDAFFVTKWidget : public QVTKWidget
     Q_OBJECT
 
 public:
+	void SetSphericalDirectionIndicator( bool bChecked );
 	QDAFFVTKWidget( QWidget *parent = Q_NULLPTR );
 	~QDAFFVTKWidget();
 
@@ -50,7 +51,8 @@ void CloseDAFF();
 	void ChangeChannelIndex( int iChannelIndex );
 	void ChangeAlpha( double dAlphaDeg );
 	void ChangeBeta( double dBetaDeg );
-	void ChangeDirection(double dPhiDeg, double dThetaDeg);
+	void ChangePhi( double dPhiDeg );
+	void ChangeTheta( double dThetaDeg );
 
 	void ExportScreenshotPNG( QString sFilePath, int iWidth = 1920, int iHeight = 1080 );
 	void ExportScrenshotSeriesPNG( QString sExportDirectory, QString sFileBaseName, int iNumFrames = 360, int iWidth = 1920, int iHeight = 1080 );

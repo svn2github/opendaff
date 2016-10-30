@@ -15,13 +15,21 @@
 #include <DAFFDefs.h>
 #include <string>
 
+namespace DAFF
+{
+	static const float PI_F = acos( -1.0f );
+	static const double PI_D = acos( -1.0f );
+	static const float HALF_PI_F = PI_F / 2.0f;
+	static const float TWO_PI_F = 2.0f * PI_F;
+	static const double EPSILON_D = 1.0e-6;
+}
+
 //! Collection of utility functions
 /**
- * This purely static class summerizes utility functions.
- * These include convenient type-to-string conversions and
- * normalization functions.
- */
-
+  * This purely static class summerizes utility functions.
+  * These include convenient type-to-string conversions and
+  * normalization functions.
+  */
 class DAFF_API DAFFUtils
 {
 public:
@@ -81,6 +89,16 @@ public:
 	 * Removes trailing zeros and rounds to the 3rd decimal point
 	 */
 	static std::string Double2StrNice( double d, int precision, bool showpos, int leadingzeros=0 );
+	
+
+
+	// --= Angle conversion and normalization =--
+
+	static float grad2radf( float );
+	static float rad2gradf( float );
+
+	static double grad2rad( double );
+	static double rad2grad( double );
 
 private:
 	inline DAFFUtils() {};
