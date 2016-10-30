@@ -721,6 +721,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
       <addaction name="action3DSphericalShowGrid"/>
       <addaction name="action3DSphericalShowEquator"/>
       <addaction name="action3DSphericalShowMeridians"/>
+      <addaction name="action3DSphericalUsePhaseColorMap"/>
      </widget>
      <addaction name="menuSpherical_plot"/>
      <addaction name="menuCarpet_plot"/>
@@ -1079,6 +1080,17 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    </property>
    <property name="shortcut">
     <string>I</string>
+   </property>
+  </action>
+  <action name="action3DSphericalUsePhaseColorMap">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Use phase color map</string>
+   </property>
+   <property name="shortcut">
+    <string>P</string>
    </property>
   </action>
  </widget>

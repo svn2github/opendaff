@@ -106,12 +106,14 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	ui->action3DSphericalShowGrid->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/ShowGrid", false ).toBool() );
 	ui->action3DSphericalShowEquator->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/ShowEquator", true ).toBool() );
 	ui->action3DSphericalShowMeridians->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/ShowMeridians", false ).toBool() );
+	ui->action3DSphericalUsePhaseColorMap->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/UsePhaseColorMap", false ).toBool() );
 	
 	ui->DAFF3DPlot_VTKWidget->SetArrowsVisible( ui->action3DSphericalShowArrows->isChecked() );
 	ui->DAFF3DPlot_VTKWidget->SetPolesVisible( ui->action3DSphericalShowPoles->isChecked() );
 	ui->DAFF3DPlot_VTKWidget->SetGridVisible( ui->action3DSphericalShowGrid->isChecked() );
 	ui->DAFF3DPlot_VTKWidget->SetEquatorVisible( ui->action3DSphericalShowEquator->isChecked() );
 	ui->DAFF3DPlot_VTKWidget->SetMeridiansVisible( ui->action3DSphericalShowMeridians->isChecked() );
+	ui->DAFF3DPlot_VTKWidget->SetPhaseColorMap( ui->action3DSphericalUsePhaseColorMap->isChecked() );
 	
 	// Other
 
@@ -126,6 +128,7 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	UpdateRecentFilesActions();
 
 	ChangePhiAndTheta( m_dShowPhiDeg, m_dShowThetaDeg ); // Initially, show default frontal record
+
 }
 
 QDAFFViewerWindow::~QDAFFViewerWindow()
@@ -140,6 +143,7 @@ QDAFFViewerWindow::~QDAFFViewerWindow()
 	m_qSettings.setValue( "Settings/3DPlot/Spherical/ShowGrid", ui->action3DSphericalShowGrid->isChecked() );
 	m_qSettings.setValue( "Settings/3DPlot/Spherical/ShowEquator", ui->action3DSphericalShowEquator->isChecked() );
 	m_qSettings.setValue( "Settings/3DPlot/Spherical/ShowMeridians", ui->action3DSphericalShowMeridians->isChecked() );
+	m_qSettings.setValue( "Settings/3DPlot/Spherical/UsePhaseColorMap", ui->action3DSphericalUsePhaseColorMap->isChecked() );
 
     delete ui;
 
@@ -978,4 +982,9 @@ void QDAFFViewerWindow::on_action2DShowAllChannels_triggered( bool bChecked )
 void QDAFFViewerWindow::on_action3DShowDirectionIndicator_triggered( bool bChecked )
 {
     ui->DAFF3DPlot_VTKWidget->SetDirectionIndicatorVisible( bChecked );
+}
+
+void QDAFFViewerWindow::on_action3DSphericalUsePhaseColorMap_triggered( bool bChecked )
+{
+    ui->DAFF3DPlot_VTKWidget->SetPhaseColorMap( bChecked );
 }

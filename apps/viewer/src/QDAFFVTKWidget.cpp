@@ -25,6 +25,7 @@ QDAFFVTKWidget::QDAFFVTKWidget( QWidget *parent )
 	, m_pCCA( NULL )
 	, m_pDAFFContentCarpet( NULL )
 	, m_pSDI( NULL )
+	, m_bBalloonPlotPhaseColor( false )
 {
 	m_pSGRootNode = new DAFFViz::SGNode();
 	m_pSCA = new DAFFViz::SphericalCoordinateAssistant( m_pSGRootNode );
@@ -130,8 +131,10 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 	case DAFF_PHASE_SPECTRUM:
 		m_pDAFFContentBalloon = new DAFFViz::BalloonPlot( m_pSGRootNode, pReader->getContent() );
 		m_pDAFFContentBalloon->SetScaling( DAFFViz::CarpetPlot::SCALING_LINEAR );
+		m_pDAFFContentBalloon->SetUsePhaseAsColor( m_bBalloonPlotPhaseColor );
+		
 		m_pSGRootNode->AddChildNode( m_pSCA );
-		SetDirectionIndicatorVisible(true);
+
 		break;
 	}
 
@@ -141,9 +144,7 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 void QDAFFVTKWidget::ChangeFrequencyIndex( int iFrequencyIndex )
 {
 	if( m_pDAFFContentBalloon )
-	{
 		m_pDAFFContentBalloon->SetSelectedFrequency( iFrequencyIndex );
-	}
 
 	update();
 }
@@ -151,14 +152,10 @@ void QDAFFVTKWidget::ChangeFrequencyIndex( int iFrequencyIndex )
 void QDAFFVTKWidget::ChangeChannelIndex( int iChannelIndex )
 {
 	if( m_pDAFFContentBalloon )
-	{
 		m_pDAFFContentBalloon->SetChannel( iChannelIndex );
-	}
 
 	if( m_pDAFFContentCarpet )
-	{
 		m_pDAFFContentCarpet->SetChannel( iChannelIndex );
-	}
 
 	update();
 }
@@ -166,10 +163,8 @@ void QDAFFVTKWidget::ChangeChannelIndex( int iChannelIndex )
 void QDAFFVTKWidget::ChangeAlpha( double dAlphaDeg )
 {
 	if( m_pDAFFContentCarpet )
-	{
 		if( m_pDAFFContentCarpet->getFixedAngle() == DAFFViz::CarpetPlot::ALPHA_FIXED )
 			m_pDAFFContentCarpet->SetSelectedAngle( dAlphaDeg );
-	}
 
 	update();
 }
@@ -177,10 +172,8 @@ void QDAFFVTKWidget::ChangeAlpha( double dAlphaDeg )
 void QDAFFVTKWidget::ChangeBeta( double dBetaDeg )
 {
 	if( m_pDAFFContentCarpet )
-	{
 		if( m_pDAFFContentCarpet->getFixedAngle() == DAFFViz::CarpetPlot::BETA_FIXED )
 			m_pDAFFContentCarpet->SetSelectedAngle( dBetaDeg );
-	}
 
 	update();
 }
@@ -188,18 +181,14 @@ void QDAFFVTKWidget::ChangeBeta( double dBetaDeg )
 void QDAFFVTKWidget::ChangePhi( double dPhiDeg )
 {
 	if( m_pSDI )
-	{
 		m_pSDI->SetDirectionPhiDeg( dPhiDeg );
-	}
 	update();
 }
 
 void QDAFFVTKWidget::ChangeTheta( double dThetaDeg )
 {
 	if( m_pSDI )
-	{
 		m_pSDI->SetDirectionThetaDeg( dThetaDeg );
-	}
 	update();
 }
 
@@ -272,14 +261,10 @@ void QDAFFVTKWidget::ExportScrenshotSeriesPNG( QString sFileBasePath, QString sF
 void QDAFFVTKWidget::SetCoordinateAssistanceVisible( bool bVisible )
 {
 	if( m_pSCA )
-	{
 		m_pSCA->SetAssistanceVisible( bVisible );
-	}
 
 	if( m_pCCA )
-	{
 		m_pCCA->SetAxesVisible( bVisible );
-	}
 
 	update();
 }
@@ -329,6 +314,15 @@ void QDAFFVTKWidget::SetMeridiansVisible( bool bVisible )
 {
 	if( m_pSCA )
 		m_pSCA->SetMeridiansVisible( bVisible );
+
+	update();
+}
+
+void QDAFFVTKWidget::SetPhaseColorMap( bool bEnabled )
+{
+	m_bBalloonPlotPhaseColor = bEnabled;
+	if( m_pDAFFContentBalloon )
+		m_pDAFFContentBalloon->SetUsePhaseAsColor( bEnabled );
 
 	update();
 }

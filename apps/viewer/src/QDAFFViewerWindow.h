@@ -108,6 +108,8 @@ private slots:
 	void on_actionExport3DPlot_triggered();
     void on_actionExport3DPlotImageSeries_triggered();
 
+    void on_action3DSphericalUsePhaseColorMap_triggered(bool checked);
+
 signals:
 	void SignalReadDAFF( const DAFFReader* pReader );
 	void SignalContentLoaded( const DAFFContent* pContent );

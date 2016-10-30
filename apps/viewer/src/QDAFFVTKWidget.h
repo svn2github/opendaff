@@ -41,6 +41,7 @@ private:
 	DAFFViz::CartesianCoordinateAssistant* m_pCCA;
 	DAFFViz::SphericalDirectionIndicator* m_pSDI;
 	DAFFViz::CarpetPlot* m_pDAFFContentCarpet;
+	bool m_bBalloonPlotPhaseColor;
 
 public slots:
 
@@ -64,6 +65,8 @@ void CloseDAFF();
 	void SetGridVisible( bool );
 	void SetEquatorVisible( bool );
 	void SetMeridiansVisible( bool );
+	void SetPhaseColorMap( bool );
+
 };
 
 #endif // QDAFFVTKWIDGET_H
