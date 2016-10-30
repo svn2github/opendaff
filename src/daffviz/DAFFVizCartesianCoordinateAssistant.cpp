@@ -27,47 +27,47 @@ namespace DAFFViz
 	static double PI_F = acos( -1 );
 
 	CartesianCoordinateAssistant::CartesianCoordinateAssistant( SGNode* pParentNode, double LengthX, double LengthY, double LengthZ )
-	: SGNode(pParentNode),
-	m_bGridVisible(true),
-	m_bLabelsVisible(true),
-	m_bAxesVisible(true),
-	m_bReferenceVisible(false),
-	m_dMinX(0), 
-	m_dMaxX(1), 
-	m_dMinY(0), 
-	m_dMaxY(1), 
-	m_dMinZ(0), 
-	m_dMaxZ(1), 
-	m_dResolutionX(.1), 
-	m_dResolutionY(.1), 
-	m_dResolutionZ(.1), 
-	m_dLengthX(LengthX), 
-	m_dLengthY(LengthY), 
-	m_dLengthZ(LengthZ), 
-	m_dOffsetY(0)
+		: SGNode( pParentNode ),
+		m_bGridVisible( true ),
+		m_bLabelsVisible( true ),
+		m_bAxesVisible( true ),
+		m_bReferenceVisible( false ),
+		m_dMinX( 0 ),
+		m_dMaxX( 1 ),
+		m_dMinY( 0 ),
+		m_dMaxY( 1 ),
+		m_dMinZ( 0 ),
+		m_dMaxZ( 1 ),
+		m_dResolutionX( .1 ),
+		m_dResolutionY( .1 ),
+		m_dResolutionZ( .1 ),
+		m_dLengthX( LengthX ),
+		m_dLengthY( LengthY ),
+		m_dLengthZ( LengthZ ),
+		m_dOffsetY( 0 )
 	{
 		init();
 	}
 
 	CartesianCoordinateAssistant::CartesianCoordinateAssistant( double LengthX, double LengthY, double LengthZ )
-	: SGNode(),
-	m_bGridVisible(true),
-	m_bLabelsVisible(true),
-	m_bAxesVisible(true),
-	m_bReferenceVisible(false),
-	m_dMinX(0), 
-	m_dMaxX(1), 
-	m_dMinY(0), 
-	m_dMaxY(1), 
-	m_dMinZ(0), 
-	m_dMaxZ(1), 
-	m_dResolutionX(.1), 
-	m_dResolutionY(.1), 
-	m_dResolutionZ(.1), 
-	m_dLengthX(LengthX), 
-	m_dLengthY(LengthY), 
-	m_dLengthZ(LengthZ), 
-	m_dOffsetY(0)
+		: SGNode(),
+		m_bGridVisible( true ),
+		m_bLabelsVisible( true ),
+		m_bAxesVisible( true ),
+		m_bReferenceVisible( false ),
+		m_dMinX( 0 ),
+		m_dMaxX( 1 ),
+		m_dMinY( 0 ),
+		m_dMaxY( 1 ),
+		m_dMinZ( 0 ),
+		m_dMaxZ( 1 ),
+		m_dResolutionX( .1 ),
+		m_dResolutionY( .1 ),
+		m_dResolutionZ( .1 ),
+		m_dLengthX( LengthX ),
+		m_dLengthY( LengthY ),
+		m_dLengthZ( LengthZ ),
+		m_dOffsetY( 0 )
 	{
 		init();
 	}
@@ -94,22 +94,22 @@ namespace DAFFViz
 
 		// set up reference
 		vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
-		points->InsertNextPoint(0.0, 0.0, 0.0);
-		points->InsertNextPoint(2.0, 0.0, 0.0);
-		points->InsertNextPoint(2.0, 0.0, 2.0);
-		points->InsertNextPoint(0.0, 0.0, 2.0);
+		points->InsertNextPoint( 0.0, 0.0, 0.0 );
+		points->InsertNextPoint( 2.0, 0.0, 0.0 );
+		points->InsertNextPoint( 2.0, 0.0, 2.0 );
+		points->InsertNextPoint( 0.0, 0.0, 2.0 );
 
 		// Create the  polygon
 		vtkSmartPointer< vtkPolygon > polygon = vtkSmartPointer< vtkPolygon >::New();
-		polygon->GetPointIds()->SetNumberOfIds(4); //make a quad
-		polygon->GetPointIds()->SetId(0, 0);
-		polygon->GetPointIds()->SetId(1, 1);
-		polygon->GetPointIds()->SetId(2, 2);
-		polygon->GetPointIds()->SetId(3, 3);
+		polygon->GetPointIds()->SetNumberOfIds( 4 ); //make a quad
+		polygon->GetPointIds()->SetId( 0, 0 );
+		polygon->GetPointIds()->SetId( 1, 1 );
+		polygon->GetPointIds()->SetId( 2, 2 );
+		polygon->GetPointIds()->SetId( 3, 3 );
 
 		// Add the polygon to a list of polygons
 		vtkSmartPointer< vtkCellArray > polygons = vtkSmartPointer< vtkCellArray >::New();
-		polygons->InsertNextCell(polygon);
+		polygons->InsertNextCell( polygon );
 
 		// Create a PolyData
 		vtkSmartPointer < vtkPolyData > polygonPolyData = vtkSmartPointer< vtkPolyData >::New();
@@ -118,14 +118,15 @@ namespace DAFFViz
 
 		// Create a mapper and actor
 		vtkSmartPointer< vtkPolyDataMapper > mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
-		mapper->SetInputData(polygonPolyData);
+		mapper->SetInputData( polygonPolyData );
 
 		m_dReferenceAlpha = 0;
 		m_pReferenceActor = vtkSmartPointer< vtkActor >::New();
-		m_pReferenceActor->SetMapper(mapper);
-		m_pReferenceActor->GetProperty()->SetOpacity(m_dReferenceAlpha);
+		m_pReferenceActor->SetMapper( mapper );
+		m_pReferenceActor->GetProperty()->SetOpacity( m_dReferenceAlpha );
 
-		AddActor( m_pReferenceActor );
+		// @todo: repair reference actor (causes dark VTK window)
+		//AddActor( m_pReferenceActor );
 
 		UpdateGrid();
 	}
@@ -133,7 +134,7 @@ namespace DAFFViz
 	void CartesianCoordinateAssistant::UpdateAxes()
 	{
 
-		bool bWasVisible = GetAxesVisible(); 
+		bool bWasVisible = GetAxesVisible();
 
 		// TODO: handle case when not (ymin < 0 and ymax > 0)
 
@@ -145,48 +146,45 @@ namespace DAFFViz
 		}
 		m_pAxes.clear();
 
-		//AddChildNode(m_pAxes);
 		Arrow* axeX = new Arrow( this, 0.05, 0.03, 36, 0.01, 36 );
 		axeX->SetColor( 1, 1, 0 );
 		axeX->SetPosition( m_dMinX / ( m_dMaxX - m_dMinX ), 0, 0 );
 		axeX->SetOrientation( 0, 0, 0 );
-		axeX->SetScale( 1.1* m_dLengthX, 1.0, 1.0 );
+		axeX->SetScale( 1.1 * m_dLengthX, 1.0, 1.0 );
 		m_pAxes.push_back( axeX );
 
-		Arrow* axeY = new Arrow(this, 0.05, 0.03, 36, 0.01, 36);
-		axeY->SetColor(1, 1, 1);
-		axeY->SetPosition(0,(m_dMinY-m_dOffsetY)/(m_dMaxY-m_dMinY),0);
-		axeY->SetOrientationYPR(0, 0, -90);
-		axeY->SetScale(1.1* m_dLengthY,1.0,1.0);
-		m_pAxes.push_back(axeY);
+		Arrow* axeY = new Arrow( this, 0.05, 0.03, 36, 0.01, 36 );
+		axeY->SetColor( 1, 1, 1 );
+		axeY->SetPosition( 0, ( m_dMinY - m_dOffsetY ) / ( m_dMaxY - m_dMinY ), 0 );
+		axeY->SetOrientationYPR( 0, 0, -90 );
+		axeY->SetScale( 1.1* m_dLengthY, 1.0, 1.0 );
+		m_pAxes.push_back( axeY );
 
-		Arrow* axeZ = new Arrow(this, 0.05, 0.03, 36, 0.01, 36);
-		axeZ->SetColor(1, 0, 0);
-		axeZ->SetPosition(0,0,m_dMinZ/(m_dMaxZ-m_dMinZ));
-		axeZ->SetOrientationYPR(-90,0 , 0);
-		axeZ->SetScale(1.1* m_dLengthZ,1.0,1.0);
-		m_pAxes.push_back(axeZ);
+		Arrow* axeZ = new Arrow( this, 0.05, 0.03, 36, 0.01, 36 );
+		axeZ->SetColor( 1, 0, 0 );
+		axeZ->SetPosition( 0, 0, m_dMinZ / ( m_dMaxZ - m_dMinZ ) );
+		axeZ->SetOrientationYPR( -90, 0, 0 );
+		axeZ->SetScale( 1.1* m_dLengthZ, 1.0, 1.0 );
+		m_pAxes.push_back( axeZ );
 
 		if( !bWasVisible )
 			SetAxesVisible( false );
-	
+
 	}
 
 	void CartesianCoordinateAssistant::UpdateGrid()
 	{
 
 		//TODO: is it sufficient to delete the actor or do i have to delete polyline/cells/polydata as well?
-		bool bWasVisible = GetGridVisible(); 
+		bool bWasVisible = GetGridVisible();
 		for( int i = 0; i < ( int ) m_pGrid.size(); i++ )
 		{
 			RemoveActor( m_pGrid.at( i ) );
-			m_pGrid.at( i )->GetMapper()->GetInput()->Delete();
 		}
 		m_pGrid.clear();
 		for( int i = 0; i < ( int ) m_pLabels.size(); i++ )
 		{
 			RemoveActor( m_pLabels.at( i ) );
-			//m_pLabels.at(i)->GetMapper()->GetInput()->Delete();
 		}
 		m_pLabels.clear();
 
@@ -205,7 +203,7 @@ namespace DAFFViz
 		int iNumPoints = floor( ( min - max ) / m_dResolutionX );
 		points->SetNumberOfPoints( 2 * iNumPoints );
 		cells = vtkSmartPointer< vtkCellArray >::New();
-		int i=0;
+		int i = 0;
 		for( double f = min; f <= m_dMaxX; f += m_dResolutionX )
 		{
 			double factor = f*m_dLengthX / ( m_dMaxX - m_dMinX );
@@ -241,52 +239,53 @@ namespace DAFFViz
 		}
 
 		polydata = vtkSmartPointer< vtkPolyData >::New();
-		polydata->SetPoints(points);
-		polydata->SetLines(cells);
+		polydata->SetPoints( points );
+		polydata->SetLines( cells );
 
 		mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
-		mapper->SetInputData(polydata);
+		mapper->SetInputData( polydata );
 
 		actor = vtkSmartPointer< vtkActor >::New();
-		actor->SetMapper(mapper);
+		actor->SetMapper( mapper );
 
-		actor->GetProperty()->SetOpacity(0.4);
+		actor->GetProperty()->SetOpacity( 0.4 );
 
-		AddActor(actor);
-		m_pGrid.push_back(actor);
+		AddActor( actor );
+		m_pGrid.push_back( actor );
 
 		// Y-axe
 		min = ceil( m_dMinY / m_dResolutionY )*m_dResolutionY; // inner gridline
 		max = floor( m_dMaxY / m_dResolutionY )*m_dResolutionY; // outter gridline
 		points = vtkSmartPointer< vtkPoints >::New();
-		iNumPoints = floor((min-max)/m_dResolutionY);
-		points->SetNumberOfPoints(2*iNumPoints);
+		iNumPoints = floor( ( min - max ) / m_dResolutionY );
+		points->SetNumberOfPoints( 2 * iNumPoints );
 		cells = vtkSmartPointer< vtkCellArray >::New();
-		i=0;
-		for (double f=min; f<=m_dMaxY; f+=m_dResolutionY) {
-			double factor = (f*m_dLengthY-m_dOffsetY)/(m_dMaxY-m_dMinY);
-			points->InsertPoint(2*i, 0, factor, 0);
-			points->InsertPoint(2*i+1, -0.05/sqrt(2.0f), factor, -0.05/sqrt(2.0f));
+		i = 0;
+		for( double f = min; f <= m_dMaxY; f += m_dResolutionY )
+		{
+			double factor = ( f*m_dLengthY - m_dOffsetY ) / ( m_dMaxY - m_dMinY );
+			points->InsertPoint( 2 * i, 0, factor, 0 );
+			points->InsertPoint( 2 * i + 1, -0.05 / sqrt( 2.0f ), factor, -0.05 / sqrt( 2.0f ) );
 			line = vtkSmartPointer< vtkLine >::New();
-			line->GetPointIds()->SetId(0, 2*i);
-			line->GetPointIds()->SetId(1, 2*i+1);
-			cells->InsertNextCell(line);
+			line->GetPointIds()->SetId( 0, 2 * i );
+			line->GetPointIds()->SetId( 1, 2 * i + 1 );
+			cells->InsertNextCell( line );
 			i++;
 
 			//label
 			std::ostringstream s;
 			s << f;
 			pLabel = vtkSmartPointer< vtkVectorText >::New();
-			pLabel->SetText(s.str().c_str());
+			pLabel->SetText( s.str().c_str() );
 			mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
-			mapper->SetInputConnection(pLabel->GetOutputPort());
+			mapper->SetInputConnection( pLabel->GetOutputPort() );
 
 			actor = vtkSmartPointer< vtkActor >::New(); //vtkFollower::New();
-			actor->SetMapper(mapper);
-			actor->SetScale(0.025);
-			actor->SetPosition(-0.05/sqrt(2.0f), factor, -0.05/sqrt(2.0f));
-			actor->RotateY(135);
-			actor->GetProperty()->SetOpacity(0.4);
+			actor->SetMapper( mapper );
+			actor->SetScale( 0.025 );
+			actor->SetPosition( -0.05 / sqrt( 2.0f ), factor + m_dOffsetY, -0.05 / sqrt( 2.0f ) );
+			actor->RotateY( 135 );
+			actor->GetProperty()->SetOpacity( 0.4 );
 
 			//if (m_pCamera != 0) 
 			//	actor->SetCamera(m_pCamera);
@@ -296,16 +295,16 @@ namespace DAFFViz
 		}
 
 		polydata = vtkSmartPointer< vtkPolyData >::New();
-		polydata->SetPoints(points);
-		polydata->SetLines(cells);
+		polydata->SetPoints( points );
+		polydata->SetLines( cells );
 
 		mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
-		mapper->SetInputData(polydata);
+		mapper->SetInputData( polydata );
 
 		actor = vtkSmartPointer< vtkActor >::New();
-		actor->SetMapper(mapper);
+		actor->SetMapper( mapper );
 
-		actor->GetProperty()->SetOpacity(0.4);
+		actor->GetProperty()->SetOpacity( 0.4 );
 
 		AddActor( actor );
 		m_pGrid.push_back( actor );
@@ -314,10 +313,10 @@ namespace DAFFViz
 		min = ceil( m_dMinZ / m_dResolutionZ )*m_dResolutionZ; // inner gridline
 		max = floor( m_dMaxZ / m_dResolutionZ )*m_dResolutionZ; // outter gridline
 		points = vtkSmartPointer< vtkPoints >::New();
-		iNumPoints = floor((min-max)/m_dResolutionZ);
-		points->SetNumberOfPoints(2*iNumPoints);
+		iNumPoints = floor( ( min - max ) / m_dResolutionZ );
+		points->SetNumberOfPoints( 2 * iNumPoints );
 		cells = vtkSmartPointer< vtkCellArray >::New();
-		i=0;
+		i = 0;
 		for( double f = min; f <= m_dMaxZ; f += m_dResolutionZ )
 		{
 			double factor = f*m_dLengthZ / ( m_dMaxZ - m_dMinZ );
@@ -338,11 +337,11 @@ namespace DAFFViz
 			mapper->SetInputConnection( pLabel->GetOutputPort() );
 
 			actor = vtkSmartPointer< vtkActor >::New(); //vtkFollower::New();
-			actor->SetMapper(mapper);
-			actor->SetScale(0.025);
-			actor->SetPosition(-0.05, 0, factor);
-			actor->RotateY(180);
-			actor->GetProperty()->SetOpacity(0.4);
+			actor->SetMapper( mapper );
+			actor->SetScale( 0.025 );
+			actor->SetPosition( -0.05, 0, factor );
+			actor->RotateY( 180 );
+			actor->GetProperty()->SetOpacity( 0.4 );
 
 			//if (m_pCamera != 0) 
 			//	actor->SetCamera(m_pCamera);
@@ -353,18 +352,18 @@ namespace DAFFViz
 
 
 		polydata = vtkSmartPointer< vtkPolyData >::New();
-		polydata->SetPoints(points);
-		polydata->SetLines(cells);
+		polydata->SetPoints( points );
+		polydata->SetLines( cells );
 
 		mapper = vtkSmartPointer< vtkPolyDataMapper >::New();
-		mapper->SetInputData(polydata);
+		mapper->SetInputData( polydata );
 
 		actor = vtkSmartPointer< vtkActor >::New();
-		actor->SetMapper(mapper);
+		actor->SetMapper( mapper );
 
-		actor->GetProperty()->SetOpacity(0.4);
+		actor->GetProperty()->SetOpacity( 0.4 );
 
-		AddActor(actor);
+		AddActor( actor );
 		m_pGrid.push_back( actor );
 
 		// //labels
@@ -389,10 +388,10 @@ namespace DAFFViz
 		//	AddActor(actor);
 		//	m_pLabels.push_back(actor);
 		//}
-		UpdateAxes();	
+		UpdateAxes();
 		UpdateReference();
-		if (!bWasVisible)
-			SetGridVisible(false);
+		if( !bWasVisible )
+			SetGridVisible( false );
 	}
 
 	void CartesianCoordinateAssistant::UpdateReference()
@@ -411,44 +410,45 @@ namespace DAFFViz
 		UpdateGrid();
 	}
 
-	bool CartesianCoordinateAssistant::GetAxesVisible() const {	
+	bool CartesianCoordinateAssistant::GetAxesVisible() const {
 
-		return (m_pAxes.size()>0) ? m_pAxes[0]->IsVisible() : true;
+		return ( m_pAxes.size() > 0 ) ? m_pAxes[ 0 ]->IsVisible() : true;
 	}
 
-	void CartesianCoordinateAssistant::SetAxesVisible(bool bVisible) {
-		for (int i=0; i<(int)m_pAxes.size(); i++)
-			m_pAxes[i]->SetVisible(bVisible);
+	void CartesianCoordinateAssistant::SetAxesVisible( bool bVisible ) {
+		for( int i = 0; i < ( int ) m_pAxes.size(); i++ )
+			m_pAxes[ i ]->SetVisible( bVisible );
 	}
 
-	bool CartesianCoordinateAssistant::GetGridVisible() const {	
-		return (m_pGrid.size()>0) ? m_pGrid[0]->GetVisibility()!=0 : true;
+	bool CartesianCoordinateAssistant::GetGridVisible() const {
+		return ( m_pGrid.size()>0 ) ? m_pGrid[ 0 ]->GetVisibility() != 0 : true;
 	}
 
 
-	void CartesianCoordinateAssistant::SetGridVisible(bool bVisible) {
-		if (bVisible) {
-			for (int i=0; i<(int)m_pGrid.size(); i++)
-				m_pGrid[i]->VisibilityOn();
-			for (int i=0; i<(int)m_pLabels.size(); i++)
-				m_pLabels[i]->VisibilityOn();
-		} else {
-			for (int i=0; i<(int)m_pGrid.size(); i++)
-				m_pGrid[i]->VisibilityOff();
-			for (int i=0; i<(int)m_pLabels.size(); i++)
-				m_pLabels[i]->VisibilityOff();
+	void CartesianCoordinateAssistant::SetGridVisible( bool bVisible ) {
+		if( bVisible ) {
+			for( int i = 0; i < ( int ) m_pGrid.size(); i++ )
+				m_pGrid[ i ]->VisibilityOn();
+			for( int i = 0; i < ( int ) m_pLabels.size(); i++ )
+				m_pLabels[ i ]->VisibilityOn();
+		}
+		else {
+			for( int i = 0; i < ( int ) m_pGrid.size(); i++ )
+				m_pGrid[ i ]->VisibilityOff();
+			for( int i = 0; i < ( int ) m_pLabels.size(); i++ )
+				m_pLabels[ i ]->VisibilityOff();
 		}
 	}
 	double CartesianCoordinateAssistant::GetReferenceLevel() const { return m_dReferenceLevel; }
 
-	void CartesianCoordinateAssistant::SetReferenceLevel(double dLevel) { 
-		m_dReferenceLevel = dLevel; 
+	void CartesianCoordinateAssistant::SetReferenceLevel( double dLevel ) {
+		m_dReferenceLevel = dLevel;
 		UpdateReference();
 	}
 
 	double CartesianCoordinateAssistant::GetReferenceOpacity() const { return m_dReferenceAlpha; }
 
-	void CartesianCoordinateAssistant::SetReferenceOpacity(double dOpacity) { 
+	void CartesianCoordinateAssistant::SetReferenceOpacity( double dOpacity ) {
 		m_dReferenceAlpha = dOpacity;
 		UpdateReference();
 	}
@@ -457,35 +457,48 @@ namespace DAFFViz
 		return GetAxesVisible() || GetGridVisible();
 	}
 
-	void CartesianCoordinateAssistant::SetVisible(bool bVisible) {
-		SetAxesVisible(bVisible);
-		SetGridVisible(bVisible);
+	void CartesianCoordinateAssistant::SetVisible( bool bVisible ) {
+		SetAxesVisible( bVisible );
+		SetGridVisible( bVisible );
 	}
 
-	void CartesianCoordinateAssistant::SetMinX(double min) { m_dMinX = min; }
-	
+	void CartesianCoordinateAssistant::SetMinX( double min ) { m_dMinX = min; }
+
 	void CartesianCoordinateAssistant::SetMaxX( double max )
-	{ m_dMaxX = max; }
+	{
+		m_dMaxX = max;
+	}
 
 	void CartesianCoordinateAssistant::SetMinY( double min )
-	{ m_dMinY = min; }
-	
+	{
+		m_dMinY = min;
+	}
+
 	void CartesianCoordinateAssistant::SetMaxY( double max )
-	{ m_dMaxY = max; }
+	{
+		m_dMaxY = max;
+	}
 
 	void CartesianCoordinateAssistant::SetMinZ( double min )
-	{ m_dMinZ = min; }
-	
-	void CartesianCoordinateAssistant::SetMaxZ( double max )
-	{ m_dMaxZ = max; }
+	{
+		m_dMinZ = min;
+	}
 
-	void CartesianCoordinateAssistant::SetResolutionX(double res) { 
-		m_dResolutionX = res; 
+	void CartesianCoordinateAssistant::SetMaxZ( double max )
+	{
+		m_dMaxZ = max;
+	}
+
+	void CartesianCoordinateAssistant::SetResolutionX( double res )
+	{
+		m_dResolutionX = res;
 		UpdateGrid();
 	}
 
 	void CartesianCoordinateAssistant::SetResolutionY( double res )
-	{ m_dResolutionY = res; }
+	{
+		m_dResolutionY = res;
+	}
 
 	void CartesianCoordinateAssistant::SetResolutionZ( double res )
 	{
@@ -497,36 +510,57 @@ namespace DAFFViz
 	{
 		m_dOffsetY = res;
 		UpdateAxes();
+		UpdateGrid();
 	}
 
-	double CartesianCoordinateAssistant::GetMinX() const 
-	{ return m_dMinX; }
+	double CartesianCoordinateAssistant::GetMinX() const
+	{
+		return m_dMinX;
+	}
 
-	double CartesianCoordinateAssistant::GetMaxX() const 
-	{ return m_dMaxX; }
+	double CartesianCoordinateAssistant::GetMaxX() const
+	{
+		return m_dMaxX;
+	}
 
 	double CartesianCoordinateAssistant::GetMinY() const
-	{ return m_dMinY; }
+	{
+		return m_dMinY;
+	}
 
 	double CartesianCoordinateAssistant::GetMaxY() const
-	{ return m_dMaxY; }
+	{
+		return m_dMaxY;
+	}
 
 	double CartesianCoordinateAssistant::GetMinZ() const
-	{ return m_dMinZ; }
+	{
+		return m_dMinZ;
+	}
 
-	double CartesianCoordinateAssistant::GetMaxZ() const 
-	{ return m_dMaxZ; }
+	double CartesianCoordinateAssistant::GetMaxZ() const
+	{
+		return m_dMaxZ;
+	}
 
 	double CartesianCoordinateAssistant::GetResolutionX() const
-	{ return m_dResolutionX; }
+	{
+		return m_dResolutionX;
+	}
 
-	double CartesianCoordinateAssistant::GetResolutionY() const 
-	{ return m_dResolutionY; }
+	double CartesianCoordinateAssistant::GetResolutionY() const
+	{
+		return m_dResolutionY;
+	}
 
 	double CartesianCoordinateAssistant::GetResolutionZ() const
-	{ return m_dResolutionZ; }
+	{
+		return m_dResolutionZ;
+	}
 
 	double CartesianCoordinateAssistant::GetOffsetY() const
-	{ return m_dOffsetY; }
+	{
+		return m_dOffsetY;
+	}
 
 } // End of namespace "DAFFViz"

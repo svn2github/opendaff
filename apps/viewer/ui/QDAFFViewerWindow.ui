@@ -929,9 +929,6 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    <property name="toolTip">
     <string>Clear recent DAFF file history</string>
    </property>
-   <property name="shortcut">
-    <string>R, C</string>
-   </property>
   </action>
   <action name="actionExport3DPlot">
    <property name="text">
@@ -973,6 +970,9 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    <property name="text">
     <string>Show arrows</string>
    </property>
+   <property name="shortcut">
+    <string>R</string>
+   </property>
   </action>
   <action name="action3DSphericalShowPoles">
    <property name="checkable">
@@ -984,6 +984,9 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    <property name="text">
     <string>Show poles</string>
    </property>
+   <property name="shortcut">
+    <string>P</string>
+   </property>
   </action>
   <action name="action3DSphericalShowGrid">
    <property name="checkable">
@@ -994,6 +997,9 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    </property>
    <property name="text">
     <string>Show grid</string>
+   </property>
+   <property name="shortcut">
+    <string>G</string>
    </property>
   </action>
   <action name="action3DShowCoordinateAssistance">
@@ -1020,6 +1026,9 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    <property name="text">
     <string>Show equator</string>
    </property>
+   <property name="shortcut">
+    <string>Q</string>
+   </property>
   </action>
   <action name="action3DSphericalShowMeridians">
    <property name="checkable">
@@ -1030,6 +1039,9 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    </property>
    <property name="text">
     <string>Show meridians</string>
+   </property>
+   <property name="shortcut">
+    <string>X</string>
    </property>
   </action>
   <action name="action3DCarpetShowWarp">
@@ -1090,7 +1102,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
     <string>Use phase color map</string>
    </property>
    <property name="shortcut">
-    <string>P</string>
+    <string>M</string>
    </property>
   </action>
  </widget>

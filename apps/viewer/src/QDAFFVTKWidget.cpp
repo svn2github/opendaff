@@ -29,7 +29,8 @@ QDAFFVTKWidget::QDAFFVTKWidget( QWidget *parent )
 {
 	m_pSGRootNode = new DAFFViz::SGNode();
 	m_pSCA = new DAFFViz::SphericalCoordinateAssistant( m_pSGRootNode );
-	m_pCCA = new DAFFViz::CartesianCoordinateAssistant(); // causes dark VTK widget if added to SGNode ... why?
+	m_pCCA = new DAFFViz::CartesianCoordinateAssistant( 2.0f, 1.0f, 2.0f );
+	m_pCCA->SetPosition( -1.0f, 0.0f, -1.0f );
 
 	m_pSDI = new DAFFViz::SphericalDirectionIndicator( m_pSGRootNode );
 	m_pSDI->SetVisible( true );
@@ -121,8 +122,27 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 		DAFFContentIR* pContentIR = static_cast< DAFFContentIR* >( pReader->getContent() );
 		m_pDAFFContentCarpet = new DAFFViz::CarpetPlot( m_pSGRootNode, pContentIR );
 		m_pDAFFContentCarpet->SetScaling( DAFFViz::CarpetPlot::SCALING_DECIBEL );
+		//m_pDAFFContentCarpet->EnableWarp();
+
+		m_pSDI->SetVisible( false );
+
+		// Configure cartesian coordinate helper
+		m_pCCA->SetMinX( pContentIR->getProperties()->getAlphaStart() );
+		m_pCCA->SetMaxX( pContentIR->getProperties()->getAlphaEnd() );
+		m_pCCA->SetResolutionX( pContentIR->getProperties()->getAlphaSpan() / 11.0f );
+
+		m_pCCA->SetMinY( -pContentIR->getOverallPeak() );
+		m_pCCA->SetResolutionY( 0.25f );
+		m_pCCA->SetMaxY( pContentIR->getOverallPeak() );
+		m_pCCA->SetOffsetY( 0.0f );
+
+		m_pCCA->SetMinZ( 0.0f );
+		m_pCCA->SetResolutionZ( 10 );
+		m_pCCA->SetMaxZ( pContentIR->getSamplerate() / double( pContentIR->getFilterLength() ) );
+
+		m_pCCA->UpdateAxes();
+
 		m_pSGRootNode->AddChildNode( m_pCCA );
-		SetDirectionIndicatorVisible(false);
 		break;
 	}
 	case DAFF_DFT_SPECTRUM:
@@ -271,7 +291,7 @@ void QDAFFVTKWidget::SetCoordinateAssistanceVisible( bool bVisible )
 
 void QDAFFVTKWidget::SetDirectionIndicatorVisible( bool bVisible )
 {
-	if (m_pSDI)
+	if( m_pSDI )
 		m_pSDI->SetVisible(bVisible);
 
 	update();
