@@ -715,7 +715,9 @@ font: 75 12pt &quot;Calibri&quot;;</string>
       <property name="title">
        <string>Spherical plot</string>
       </property>
-      <addaction name="action3DShowDirectionIndicator"/>
+      <addaction name="action3DSphericalNormalize"/>
+      <addaction name="action3DSphericalNormalizeFrequenciesIndividually"/>
+      <addaction name="action3DSphericalShowDirectionIndicator"/>
       <addaction name="action3DSphericalShowArrows"/>
       <addaction name="action3DSphericalShowPoles"/>
       <addaction name="action3DSphericalShowGrid"/>
@@ -1080,7 +1082,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
     <string>E, 4</string>
    </property>
   </action>
-  <action name="action3DShowDirectionIndicator">
+  <action name="action3DSphericalShowDirectionIndicator">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1103,6 +1105,22 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    </property>
    <property name="shortcut">
     <string>M</string>
+   </property>
+  </action>
+  <action name="action3DSphericalNormalize">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Normalize</string>
+   </property>
+  </action>
+  <action name="action3DSphericalNormalizeFrequenciesIndividually">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Normalize frequencies individually</string>
    </property>
   </action>
  </widget>

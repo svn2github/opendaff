@@ -993,3 +993,18 @@ void QDAFFViewerWindow::on_action3DUseLogScale_triggered( bool bChecked )
 {
 	ui->DAFF3DPlot_VTKWidget->SetLogScale( bChecked );
 }
+
+void QDAFFViewerWindow::on_action3DSphericalNormalize_triggered(bool bChecked)
+{
+
+}
+
+void QDAFFViewerWindow::on_action3DSphericalNormalizeFrequenciesIndividually_triggered(bool bChecked)
+{
+
+}
+
+void QDAFFViewerWindow::on_action3DCarpetShowWarp_triggered(bool bChecked)
+{
+
+}

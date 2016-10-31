@@ -112,6 +112,12 @@ private slots:
 
     void on_action3DUseLogScale_triggered(bool checked);
 
+    void on_action3DSphericalNormalize_triggered(bool checked);
+
+    void on_action3DSphericalNormalizeFrequenciesIndividually_triggered(bool checked);
+
+    void on_action3DCarpetShowWarp_triggered(bool checked);
+
 signals:
 	void SignalReadDAFF( const DAFFReader* pReader );
 	void SignalContentLoaded( const DAFFContent* pContent );
