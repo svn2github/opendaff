@@ -1012,5 +1012,5 @@ void QDAFFViewerWindow::on_action3DSphericalNormalizeFrequenciesIndividually_tri
 
 void QDAFFViewerWindow::on_action3DCarpetShowWarp_triggered(bool bChecked)
 {
-
+	ui->DAFF3DPlot_VTKWidget->SetCarpetPlotWarp(bChecked);
 }

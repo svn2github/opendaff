@@ -43,7 +43,7 @@ private:
 	DAFFViz::CartesianCoordinateAssistant* m_pCCA;
 	DAFFViz::SphericalDirectionIndicator* m_pSDI;
 	DAFFViz::CarpetPlot* m_pDAFFContentCarpet;
-	bool m_bBalloonPlotPhaseColor;
+	bool m_bBalloonPlotPhaseColor, m_bCarpetPlotWarping;
 	int m_iCarpetWarpScaling, m_iBalloonWarpScaling;
 	bool m_bNormalizeFreqsIndiv, m_bNormalize;
 
@@ -71,6 +71,7 @@ void CloseDAFF();
 	void SetMeridiansVisible( bool );
 	void SetLogScale( bool );
 	void SetPhaseColorMap( bool );
+	void SetCarpetPlotWarp(bool);
 
 };
 

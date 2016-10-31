@@ -129,6 +129,10 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 		DAFFContentIR* pContentIR = static_cast< DAFFContentIR* >( pReader->getContent() );
 		m_pDAFFContentCarpet = new DAFFViz::CarpetPlot( m_pSGRootNode, pContentIR );
 		m_pDAFFContentCarpet->SetScaling( m_iCarpetWarpScaling );
+		if (m_bCarpetPlotWarping)
+			m_pDAFFContentCarpet->EnableWarp();
+		else
+			m_pDAFFContentCarpet->DisableWarp();
 
 		m_pSDI->SetVisible( false );
 
@@ -350,6 +354,19 @@ void QDAFFVTKWidget::SetPhaseColorMap( bool bEnabled )
 	if( m_pDAFFContentBalloon )
 		m_pDAFFContentBalloon->SetUsePhaseAsColor( bEnabled );
 
+	update();
+}
+
+void QDAFFVTKWidget::SetCarpetPlotWarp(bool bEnabled)
+{
+	m_bCarpetPlotWarping = bEnabled;
+	if (m_pDAFFContentCarpet)
+	{
+		if (bEnabled)
+			m_pDAFFContentCarpet->EnableWarp();
+		else
+			m_pDAFFContentCarpet->DisableWarp();
+	}
 	update();
 }
 
