@@ -35,6 +35,7 @@ QDAFF2DPlot::QDAFF2DPlot( QWidget *parent )
 	scale(1, -1);
 	setRenderHint(QPainter::Antialiasing);
 	connect(horizontalScrollBar(), SIGNAL(sliderReleased()), this, SLOT(HorizontalScrollBarRelease()));
+	//connect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(HorizontalScrollBarRelease()));
 }
 
 void QDAFF2DPlot::ReadDAFF( const DAFFReader* pReader )
@@ -98,7 +99,6 @@ void QDAFF2DPlot::Draw()
 	scene()->setSceneRect(0, 0, m_iSceneWidth, m_iSceneHeight);
 	m_iXAxisLength = m_iSceneWidth - m_iTipDistanceX - m_iTipLength - m_iAxisOffsetRight - m_iAxisOffsetLeft;
 	m_iYAxisLength = m_iSceneHeight - m_iTipDistanceY - m_iTipLength - m_iAxisOffsetUp - m_iAxisOffsetDown;
-	//scene()->addRect(0, 0, m_iSceneWidth, m_iSceneHeight, QPen(), QBrush(Qt::white));
 	setBackgroundBrush(QBrush(Qt::white));
 	//draw plot
 	DrawCoordinateSystem();
@@ -801,10 +801,10 @@ void QDAFF2DPlot::DrawGraph(int recordIndex, int channelIndex, bool showAllChann
 			{
 				dataPixelRatio = 1;
 				offset = (double)m_iXAxisLength / (pContent->getFilterLength() - 1);
-				iMin = (xMin / offset) -10;
+				iMin = (xMin / offset) - m_iAdditionalPoints;
 				if (iMin < 0)
 					iMin = 0;
-				iMax = (xMax / offset) + 10;
+				iMax = (xMax / offset) + m_iAdditionalPoints;
 				if (iMax > pContent->getFilterLength() - 1)
 					iMax = pContent->getFilterLength() - 1;
 				m_vvpGraphs[i] = std::vector<QGraphicsLineItem*>(iMax - iMin - 1);
@@ -1082,7 +1082,8 @@ void QDAFF2DPlot::ExportImageSVG( const QString& filePath, float factor, bool sh
 	generator.setSize( QSize( m_iSceneWidth, m_iSceneHeight ) );
 	QPainter p;
 	p.begin( &generator );
-	//p.scale(1, -1);
+	p.scale(1, -1);
+	p.translate(0, -m_iSceneHeight);
 	scene()->render( &p );
 	p.end();
 
@@ -1092,78 +1093,6 @@ void QDAFF2DPlot::ExportImageSVG( const QString& filePath, float factor, bool sh
 	m_iSceneHeight /= factor;
 	Draw();
 }
-
-//void QDAFF2DPlot::ShowChannel(int iChannelIndex, bool bShowAllChannels, bool showDots)
-//{
-//	if( !m_pReader )
-//		return;
-//
-//	if (m_pReader->getContentType() == DAFF_DFT_SPECTRUM)
-//		return;
-//
-//	if (bShowAllChannels)
-//	{
-//		for (int i = 0; i < m_vvpGraphs.size(); i++)
-//		{			
-//			for (int j = 0; j < m_vvpGraphs[i].size(); j++)
-//			{
-//				m_vvpGraphs[i][j]->show();
-//			}			
-//		}
-//		for (int i = 0; i < m_vvpPoints.size(); i++)
-//		{			
-//			for (int j = 0; j < m_vvpPoints[i].size(); j++)
-//			{
-//				if (m_vvpPoints[i][j] != nullptr && showDots)
-//					m_vvpPoints[i][j]->show();
-//				else if (m_vvpPoints[i][j] != nullptr && !showDots)
-//					m_vvpPoints[i][j]->hide();
-//			}
-//		}
-//	}
-//	else
-//	{
-//		for (int i = 0; i < m_vvpGraphs.size(); i++)
-//		{
-//			if (i == iChannelIndex)
-//			{
-//				for (int j = 0; j < m_vvpGraphs[i].size(); j++)
-//				{
-//					m_vvpGraphs[i][j]->show();
-//				}
-//			}
-//			else
-//			{
-//				for (int j = 0; j < m_vvpGraphs[i].size(); j++)
-//				{
-//					m_vvpGraphs[i][j]->hide();
-//				}
-//			}
-//		}
-//		for (int i = 0; i < m_vvpPoints.size(); i++)
-//		{
-//			if (i == iChannelIndex)
-//			{
-//				for (int j = 0; j < m_vvpPoints[i].size(); j++)
-//				{
-//					if (m_vvpPoints[i][j] != nullptr&& showDots)
-//						m_vvpPoints[i][j]->show();
-//					else if (m_vvpPoints[i][j] != nullptr && !showDots)
-//						m_vvpPoints[i][j]->hide();
-//				}
-//			}
-//			else
-//			{
-//				for (int j = 0; j < m_vvpPoints[i].size(); j++)
-//				{
-//					if (m_vvpPoints[i][j] != nullptr)
-//						m_vvpPoints[i][j]->hide();
-//				}
-//			}
-//		}
-//	}
-//	
-//}
 
 void QDAFF2DPlot::keyReleaseEvent(QKeyEvent * event)
 {

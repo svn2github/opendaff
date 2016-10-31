@@ -22,6 +22,7 @@
 #include <QtOpenGL\qgl.h>
 #include <QKeyEvent>
 #include <QtSvg\qsvggenerator.h>
+#include <QtSvg\qsvgrenderer.h>
 
 #include <DAFF.h>
 
@@ -197,8 +198,8 @@ private:
 	//points
 	const int m_iPointDiameter = 4;
 	//drawing
-	const int m_iDrawLimit = 300; //determines at which number of data points the algorithm starts drawing only visible points
-	
+	const int m_iDrawLimit = 500; //determines at which number of data points the algorithm starts drawing only visible points
+	const int m_iAdditionalPoints = 100; //determines how many data points will be drawn behind the view border.
 };
 
 #endif // QDAFF2DPLOT_H
