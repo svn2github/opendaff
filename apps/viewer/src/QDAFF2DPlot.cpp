@@ -718,7 +718,7 @@ void QDAFF2DPlot::DrawGraph(int recordIndex, int channelIndex, bool showAllChann
 				}
 				if (pContent->getNumFrequencies()*(m_iPointDiameter + 3) < m_iXAxisLength && showDots)
 				{
-					int j = m_vvpPoints[i].size() - 1;
+					size_t j = m_vvpPoints[i].size() - 1;
 					text = QString("Magnitude: ").append(QString::number(mags[j])).append("\nFrequency: ").append(QString::number(pContent->getFrequencies()[j])).append(QString("Hz"));
 					m_vvpPoints[i][j] = new QGraphicsPoint(text, m_vvpGraphs[i][j - 1]->line().x2(), m_vvpGraphs[i][j - 1]->line().y2(), m_iPointDiameter);
 					scene()->addItem(m_vvpPoints[i][j]);
@@ -953,7 +953,7 @@ void QDAFF2DPlot::DrawGraph(int recordIndex, int channelIndex, bool showAllChann
 					}
 					if (pContent->getNumFrequencies()*(m_iPointDiameter + 3) < m_iXAxisLength && showDots)
 					{
-						int j = m_vvpPoints[i].size() - 1;
+						size_t j = m_vvpPoints[i].size() - 1;
 						text = QString("Phase: ").append(QString::number(phases[j] * 180 / M_PI)).append(QChar(0x00B0)).append("\nFrequency: ").append(QString::number(pContent->getFrequencies()[j])).append("Hz");
 						m_vvpPoints[i][j] = new QGraphicsPoint(text, m_vvpGraphs[i][j - 1]->line().x2(), m_vvpGraphs[i][j - 1]->line().y2(), m_iPointDiameter);
 						scene()->addItem(m_vvpPoints[i][j]);
@@ -1026,7 +1026,7 @@ void QDAFF2DPlot::DrawGraph(int recordIndex, int channelIndex, bool showAllChann
 			  }
 			  if (pContent->getNumFrequencies()*(m_iPointDiameter + 3) < m_iXAxisLength && showDots)
 			  {
-				  int j = m_vvpPoints[i].size() - 1;
+				  size_t j = m_vvpPoints[i].size() - 1;
 				  text = QString("Magnitude: ").append(QString::number(mags[j])).append(QString("dB\nPhase: ")).append(QString::number(phases[j] * 180 / M_PI)).append(QChar(0x00B0)).append("\nFrequency: ").append(QString::number(pContent->getFrequencies()[j])).append("Hz");
 				  m_vvpPoints[2 * i][j] = new QGraphicsPoint(text, m_vvpGraphs[2 * i][j - 1]->line().x2(), m_vvpGraphs[2*i][j - 1]->line().y2(), m_iPointDiameter);
 				  m_vvpPoints[2 * i + 1][j] = new QGraphicsPoint(text, m_vvpGraphs[2 * i + 1][j - 1]->line().x2(), m_vvpGraphs[2 * i+1][j - 1]->line().y2(), m_iPointDiameter);
