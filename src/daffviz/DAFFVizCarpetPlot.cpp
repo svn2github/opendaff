@@ -41,10 +41,10 @@ namespace DAFFViz
 		, m_dMin( -1.0 )
 		, m_dMax( 1.0 )
 		, m_iFixedAngle( 0 )
-		, m_pPlotPolydata( 0 )
-		, m_pMapper( 0 )
+		, m_pCarpetPolyData( 0 )
+		, m_pCarpetMapper( 0 )
 		, m_pWarp( 0 )
-		, m_pPlotActor( 0 )
+		, m_pCarpetActor( 0 )
 		, m_iChannel( 0 )
 		, m_bWarp( true )
 		, m_pProbe( 0 )
@@ -63,10 +63,10 @@ namespace DAFFViz
 		, m_dMin( -1.0 )
 		, m_dMax( 1.0 )
 		, m_iFixedAngle( 0 )
-		, m_pPlotPolydata( 0 )
-		, m_pMapper( 0 )
+		, m_pCarpetPolyData( 0 )
+		, m_pCarpetMapper( 0 )
 		, m_pWarp( 0 )
-		, m_pPlotActor( 0 )
+		, m_pCarpetActor( 0 )
 		, m_iChannel( 0 )
 		, m_bWarp( true )
 		, m_pProbe( 0 )
@@ -79,34 +79,15 @@ namespace DAFFViz
 
 	void CarpetPlot::Init()
 	{
-		// --- Carpet plot ---
+		if( m_pContentIR == nullptr )
+			return;
 
-		m_pPlotPolydata = vtkSmartPointer< vtkPolyData >::New();
-
-		m_pMapper = vtkSmartPointer< vtkPolyDataMapper >::New();
-
-		m_pPlotActor = vtkSmartPointer<vtkActor>::New();
-		m_pPlotActor->SetMapper( m_pMapper );
-		m_pPlotActor->GetProperty()->SetInterpolationToGouraud();
-
-		AddActor( m_pPlotActor );
-
-		vtkSmartPointer< vtkPolyDataNormals > normals = vtkSmartPointer< vtkPolyDataNormals >::New();
-		normals->SetInputData( m_pPlotPolydata );
-
-		m_pWarp = vtkSmartPointer< vtkWarpScalar >::New();
-		//m_pWarp->SetInputData( m_pPlotPolydata );
-		m_pWarp->SetInputData( normals->GetOutput() );
-		//m_pWarp->UseNormalOff();
-		m_pWarp->Update();
-
-		m_pMapper->SetInputData( m_pPlotPolydata );
-		//m_pMapper->SetInputData( m_pWarp->GetPolyDataOutput() );
-		//EnableWarp();
-		//DisableWarp();
-
-		// Add the geometry and topology to the polydata		
+		// Carpet mesh
+		m_pCarpetPolyData = vtkSmartPointer< vtkPolyData >::New();
 		InitCarpetMesh();
+		
+		// Carpet mapper
+		m_pCarpetMapper = vtkSmartPointer< vtkPolyDataMapper >::New();
 
 		// create a default lookup table and invert it, so that high values have red color
 		vtkSmartPointer< vtkLookupTable > lut = vtkSmartPointer< vtkLookupTable>::New();
@@ -117,9 +98,36 @@ namespace DAFFViz
 		for( int i = 0; i < 256; i++ )
 			lut->SetTableValue( i, refLut->GetTableValue( 255 - i ) );
 
-		m_pMapper->SetLookupTable( lut );
+		m_pCarpetMapper->SetLookupTable( lut );
+
+		// Carpet warping (3D visualizatiion)
+
+		/*
+		vtkSmartPointer< vtkPolyDataNormals > normals = vtkSmartPointer< vtkPolyDataNormals >::New();
+		normals->SetInputData( m_pPlotPolydata );
+		int iCNs = normals->GetComputePointNormals();
+		*/
+
+		m_pWarp = vtkSmartPointer< vtkWarpScalar >::New();
+		m_pWarp->SetInputData( m_pCarpetPolyData );
+		//m_pWarp->SetInputData( normals->GetOutput() );
+		m_pWarp->UseNormalOff();
+		m_pWarp->Update();
+
+		m_pCarpetMapper->SetInputConnection( m_pWarp->GetOutputPort() );
+
+		// Carpet actor
+
+		m_pCarpetActor = vtkSmartPointer< vtkActor >::New();
+		m_pCarpetActor->SetMapper( m_pCarpetMapper );
+		m_pCarpetActor->GetProperty()->SetInterpolationToPhong();
+		m_pCarpetActor->RotateX( -90 );
+		m_pCarpetActor->RotateZ( 180 );
+
+		AddActor( m_pCarpetActor );
 			
-		// --- Probe ---
+
+		/* Probe
 
 		vtkSmartPointer< vtkPoints > pointsProbe = vtkSmartPointer< vtkPoints >::New();
 		pointsProbe->SetNumberOfPoints( 2 );
@@ -162,14 +170,15 @@ namespace DAFFViz
 		m_pLabel->GetProperty()->SetOpacity(0.8);
 		m_pLabel->VisibilityOff();
 
-		AddActor( m_pLabel );		
+		AddActor( m_pLabel );
+		*/
 	}
 
 	CarpetPlot::~CarpetPlot()
 	{
-		RemoveActor( m_pPlotActor );
-		RemoveActor( m_pLabel );
-		RemoveActor( m_pProbe );
+		RemoveActor( m_pCarpetActor );
+		//RemoveActor( m_pLabel );
+		//RemoveActor( m_pProbe );
 	}
 
 	void CarpetPlot::InitCarpetMesh()
@@ -214,14 +223,14 @@ namespace DAFFViz
 				}
 				vtkIdType iPointiD = i*iNumPointsY + j;
 				double dX = 2.0f * double( i ) / double( iNumPointsX ) - 1.0f;
-				double dY = 0.0f;
-				double dZ = 2.0f * double( j ) / double( iNumPointsY ) - 1.0f;
+				double dY = 2.0f * double( j ) / double( iNumPointsY ) - 1.0f;
+				double dZ = 0.0f;
 				points->InsertPoint( iPointiD, dX, dY, dZ );
 			}
 		}
 
-		m_pPlotPolydata->SetPoints( points );
-		m_pPlotPolydata->SetPolys( cells );
+		m_pCarpetPolyData->SetPoints( points );
+		m_pCarpetPolyData->SetPolys( cells );
 
 		SetScalars();		
 	}
@@ -339,12 +348,12 @@ namespace DAFFViz
 
 	void CarpetPlot::SetScalarVisibility( bool bVisible )
 	{
-		m_pMapper->SetScalarVisibility( bVisible );
+		m_pCarpetMapper->SetScalarVisibility( bVisible );
 	}
 
 	int CarpetPlot::getScalarVisibility()
 	{
-		return m_pMapper->GetScalarVisibility();
+		return m_pCarpetMapper->GetScalarVisibility();
 	}
 
 	double CarpetPlot::GetRangeMin() const
@@ -370,30 +379,30 @@ namespace DAFFViz
 
 	void CarpetPlot::EnableWarp()
 	{
-		m_pMapper->SetInputConnection( m_pWarp->GetOutputPort() );
+		m_pCarpetMapper->SetInputConnection( m_pWarp->GetOutputPort() );
 		m_bWarp = true;
 		updatePlotOffset();
 	}
 
 	void CarpetPlot::DisableWarp()
 	{
-		m_pMapper->SetInputData( m_pPlotPolydata );
+		m_pCarpetMapper->SetInputData( m_pCarpetPolyData );
 		m_bWarp = false;
 		updatePlotOffset();
 	}
 
 	void CarpetPlot::updatePlotOffset()
 	{
-		if( m_pPlotActor )
+		if( m_pCarpetActor )
 			if( m_bWarp )
 				if( ( m_iScaling == SCALING_LINEAR ) && ( ( m_dMin < 0 ) && ( m_dMax > 0 ) ) )
-					m_pPlotActor->SetPosition( 0, m_dMin / ( m_dMax - m_dMin ), 0 );
+					m_pCarpetActor->SetPosition( 0, m_dMin / ( m_dMax - m_dMin ), 0 );
 				else if( m_iScaling == SCALING_DECIBEL )
-					m_pPlotActor->SetPosition( 0, 0, 0 );
+					m_pCarpetActor->SetPosition( 0, 0, 0 );
 				else
-					m_pPlotActor->SetPosition( 0, 0, 0 );
+					m_pCarpetActor->SetPosition( 0, 0, 0 );
 			else
-				m_pPlotActor->SetPosition( 0, 0, 0 );
+				m_pCarpetActor->SetPosition( 0, 0, 0 );
 	}
 
 
@@ -504,7 +513,7 @@ namespace DAFFViz
 		}
 
 		// Assign scalars to points
-		m_pPlotPolydata->GetPointData()->SetScalars( pIRWarpArray );
+		m_pCarpetPolyData->GetPointData()->SetScalars( pIRWarpArray );
 
 		// move plot down so it fits to the axes
 		updatePlotOffset();
@@ -529,11 +538,11 @@ namespace DAFFViz
 	void CarpetPlot::SetDisplayMode( int iMode )
 	{
 		if( iMode == MODE_SURFACE )
-			m_pPlotActor->GetProperty()->SetRepresentationToSurface();
+			m_pCarpetActor->GetProperty()->SetRepresentationToSurface();
 		else if( iMode == MODE_WIREFRAME )
-			m_pPlotActor->GetProperty()->SetRepresentationToWireframe();
+			m_pCarpetActor->GetProperty()->SetRepresentationToWireframe();
 		else if( iMode == MODE_POINT )
-			m_pPlotActor->GetProperty()->SetRepresentationToPoints();
+			m_pCarpetActor->GetProperty()->SetRepresentationToPoints();
 	}
 
 	void CarpetPlot::SetChannel( int iChannel )

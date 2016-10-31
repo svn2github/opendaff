@@ -988,3 +988,8 @@ void QDAFFViewerWindow::on_action3DSphericalUsePhaseColorMap_triggered( bool bCh
 {
     ui->DAFF3DPlot_VTKWidget->SetPhaseColorMap( bChecked );
 }
+
+void QDAFFViewerWindow::on_action3DUseLogScale_triggered( bool bChecked )
+{
+	ui->DAFF3DPlot_VTKWidget->SetLogScale( bChecked );
+}

@@ -119,9 +119,9 @@ namespace DAFFViz
 
 		const DAFFContentIR* m_pContentIR;
 		vtkSmartPointer< vtkWarpScalar > m_pWarp;
-		vtkSmartPointer< vtkPolyDataMapper > m_pMapper;
-		vtkSmartPointer< vtkActor > m_pPlotActor;
-		vtkSmartPointer< vtkPolyData > m_pPlotPolydata;
+		vtkSmartPointer< vtkPolyDataMapper > m_pCarpetMapper;
+		vtkSmartPointer< vtkActor > m_pCarpetActor;
+		vtkSmartPointer< vtkPolyData > m_pCarpetPolyData;
 		float m_fAngle;
 		int m_iScaling;
 		int m_iFixedAngle;

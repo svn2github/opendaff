@@ -42,6 +42,7 @@ private:
 	DAFFViz::SphericalDirectionIndicator* m_pSDI;
 	DAFFViz::CarpetPlot* m_pDAFFContentCarpet;
 	bool m_bBalloonPlotPhaseColor;
+	int m_iCarpetWarpScaling, m_iBalloonWarpScaling;
 
 public slots:
 
@@ -65,6 +66,7 @@ void CloseDAFF();
 	void SetGridVisible( bool );
 	void SetEquatorVisible( bool );
 	void SetMeridiansVisible( bool );
+	void SetLogScale( bool );
 	void SetPhaseColorMap( bool );
 
 };

@@ -26,6 +26,8 @@ QDAFFVTKWidget::QDAFFVTKWidget( QWidget *parent )
 	, m_pDAFFContentCarpet( NULL )
 	, m_pSDI( NULL )
 	, m_bBalloonPlotPhaseColor( false )
+	, m_iCarpetWarpScaling( DAFFViz::CarpetPlot::SCALING_LINEAR )
+	, m_iBalloonWarpScaling( DAFFViz::BalloonPlot::SCALING_DECIBEL )
 {
 	m_pSGRootNode = new DAFFViz::SGNode();
 	m_pSCA = new DAFFViz::SphericalCoordinateAssistant( m_pSGRootNode );
@@ -121,8 +123,7 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 	{
 		DAFFContentIR* pContentIR = static_cast< DAFFContentIR* >( pReader->getContent() );
 		m_pDAFFContentCarpet = new DAFFViz::CarpetPlot( m_pSGRootNode, pContentIR );
-		m_pDAFFContentCarpet->SetScaling( DAFFViz::CarpetPlot::SCALING_DECIBEL );
-		//m_pDAFFContentCarpet->EnableWarp();
+		m_pDAFFContentCarpet->SetScaling( m_iCarpetWarpScaling );
 
 		m_pSDI->SetVisible( false );
 
@@ -150,7 +151,7 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 	case DAFF_MAGNITUDE_SPECTRUM:
 	case DAFF_PHASE_SPECTRUM:
 		m_pDAFFContentBalloon = new DAFFViz::BalloonPlot( m_pSGRootNode, pReader->getContent() );
-		m_pDAFFContentBalloon->SetScaling( DAFFViz::CarpetPlot::SCALING_LINEAR );
+		m_pDAFFContentBalloon->SetScaling( m_iBalloonWarpScaling );
 		m_pDAFFContentBalloon->SetUsePhaseAsColor( m_bBalloonPlotPhaseColor );
 		
 		m_pSGRootNode->AddChildNode( m_pSCA );
@@ -343,6 +344,23 @@ void QDAFFVTKWidget::SetPhaseColorMap( bool bEnabled )
 	m_bBalloonPlotPhaseColor = bEnabled;
 	if( m_pDAFFContentBalloon )
 		m_pDAFFContentBalloon->SetUsePhaseAsColor( bEnabled );
+
+	update();
+}
+
+void QDAFFVTKWidget::SetLogScale( bool bEnabled )
+{
+	m_iBalloonWarpScaling = bEnabled ? DAFFViz::BalloonPlot::SCALING_DECIBEL : DAFFViz::BalloonPlot::SCALING_LINEAR;
+	if( m_pDAFFContentBalloon )
+	{
+		m_pDAFFContentBalloon->SetScaling( m_iCarpetWarpScaling );
+	}
+
+	m_iCarpetWarpScaling = bEnabled ? DAFFViz::CarpetPlot::SCALING_DECIBEL : DAFFViz::CarpetPlot::SCALING_LINEAR;
+	if( m_pDAFFContentCarpet )
+	{
+		m_pDAFFContentCarpet->SetScaling( m_iCarpetWarpScaling );
+	}
 
 	update();
 }
