@@ -107,6 +107,8 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	ui->action3DSphericalShowEquator->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/ShowEquator", true ).toBool() );
 	ui->action3DSphericalShowMeridians->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/ShowMeridians", false ).toBool() );
 	ui->action3DSphericalUsePhaseColorMap->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/UsePhaseColorMap", false ).toBool() );
+	ui->action3DSphericalNormalize->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/Normalize", false ).toBool() );
+	ui->action3DSphericalNormalizeFrequenciesIndividually->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/NormalizeFreqsIndividually", false ).toBool() );
 	
 	ui->DAFF3DPlot_VTKWidget->SetArrowsVisible( ui->action3DSphericalShowArrows->isChecked() );
 	ui->DAFF3DPlot_VTKWidget->SetPolesVisible( ui->action3DSphericalShowPoles->isChecked() );
@@ -114,6 +116,8 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	ui->DAFF3DPlot_VTKWidget->SetEquatorVisible( ui->action3DSphericalShowEquator->isChecked() );
 	ui->DAFF3DPlot_VTKWidget->SetMeridiansVisible( ui->action3DSphericalShowMeridians->isChecked() );
 	ui->DAFF3DPlot_VTKWidget->SetPhaseColorMap( ui->action3DSphericalUsePhaseColorMap->isChecked() );
+	ui->DAFF3DPlot_VTKWidget->SetNormalize( ui->action3DSphericalNormalize->isChecked() );
+	ui->DAFF3DPlot_VTKWidget->SetNormalizeFrequenciesIndividually( ui->action3DSphericalNormalizeFrequenciesIndividually->isChecked() );
 	
 	// Other
 
@@ -144,6 +148,8 @@ QDAFFViewerWindow::~QDAFFViewerWindow()
 	m_qSettings.setValue( "Settings/3DPlot/Spherical/ShowEquator", ui->action3DSphericalShowEquator->isChecked() );
 	m_qSettings.setValue( "Settings/3DPlot/Spherical/ShowMeridians", ui->action3DSphericalShowMeridians->isChecked() );
 	m_qSettings.setValue( "Settings/3DPlot/Spherical/UsePhaseColorMap", ui->action3DSphericalUsePhaseColorMap->isChecked() );
+	m_qSettings.setValue( "Settings/3DPlot/Spherical/Normalize", ui->action3DSphericalNormalize->isChecked() );
+	m_qSettings.setValue( "Settings/3DPlot/Spherical/NormalizeFreqsIndividually", ui->action3DSphericalNormalizeFrequenciesIndividually->isChecked() );
 
     delete ui;
 

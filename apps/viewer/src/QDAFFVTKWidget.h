@@ -28,6 +28,8 @@ class QDAFFVTKWidget : public QVTKWidget
     Q_OBJECT
 
 public:
+	void SetNormalizeFrequenciesIndividually( bool param1 );
+	void SetNormalize( bool param1 );
 	void SetSphericalDirectionIndicator( bool bChecked );
 	QDAFFVTKWidget( QWidget *parent = Q_NULLPTR );
 	~QDAFFVTKWidget();
@@ -43,6 +45,7 @@ private:
 	DAFFViz::CarpetPlot* m_pDAFFContentCarpet;
 	bool m_bBalloonPlotPhaseColor;
 	int m_iCarpetWarpScaling, m_iBalloonWarpScaling;
+	bool m_bNormalizeFreqsIndiv, m_bNormalize;
 
 public slots:
 

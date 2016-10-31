@@ -16,6 +16,7 @@
 #include <iostream>
 #include <sstream>
 
+
 QDAFFVTKWidget::QDAFFVTKWidget( QWidget *parent )
 	: QVTKWidget( parent )
 	, m_pRenderer( NULL )
@@ -28,6 +29,8 @@ QDAFFVTKWidget::QDAFFVTKWidget( QWidget *parent )
 	, m_bBalloonPlotPhaseColor( false )
 	, m_iCarpetWarpScaling( DAFFViz::CarpetPlot::SCALING_LINEAR )
 	, m_iBalloonWarpScaling( DAFFViz::BalloonPlot::SCALING_DECIBEL )
+	, m_bNormalizeFreqsIndiv( false )
+	, m_bNormalize( false )
 {
 	m_pSGRootNode = new DAFFViz::SGNode();
 	m_pSCA = new DAFFViz::SphericalCoordinateAssistant( m_pSGRootNode );
@@ -82,6 +85,8 @@ void QDAFFVTKWidget::CloseDAFF()
 		m_pSGRootNode->RemoveChildNode( m_pDAFFContentCarpet );
 		delete m_pDAFFContentCarpet;
 		m_pDAFFContentCarpet = NULL;
+
+		m_pSGRootNode->RemoveChildNode( m_pCCA );
 	}
 
 	// Restore default settings
@@ -363,4 +368,16 @@ void QDAFFVTKWidget::SetLogScale( bool bEnabled )
 	}
 
 	update();
+}
+
+void QDAFFVTKWidget::SetNormalizeFrequenciesIndividually( bool bEnabled )
+{
+	m_bNormalizeFreqsIndiv = bEnabled;
+	// @todo
+}
+
+void QDAFFVTKWidget::SetNormalize( bool bEnabled )
+{
+	m_bNormalize = bEnabled;
+	// @todo
 }
