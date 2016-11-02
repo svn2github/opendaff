@@ -929,9 +929,47 @@ void QDAFFViewerWindow::on_actionExport3DPlotImageSeries_triggered()
 	}
 
 	QFileInfo oFile( m_pDAFFReader->getFilename().c_str() );
-	QString sFileBasePath = oFile.absolutePath() + QDir::separator() + oFile.baseName();
-
 	QDAFFDialogExport3DPlotImageSeries dialog( this, oFile.dir(), oFile.baseName() );
+
+	dialog.SetAnimationChannelIndices( 0, m_pDAFFReader->getProperties()->getNumberOfChannels() - 1 );
+
+	switch( m_pDAFFReader->getContentType() )
+	{
+	case DAFF_DFT_SPECTRUM:
+	{
+		const DAFFContentDFT* pC = dynamic_cast< const DAFFContentDFT* >( m_pDAFFReader->getContent() );
+		dialog.SetAnimationFrequencyIndices( 0, pC->getNumDFTCoeffs() - 1 );
+	}
+	case DAFF_MAGNITUDE_SPECTRUM:
+	{
+		const DAFFContentMS* pC = dynamic_cast< const DAFFContentMS* >( m_pDAFFReader->getContent() );
+		dialog.SetAnimationFrequencyIndices( 0, pC->getNumFrequencies() - 1 );
+	}
+	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+	{
+		const DAFFContentMPS* pC = dynamic_cast< const DAFFContentMPS* >( m_pDAFFReader->getContent() );
+		dialog.SetAnimationFrequencyIndices( 0, pC->getNumFrequencies() - 1 );
+	}
+	case DAFF_PHASE_SPECTRUM:
+	{
+			const DAFFContentPS* pC = dynamic_cast< const DAFFContentPS* >( m_pDAFFReader->getContent() );
+			dialog.SetAnimationFrequencyIndices( 0, pC->getNumFrequencies() - 1 );
+	}
+	default:
+	{
+		dialog.SetAnimationFrequencyIndices( 0, 0 );
+	}
+	}
+
+	double dBetaStart = m_pDAFFReader->getProperties()->getBetaStart();
+	double dBetaEnd = m_pDAFFReader->getProperties()->getBetaEnd();
+	int iR;
+	m_pDAFFReader->getContent()->getNearestNeighbour( DAFF_DATA_VIEW, 0.0f, dBetaStart, iR );
+	float fEleStart, fEleEnd, fTemp;
+	m_pDAFFReader->getContent()->getRecordCoords( iR, DAFF_OBJECT_VIEW, fTemp, fEleStart );
+	m_pDAFFReader->getContent()->getNearestNeighbour( DAFF_DATA_VIEW, 0.0f, dBetaEnd, iR );
+	m_pDAFFReader->getContent()->getRecordCoords( iR, DAFF_OBJECT_VIEW, fTemp, fEleEnd );
+	dialog.SetAnimationElevationRange( double( fEleStart ), double( fEleEnd ) );
 
 	if( dialog.exec() )
 	{

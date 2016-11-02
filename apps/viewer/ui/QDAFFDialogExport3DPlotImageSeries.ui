@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>858</width>
-    <height>388</height>
+    <width>989</width>
+    <height>420</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,7 @@
    </item>
    <item>
     <layout class="QFormLayout" name="formLayout">
-     <item row="2" column="0">
+     <item row="3" column="0">
       <widget class="QLabel" name="width">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -48,7 +48,7 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="4" column="0">
       <widget class="QLabel" name="height">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -58,7 +58,7 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="3" column="1">
       <widget class="QSpinBox" name="spinBox_Width">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -74,7 +74,7 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="4" column="1">
       <widget class="QSpinBox" name="spinBox_Height">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -90,7 +90,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
+     <item row="5" column="0">
       <widget class="QLabel" name="label">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -100,7 +100,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="5" column="1">
       <widget class="QSpinBox" name="spinBox_frames">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -116,14 +116,14 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="2" column="1">
       <widget class="QLineEdit" name="lineEdit_FileBaseName">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="label_FileBaseName">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -133,7 +133,7 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
+     <item row="6" column="0">
       <widget class="QCheckBox" name="checkBox_yaw">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -146,7 +146,7 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
+     <item row="7" column="0">
       <widget class="QCheckBox" name="checkBox_pitch">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -156,7 +156,7 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
+     <item row="8" column="0">
       <widget class="QCheckBox" name="checkBox_frequencies">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -166,7 +166,7 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
+     <item row="9" column="0">
       <widget class="QCheckBox" name="checkBox_channels">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -176,7 +176,7 @@
        </property>
       </widget>
      </item>
-     <item row="9" column="0">
+     <item row="10" column="0">
       <widget class="QCheckBox" name="checkBox_ele">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
@@ -186,7 +186,7 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
+     <item row="6" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QDoubleSpinBox" name="doubleSpinBox_AnimationYawStart">
@@ -229,7 +229,7 @@
        </item>
       </layout>
      </item>
-     <item row="6" column="1">
+     <item row="7" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QDoubleSpinBox" name="doubleSpinBox_AnimationPitchStart">
@@ -281,7 +281,7 @@
        </item>
       </layout>
      </item>
-     <item row="7" column="1">
+     <item row="8" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
         <widget class="QSpinBox" name="spinBox_AnimationFreqStartIndex">
@@ -309,7 +309,7 @@
        </item>
       </layout>
      </item>
-     <item row="8" column="1">
+     <item row="9" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_5">
        <item>
         <widget class="QSpinBox" name="spinBox_AnimationChannelStartIndex">
@@ -337,7 +337,7 @@
        </item>
       </layout>
      </item>
-     <item row="9" column="1">
+     <item row="10" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_6">
        <item>
         <widget class="QDoubleSpinBox" name="doubleSpinBox_AnimationEleStart">
@@ -391,6 +391,23 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Export path</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="lineEdit_ExportPath">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
