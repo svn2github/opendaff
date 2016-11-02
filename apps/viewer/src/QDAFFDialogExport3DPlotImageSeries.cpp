@@ -12,16 +12,46 @@ QDAFFDialogExport3DPlotImageSeries::QDAFFDialogExport3DPlotImageSeries( QWidget 
 {
 	ui->setupUi( this );
 
-	QStringList vsSupportedFileTypes;
-	vsSupportedFileTypes << "png";
+	LoadSettings();
+}
 
-	int iWidth = m_qSettings.value( "Export3DPlotImage/Width", 1920 ).toInt();
-	int iHeight = m_qSettings.value( "Export3DPlotImage/Height", 1080 ).toInt();
+QDAFFDialogExport3DPlotImageSeries::~QDAFFDialogExport3DPlotImageSeries()
+{
+	StoreSettings();
+	delete ui;
+}
 
-	ui->spinBox_Width->setValue( iWidth );
-	ui->spinBox_Height->setValue( iHeight );
-	
-	ui->lineEdit_FileBaseName->setText( sFileBaseName );
+void QDAFFDialogExport3DPlotImageSeries::StoreSettings() const
+{
+	QSettings qs;
+
+	qs.setValue( "Export3DPlotImageSeries/Width", ui->spinBox_Width->value() );
+	qs.setValue( "Export3DPlotImageSeries/Height", ui->spinBox_Height->value() );
+	qs.setValue( "Export3DPlotImageSeries/Frames", ui->spinBox_frames->value() );
+
+	qs.setValue( "Export3DPlotImageSeries/AnimateYaw", ui->checkBox_yaw->isChecked() );
+	qs.setValue( "Export3DPlotImageSeries/AnimatePitch", ui->checkBox_pitch->isChecked() );
+	qs.setValue( "Export3DPlotImageSeries/AnimateFrequencies", ui->checkBox_frequencies->isChecked() );
+	qs.setValue( "Export3DPlotImageSeries/AnimateChannels", ui->checkBox_channels->isChecked() );
+	qs.setValue( "Export3DPlotImageSeries/AnimateElevation", ui->checkBox_ele->isChecked() );
+
+	qs.setValue( "Export3DPlotImageSeries/AnimateYawStart", ui->doubleSpinBox_AnimationYawStart->value() );
+	qs.setValue( "Export3DPlotImageSeries/AnimateYawEnd", ui->doubleSpinBox_AnimationYawEnd->value() );
+	qs.setValue( "Export3DPlotImageSeries/AnimatePitchStart", ui->doubleSpinBox_AnimationPitchStart->value() );
+	qs.setValue( "Export3DPlotImageSeries/AnimatePitchEnd", ui->doubleSpinBox_AnimationPitchEnd->value() );
+	qs.setValue( "Export3DPlotImageSeries/AnimateFrequencyIndexStart", ui->spinBox_AnimationFreqStartIndex->value() );
+	qs.setValue( "Export3DPlotImageSeries/AnimateFrequencyIndexEnd", ui->spinBox_AnimationFreqEndIndex->value() );
+	qs.setValue( "Export3DPlotImageSeries/AnimateChannelIndexStart", ui->spinBox_AnimationChannelStartIndex->value() );
+	qs.setValue( "Export3DPlotImageSeries/AnimateChannelIndexEnd", ui->spinBox_AnimationChannelEndIndex->value() );
+	qs.setValue( "Export3DPlotImageSeries/AnimateElevationStart", ui->doubleSpinBox_AnimationEleStart->value() );
+	qs.setValue( "Export3DPlotImageSeries/AnimateElevationEnd", ui->doubleSpinBox_AnimationEleEnd->value() );
+
+	delete ui;
+}
+
+void QDAFFDialogExport3DPlotImageSeries::LoadSettings()
+{
+	ui->lineEdit_FileBaseName->setText( m_sFileBaseName );
 
 	if( m_oBasePath.exists() )
 	{
@@ -30,13 +60,30 @@ QDAFFDialogExport3DPlotImageSeries::QDAFFDialogExport3DPlotImageSeries( QWidget 
 
 		ui->lineEdit_ExportPath->setText( m_oBasePath.absolutePath() );
 	}
-}
 
-QDAFFDialogExport3DPlotImageSeries::~QDAFFDialogExport3DPlotImageSeries()
-{
-	m_qSettings.setValue( "Export3DPlotImageSeries/Width", ui->spinBox_Width->value() );
-	m_qSettings.setValue( "Export3DPlotImageSeries/Height", ui->spinBox_Height->value() );
-    delete ui;
+	QSettings qs;
+
+	ui->spinBox_Width->setValue( qs.value( "Export3DPlotImage/Width", 1920 ).toInt() );
+	ui->spinBox_Height->setValue( qs.value( "Export3DPlotImage/Height", 1080 ).toInt() );
+	ui->spinBox_frames->setValue( qs.value( "Export3DPlotImage/Frames", 75 ).toInt() );
+
+	ui->checkBox_yaw->setChecked( qs.value( "Export3DPlotImage/AnimateYaw", false ).toBool() );
+	ui->checkBox_pitch->setChecked( qs.value( "Export3DPlotImage/AnimatePitch", false ).toBool() );
+	ui->checkBox_frequencies->setChecked( qs.value( "Export3DPlotImage/AnimateFrequencies", false ).toBool() );
+	ui->checkBox_channels->setChecked( qs.value( "Export3DPlotImage/AnimateChannels", false ).toBool() );
+	ui->checkBox_ele->setChecked( qs.value( "Export3DPlotImage/AnimateElevation", false ).toBool() );
+
+	ui->doubleSpinBox_AnimationYawStart->setValue( qs.value( "Export3DPlotImageSeries/AnimateYawStart", 0.0f ).toDouble() );
+	ui->doubleSpinBox_AnimationYawEnd->setValue( qs.value( "Export3DPlotImageSeries/AnimateYawEnd", 0.0f ).toDouble() );
+	ui->doubleSpinBox_AnimationPitchStart->setValue( qs.value( "Export3DPlotImageSeries/AnimatePitchStart", 0.0f ).toDouble() );
+	ui->doubleSpinBox_AnimationPitchEnd->setValue( qs.value( "Export3DPlotImageSeries/AnimatePitchEnd", 0.0f ).toDouble() );
+	ui->spinBox_AnimationFreqStartIndex->setValue( qs.value( "Export3DPlotImageSeries/AnimateFrequencyIndexStart", 0 ).toInt() );
+	ui->spinBox_AnimationFreqEndIndex->setValue( qs.value( "Export3DPlotImageSeries/AnimateFrequencyIndexEnd", 0 ).toInt() );
+	ui->spinBox_AnimationChannelStartIndex->setValue( qs.value( "Export3DPlotImageSeries/AnimateChannelIndexStart", 0 ).toInt() );
+	ui->spinBox_AnimationChannelEndIndex->setValue( qs.value( "Export3DPlotImageSeries/AnimateChannelIndexEnd", 0 ).toInt() );
+	ui->doubleSpinBox_AnimationEleStart->setValue( qs.value( "Export3DPlotImageSeries/AnimateElevatStart", 0.0f ).toDouble() );
+	ui->doubleSpinBox_AnimationEleEnd->setValue( qs.value( "Export3DPlotImageSeries/AnimateElevationEnd", 0.0f ).toDouble() );
+
 }
 
 QString QDAFFDialogExport3DPlotImageSeries::GetExportPath() const
@@ -67,6 +114,85 @@ int QDAFFDialogExport3DPlotImageSeries::GetWidth() const
 QString QDAFFDialogExport3DPlotImageSeries::GetFileBaseName() const
 {
 	return ui->lineEdit_FileBaseName->text();
+}
+
+bool QDAFFDialogExport3DPlotImageSeries::GetAnimationYaw( double& dStart, double& dEnd ) const
+{
+	dStart = ui->doubleSpinBox_AnimationYawStart->value();
+	dEnd = ui->doubleSpinBox_AnimationYawEnd->value();
+	return ui->checkBox_yaw->isChecked();
+}
+
+bool QDAFFDialogExport3DPlotImageSeries::GetAnimationPitch( double& dStart, double& dEnd ) const
+{
+	dStart = ui->doubleSpinBox_AnimationPitchStart->value();
+	dEnd = ui->doubleSpinBox_AnimationPitchEnd->value();
+	return ui->checkBox_pitch->isChecked();
+}
+
+bool QDAFFDialogExport3DPlotImageSeries::GetAnimationElevation( double& dStart, double& dEnd ) const
+{
+	dStart = ui->doubleSpinBox_AnimationEleStart->value();
+	dEnd = ui->doubleSpinBox_AnimationEleEnd->value();
+	return ui->checkBox_ele->isChecked();
+}
+
+bool QDAFFDialogExport3DPlotImageSeries::GetAnimationChannelIndices( int& iStart, int& iEnd ) const
+{
+	iStart = ui->spinBox_AnimationChannelStartIndex->value();
+	iEnd = ui->spinBox_AnimationChannelEndIndex->value();
+	return ui->checkBox_channels->isChecked();
+}
+
+bool QDAFFDialogExport3DPlotImageSeries::GetAnimationFrequencyIndices( int& iStart, int& iEnd ) const
+{
+	iStart = ui->spinBox_AnimationFreqStartIndex->value();
+	iEnd = ui->spinBox_AnimationFreqEndIndex->value();
+	return ui->checkBox_frequencies->isChecked();
+}
+
+void QDAFFDialogExport3DPlotImageSeries::SetAnimationFrequencyIndices( int iStart, int iEnd )
+{
+	ui->spinBox_AnimationFreqStartIndex->setMinimum( iStart );
+	ui->spinBox_AnimationFreqStartIndex->setMaximum( iEnd );
+	ui->spinBox_AnimationFreqEndIndex->setMinimum( iStart );
+	ui->spinBox_AnimationFreqEndIndex->setMaximum( iEnd );
+
+	// Only update initial values
+	if( ui->checkBox_frequencies->isChecked() == false )
+	{
+		ui->spinBox_AnimationFreqStartIndex->setValue( iStart );
+		ui->spinBox_AnimationFreqStartIndex->setValue( iEnd );
+	}
+}
+void QDAFFDialogExport3DPlotImageSeries::SetAnimationChannelIndices( int iStart, int iEnd )
+{
+	ui->spinBox_AnimationChannelStartIndex->setMinimum( iStart );
+	ui->spinBox_AnimationChannelStartIndex->setMaximum( iEnd );
+	ui->spinBox_AnimationChannelEndIndex->setMinimum( iStart );
+	ui->spinBox_AnimationChannelEndIndex->setMaximum( iEnd );
+
+	// Only update initial values
+	if( ui->checkBox_channels->isChecked() == false )
+	{
+		ui->spinBox_AnimationChannelStartIndex->setValue( iStart );
+		ui->spinBox_AnimationChannelEndIndex->setValue( iEnd );
+	}
+}
+
+void QDAFFDialogExport3DPlotImageSeries::SetAnimationElevationRange( double dS, double dE )
+{
+	ui->doubleSpinBox_AnimationEleStart->setMinimum( dS );
+	ui->doubleSpinBox_AnimationEleStart->setMaximum( dE );
+	ui->doubleSpinBox_AnimationEleEnd->setMinimum( dS );
+	ui->doubleSpinBox_AnimationEleEnd->setMaximum( dE );
+
+	// Only update initial values
+	if( ui->checkBox_ele->isChecked() == false )
+	{
+		ui->doubleSpinBox_AnimationEleStart->setValue( dS );
+		ui->doubleSpinBox_AnimationEleEnd->setValue( dE );
+	}
 }
 
 void QDAFFDialogExport3DPlotImageSeries::on_pushButton_Export_clicked()
