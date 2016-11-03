@@ -45,6 +45,9 @@ namespace DAFFViz
 		m_dMin( 0.0 ), m_dMax( 1.0 ),
 		m_iChannel( 0 ),
 		m_bWarp( true ),
+		m_bNormalize(false),
+		m_bNormalizeFreqsIndiv(false),
+		m_bUseCustomRange(false),
 		m_bUsePhaseAsColor( false )
 	{
 		init();
@@ -58,8 +61,11 @@ namespace DAFFViz
 		m_iScaling( SCALING_DECIBEL ),
 		m_dMin( 0.0 ), m_dMax( 1.0 ),
 		m_iChannel( 0 ),
-		m_bWarp( true )
-		, m_bUsePhaseAsColor( false )
+		m_bWarp( true ),
+		m_bNormalize(false),
+		m_bNormalizeFreqsIndiv(false),
+		m_bUseCustomRange(false),
+		m_bUsePhaseAsColor( false )
 	{
 		init();
 	}
@@ -515,6 +521,12 @@ namespace DAFFViz
 		SetScalars();
 	}
 
+	void BalloonPlot::SetUseCustomRange(bool bChecked)
+	{
+		m_bUseCustomRange = bChecked;
+		SetScalars();
+	}
+
 	double BalloonPlot::GetRangeMin() const
 	{
 		if( m_iScaling == SCALING_LINEAR )
@@ -550,6 +562,18 @@ namespace DAFFViz
 		m_bWarp = false;
 	}
 
+	void BalloonPlot::SetNormalize(bool bChecked)
+	{
+		m_bNormalize = bChecked;
+		SetScalars();
+	}
+
+	void BalloonPlot::SetNormalizeFrequenciesIndividually(bool bChecked)
+	{
+		m_bNormalizeFreqsIndiv = bChecked;
+		SetScalars();
+	}
+
 	void BalloonPlot::SetScalars()
 	{
 		assert( m_iFrequency >= 0 && m_iFrequency < m_iNumFrequencies );
@@ -583,6 +607,42 @@ namespace DAFFViz
 
 		float fMag = 0.0f;
 		float fPhase = 0.0f;
+		float fAbsoluteMax = NULL;
+		double dMax = NULL;
+
+		//get the normalization range
+		if (pContentDFT)
+		{
+			if (m_iScaling == SCALING_DECIBEL)
+			{
+				if (m_bNormalizeFreqsIndiv)
+					fAbsoluteMax = getMagnitudeMaximum();
+				else
+					fAbsoluteMax = pContentDFT->getOverallMagnitudeMaximum();
+			}
+			else
+			{
+				if (m_bNormalizeFreqsIndiv)
+					dMax = getMagnitudeMaximum();
+				else
+					dMax = pContentDFT->getOverallMagnitudeMaximum();
+			}
+			
+		}
+		else if (pContentMS)
+		{
+			if (m_bNormalizeFreqsIndiv)
+				dMax = getMagnitudeMaximum();
+			else
+				dMax = pContentMS->getOverallMagnitudeMaximum();
+		}
+		else if (pContentMPS)
+		{
+			if (m_bNormalizeFreqsIndiv)
+				dMax = getMagnitudeMaximum();
+			else
+				dMax = pContentMPS->getOverallMagnitudeMaximum();
+		}
 
 		for( int i = 0; i < m_pContent->getProperties()->getNumberOfRecords(); i++ )
 		{
@@ -611,14 +671,25 @@ namespace DAFFViz
 				// Check weather decibel scaling is activated
 				if( m_iScaling == SCALING_DECIBEL )
 				{
-					float fAbsoluteMax = pContentDFT->getOverallMagnitudeMaximum();
+					assert(fAbsoluteMax != NULL);
 					fMag = FactorToDecibel( fMag / fAbsoluteMax );
+
+					float DECIBEL_LOWER;
+					float DECIBEL_UPPER;
 
 					// Decibel boundaries
 					//float DECIBEL_DELTA = 30; // FIXME: should not be hard coded -> GUI
-					float DECIBEL_LOWER = FactorToDecibel( m_dMin );
-					float DECIBEL_UPPER = FactorToDecibel( m_dMax );
-
+					if (m_bUseCustomRange)
+					{
+						DECIBEL_LOWER = FactorToDecibel(m_dMin);
+						DECIBEL_UPPER = FactorToDecibel(m_dMax);
+					}
+					else
+					{
+						DECIBEL_LOWER = FactorToDecibel(0.0);
+						DECIBEL_UPPER = FactorToDecibel(1.0);
+					}
+				
 					// Limit the lower boundary
 					fMag = std::max( fMag, DECIBEL_LOWER );
 					fMag = std::min( fMag, DECIBEL_UPPER );
@@ -627,21 +698,58 @@ namespace DAFFViz
 					fMag = 1 / ( DECIBEL_UPPER - DECIBEL_LOWER )*fMag + DECIBEL_LOWER / ( DECIBEL_LOWER - DECIBEL_UPPER );
 				}
 				else {
-					fMag = std::max( fMag, m_dMin );
-					fMag = std::min( fMag, m_dMax );
-					// Normalize the range into the interval [0,1]
-					fMag = ( fMag - m_dMin ) / ( m_dMax - m_dMin );
+					if (m_bNormalize)
+					{
+						assert(dMax != NULL && fMag <= dMax);
+						// Normalize the range into the interval [0, 1]
+						fMag = fMag / dMax;
+					}
+					else if (m_bUseCustomRange)
+					{
+						fMag = std::max(fMag, m_dMin);
+						fMag = std::min(fMag, m_dMax);
+						// Normalize the range into the interval [0,1]
+						fMag = (fMag - m_dMin) / (m_dMax - m_dMin);
+					}
 				}
 
 			}
 
-			if( pContentMS ) {
-				pContentMS->getMagnitude( i, m_iChannel, m_iFrequency, fMag );
+			else if( pContentMS ) {
+				pContentMS->getMagnitude(i, m_iChannel, m_iFrequency, fMag);
+
+				if (m_bNormalize)
+				{
+					assert(dMax != NULL && fMag <= dMax);
+					// Normalize the range into the interval [0, 1]
+					fMag = fMag / dMax;
+				}
+				else if (m_bUseCustomRange)
+				{
+					fMag = std::max(fMag, m_dMin);
+					fMag = std::min(fMag, m_dMax);
+					// Normalize the range into the interval [0,1]
+					fMag = (fMag - m_dMin) / (m_dMax - m_dMin);
+				}				
 			}
 
-			if( pContentMPS ) {
+			else if( pContentMPS ) {
 				pContentMPS->getMagnitude( i, m_iChannel, m_iFrequency, fMag );
 				pContentMPS->getPhase( i, m_iChannel, m_iFrequency, fPhase );
+
+				if (m_bNormalize)
+				{
+					assert(dMax != NULL && fMag <= dMax);
+					// Normalize the range into the interval [0, 1]
+					fMag = fMag / dMax;
+				}
+				else if (m_bUseCustomRange)
+				{
+					fMag = std::max(fMag, m_dMin);
+					fMag = std::min(fMag, m_dMax);
+					// Normalize the range into the interval [0,1]
+					fMag = (fMag - m_dMin) / (m_dMax - m_dMin);
+				}
 			}
 
 			// Store (inverted) value into scalars array
@@ -679,6 +787,66 @@ namespace DAFFViz
 	float BalloonPlot::DecibelToFactor( float x ) const
 	{
 		return pow( 10.0, .1*x );
+	}
+
+	float BalloonPlot::getMagnitudeMaximum() const
+	{
+		assert(m_iFrequency >= 0 && m_iFrequency < m_iNumFrequencies);
+		assert(m_pContent != NULL);
+		assert(m_dMin < m_dMax);
+
+		const DAFFContentDFT* pContentDFT = NULL;
+		const DAFFContentMS* pContentMS = NULL;
+		const DAFFContentMPS* pContentMPS = NULL;
+
+		switch (m_pContent->getProperties()->getContentType())
+		{
+		case DAFF_DFT_SPECTRUM:
+			pContentDFT = dynamic_cast< const DAFFContentDFT* >(m_pContent);
+			break;
+
+		case DAFF_MAGNITUDE_SPECTRUM:
+			pContentMS = dynamic_cast< const DAFFContentMS* >(m_pContent);
+			break;
+
+		case DAFF_MAGNITUDE_PHASE_SPECTRUM:
+			pContentMPS = dynamic_cast< const DAFFContentMPS* >(m_pContent);
+			break;
+		}
+		float max = std::numeric_limits<float>::min();
+		float fMag;
+		if (pContentDFT)
+		{
+			float fReal, fImag;
+			for (int i = 0; i < pContentDFT->getNumDFTCoeffs(); i++)
+			{
+				pContentDFT->getDFTCoeff(i, m_iChannel, m_iFrequency, fReal, fImag);
+				fMag = std::sqrtf(std::powf(fReal, 2) + std::powf(fImag, 2));
+				if (fMag > max)
+					max = fMag;
+			}
+			return max;
+		}
+		else if (pContentMS)
+		{
+			for (int i = 0; i < pContentMS->getProperties()->getNumberOfRecords(); i++)
+			{
+				pContentMS->getMagnitude(i, m_iChannel, m_iFrequency,fMag);
+				if (fMag > max)
+					max = fMag;
+			}
+			return max;
+		}
+		else if (pContentMPS)
+		{
+			for (int i = 0; i < pContentMPS->getProperties()->getNumberOfRecords(); i++)
+			{
+				pContentMPS->getMagnitude(i, m_iChannel, m_iFrequency, fMag);
+				if (fMag > max)
+					max = fMag;
+			}
+			return max;
+		}	
 	}
 
 	void BalloonPlot::SetScalarVisibility( bool bVisible )

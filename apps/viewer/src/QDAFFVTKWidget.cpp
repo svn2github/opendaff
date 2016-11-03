@@ -29,8 +29,6 @@ QDAFFVTKWidget::QDAFFVTKWidget( QWidget *parent )
 	, m_bBalloonPlotPhaseColor( false )
 	, m_iCarpetWarpScaling( DAFFViz::CarpetPlot::SCALING_LINEAR )
 	, m_iBalloonWarpScaling( DAFFViz::BalloonPlot::SCALING_DECIBEL )
-	, m_bNormalizeFreqsIndiv( false )
-	, m_bNormalize( false )
 {
 	m_pSGRootNode = new DAFFViz::SGNode();
 	m_pSCA = new DAFFViz::SphericalCoordinateAssistant( m_pSGRootNode );
@@ -162,6 +160,8 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 		m_pDAFFContentBalloon = new DAFFViz::BalloonPlot( m_pSGRootNode, pReader->getContent() );
 		m_pDAFFContentBalloon->SetScaling( m_iBalloonWarpScaling );
 		m_pDAFFContentBalloon->SetUsePhaseAsColor( m_bBalloonPlotPhaseColor );
+		m_pDAFFContentBalloon->SetNormalize(m_bNormalize);
+		m_pDAFFContentBalloon->SetNormalizeFrequenciesIndividually(m_bNormalizeFreqsIndiv);
 		
 		m_pSGRootNode->AddChildNode( m_pSCA );
 
@@ -390,11 +390,17 @@ void QDAFFVTKWidget::SetLogScale( bool bEnabled )
 void QDAFFVTKWidget::SetNormalizeFrequenciesIndividually( bool bEnabled )
 {
 	m_bNormalizeFreqsIndiv = bEnabled;
-	// @todo
+	if (m_pDAFFContentBalloon)
+	{
+		m_pDAFFContentBalloon->SetNormalizeFrequenciesIndividually(bEnabled);
+	}
 }
 
 void QDAFFVTKWidget::SetNormalize( bool bEnabled )
 {
 	m_bNormalize = bEnabled;
-	// @todo
+	if (m_pDAFFContentBalloon)
+	{
+		m_pDAFFContentBalloon->SetNormalize(bEnabled);
+	}
 }

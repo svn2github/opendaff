@@ -77,6 +77,9 @@ namespace DAFFViz
 		//! Set data range (in dB or absolute values depending on currently used scaling)
 		void SetRange( double dMin, double dMax );
 
+		//! set wether the magnitudes should be normalized to a custom range
+		void SetUseCustomRange(bool bChecked);
+
 		//! Set whether scalars should be used to color the model
 		void SetScalarVisibility( bool bVisible );
 
@@ -96,6 +99,12 @@ namespace DAFFViz
 		// \note default: enabled
 		void EnableWarp();
 		void DisableWarp();
+
+		//! set wether the magnitudes should be normalized
+		void SetNormalize(bool bChecked);
+
+		//! set wether the magnitudes should be normalized for each individual frequency
+		void SetNormalizeFrequenciesIndividually(bool bChecked);
 
 		//! set whether the phase should be used for coloring. If not, the magnitude will be used.
 		void SetUsePhaseAsColor( bool bUse );
@@ -122,6 +131,7 @@ namespace DAFFViz
 		float m_dMin, m_dMax, m_dProbeAlpha, m_dProbeBeta; // linear factors!
 		int m_iChannel;
 		bool m_bWarp, m_bUsePhaseAsColor;
+		bool m_bNormalize, m_bNormalizeFreqsIndiv, m_bUseCustomRange;
 		vtkSmartPointer< vtkActor > m_pProbe;
 		vtkSmartPointer< vtkVectorText > m_pProbeLabel;
 		vtkSmartPointer< vtkActor > m_pLabel;
@@ -140,6 +150,8 @@ namespace DAFFViz
 	
 		// Convert decibel to linear value
 		float DecibelToFactor( float x ) const;
+
+		float  getMagnitudeMaximum() const;
 	};
 
 } // End of namespace "DAFFViz"
