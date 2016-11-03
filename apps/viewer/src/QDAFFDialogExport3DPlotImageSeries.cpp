@@ -157,10 +157,9 @@ bool QDAFFDialogExport3DPlotImageSeries::GetAnimationFrequencyIndices( int& iSta
 
 void QDAFFDialogExport3DPlotImageSeries::SetAnimationFrequencyIndices( int iStart, int iEnd )
 {
-	ui->spinBox_AnimationFreqStartIndex->setMinimum( iStart );
-	ui->spinBox_AnimationFreqStartIndex->setMaximum( iEnd );
-	ui->spinBox_AnimationFreqEndIndex->setMinimum( iStart );
-	ui->spinBox_AnimationFreqEndIndex->setMaximum( iEnd );
+	ui->spinBox_AnimationFreqStartIndex->setRange( iStart, iEnd );
+	ui->spinBox_AnimationFreqEndIndex->setRange( iStart, iEnd );
+
 
 	// Only update initial values
 	if( ui->checkBox_frequencies->isChecked() == false )
@@ -169,12 +168,11 @@ void QDAFFDialogExport3DPlotImageSeries::SetAnimationFrequencyIndices( int iStar
 		ui->spinBox_AnimationFreqStartIndex->setValue( iEnd );
 	}
 }
+
 void QDAFFDialogExport3DPlotImageSeries::SetAnimationChannelIndices( int iStart, int iEnd )
 {
-	ui->spinBox_AnimationChannelStartIndex->setMinimum( iStart );
-	ui->spinBox_AnimationChannelStartIndex->setMaximum( iEnd );
-	ui->spinBox_AnimationChannelEndIndex->setMinimum( iStart );
-	ui->spinBox_AnimationChannelEndIndex->setMaximum( iEnd );
+	ui->spinBox_AnimationChannelStartIndex->setRange( iStart, iEnd );
+	ui->spinBox_AnimationChannelEndIndex->setRange( iStart, iEnd );
 
 	// Only update initial values
 	if( ui->checkBox_channels->isChecked() == false )

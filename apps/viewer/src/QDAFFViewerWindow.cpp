@@ -939,21 +939,25 @@ void QDAFFViewerWindow::on_actionExport3DPlotImageSeries_triggered()
 	{
 		const DAFFContentDFT* pC = dynamic_cast< const DAFFContentDFT* >( m_pDAFFReader->getContent() );
 		dialog.SetAnimationFrequencyIndices( 0, pC->getNumDFTCoeffs() - 1 );
+		break;
 	}
 	case DAFF_MAGNITUDE_SPECTRUM:
 	{
 		const DAFFContentMS* pC = dynamic_cast< const DAFFContentMS* >( m_pDAFFReader->getContent() );
 		dialog.SetAnimationFrequencyIndices( 0, pC->getNumFrequencies() - 1 );
+		break;
 	}
 	case DAFF_MAGNITUDE_PHASE_SPECTRUM:
 	{
 		const DAFFContentMPS* pC = dynamic_cast< const DAFFContentMPS* >( m_pDAFFReader->getContent() );
 		dialog.SetAnimationFrequencyIndices( 0, pC->getNumFrequencies() - 1 );
+		break;
 	}
 	case DAFF_PHASE_SPECTRUM:
 	{
-			const DAFFContentPS* pC = dynamic_cast< const DAFFContentPS* >( m_pDAFFReader->getContent() );
-			dialog.SetAnimationFrequencyIndices( 0, pC->getNumFrequencies() - 1 );
+		const DAFFContentPS* pC = dynamic_cast< const DAFFContentPS* >( m_pDAFFReader->getContent() );
+		dialog.SetAnimationFrequencyIndices( 0, pC->getNumFrequencies() - 1 );
+		break;
 	}
 	default:
 	{
@@ -979,12 +983,21 @@ void QDAFFViewerWindow::on_actionExport3DPlotImageSeries_triggered()
 		if( sFileBaseName.isEmpty() )
 			sFileBaseName = oFile.baseName();
 
-		int iNumFrames = dialog.GetNumFrames();
-		int iWidth = dialog.GetWidth();
-		int iHeight = dialog.GetHeight();
+		QDAFFVTKWidget::CAnimation oAnimation;
+
+		oAnimation.iNumFrames = dialog.GetNumFrames();
+		oAnimation.iWidth = dialog.GetWidth();
+		oAnimation.iHeight = dialog.GetHeight();
+
+		oAnimation.bYaw = dialog.GetAnimationYaw( oAnimation.dYawStart, oAnimation.dYawEnd );
+		oAnimation.bPitch = dialog.GetAnimationPitch( oAnimation.dPitchStart, oAnimation.dPitchEnd );
+
+		oAnimation.bChannels = dialog.GetAnimationChannelIndices( oAnimation.iChannelIdxStart, oAnimation.iChannelIdxEnd );
+		oAnimation.bFrequencies = dialog.GetAnimationFrequencyIndices( oAnimation.iFreqIdxStart, oAnimation.iFreqIdxEnd );
+		oAnimation.bElevation = dialog.GetAnimationElevation( oAnimation.dEleStart, oAnimation.dEleEnd );
 		
 		ui->DAFFStatusBar->showMessage( "Starting screenshot series, this may take a while." );
-		ui->DAFF3DPlot_VTKWidget->ExportScrenshotSeriesPNG( sExportDirectory, sFileBaseName, iNumFrames, iWidth, iHeight );
+		ui->DAFF3DPlot_VTKWidget->ExportScrenshotSeriesPNG( sExportDirectory, sFileBaseName, oAnimation );
 		ui->DAFFStatusBar->showMessage( "Exported screenshot series to folder " + oFile.absolutePath() );
 	}
 	else

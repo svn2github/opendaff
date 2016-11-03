@@ -28,6 +28,40 @@ class QDAFFVTKWidget : public QVTKWidget
     Q_OBJECT
 
 public:
+	struct CAnimation
+	{
+		int iNumFrames;
+		
+		int iWidth, iHeight;
+
+		bool bYaw, bPitch;
+		double dYawStart, dYawEnd;
+		double dPitchStart, dPitchEnd;
+
+		bool bFrequencies;
+		int iFreqIdxStart, iFreqIdxEnd;
+
+		bool bChannels;
+		int iChannelIdxStart, iChannelIdxEnd;
+
+		bool bElevation;
+		double dEleStart, dEleEnd;
+
+		inline CAnimation()
+		{
+			iNumFrames = 75;
+			iWidth = 1920;
+			iHeight = 1080;
+
+			bYaw = true;
+			bPitch = false;
+			dYawStart = dPitchEnd = dPitchStart = 0.0f;
+			dYawEnd = 360.0f;
+
+			bChannels = bElevation = bFrequencies = false;
+		};
+	};
+
 	void SetNormalizeFrequenciesIndividually( bool bChecked );
 	void SetNormalize( bool bChecked );
 	void SetSphericalDirectionIndicator( bool bChecked );
@@ -49,7 +83,7 @@ private:
 
 public slots:
 
-void ReadDAFF( const DAFFReader* pReader );
+	void ReadDAFF( const DAFFReader* pReader );
 void CloseDAFF();
 
 	void ChangeFrequencyIndex( int iFrequencyIndex );
@@ -60,7 +94,7 @@ void CloseDAFF();
 	void ChangeTheta( double dThetaDeg );
 
 	void ExportScreenshotPNG( QString sFilePath, int iWidth = 1920, int iHeight = 1080 );
-	void ExportScrenshotSeriesPNG( QString sExportDirectory, QString sFileBaseName, int iNumFrames = 360, int iWidth = 1920, int iHeight = 1080 );
+	void ExportScrenshotSeriesPNG( QString sExportDirectory, QString sFileBaseName, const CAnimation& );
 
 	void SetCoordinateAssistanceVisible( bool );
 	void SetDirectionIndicatorVisible( bool );

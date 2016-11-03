@@ -245,9 +245,9 @@ void QDAFFVTKWidget::ExportScreenshotPNG( QString sFilePath, int iWidth, int iHe
     pExportPNG->Write();
 }
 
-void QDAFFVTKWidget::ExportScrenshotSeriesPNG( QString sFileBasePath, QString sFileBaseName, int iNumFrames, int iWidth, int iHeight )
+void QDAFFVTKWidget::ExportScrenshotSeriesPNG( QString sFileBasePath, QString sFileBaseName, const CAnimation& oA )
 {
-	if( iNumFrames < 0 )
+	if( oA.iNumFrames < 0 )
 		return;
 
 	vtkSmartPointer<vtkRenderer> pImageRenderer = vtkSmartPointer<vtkRenderer>::New();
@@ -256,7 +256,7 @@ void QDAFFVTKWidget::ExportScrenshotSeriesPNG( QString sFileBasePath, QString sF
 
 	vtkSmartPointer<vtkRenderWindow> pImageRenderWin = vtkSmartPointer<vtkRenderWindow>::New();
 	pImageRenderWin->SetWindowName( sFileBaseName.toStdString().c_str() );
-	pImageRenderWin->SetSize( iWidth, iHeight );
+	pImageRenderWin->SetSize( oA.iWidth, oA.iHeight );
 	pImageRenderWin->AddRenderer( pImageRenderer );
 	pImageRenderWin->Render();
 			
@@ -268,15 +268,45 @@ void QDAFFVTKWidget::ExportScrenshotSeriesPNG( QString sFileBasePath, QString sF
 	vtkSmartPointer< vtkPNGWriter > pExportPNG = vtkSmartPointer< vtkPNGWriter >::New();
 	pExportPNG->SetInputConnection( pFilter->GetOutputPort() );
 
-	double dAngularResolutionDegree = 360.0f / double( iNumFrames );
-	for( int i = 0; i < iNumFrames; i++ )
+	// Initial vals
+	double dInitYaw, dInitPitch, dInitRoll;
+	m_pSGRootNode->GetOrientationYPR( dInitYaw, dInitPitch, dInitRoll );
+
+	// Increments
+	double dYawRes = ( oA.dYawEnd - oA.dYawStart ) / double( oA.iNumFrames );
+	double dPitchRes = ( oA.dPitchEnd - oA.dPitchStart ) / double( oA.iNumFrames );
+	double dEleRes = ( oA.dEleEnd - oA.dEleStart ) / double( oA.iNumFrames );
+
+	for( int i = 0; i < oA.iNumFrames; i++ )
 	{
-		m_pSGRootNode->SetOrientationYPR( i * dAngularResolutionDegree, 0.0f, 0.0f );
+		// Manipulate plot
+		double dYaw = oA.bYaw ? oA.dYawStart + i * dYawRes : 0.0f;
+		double dPitch = oA.bPitch ? oA.dPitchStart + i* dPitchRes : 0.0f;
+		m_pSGRootNode->SetOrientationYPR( dYaw, dPitch, 0.0f );
+		if( oA.bElevation && m_pDAFFContentCarpet )
+		{
+			m_pDAFFContentCarpet->SetSelectedAngle( oA.dEleStart + i * dEleRes );
+		}
+
+		if( oA.bChannels )
+		{
+			int iIdx = oA.iChannelIdxStart + int( std::round( ( oA.iChannelIdxEnd - oA.iChannelIdxStart )  * double( i ) / double( oA.iNumFrames ) ) );
+			ChangeChannelIndex( iIdx );
+		}
+
+		if( oA.bFrequencies )
+		{
+			int iIdx = oA.iFreqIdxStart + int( std::round( ( oA.iFreqIdxEnd - oA.iFreqIdxStart )  * double( i ) / double( oA.iNumFrames ) ) );
+			ChangeFrequencyIndex( iIdx );
+		}
+
+		// Render
 		pImageRenderWin->Render();
 
 		// This is required to update the filter, otherwise you have a still image
 		pFilter->Modified();
 
+		// Export render image
 		std::stringstream ss;
 		ss << sFileBaseName.toStdString() << "_f" << std::setfill( '0' ) << std::setw( 4 ) << i << ".png";
 
@@ -286,6 +316,8 @@ void QDAFFVTKWidget::ExportScrenshotSeriesPNG( QString sFileBasePath, QString sF
 		pExportPNG->SetFileName( oFile.absoluteFilePath().toStdString().c_str() );
 		pExportPNG->Write();
 	}
+
+	m_pSGRootNode->SetOrientationYPR( 0,0,0 );
 }
 
 void QDAFFVTKWidget::SetCoordinateAssistanceVisible( bool bVisible )
@@ -375,7 +407,7 @@ void QDAFFVTKWidget::SetLogScale( bool bEnabled )
 	m_iBalloonWarpScaling = bEnabled ? DAFFViz::BalloonPlot::SCALING_DECIBEL : DAFFViz::BalloonPlot::SCALING_LINEAR;
 	if( m_pDAFFContentBalloon )
 	{
-		m_pDAFFContentBalloon->SetScaling( m_iCarpetWarpScaling );
+		m_pDAFFContentBalloon->SetScaling( m_iBalloonWarpScaling );
 	}
 
 	m_iCarpetWarpScaling = bEnabled ? DAFFViz::CarpetPlot::SCALING_DECIBEL : DAFFViz::CarpetPlot::SCALING_LINEAR;
@@ -392,8 +424,10 @@ void QDAFFVTKWidget::SetNormalizeFrequenciesIndividually( bool bEnabled )
 	m_bNormalizeFreqsIndiv = bEnabled;
 	if (m_pDAFFContentBalloon)
 	{
-		m_pDAFFContentBalloon->SetNormalizeFrequenciesIndividually(bEnabled);
+		m_pDAFFContentBalloon->SetNormalizeFrequenciesIndividually( bEnabled );
 	}
+
+	update();
 }
 
 void QDAFFVTKWidget::SetNormalize( bool bEnabled )
@@ -401,6 +435,8 @@ void QDAFFVTKWidget::SetNormalize( bool bEnabled )
 	m_bNormalize = bEnabled;
 	if (m_pDAFFContentBalloon)
 	{
-		m_pDAFFContentBalloon->SetNormalize(bEnabled);
+		m_pDAFFContentBalloon->SetNormalize( bEnabled );
 	}
+
+	update();
 }

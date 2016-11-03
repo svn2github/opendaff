@@ -607,8 +607,8 @@ namespace DAFFViz
 
 		float fMag = 0.0f;
 		float fPhase = 0.0f;
-		float fAbsoluteMax = NULL;
-		double dMax = NULL;
+		float fAbsoluteMax = 0.0f;
+		double dMax = 0.0f;
 
 		//get the normalization range
 		if (pContentDFT)
@@ -631,7 +631,7 @@ namespace DAFFViz
 		}
 		else if (pContentMS)
 		{
-			if (m_bNormalizeFreqsIndiv)
+			if( m_bNormalizeFreqsIndiv )
 				dMax = getMagnitudeMaximum();
 			else
 				dMax = pContentMS->getOverallMagnitudeMaximum();
@@ -697,8 +697,9 @@ namespace DAFFViz
 					// Normalize the range into the interval [0,1]
 					fMag = 1 / ( DECIBEL_UPPER - DECIBEL_LOWER )*fMag + DECIBEL_LOWER / ( DECIBEL_LOWER - DECIBEL_UPPER );
 				}
-				else {
-					if (m_bNormalize)
+				else
+				{
+					if( m_bNormalize || m_bNormalizeFreqsIndiv )
 					{
 						assert(dMax != NULL && fMag <= dMax);
 						// Normalize the range into the interval [0, 1]
@@ -714,11 +715,11 @@ namespace DAFFViz
 				}
 
 			}
+			else if( pContentMS )
+			{
+				pContentMS->getMagnitude( i, m_iChannel, m_iFrequency, fMag );
 
-			else if( pContentMS ) {
-				pContentMS->getMagnitude(i, m_iChannel, m_iFrequency, fMag);
-
-				if (m_bNormalize)
+				if( m_bNormalize || m_bNormalizeFreqsIndiv )
 				{
 					assert(dMax != NULL && fMag <= dMax);
 					// Normalize the range into the interval [0, 1]

@@ -824,9 +824,6 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    <property name="toolTip">
     <string>Create or generate your own DAFF content</string>
    </property>
-   <property name="shortcut">
-    <string>N</string>
-   </property>
   </action>
   <action name="actionIncrease_channel">
    <property name="text">
@@ -1114,6 +1111,9 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    <property name="text">
     <string>Normalize</string>
    </property>
+   <property name="shortcut">
+    <string>N</string>
+   </property>
   </action>
   <action name="action3DSphericalNormalizeFrequenciesIndividually">
    <property name="checkable">
@@ -1121,6 +1121,9 @@ font: 75 12pt &quot;Calibri&quot;;</string>
    </property>
    <property name="text">
     <string>Normalize frequencies individually</string>
+   </property>
+   <property name="shortcut">
+    <string>Y</string>
    </property>
   </action>
  </widget>
