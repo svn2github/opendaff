@@ -62,29 +62,13 @@ public:
 		};
 	};
 
-	void SetNormalizeFrequenciesIndividually( bool bChecked );
-	void SetNormalize( bool bChecked );
-	void SetSphericalDirectionIndicator( bool bChecked );
 	QDAFFVTKWidget( QWidget *parent = Q_NULLPTR );
 	~QDAFFVTKWidget();
-
-private:
-
-    vtkSmartPointer< vtkRenderer > m_pRenderer;
-	DAFFViz::SGNode* m_pSGRootNode;
-	DAFFViz::SphericalCoordinateAssistant* m_pSCA;
-	DAFFViz::BalloonPlot* m_pDAFFContentBalloon;
-	DAFFViz::CartesianCoordinateAssistant* m_pCCA;
-	DAFFViz::SphericalDirectionIndicator* m_pSDI;
-	DAFFViz::CarpetPlot* m_pDAFFContentCarpet;
-	bool m_bBalloonPlotPhaseColor, m_bCarpetPlotWarping;
-	int m_iCarpetWarpScaling, m_iBalloonWarpScaling;
-	bool m_bNormalize, m_bNormalizeFreqsIndiv;
 
 public slots:
 
 	void ReadDAFF( const DAFFReader* pReader );
-void CloseDAFF();
+	void CloseDAFF();
 
 	void ChangeFrequencyIndex( int iFrequencyIndex );
 	void ChangeChannelIndex( int iChannelIndex );
@@ -105,8 +89,21 @@ void CloseDAFF();
 	void SetMeridiansVisible( bool );
 	void SetLogScale( bool );
 	void SetPhaseColorMap( bool );
-	void SetCarpetPlotWarp(bool);
+	void SetCarpetPlotWarp( bool );
+	void SetNormalizeFrequenciesIndividually( bool );
+	void SetNormalize( bool );
 
+private:
+	vtkSmartPointer< vtkRenderer > m_pRenderer;
+	DAFFViz::SGNode* m_pSGRootNode;
+	DAFFViz::SphericalCoordinateAssistant* m_pSCA;
+	DAFFViz::BalloonPlot* m_pDAFFContentBalloon;
+	DAFFViz::CartesianCoordinateAssistant* m_pCCA;
+	DAFFViz::SphericalDirectionIndicator* m_pSDI;
+	DAFFViz::CarpetPlot* m_pDAFFContentCarpet;
+	bool m_bBalloonPlotPhaseColor, m_bCarpetPlotWarping;
+	int m_iCarpetWarpScaling, m_iBalloonWarpScaling;
+	bool m_bNormalizeFreqsIndiv, m_bNormalize;
 };
 
 #endif // QDAFFVTKWIDGET_H
