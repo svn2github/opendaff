@@ -377,18 +377,25 @@ namespace DAFFViz
 			return factor2decibel(m_dMax);
 	}
 
+	void CarpetPlot::SetWarpingEnabled( bool bEnabled )
+	{
+		m_bWarp = bEnabled;
+		if( m_bWarp )
+			m_pCarpetMapper->SetInputConnection( m_pWarp->GetOutputPort() );
+		else
+			m_pCarpetMapper->SetInputData( m_pCarpetPolyData );
+
+		updatePlotOffset();
+	}
+
 	void CarpetPlot::EnableWarp()
 	{
-		m_pCarpetMapper->SetInputConnection( m_pWarp->GetOutputPort() );
-		m_bWarp = true;
-		updatePlotOffset();
+		SetWarpingEnabled( true );
 	}
 
 	void CarpetPlot::DisableWarp()
 	{
-		m_pCarpetMapper->SetInputData( m_pCarpetPolyData );
-		m_bWarp = false;
-		updatePlotOffset();
+		SetWarpingEnabled( false );
 	}
 
 	void CarpetPlot::updatePlotOffset()

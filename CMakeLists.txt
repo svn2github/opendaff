@@ -132,18 +132,30 @@ endif( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 install( TARGETS DAFF RUNTIME DESTINATION "bin" LIBRARY DESTINATION "lib" ARCHIVE DESTINATION "lib" )
 install( FILES ${OPENDAFF_DAFFLIB_HEADER_FILES} DESTINATION "include" )
 
+install( FILES "README.md" DESTINATION "." )
+install( FILES "LICENSE.md" DESTINATION "." )
+install( FILES "FILEFORMAT.md" DESTINATION "." )
+
+install( DIRECTORY "content" DESTINATION "." FILES_MATCHING PATTERN "*.daff" )
+install( DIRECTORY "matlab" DESTINATION "content" FILES_MATCHING PATTERN "*.daff" )
+
 
 # apps
 
 if( OPENDAFF_BUILD_DAFF_TOOL )
+
 	add_subdirectory( "apps/tool" )
+	
 endif( OPENDAFF_BUILD_DAFF_TOOL )
 
 if( OPENDAFF_BUILD_DAFF_VIEWER )
+
 	if( NOT OPENDAFF_WITH_DAFFVIZ )
 		set( OPENDAFF_WITH_DAFFVIZ TRUE )
 	endif()
+
 	add_subdirectory( "apps/viewer" )
+
 endif( OPENDAFF_BUILD_DAFF_VIEWER )
 
 
@@ -225,15 +237,25 @@ endif( OPENDAFF_BUILD_DAFF_TESTS )
 
 
 # bindings
+
 if( OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
+	
 	add_subdirectory( "bindings/matlab" )
+	
+	install( FILES "matlab/README.md" DESTINATION "matlab" )
+	install( DIRECTORY "matlab" DESTINATION "." FILES_MATCHING PATTERN "*.m" )
+	
 endif( OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
 
 
 # doc
+
 if( OPENDAFF_BUILD_DAFF_DOCUMENTATION )
+
 	if( NOT DOXYGEN_EXECUTABLE )
 		message( FATAL_ERROR "OpenDAFF documentation requires Doxygen." )
 	endif( NOT DOXYGEN_EXECUTABLE )
+
 	add_subdirectory( "doc" )
+
 endif( OPENDAFF_BUILD_DAFF_DOCUMENTATION )

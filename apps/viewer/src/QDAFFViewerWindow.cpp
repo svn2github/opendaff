@@ -110,6 +110,7 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	ui->action3DUseLogScale->setChecked( m_qSettings.value( "Settings/3DPlot/LogScale", true ).toBool() );
 	ui->action3DSphericalNormalize->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/Normalize", false ).toBool() );
 	ui->action3DSphericalNormalizeFrequenciesIndividually->setChecked( m_qSettings.value( "Settings/3DPlot/Spherical/NormalizeFreqsIndividually", false ).toBool() );
+	ui->action3DCarpetShowWarp->setChecked( m_qSettings.value( "Settings/3DPlot/Carpet/Warp", true ).toBool() );
 
 	ui->DAFF3DPlot_VTKWidget->SetLogScale( ui->action3DUseLogScale->isChecked() );
 	ui->DAFF3DPlot_VTKWidget->SetArrowsVisible( ui->action3DSphericalShowArrows->isChecked() );
@@ -120,7 +121,8 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 	ui->DAFF3DPlot_VTKWidget->SetPhaseColorMap( ui->action3DSphericalUsePhaseColorMap->isChecked() );
 	ui->DAFF3DPlot_VTKWidget->SetNormalize( ui->action3DSphericalNormalize->isChecked() );
 	ui->DAFF3DPlot_VTKWidget->SetNormalizeFrequenciesIndividually( ui->action3DSphericalNormalizeFrequenciesIndividually->isChecked() );
-	
+	ui->DAFF3DPlot_VTKWidget->SetCarpetPlotWarp( ui->action3DCarpetShowWarp->isChecked() );
+
 	// Other
 
 	ui->DAFFStatusBar->showMessage( "No DAFF file loaded. Shortcut for opening DAFF files: 'o' as in 'open'. 'Esc' will exit DAFFViewer." );
@@ -153,6 +155,7 @@ QDAFFViewerWindow::~QDAFFViewerWindow()
 	m_qSettings.setValue( "Settings/3DPlot/LogScale", ui->action3DUseLogScale->isChecked() );
 	m_qSettings.setValue( "Settings/3DPlot/Spherical/Normalize", ui->action3DSphericalNormalize->isChecked() );
 	m_qSettings.setValue( "Settings/3DPlot/Spherical/NormalizeFreqsIndividually", ui->action3DSphericalNormalizeFrequenciesIndividually->isChecked() );
+	m_qSettings.setValue( "Settings/3DPlot/Carpet/Warp", ui->action3DCarpetShowWarp->isChecked() );
 
     delete ui;
 

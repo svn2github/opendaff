@@ -103,6 +103,7 @@ enum DAFF_ERROR
 	DAFF_FILE_FORMAT_VERSION_UNSUPPORTED,	//!< File format version is not supported by this library version
 	DAFF_FILE_CONTENT_INVALID_PARAMETER,	//!< Content parameter invalid (sampling rate, num supporting frequencies, etc)
 	DAFF_FILE_NOT_FOUND,					//!< File not found
+	DAFF_FILE_UNKOWN_METADATA_TYPE,			//!< Given metadata type is unknown, use bool, int, double, string
 	DAFF_FILE_CORRUPTED,					//!< Data reading error of an otherwise valid DAFF file
 	DAFF_INVALID_INDEX,						//!< Invalid index (e.g. record index)
 };

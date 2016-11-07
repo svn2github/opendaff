@@ -118,7 +118,7 @@ int DAFFMetadataImpl::load(void* pData, size_t &iBytesRead)
 			break;
 
 		default:
-			return DAFF_FILE_CORRUPTED;
+			return DAFF_FILE_UNKOWN_METADATA_TYPE;
 		}
 	}
 

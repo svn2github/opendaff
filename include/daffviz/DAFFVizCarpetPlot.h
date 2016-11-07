@@ -105,6 +105,10 @@ namespace DAFFViz
 		// \note default: enabled
 		void EnableWarp();
 		void DisableWarp();
+
+		void SetWarpingEnabled( bool bEnabled );
+
+		void GtWarpingEnabled( bool ) const;
 	
 		//! Set probe angles
 		void SetProbeAngles(double dAlpha, double dBeta);

@@ -94,11 +94,25 @@ public:
 
 	// --= Angle conversion and normalization =--
 
-	static float grad2radf( float );
-	static float rad2gradf( float );
+	inline static float grad2radf( float phi )
+	{
+		return phi * DAFF::PI_F / 180.0f;
+	};
 
-	static double grad2rad( double );
-	static double rad2grad( double );
+	inline static float rad2gradf( float phi )
+	{ 
+		return phi * 180.0f / DAFF::PI_F; 
+	};
+
+	inline static double grad2rad( double phi )
+	{
+		return phi * DAFF::PI_D / 180.0f;
+	};
+
+	inline static double rad2grad( double phi )
+	{ 
+		return phi * 180.0f / DAFF::PI_D;
+	};
 
 private:
 	inline DAFFUtils() {};

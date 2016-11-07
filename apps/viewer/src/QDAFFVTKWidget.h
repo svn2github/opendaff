@@ -101,8 +101,8 @@ private:
 	DAFFViz::CartesianCoordinateAssistant* m_pCCA;
 	DAFFViz::SphericalDirectionIndicator* m_pSDI;
 	DAFFViz::CarpetPlot* m_pDAFFContentCarpet;
-	bool m_bBalloonPlotPhaseColor, m_bCarpetPlotWarping;
-	int m_iCarpetWarpScaling, m_iBalloonWarpScaling;
+	bool m_bBalloonPhaseColor, m_bCarpetWarp;
+	int m_iCarpetScaling, m_iBalloonScaling;
 	bool m_bNormalizeFreqsIndiv, m_bNormalize;
 };
 

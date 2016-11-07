@@ -26,9 +26,10 @@ QDAFFVTKWidget::QDAFFVTKWidget( QWidget *parent )
 	, m_pCCA( NULL )
 	, m_pDAFFContentCarpet( NULL )
 	, m_pSDI( NULL )
-	, m_bBalloonPlotPhaseColor( false )
-	, m_iCarpetWarpScaling( DAFFViz::CarpetPlot::SCALING_LINEAR )
-	, m_iBalloonWarpScaling( DAFFViz::BalloonPlot::SCALING_DECIBEL )
+	, m_bBalloonPhaseColor( false )
+	, m_bCarpetWarp( true )
+	, m_iCarpetScaling( DAFFViz::CarpetPlot::SCALING_LINEAR )
+	, m_iBalloonScaling( DAFFViz::BalloonPlot::SCALING_DECIBEL )
 {
 	m_pSGRootNode = new DAFFViz::SGNode();
 	m_pSCA = new DAFFViz::SphericalCoordinateAssistant( m_pSGRootNode );
@@ -126,11 +127,8 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 	{
 		DAFFContentIR* pContentIR = static_cast< DAFFContentIR* >( pReader->getContent() );
 		m_pDAFFContentCarpet = new DAFFViz::CarpetPlot( m_pSGRootNode, pContentIR );
-		m_pDAFFContentCarpet->SetScaling( m_iCarpetWarpScaling );
-		if (m_bCarpetPlotWarping)
-			m_pDAFFContentCarpet->EnableWarp();
-		else
-			m_pDAFFContentCarpet->DisableWarp();
+		m_pDAFFContentCarpet->SetScaling( m_iCarpetScaling );
+		m_pDAFFContentCarpet->SetWarpingEnabled( m_bCarpetWarp );
 
 		m_pSDI->SetVisible( false );
 
@@ -158,8 +156,8 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 	case DAFF_MAGNITUDE_SPECTRUM:
 	case DAFF_PHASE_SPECTRUM:
 		m_pDAFFContentBalloon = new DAFFViz::BalloonPlot( m_pSGRootNode, pReader->getContent() );
-		m_pDAFFContentBalloon->SetScaling( m_iBalloonWarpScaling );
-		m_pDAFFContentBalloon->SetUsePhaseAsColor( m_bBalloonPlotPhaseColor );
+		m_pDAFFContentBalloon->SetScaling( m_iBalloonScaling );
+		m_pDAFFContentBalloon->SetUsePhaseAsColor( m_bBalloonPhaseColor );
 		m_pDAFFContentBalloon->SetNormalize(m_bNormalize);
 		m_pDAFFContentBalloon->SetNormalizeFrequenciesIndividually(m_bNormalizeFreqsIndiv);
 		
@@ -382,38 +380,34 @@ void QDAFFVTKWidget::SetMeridiansVisible( bool bVisible )
 
 void QDAFFVTKWidget::SetPhaseColorMap( bool bEnabled )
 {
-	m_bBalloonPlotPhaseColor = bEnabled;
+	m_bBalloonPhaseColor = bEnabled;
 	if( m_pDAFFContentBalloon )
 		m_pDAFFContentBalloon->SetUsePhaseAsColor( bEnabled );
 
 	update();
 }
 
-void QDAFFVTKWidget::SetCarpetPlotWarp(bool bEnabled)
+void QDAFFVTKWidget::SetCarpetPlotWarp( bool bEnabled )
 {
-	m_bCarpetPlotWarping = bEnabled;
-	if (m_pDAFFContentCarpet)
-	{
-		if (bEnabled)
-			m_pDAFFContentCarpet->EnableWarp();
-		else
-			m_pDAFFContentCarpet->DisableWarp();
-	}
+	m_bCarpetWarp = bEnabled;
+	if( m_pDAFFContentCarpet )
+		m_pDAFFContentCarpet->SetWarpingEnabled( m_bCarpetWarp );
+
 	update();
 }
 
 void QDAFFVTKWidget::SetLogScale( bool bEnabled )
 {
-	m_iBalloonWarpScaling = bEnabled ? DAFFViz::BalloonPlot::SCALING_DECIBEL : DAFFViz::BalloonPlot::SCALING_LINEAR;
+	m_iBalloonScaling = bEnabled ? DAFFViz::BalloonPlot::SCALING_DECIBEL : DAFFViz::BalloonPlot::SCALING_LINEAR;
 	if( m_pDAFFContentBalloon )
 	{
-		m_pDAFFContentBalloon->SetScaling( m_iBalloonWarpScaling );
+		m_pDAFFContentBalloon->SetScaling( m_iBalloonScaling );
 	}
 
-	m_iCarpetWarpScaling = bEnabled ? DAFFViz::CarpetPlot::SCALING_DECIBEL : DAFFViz::CarpetPlot::SCALING_LINEAR;
+	m_iCarpetScaling = bEnabled ? DAFFViz::CarpetPlot::SCALING_DECIBEL : DAFFViz::CarpetPlot::SCALING_LINEAR;
 	if( m_pDAFFContentCarpet )
 	{
-		m_pDAFFContentCarpet->SetScaling( m_iCarpetWarpScaling );
+		m_pDAFFContentCarpet->SetScaling( m_iCarpetScaling );
 	}
 
 	update();
