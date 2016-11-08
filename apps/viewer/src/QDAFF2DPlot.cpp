@@ -25,17 +25,16 @@ QDAFF2DPlot::QDAFF2DPlot( QWidget *parent )
 	m_voColors[9] = Qt::darkCyan;
 	m_voColors[10] = Qt::darkMagenta;
 	m_voColors[11] = Qt::darkYellow;
-	//indices
+
 	m_iChannelIndex = 0;
 	m_iRecordIndex = 0;
 	m_iZoomIndexX = 0;
 	m_iZoomIndexY = 0;
-	//scene
-	//setScene( new QGraphicsScene() );
+
 	scale(1, -1);
 	setRenderHint(QPainter::Antialiasing);
 	connect(horizontalScrollBar(), SIGNAL(sliderReleased()), this, SLOT(HorizontalScrollBarRelease()));
-	//connect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(HorizontalScrollBarRelease()));
+
 }
 
 void QDAFF2DPlot::ReadDAFF( const DAFFReader* pReader )

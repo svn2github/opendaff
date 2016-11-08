@@ -53,12 +53,6 @@ public:
 class QGraphicsPoint : public QGraphicsItem
 {
 public:
-
-	/*QGraphicsPoint(double x, double y, double diameter, QGraphicsSimpleTextItem* box) : QGraphicsEllipseItem(x, y, diameter, diameter)
-	{
-	m_pBox = box;
-	setAcceptHoverEvents(true);
-	}*/
 	inline QGraphicsPoint(QString text, double x, double y, int diameter)
 	{
 		m_pBox = nullptr;
@@ -113,7 +107,7 @@ class QDAFF2DPlot : public QGraphicsView
     Q_OBJECT
 
 public:
-	QDAFF2DPlot( QWidget *parent = Q_NULLPTR );
+	QDAFF2DPlot( QWidget* parent = Q_NULLPTR );
 	void ExportImagePNG( const QString& sTargetFilePath, float fScaling = 1.0f, bool bShowAllChannels = false, bool bShowDataPointDots = true );
 	void ExportImageSVG( const QString& sTargetFilePath, float fScaling = 1.0f, bool bShowAllChannels = false, bool bShowDataPointDots = true );
 
@@ -124,7 +118,6 @@ public slots:
      void ChangeChannelIndex( int );
      void ChangeFrequencyIndex( int );
 	 void HorizontalScrollBarRelease();
-
 	 void SetAllChannelsVisible( bool bVisible );
 	 void SetDotsVisible(bool bVisible);
 
@@ -132,7 +125,6 @@ private:
 	void keyPressEvent(QKeyEvent * event);
 	void keyReleaseEvent(QKeyEvent * event);
 	void resizeEvent(QResizeEvent * event);
-	//void showEvent(QShowEvent * event);
 	void wheelEvent(QWheelEvent * event);
 	void resize();
 
@@ -168,33 +160,39 @@ private:
 	int m_iZoomIndexX;
 	int m_iZoomIndexY;
 
-	//parameters
-	//axis
+
+	// parameters
+
+	// axis
 	const int m_iAxisOffsetRight = 30;
 	const int m_iAxisOffsetUp = 30;
 	const int m_iAxisOffsetLeft = 30; 
 	const int m_iAxisOffsetDown = 30;
 	const int m_iTipLength = 10;
-	const int m_iTipWidth = 5; //from one end to the other is double this width
+	const int m_iTipWidth = 5; //!< from one end to the other is double this width
 	const int m_iTipDistanceX = 50;
 	const int m_iTipDistanceY = 50;
-	//grid
+
+	// grid
 	const int m_iGridXOffset = 60;
 	const int m_iGridYOffset = 60;
 	const int m_iNXGrid = 11;
 	const int m_iNYGrid = 10;
-	//marker
+
+	// marker
 	const int m_iNXMarker = 12;
 	const int m_iNYMarker = 11;
 	const int m_iXMarkerLength = 5;
 	const int m_iYMarkerLength = 5;
 	const int m_iXMarkerTextOffset = 0;
 	const int m_iYMarkerTextOffset = 0;
-	//points
+
+	// points
 	const int m_iPointDiameter = 4;
-	//drawing
-	const int m_iDrawLimit = 500; //determines at which number of data points the algorithm starts drawing only visible points
-	const int m_iAdditionalPoints = 100; //determines how many data points will be drawn behind the view border.
+
+	// drawing
+	const int m_iDrawLimit = 500; //!< determines at which number of data points the algorithm starts drawing only visible points
+	const int m_iAdditionalPoints = 100; //!< determines how many data points will be drawn behind the view border.
 };
 
 #endif // QDAFF2DPLOT_H
