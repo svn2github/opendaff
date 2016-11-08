@@ -173,7 +173,10 @@ public slots:
 		m_pModel = new DAFFPropertiesModel( this, pReader->getProperties()  );
 		setModel( m_pModel );
 		verticalHeader()->hide();
-		horizontalHeader()->resizeSections( QHeaderView::Stretch );
+
+		horizontalHeader()->setSectionResizeMode( 0, QHeaderView::ResizeToContents );
+		horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
+		horizontalHeader()->setStretchLastSection( true );
     }
 private:
 	DAFFPropertiesModel*  m_pModel;

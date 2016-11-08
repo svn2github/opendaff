@@ -132,8 +132,9 @@ private:
 	void keyPressEvent(QKeyEvent * event);
 	void keyReleaseEvent(QKeyEvent * event);
 	void resizeEvent(QResizeEvent * event);
-	void showEvent(QShowEvent * event);
+	//void showEvent(QShowEvent * event);
 	void wheelEvent(QWheelEvent * event);
+	void resize();
 
 	const DAFFReader* m_pReader;
 
@@ -141,9 +142,7 @@ private:
 	void Draw();
 	void DrawCoordinateSystem();
 	void DrawGraph(int iRecordIndex, int iChannelIndex, bool bShowAllChannels = false, bool showDots = true);
-
-	const std::string convertFloat(float);
-
+	
 	//items
 	QGraphicsLineItem *m_pXAxis, *m_pYAxis;
 	std::vector<QGraphicsLineItem*> m_vpXGrid, m_vpYGrid, m_vpXMarker, m_vpYMarker;
@@ -156,10 +155,6 @@ private:
 	//variables
 	int m_iXAxisLength;
 	int m_iYAxisLength;
-	int m_iSceneHeight = 0;
-	int m_iSceneWidth = 0;
-	int m_iSceneOriginalWidth = 0;
-	int m_iSceneOriginalHeight = 0;
 
 	//bool
 	bool m_bScrollHorizontally = true;

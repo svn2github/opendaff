@@ -299,7 +299,7 @@ public slots:
 	{
 		delete m_pModel;
 		m_pModel = NULL;
-	}
+    };
 
     inline void ReadDAFF( const DAFFReader* pReader )
 	{
@@ -344,8 +344,12 @@ public slots:
 		
 		setModel( m_pModel );
 		verticalHeader()->hide();
-		horizontalHeader()->resizeSections( QHeaderView::Stretch );
-    }
+
+		horizontalHeader()->setSectionResizeMode( 0, QHeaderView::ResizeToContents );
+		horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
+		//horizontalHeader()->setStretchLastSection( true );
+	};
+
 private:
 	DAFFContentModel*  m_pModel;
 };

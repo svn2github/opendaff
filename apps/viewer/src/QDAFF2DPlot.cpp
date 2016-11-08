@@ -91,14 +91,14 @@ void QDAFF2DPlot::SetDotsVisible(bool bVisible)
 
 void QDAFF2DPlot::Draw()
 {
-	if (m_iSceneHeight == 0 || m_iSceneWidth == 0 || m_pReader == nullptr)
+	if( height() == 0 || width() == 0 || m_pReader == nullptr )
 		return;
 
 	//clear and draw background
 	scene()->clear();
-	scene()->setSceneRect(0, 0, m_iSceneWidth, m_iSceneHeight);
-	m_iXAxisLength = m_iSceneWidth - m_iTipDistanceX - m_iTipLength - m_iAxisOffsetRight - m_iAxisOffsetLeft;
-	m_iYAxisLength = m_iSceneHeight - m_iTipDistanceY - m_iTipLength - m_iAxisOffsetUp - m_iAxisOffsetDown;
+	scene()->setSceneRect( 0, 0, width(), height() );
+	m_iXAxisLength = std::max( 50, width() - m_iTipDistanceX - m_iTipLength - m_iAxisOffsetRight - m_iAxisOffsetLeft );
+	m_iYAxisLength = std::max( 50, height() - m_iTipDistanceY - m_iTipLength - m_iAxisOffsetUp - m_iAxisOffsetDown );
 	setBackgroundBrush(QBrush(Qt::white));
 	//draw plot
 	DrawCoordinateSystem();
@@ -1046,12 +1046,12 @@ void QDAFF2DPlot::ExportImagePNG( const QString& filePath, float factor, bool sh
 	bool showDotsOld = m_bShowDots;
 	m_bShowAllChannels = showAllChannels;
 	m_bShowDots = showDots;
-	m_iSceneWidth *= factor;
-	m_iSceneHeight *= factor;
-	scene()->setSceneRect( 0, 0, m_iSceneWidth, m_iSceneHeight );
+	int iSceneWidth = int( width() * factor );
+	int iSceneHeight = int( height() * factor );
+	scene()->setSceneRect( 0, 0, iSceneWidth, iSceneHeight );
 	Draw();
 
-	QImage img( m_iSceneWidth, m_iSceneHeight, QImage::Format_ARGB32_Premultiplied );
+	QImage img( iSceneWidth, iSceneHeight, QImage::Format_ARGB32_Premultiplied );
 	QPainter p( &img );
 	p.setRenderHint(QPainter::Antialiasing);
 	scene()->render( &p );
@@ -1059,9 +1059,6 @@ void QDAFF2DPlot::ExportImagePNG( const QString& filePath, float factor, bool sh
 	img.mirrored( false, true ).save( filePath );
 	m_bShowAllChannels = showAllChannelsOld;
 	m_bShowDots = showDotsOld;
-	m_iSceneWidth /= factor;
-	m_iSceneHeight /= factor;
-
 
 	Draw();
 }
@@ -1072,25 +1069,24 @@ void QDAFF2DPlot::ExportImageSVG( const QString& filePath, float factor, bool sh
 	bool showDotsOld = m_bShowDots;
 	m_bShowAllChannels = showAllChannels;
 	m_bShowDots = showDots;
-	m_iSceneWidth *= factor;
-	m_iSceneHeight *= factor;
-	scene()->setSceneRect( 0, 0, m_iSceneWidth, m_iSceneHeight );
+	int iSceneWidth = int( width() * factor );
+	int iSceneHeight = int( height() * factor );
+	scene()->setSceneRect( 0, 0, iSceneWidth, iSceneHeight );
 	Draw();
 	
 	QSvgGenerator generator;
 	generator.setFileName( filePath );
-	generator.setSize( QSize( m_iSceneWidth, m_iSceneHeight ) );
+	generator.setSize( QSize( iSceneWidth, iSceneHeight ) );
 	QPainter p;
 	p.begin( &generator );
 	p.scale(1, -1);
-	p.translate(0, -m_iSceneHeight);
+	p.translate(0, -iSceneHeight);
 	scene()->render( &p );
 	p.end();
 
 	m_bShowAllChannels = showAllChannelsOld;
 	m_bShowDots = showDotsOld;
-	m_iSceneWidth /= factor;
-	m_iSceneHeight /= factor;
+
 	Draw();
 }
 
@@ -1119,57 +1115,39 @@ void QDAFF2DPlot::keyPressEvent(QKeyEvent * event)
 	event->accept();
 }
 
-void QDAFF2DPlot::resizeEvent(QResizeEvent *event)
-{
-	//fitInView(0, 0, event->oldSize().width(), event->oldSize().height(), Qt::KeepAspectRatio);
-	fitInView(0, 0, m_iSceneOriginalWidth, m_iSceneOriginalHeight, Qt::KeepAspectRatio);
-	QGraphicsView::resizeEvent(event);
+void QDAFF2DPlot::resizeEvent( QResizeEvent* event )
+{	
+	int iWidth = width();
+	int iHeight = height();
+	fitInView( 0, 0, iWidth, iHeight, Qt::KeepAspectRatio );
+	
+	QGraphicsView::resizeEvent( event );
+
+	Draw();
 }
 
-void QDAFF2DPlot::showEvent(QShowEvent * event)
+void QDAFF2DPlot::wheelEvent( QWheelEvent* event )
 {
-	m_iSceneHeight = height();
-	m_iSceneWidth = width();
-	m_iSceneOriginalHeight = height();
-	m_iSceneOriginalWidth = width();
-	QGraphicsView::showEvent(event);
-}
+	int numDegrees = int( event->delta() / 8.0f );
+	int numSteps = int( numDegrees / 15.0f );
 
-void QDAFF2DPlot::wheelEvent(QWheelEvent * event)
-{
-	int numDegrees = event->delta() / 8;
-	int numSteps = numDegrees / 15;
-	if (event->orientation() == Qt::Vertical) {
-		if (m_bScrollHorizontally)
-		{
-			m_iSceneWidth *= std::pow(1.1, numSteps);
-			scene()->setSceneRect(0, 0, m_iSceneWidth, m_iSceneHeight);
-			Draw();
-		}
+	if( event->orientation() == Qt::Vertical )
+	{
+		int iWidth = int( width() * std::pow( 1.1, numSteps ) );
+		int iHeight = int( height() * std::pow( 1.1, numSteps ) );
+
+		if( m_bScrollHorizontally )
+			scene()->setSceneRect( 0, 0, iWidth, height() );
 		else
-		{
-			m_iSceneHeight *= std::pow(1.1, numSteps);
-			scene()->setSceneRect(0, 0, m_iSceneWidth, m_iSceneHeight);
-			Draw();
-		}
-		if (m_iSceneWidth > rect().width())
-			m_iZoomIndexX = (int)std::log2(m_iSceneWidth / rect().width());
-		if (m_iSceneHeight > rect().height())
-			m_iZoomIndexY = (int)std::log2(m_iSceneHeight / rect().height());
+			scene()->setSceneRect( 0, 0, width(), iHeight );
+
+		Draw();
+
+		if( iWidth > rect().width() )
+			m_iZoomIndexX = ( int ) std::log2( iWidth / rect().width() );
+		if( iHeight > rect().height() )
+			m_iZoomIndexY = ( int ) std::log2( iHeight / rect().height() );
+
 		event->accept();
 	}
 }
-
-
-
-const std::string QDAFF2DPlot::convertFloat(float f)
-{
-	std::string s;
-	s = std::to_string(f);
-	s.erase(s.find_last_not_of('0') + 1, std::string::npos);
-	if (s.back() == '.')
-		s.pop_back();
-	return s;
-}
-
-
