@@ -40,15 +40,19 @@ QDAFFVTKWidget::QDAFFVTKWidget( QWidget *parent )
 	m_pSDI->SetVisible( true );
 
 	m_pRenderer = vtkSmartPointer< vtkRenderer >::New();
+	m_pRenderer->GlobalWarningDisplayOff();
 	m_pRenderer->AddActor( m_pSGRootNode->GetNodeAssembly() );
 
 	m_pSGRootNode->OnSetFollowerCamera( m_pRenderer->GetActiveCamera() );
 	m_pRenderer->GetActiveCamera()->SetPosition( 3, 3, -3 );
-		
-	GetRenderWindow()->AddRenderer( m_pRenderer );
+	
+	if (GetRenderWindow()->SupportsOpenGL() != 0)
+	{
+		GetRenderWindow()->AddRenderer(m_pRenderer);
 
-	vtkSmartPointer< vtkInteractorStyleTerrain > pCustomInteractorStyle = vtkSmartPointer< vtkInteractorStyleTerrain >::New();
-	GetRenderWindow()->GetInteractor()->SetInteractorStyle( pCustomInteractorStyle );
+		vtkSmartPointer< vtkInteractorStyleTerrain > pCustomInteractorStyle = vtkSmartPointer< vtkInteractorStyleTerrain >::New();
+		GetRenderWindow()->GetInteractor()->SetInteractorStyle(pCustomInteractorStyle);
+	}
 }
 
 QDAFFVTKWidget::~QDAFFVTKWidget()
