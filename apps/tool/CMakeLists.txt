@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 2.9 )
+cmake_minimum_required( VERSION 2.8.9 )
 
 find_package( FFTW REQUIRED )
 find_package( SndFile REQUIRED )

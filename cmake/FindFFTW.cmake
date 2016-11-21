@@ -11,13 +11,15 @@ endif( NOT DEFINED FFTW_DIR )
 
 find_path( FFTW_INCLUDE_DIR "fftw3.h"
     "$ENV{FFTW_DIR}/include"
+    "/usr/include"
     "/usr/local/include"
     "/opt/local/include"
 	"${FFTW_DIR}/include"
 )
 
-find_path( FFTW_BINARY_DIRS "libfftw3f-3.dll"
+find_path( FFTW_BINARY_DIRS "libfftw3f-3"
     "$ENV{FFTW_DIR}/bin"
+"/usr/lib"
     "/usr/local/bin"
     "/opt/local/bin"
 	"${FFTW_DIR}/bin"
@@ -34,12 +36,13 @@ elseif( MSVC )
 	set (FFTW_LIBRARY_WIN_PLATFORM "" )
 endif( MSVC )
 
-find_library( FFTW_LIBRARIES "libfftw3f-3"
+find_library( FFTW_LIBRARIES "fftw3"
 	PATHS
     "${FFTW_DIR}/lib/${FFTW_LIBRARY_WIN_PLATFORM}"
 	"${FFTW_DIR}/lib"
     "${FFTW_DIR}/bin/${FFTW_LIBRARY_WIN_PLATFORM}"
 	"${FFTW_DIR}/bin"
+"/usr/lib"
 )
 
 set( FFTW_FOUND "" )

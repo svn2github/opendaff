@@ -14,6 +14,7 @@ find_path( SNDFILE_INCLUDE_DIR "sndfile.h"
     "/usr/local/include"
     "/opt/local/include"
 	"${SNDFILE_DIR}/include"
+"/usr/include"
 )
 
 find_path( SNDFILE_BINARY_DIRS "libsndfile-1.dll"
@@ -24,13 +25,15 @@ find_path( SNDFILE_BINARY_DIRS "libsndfile-1.dll"
 	"${SNDFILE_DIR}/bin"
 )
 
-find_library( SNDFILE_LIBRARIES "libsndfile-1"
+find_library( SNDFILE_LIBRARIES "sndfile"
 	PATHS
     "$ENV{SNDFILE_DIR}/lib"
     "/usr/local/lib"
     "/opt/local/lib"
 	"${SNDFILE_DIR}/lib"
 	"${SNDFILE_DIR}/bin"
+"/usr/lib"
+"/usr/lib/arm-linux-gnueabihf"
 )
 
 set( SNDFILE_FOUND "" )
