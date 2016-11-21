@@ -4,6 +4,7 @@
 #include "QDAFFDialogExport2DPlot.h"
 #include "QDAFFDialogExport3DPlotImage.h"
 #include "QDAFFDialogExport3DPlotImageSeries.h"
+#include "QDAFF2DPlot.h"
 
 #include <QFileDialog>
 #include <QMessageBox>

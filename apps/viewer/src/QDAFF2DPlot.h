@@ -19,10 +19,10 @@
 #include <QGraphicsScene>
 #include <QGraphicsItem>
 #include <QScrollBar>
-#include <QtOpenGL\qgl.h>
+#include <QtOpenGL/qgl.h>
 #include <QKeyEvent>
-#include <QtSvg\qsvggenerator.h>
-#include <QtSvg\qsvgrenderer.h>
+#include <QtSvg/qsvggenerator.h>
+#include <QtSvg/qsvgrenderer.h>
 
 #include <DAFF.h>
 

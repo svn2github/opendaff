@@ -13,7 +13,9 @@
 #define IW_DAFF_UTILS
 
 #include <DAFFDefs.h>
+
 #include <string>
+#include <cmath>
 
 namespace DAFF
 {

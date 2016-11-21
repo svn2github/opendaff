@@ -16,7 +16,7 @@
 #include <QVTKWidget.h>
 
 #include <DAFF.h>
-#include <DAFFViz/DAFFViz.h>
+#include <daffviz/DAFFViz.h>
 
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>

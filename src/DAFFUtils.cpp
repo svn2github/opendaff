@@ -7,6 +7,7 @@
 #include <cassert>
 #include <cstring>
 #include <iomanip>
+#include <cmath>
 
 // Define necessary roundf for Microsoft compilers
 #ifdef _MSC_VER 
