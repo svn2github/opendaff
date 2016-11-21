@@ -1200,7 +1200,7 @@ void DAFFReaderImpl::getNearestNeighbour( int iView, float fAngle1, float fAngle
 		// Trivial case: Just one point
 		iAlphaIndex = 0;
 		bOutOfBounds = true;
-		if( fAlpha == m_pMainHeader->fAlphaStart && fAlpha == std::fmodf( m_pMainHeader->fAlphaEnd, 360.0f ) )
+		if( fAlpha == m_pMainHeader->fAlphaStart && fAlpha == std::fmod( m_pMainHeader->fAlphaEnd, 360.0f ) )
 			bOutOfBounds = false; // Direct hit
 	}
 	else

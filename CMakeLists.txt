@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 2.9 )
+cmake_minimum_required( VERSION 2.8.9 )
 
 list( APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
 
@@ -102,6 +102,12 @@ endif( FFTW_FOUND )
 
 set( OPENDAFF_DAFFLIB_FILES ${OPENDAFF_DAFFLIB_HEADER_FILES} ${OPENDAFF_DAFFLIB_SOURCE_FILES} )
 
+
+if( NOT WIN32 )
+	add_definitions( "-std=c++11" )
+endif( NOT WIN32 )
+
+
 if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 	if( WIN32 )
 		list( APPEND OPENDAFF_DAFFLIB_FILES "src/platforms/windows/DAFFDLLMain" )
@@ -123,7 +129,7 @@ if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 	endif( FFTW_FOUND )
 
 else( OPENDAFF_BUILD_DAFFLIBS_SHARED )
-	add_library( DAFF STATIC "${OPENDAFF_DAFFLIB_FILES}" )
+	add_library( DAFF STATIC ${OPENDAFF_DAFFLIB_FILES} )
 	message( "Building static OpenDAFF library" )
 	set_property( TARGET DAFF PROPERTY FOLDER "DAFFLibs" )
 endif( OPENDAFF_BUILD_DAFFLIBS_SHARED )
