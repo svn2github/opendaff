@@ -2,49 +2,45 @@
 % -------------------------------------------------------------------------------------
 %
 %  OpenDAFF - A free, open source software package for directional audio data
-%  OpenDAFF is distributed under the terms of the GNU Lesser Public License (LGPL)
-%
-%  Copyright (c) Institute of Technical Acoustics, RWTH Aachen University, 2009-2016
 %
 %  ------------------------------------------------------------------------------------
 %
-%  Visit the OpenDAFF homepage: http://www.opendaff.org
+%  Visit the OpenDAFF website: http://www.opendaff.org
 %
 %  ------------------------------------------------------------------------------------
 %
-%  License and warranty notes
+%  Copyright 2016 Institute of Technical Acoustics, RWTH Aachen University
 %
-%  OpenDAFF is free software, distributed under the terms of the
-%  GNU Lesser General Public License (LGPL) version 3.
-%  You can redistribute it and/or modify it under the terms of the
-%  GNU Lesser General Public License (LGPL) version 3,
-%  as published by the Free Software Foundation.
+%  Licensed under the Apache License, Version 2.0 (the "License");
+%  you may not use the OpenDAFF software package except in compliance with the License.
+%  You may obtain a copy of the License at
 %
-%  This program is distributed in the hope that it will be useful,
-%  but WITHOUT ANY WARRANTY; without even the implied warranty of
-%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-%  See the GNU General Public License for more details.
+%    http://www.apache.org/licenses/LICENSE-2.0
 %
-%  You should have received a copy of the GNU General Public License
-%  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%  Unless required by applicable law or agreed to in writing, software
+%  distributed under the License is distributed on an "AS IS" BASIS,
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+%  See the License for the specific language governing permissions and
+%  limitations under the License.
 %
 %  ------------------------------------------------------------------------------------
 %
+
 
 %% Library settings
 
 % Determine the C++ compiler configuration
-cxx = mex.getCompilerConfigurations('C++', 'Selected');
-if isempty(cxx)
-    error('No C++ compiler installed or selected for Matlab. Please run ''mex -setup''.');
+cxx = mex.getCompilerConfigurations( 'C++', 'Selected' );
+if isempty( cxx )
+    error( 'No C++ compiler installed or selected for Matlab. Please run ''mex -setup''.' )
 end
 
 % Output file
 outfile = fullfile( [ 'DAFFv17.' mexext ] );
 
 % Source files
-srcs = {'DAFFMEX.cpp', ...
-        'Helpers.cpp', ...
+srcs = {'DAFFMexMain.cpp', ...
+        'DAFFMexHelpers.cpp', ...
         '../../src/DAFFReader.cpp', ...
         '../../src/DAFFReaderImpl.cpp', ...
         '../../src/DAFFMetadataImpl.cpp', ...
@@ -58,17 +54,17 @@ srcs = {'DAFFMEX.cpp', ...
 fprintf( 'Building OpenDAFF Matlab executable\n\tCompiler: ''%s''\n\tOutput: ''%s''\n', cxx.Name, outfile )
 
 % Compile and link
-srcs = fullfile(srcs);
-srcs = sprintf('%s ', srcs{:});
+srcs = fullfile( srcs );
+srcs = sprintf( '%s ', srcs{:} );
 
 % Note: We need to call mex via 'system' here, because we used the symbol
 % 'mex' with '.' above and Matlab would complain when doing 'mex ...'
-cmd = sprintf('mex -O -I../../include -I../../src %s -output %s', srcs, outfile);
+cmd = sprintf( 'mex -O -I../../include -I../../src %s -output %s', srcs, outfile );
 % Debug: disp(cmd);
 
-[errorcode, result] = system(cmd, '-echo');
-if (errorcode ~= 0)
-    error('Building OpenDAFF Matlab executable failed')
+[ errorcode, result] = system( cmd, '-echo' );
+if errorcode ~= 0
+    error( 'Building OpenDAFF Matlab executable failed' )
 end
 
 fprintf( 'OpenDAFF Matlab executable successfully built to ''%s''\n', outfile )
