@@ -3,7 +3,6 @@ cmake_minimum_required( VERSION 2.8.9 )
 list( APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
 
 project( OpenDAFF )
-set( CMAKE_DEBUG_POSTFIX "D" )
 
 find_package( Doxygen QUIET )
 find_package( FFTW QUIET )
@@ -15,49 +14,53 @@ find_package( VTK QUIET )
 
 if( NOT DEFINED OPENDAFF_BUILD_DAFFLIBS_SHARED )
 	set( OPENDAFF_BUILD_DAFFLIBS_SHARED OFF CACHE BOOL "Build OpenDAFF as a shared library" )
-endif(  NOT DEFINED OPENDAFF_BUILD_DAFFLIBS_SHARED )
+endif( )
 
 if( NOT DEFINED OPENDAFF_WITH_DAFFVIZ )
 	set( OPENDAFF_WITH_DAFFVIZ ${VTK_FOUND} CACHE BOOL "Build OpenDAFF visualization library (requires third party libraries)" )
-endif(  NOT DEFINED OPENDAFF_WITH_DAFFVIZ )
+endif( )
 
 if( NOT DEFINED OPENDAFF_BUILD_DAFF_TOOL )
 	set( OPENDAFF_BUILD_DAFF_TOOL OFF CACHE BOOL "Build OpenDAFF with DAFFTool application (requires third party libraries)" )
-endif(  NOT DEFINED OPENDAFF_BUILD_DAFF_TOOL )
+endif( )
 
 if( NOT DEFINED OPENDAFF_BUILD_DAFF_VIEWER )
 	set( OPENDAFF_BUILD_DAFF_VIEWER OFF CACHE BOOL "Build OpenDAFF with DAFFViewer application (requires third party libraries)" )
-endif( NOT DEFINED OPENDAFF_BUILD_DAFF_VIEWER )
+endif( )
 
 if( NOT DEFINED OPENDAFF_BUILD_DAFF_TESTS )
 	set( OPENDAFF_BUILD_DAFF_TESTS OFF CACHE BOOL "Build OpenDAFF with tests" )
-endif( NOT DEFINED OPENDAFF_BUILD_DAFF_TESTS )
+endif( )
 
 if( NOT DEFINED OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
 	set( OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB OFF CACHE BOOL "Build OpenDAFF with Matlab binding (mex)" )
-endif( NOT DEFINED OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
+endif( )
 
 if( NOT DEFINED OPENDAFF_BUILD_DAFF_DOCUMENTATION )
 	set( OPENDAFF_BUILD_DAFF_DOCUMENTATION OFF CACHE BOOL "Build OpenDAFF with Doxygen documentation (requires third party libraries)" )
-endif( NOT DEFINED OPENDAFF_BUILD_DAFF_DOCUMENTATION )
+endif( )
+
+if( NOT DEFINED OPENDAFF_WITH_CSHARP_BINDING )
+	set( OPENDAFF_WITH_CSHARP_BINDING OFF CACHE BOOL "Build OpenDAFF C# (csharp) binding (includes a wrapper DLL and a C# DAFF class)" )
+endif( )
 
 if( FFTW_FOUND )
 	include_directories( "${FFTW_INCLUDE_DIR}" )
-endif( FFTW_FOUND )
+endif( )
 
 if( FOX_FOUND )
 	include_directories( "${FOX_INCLUDE_DIR}" )
-endif( FOX_FOUND )
+endif( )
 
 if( SNDFILE_FOUND )
 	include_directories( "${SNDFILE_INCLUDE_DIR}" )
-endif( SNDFILE_FOUND )
+endif( )
 
 if( VTK_FOUND )
 	include( "${VTK_USE_FILE}" )
 else( VTK_FOUND )
 	message( STATUS "VTK not found, DAFFViz library is disabled" )
-endif( VTK_FOUND )
+endif( )
 
 
 # daff lib
@@ -98,15 +101,16 @@ if( FFTW_FOUND )
 	list( APPEND OPENDAFF_DAFFLIB_HEADER_FILES "include/DAFFTransformerIR2DFT.h" )
 	list( APPEND OPENDAFF_DAFFLIB_SOURCE_FILES "src/DAFFTransformerIR2DFT.cpp" )
 	add_definitions( -DOPENDAFF_WITH_FFTW )
-endif( FFTW_FOUND )
+endif( )
 
 set( OPENDAFF_DAFFLIB_FILES ${OPENDAFF_DAFFLIB_HEADER_FILES} ${OPENDAFF_DAFFLIB_SOURCE_FILES} )
 
 
 if( NOT WIN32 )
 	add_definitions( "-std=c++11" )
-endif( NOT WIN32 )
+endif( )
 
+set( CMAKE_DEBUG_POSTFIX "D" )
 
 if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 	if( WIN32 )
@@ -116,7 +120,7 @@ if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 	if( MSVC )
 		# Deactivate warning C4251 on inconsistent DLL bindings of string and vector
 		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4251" )
-	endif( MSVC )
+	endif( )
 
 	add_definitions( -DDAFF_DLL -DDAFF_DLL_EXPORTS )
 	add_library( DAFF SHARED "${OPENDAFF_DAFFLIB_FILES}" )
@@ -126,14 +130,15 @@ if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 	if( FFTW_FOUND )
 		target_link_libraries( DAFF ${FFTW_LIBRARIES} )
 		link_directories( "${FFTW_LIBRARY_DIRS}" )
-	endif( FFTW_FOUND )
+	endif( )
 
-else( OPENDAFF_BUILD_DAFFLIBS_SHARED )
+else( )
+
 	add_library( DAFF STATIC ${OPENDAFF_DAFFLIB_FILES} )
 	message( "Building static OpenDAFF library" )
 	set_property( TARGET DAFF PROPERTY FOLDER "DAFFLibs" )
-endif( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 
+endif( )
 
 install( TARGETS DAFF RUNTIME DESTINATION "bin" LIBRARY DESTINATION "lib" ARCHIVE DESTINATION "lib" )
 install( FILES ${OPENDAFF_DAFFLIB_HEADER_FILES} DESTINATION "include" )
@@ -152,17 +157,17 @@ if( OPENDAFF_BUILD_DAFF_TOOL )
 
 	add_subdirectory( "apps/tool" )
 	
-endif( OPENDAFF_BUILD_DAFF_TOOL )
+endif( )
 
 if( OPENDAFF_BUILD_DAFF_VIEWER )
 
 	if( NOT OPENDAFF_WITH_DAFFVIZ )
 		set( OPENDAFF_WITH_DAFFVIZ TRUE )
-	endif()
+	endif( )
 
 	add_subdirectory( "apps/viewer" )
 
-endif( OPENDAFF_BUILD_DAFF_VIEWER )
+endif( )
 
 
 # daff viz lib
@@ -207,12 +212,12 @@ if( OPENDAFF_WITH_DAFFVIZ )
 
 	if( NOT VTK_FOUND )
 		message( FATAL_ERROR "DAFFViz requires VTK, which could not be found." )
-	endif( NOT VTK_FOUND )
+	endif( )
 
 	# DAFFViz uses C++11 mutex
 	if( CMAKE_COMPILER_IS_GNUCXX )
 		add_definitions( -std=gnu++0x )
-	endif()
+	endif( )
 	
 	if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 		add_definitions( -DDAFF_DLL -DDAFF_DLL_EXPORTS )
@@ -220,26 +225,22 @@ if( OPENDAFF_WITH_DAFFVIZ )
 		add_library( DAFFViz SHARED "${DAFFVIZLIB_FILES}" )
 		target_link_libraries( DAFFViz ${VTK_LIBRARIES} )
 		set_property( TARGET DAFFViz PROPERTY FOLDER "DAFFLibs" )
-	else( OPENDAFF_BUILD_DAFFLIBS_SHARED )
+	else( )
 		add_library( DAFFViz STATIC "${DAFFVIZLIB_FILES}" )
 		set_property( TARGET DAFFViz PROPERTY FOLDER "DAFFLibs" )
-	endif( OPENDAFF_BUILD_DAFFLIBS_SHARED )
+	endif( )
 
 	install( FILES ${OPENDAFF_DAFFVIZ_HEADER_FILES} DESTINATION "include/daffviz" )
-	install( TARGETS DAFFViz
-		ARCHIVE DESTINATION "lib"
-		RUNTIME DESTINATION "bin"
-		LIBRARY DESTINATION "lib"
-	)
+	install( TARGETS DAFFViz ARCHIVE DESTINATION "lib" RUNTIME DESTINATION "bin" LIBRARY DESTINATION "lib" )
 	
-endif( OPENDAFF_WITH_DAFFVIZ )
-
-
+endif( )
 # tests
 
 if( OPENDAFF_BUILD_DAFF_TESTS )
+	
 	add_subdirectory( "tests" )
-endif( OPENDAFF_BUILD_DAFF_TESTS )
+	
+endif( )
 
 
 # bindings
@@ -249,9 +250,20 @@ if( OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
 	add_subdirectory( "bindings/matlab" )
 	
 	install( FILES "matlab/README.md" DESTINATION "matlab" )
+	install( FILES "matlab/bindings/DAFF.m" DESTINATION "matlab" )
 	install( DIRECTORY "matlab" DESTINATION "." FILES_MATCHING PATTERN "*.m" )
 	
-endif( OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
+endif( )
+
+
+if( OPENDAFF_WITH_CSHARP_BINDING )
+
+	add_subdirectory( "bindings/csharp" )
+	install( FILES "bindings/csharp/DAFF.cs" DESTINATION "csharp" )
+	install( FILES "bindings/csharp/DAFFTest.cs" DESTINATION "csharp" )
+	install( FILES "bindings/csharp/DAFFTest.csproj" DESTINATION "csharp" )
+
+endif( )
 
 
 # doc
@@ -264,4 +276,4 @@ if( OPENDAFF_BUILD_DAFF_DOCUMENTATION )
 
 	add_subdirectory( "doc" )
 
-endif( OPENDAFF_BUILD_DAFF_DOCUMENTATION )
+endif( )

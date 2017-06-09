@@ -103,8 +103,8 @@ class DAFFProperties;
  *
  *		Definitions
  *
- * It is generally a good idea to have a look at the "DAFFDefs.h" header file. Here you encounter a couple
- * of codes which we recommend to use when working with OpenDAFF, especially this will lead to a greater
+ * It is generally a good idea to have a look at the "DAFFDefs.h" header file. Here you find a couple
+ * of definitions which we recommend to use when working with OpenDAFF, especially this will lead to a greater
  * robustness of your code with later versions of DAFF. Codes available:
  *		- error codes
  *		- views
@@ -142,7 +142,7 @@ public:
 
 	//! Closes an opened DAFF file
 	/**
-	 * @return #DAFF_NO_ERROR on success, another #DAFF_ERROR otherwise
+	 * 
 	 */
 	virtual void closeFile() = 0;
 
