@@ -267,6 +267,9 @@ if( OPENDAFF_WITH_CSHARP_BINDING )
 	install( FILES "bindings/csharp/DAFF.cs" DESTINATION "csharp" )
 	install( FILES "bindings/csharp/DAFFTest.cs" DESTINATION "csharp" )
 	install( FILES "bindings/csharp/DAFFTest.csproj" DESTINATION "csharp" )
+	if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
+		install( TARGETS DAFF RUNTIME DESTINATION "csharp" )
+	endif( )
 
 endif( )
 

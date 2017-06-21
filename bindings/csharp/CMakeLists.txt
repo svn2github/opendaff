@@ -16,4 +16,4 @@ if( ${SNDFILE_FOUND} )
 	target_link_libraries( DAFFCSWrapper ${SNDFILE_LIBRARIES} )
 endif( )
 
-install( TARGETS DAFFCSWrapper RUNTIME DESTINATION "bin" LIBRARY DESTINATION "lib" ARCHIVE DESTINATION "lib" )
+install( TARGETS DAFFCSWrapper RUNTIME DESTINATION "csharp" )
