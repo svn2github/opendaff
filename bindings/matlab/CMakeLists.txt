@@ -20,7 +20,7 @@ if( MSVC )
 endif( MSVC )
 
 if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
-	message( WARNING "For Matlab executables, static linking is recommended" )
+	message( WARNING "For Matlab executables, static linking is recommended. Please also provide DAFF.dll next to DAFFv17 matlab executable, otherwise loading will fail (module not found)" )
 endif( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 
 add_library( DAFFv17 SHARED "${OPENDAFF_DAFFMEX_FILES}" )
@@ -31,3 +31,5 @@ target_link_libraries( DAFFv17 DAFF ${MATLAB_LIBRARIES})
 set_property( TARGET DAFFv17 PROPERTY FOLDER "DAFFLibs" )
 set_target_properties( DAFFv17 PROPERTIES SUFFIX ".${MATLAB_LIBRARY_WIN_EXTENSION}")
 install( TARGETS DAFFv17 RUNTIME DESTINATION "matlab" )
+
+install( FILES "DAFF.m" DESTINATION "matlab" )

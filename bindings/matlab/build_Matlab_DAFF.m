@@ -68,3 +68,5 @@ if errorcode ~= 0
 end
 
 fprintf( 'OpenDAFF Matlab executable successfully built to ''%s''\n', outfile )
+disp( 'DAFF.m convenience class ready to use. See doc DAFF for more information.' )
+

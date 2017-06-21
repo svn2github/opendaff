@@ -250,8 +250,13 @@ if( OPENDAFF_BUILD_DAFF_BINDINGS_MATLAB )
 	add_subdirectory( "bindings/matlab" )
 	
 	install( FILES "matlab/README.md" DESTINATION "matlab" )
-	install( FILES "matlab/bindings/DAFF.m" DESTINATION "matlab" )
 	install( DIRECTORY "matlab" DESTINATION "." FILES_MATCHING PATTERN "*.m" )
+	
+	# Also copy DAFF shared lib into matlab folder, otherwise matlab can't use the executable
+	# to to dynamic load chain (Invalid mex file: ... module not found.)
+	if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
+		install( TARGETS DAFF RUNTIME DESTINATION "matlab" )
+	endif( )
 	
 endif( )
 
