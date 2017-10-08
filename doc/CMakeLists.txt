@@ -1,7 +1,8 @@
-cmake_minimum_required( VERSION 2.9 )
+cmake_minimum_required( VERSION 3.10 )
 
 list( APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
 
+#cmake_policy( SET CMP0057 NEW )
 find_package( doxygen REQUIRED )
 
 configure_file( doxyfile.in doxyfile @ONLY )

@@ -4,12 +4,12 @@ list( APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
 
 project( OpenDAFF )
 
-find_package( Doxygen QUIET )
 find_package( FFTW QUIET )
 find_package( SndFile QUIET )
 find_package( Matlab QUIET )
 find_package( Qt5 COMPONENTS Core Widgets Gui Sql Svg QUIET )
 find_package( VTK QUIET )
+find_package( doxygen QUIET )
 
 
 if( NOT DEFINED OPENDAFF_BUILD_DAFFLIBS_SHARED )
@@ -42,6 +42,10 @@ endif( )
 
 if( NOT DEFINED OPENDAFF_WITH_CSHARP_BINDING )
 	set( OPENDAFF_WITH_CSHARP_BINDING OFF CACHE BOOL "Build OpenDAFF C# (csharp) binding (includes a wrapper DLL and a C# DAFF class)" )
+endif( )
+
+if( NOT DEFINED OPENDAFF_WITH_PYTHON_BINDING )
+	set( OPENDAFF_WITH_PYTHON_BINDING OFF CACHE BOOL "Build OpenDAFF Python binding (includes a C module and a Python DAFF class)" )
 endif( )
 
 if( FFTW_FOUND )
@@ -269,6 +273,16 @@ if( OPENDAFF_WITH_CSHARP_BINDING )
 	install( FILES "bindings/csharp/DAFFTest.csproj" DESTINATION "csharp" )
 	if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
 		install( TARGETS DAFF RUNTIME DESTINATION "csharp" )
+	endif( )
+
+endif( )
+
+
+if( OPENDAFF_WITH_PYTHON_BINDING )
+
+	add_subdirectory( "bindings/python" )
+	if( OPENDAFF_BUILD_DAFFLIBS_SHARED )
+		install( TARGETS DAFF RUNTIME DESTINATION "python" )
 	endif( )
 
 endif( )
