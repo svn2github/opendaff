@@ -128,6 +128,9 @@ QDAFFViewerWindow::QDAFFViewerWindow( QWidget *parent, QString sPath )
 
 	ui->DAFFStatusBar->showMessage( "No DAFF file loaded. Shortcut for opening DAFF files: 'o' as in 'open'. 'Esc' will exit DAFFViewer." );
 
+	if( !ui->DAFF3DPlot_VTKWidget->SupportsOpenGL() )
+		ui->DAFFStatusBar->showMessage( "Your graphics card does not support OpenGL 4 shader. 3D plot window will be disabled." );
+
 	m_qSettings.setValue( "RequestedPath", sPath );
 	m_qSettings.value( "PhiThetaIncrementDeg", m_dPhiThetaIncrementDeg );
 	

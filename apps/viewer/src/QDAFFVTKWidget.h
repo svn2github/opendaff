@@ -64,6 +64,7 @@ public:
 
 	QDAFFVTKWidget( QWidget *parent = Q_NULLPTR );
 	~QDAFFVTKWidget();
+	bool SupportsOpenGL();
 
 public slots:
 

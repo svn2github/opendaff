@@ -32,26 +32,33 @@ QDAFFVTKWidget::QDAFFVTKWidget( QWidget *parent )
 	, m_iBalloonScaling( DAFFViz::BalloonPlot::SCALING_DECIBEL )
 {
 	m_pSGRootNode = new DAFFViz::SGNode();
+
 	m_pSCA = new DAFFViz::SphericalCoordinateAssistant( m_pSGRootNode );
 	m_pCCA = new DAFFViz::CartesianCoordinateAssistant( 2.0f, 1.0f, 2.0f );
 	m_pCCA->SetPosition( -1.0f, 0.0f, -1.0f );
 
 	m_pSDI = new DAFFViz::SphericalDirectionIndicator( m_pSGRootNode );
 	m_pSDI->SetVisible( true );
+	
 
 	m_pRenderer = vtkSmartPointer< vtkRenderer >::New();
 	m_pRenderer->GlobalWarningDisplayOff();
-	m_pRenderer->AddActor( m_pSGRootNode->GetNodeAssembly() );
 
 	m_pSGRootNode->OnSetFollowerCamera( m_pRenderer->GetActiveCamera() );
 	m_pRenderer->GetActiveCamera()->SetPosition( 3, 3, -3 );
-	
-	if (GetRenderWindow()->SupportsOpenGL() != 0)
+
+	GetRenderWindow()->AddRenderer( m_pRenderer );
+
+	if( SupportsOpenGL() )
 	{
-		GetRenderWindow()->AddRenderer(m_pRenderer);
+		m_pRenderer->AddActor( m_pSGRootNode->GetNodeAssembly() );
 
 		vtkSmartPointer< vtkInteractorStyleTerrain > pCustomInteractorStyle = vtkSmartPointer< vtkInteractorStyleTerrain >::New();
-		GetRenderWindow()->GetInteractor()->SetInteractorStyle(pCustomInteractorStyle);
+		GetRenderWindow()->GetInteractor()->SetInteractorStyle( pCustomInteractorStyle );
+	}
+	else
+	{
+		m_pRenderer->SetBackground( 0.71f, 0.71f, 0.71f );
 	}
 }
 
@@ -68,6 +75,11 @@ QDAFFVTKWidget::~QDAFFVTKWidget()
 
 	m_pRenderer->RemoveActor( m_pSGRootNode->GetNodeAssembly() );
 	delete m_pSGRootNode;
+}
+
+bool QDAFFVTKWidget::SupportsOpenGL()
+{
+	return bool( GetRenderWindow()->SupportsOpenGL() );
 }
 
 void QDAFFVTKWidget::CloseDAFF()
@@ -162,9 +174,9 @@ void QDAFFVTKWidget::ReadDAFF( const DAFFReader* pReader )
 		m_pDAFFContentBalloon = new DAFFViz::BalloonPlot( m_pSGRootNode, pReader->getContent() );
 		m_pDAFFContentBalloon->SetScaling( m_iBalloonScaling );
 		m_pDAFFContentBalloon->SetUsePhaseAsColor( m_bBalloonPhaseColor );
-		m_pDAFFContentBalloon->SetNormalize(m_bNormalize);
-		m_pDAFFContentBalloon->SetNormalizeFrequenciesIndividually(m_bNormalizeFreqsIndiv);
-		
+		m_pDAFFContentBalloon->SetNormalize( m_bNormalize );
+		m_pDAFFContentBalloon->SetNormalizeFrequenciesIndividually( m_bNormalizeFreqsIndiv );
+
 		m_pSGRootNode->AddChildNode( m_pSCA );
 
 		break;
@@ -244,7 +256,7 @@ void QDAFFVTKWidget::ExportScreenshotPNG( QString sFilePath, int iWidth, int iHe
 	vtkSmartPointer< vtkPNGWriter > pExportPNG = vtkSmartPointer< vtkPNGWriter >::New();
 	pExportPNG->SetFileName( sFilePath.toStdString().c_str() );
 	pExportPNG->SetInputConnection( pFilter->GetOutputPort() );
-    pExportPNG->Write();
+	pExportPNG->Write();
 }
 
 void QDAFFVTKWidget::ExportScrenshotSeriesPNG( QString sFileBasePath, QString sFileBaseName, const CAnimation& oA )
@@ -261,7 +273,7 @@ void QDAFFVTKWidget::ExportScrenshotSeriesPNG( QString sFileBasePath, QString sF
 	pImageRenderWin->SetSize( oA.iWidth, oA.iHeight );
 	pImageRenderWin->AddRenderer( pImageRenderer );
 	pImageRenderWin->Render();
-			
+
 	vtkSmartPointer<vtkWindowToImageFilter> pFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
 	pFilter->SetInputBufferTypeToRGBA();
 	pFilter->ReadFrontBufferOff();
@@ -319,7 +331,7 @@ void QDAFFVTKWidget::ExportScrenshotSeriesPNG( QString sFileBasePath, QString sF
 		pExportPNG->Write();
 	}
 
-	m_pSGRootNode->SetOrientationYPR( 0,0,0 );
+	m_pSGRootNode->SetOrientationYPR( 0, 0, 0 );
 }
 
 void QDAFFVTKWidget::SetCoordinateAssistanceVisible( bool bVisible )
@@ -336,7 +348,7 @@ void QDAFFVTKWidget::SetCoordinateAssistanceVisible( bool bVisible )
 void QDAFFVTKWidget::SetDirectionIndicatorVisible( bool bVisible )
 {
 	if( m_pSDI )
-		m_pSDI->SetVisible(bVisible);
+		m_pSDI->SetVisible( bVisible );
 
 	update();
 }
@@ -420,7 +432,7 @@ void QDAFFVTKWidget::SetLogScale( bool bEnabled )
 void QDAFFVTKWidget::SetNormalizeFrequenciesIndividually( bool bEnabled )
 {
 	m_bNormalizeFreqsIndiv = bEnabled;
-	if (m_pDAFFContentBalloon)
+	if( m_pDAFFContentBalloon )
 	{
 		m_pDAFFContentBalloon->SetNormalizeFrequenciesIndividually( bEnabled );
 	}
@@ -431,7 +443,7 @@ void QDAFFVTKWidget::SetNormalizeFrequenciesIndividually( bool bEnabled )
 void QDAFFVTKWidget::SetNormalize( bool bEnabled )
 {
 	m_bNormalize = bEnabled;
-	if (m_pDAFFContentBalloon)
+	if( m_pDAFFContentBalloon )
 	{
 		m_pDAFFContentBalloon->SetNormalize( bEnabled );
 	}

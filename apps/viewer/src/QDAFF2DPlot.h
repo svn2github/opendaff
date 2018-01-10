@@ -134,6 +134,12 @@ private:
 	void Draw();
 	void DrawCoordinateSystem();
 	void DrawGraph(int iRecordIndex, int iChannelIndex, bool bShowAllChannels = false, bool showDots = true);
+	void DrawChannelBox(int iChannelIndex);
+	int plotWidth();
+	int plotHeight();
+	void GetXIncrement(double max);
+	void GetYIncrement(double max);
+
 	
 	//items
 	QGraphicsLineItem *m_pXAxis, *m_pYAxis;
@@ -164,24 +170,29 @@ private:
 	// parameters
 
 	// axis
-	const int m_iAxisOffsetRight = 30;
+	const int m_iAxisOffsetRight = 50;
 	const int m_iAxisOffsetUp = 30;
-	const int m_iAxisOffsetLeft = 30; 
+	const int m_iAxisOffsetLeft = 40; 
 	const int m_iAxisOffsetDown = 30;
 	const int m_iTipLength = 10;
 	const int m_iTipWidth = 5; //!< from one end to the other is double this width
-	const int m_iTipDistanceX = 50;
-	const int m_iTipDistanceY = 50;
+	const int m_iTipDistanceX = 25;
+	const int m_iTipDistanceY = 25;
 
 	// grid
 	const int m_iGridXOffset = 60;
 	const int m_iGridYOffset = 60;
-	const int m_iNXGrid = 11;
-	const int m_iNYGrid = 10;
+	int m_iNXGrid = 11;
+	int m_iNYGrid = 10;
 
 	// marker
-	const int m_iNXMarker = 12;
-	const int m_iNYMarker = 11;
+	int m_iYMax;
+	int m_iNXMarker = 11;
+	int m_iNYMarker = 11;
+	float m_fXIncrement = 1;
+	float m_fYIncrement = 1;
+	int m_iXExponent = 0;
+	int m_iYExponent = 0;
 	const int m_iXMarkerLength = 5;
 	const int m_iYMarkerLength = 5;
 	const int m_iXMarkerTextOffset = 0;
