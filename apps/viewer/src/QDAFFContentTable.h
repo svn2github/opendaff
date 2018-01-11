@@ -2,7 +2,7 @@
  * -------------------------------------------------------------------------------------
  *
  *  OpenDAFF - A free, open source software package for directional audio data
- *  Copyright 2016 Institute of Technical Acoustics, RWTH Aachen University
+ *  Copyright 2016-2018 Institute of Technical Acoustics (ITA), RWTH Aachen University
  *  OpenDAFF is distributed under the Apache License Version 2.0.
  *
  *  ------------------------------------------------------------------------------------
@@ -337,7 +337,7 @@ public slots:
 		case DAFF_DFT_SPECTRUM:
 		{
 			const DAFFContentDFT* pContent = dynamic_cast< const DAFFContentDFT* >( pReader->getContent() );
-			//m_pModel = new QDAFFContentDFTModel( this, pContent );
+			m_pModel = new QDAFFContentDFTModel( this, pContent );
 			break;
 		}
 		}		

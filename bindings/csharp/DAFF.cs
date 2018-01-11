@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 /// <summary>
 ///  OpenDAFF - A free, open source software package for directional audio data
-///  Copyright 2016-2017 Institute of Technical Acoustics, RWTH Aachen University
+///  Copyright 2016 - 2018 Institute of Technical Acoustics, RWTH Aachen University
 ///  OpenDAFF is distributed under the Apache License Version 2.0.
 ///  More information and directional content can be found at http://www.opendaff.org.
 /// </summary>

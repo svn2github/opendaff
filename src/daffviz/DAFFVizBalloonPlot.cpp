@@ -608,7 +608,7 @@ namespace DAFFViz
 		float fMag = 0.0f;
 		float fPhase = 0.0f;
 		float fAbsoluteMax = 0.0f;
-		double dMax = 0.0f;
+		double dMax = 1.0f;
 
 		//get the normalization range
 		if( pContentDFT )
@@ -647,7 +647,8 @@ namespace DAFFViz
 		for( int i = 0; i < m_pContent->getProperties()->getNumberOfRecords(); i++ )
 		{
 			// Get the magnitude value
-			if( pContentDFT )
+
+			if( pContentDFT ) // ----------------
 			{
 				float fReal, fImag;
 				pContentDFT->getDFTCoeff( i, m_iChannel, m_iFrequency, fReal, fImag );
@@ -687,7 +688,7 @@ namespace DAFFViz
 					else
 					{
 						DECIBEL_LOWER = FactorToDecibel( 0.0 );
-						DECIBEL_UPPER = FactorToDecibel( 1.0 );
+						DECIBEL_UPPER = FactorToDecibel( fAbsoluteMax );
 					}
 
 					// Limit the lower boundary
@@ -715,7 +716,7 @@ namespace DAFFViz
 				}
 
 			}
-			else if( pContentMS )
+			else if( pContentMS ) // ----------------
 			{
 				pContentMS->getMagnitude( i, m_iChannel, m_iFrequency, fMag );
 

@@ -11,6 +11,7 @@ find_package( Qt5 REQUIRED COMPONENTS Core Svg Gui Widgets )
 find_package( Qt5 COMPONENTS Svg )
 
 include( ${VTK_USE_FILE} )
+set( VTK_BINARY_DIRS "" CACHE STRING "VTK binary dirs (to locate DLLs when running DAFFViewer out of MSVC)" )
 
 link_directories( "${VTK_LIBRARY_DIRS}" )
 
@@ -66,8 +67,10 @@ if( MSVC )
 	list( APPEND DAFFUSERTEMPLATE_PATHES "${CMAKE_BINARY_DIR}/Debug" )
 	list( APPEND DAFFUSERTEMPLATE_PATHES "${CMAKE_BINARY_DIR}/Release")
 	list( APPEND DAFFUSERTEMPLATE_PATHES "${_qt5Core_install_prefix}/bin/" )
+	list( APPEND DAFFUSERTEMPLATE_PATHES "${VTK_CMAKE_DIR}/../../../bin" ) # humble attempt to locate VTK DLLs, leave it to user otherwise
+	list( APPEND DAFFUSERTEMPLATE_PATHES "${VTK_BINARY_DIRS}" ) # user defined path
 	configure_file( DAFFUserTemplate.vcxproj.user.proto ${USER_FILE} @ONLY )
-endif( MSVC )
+endif( )
 
 # Qt Creator: Open CMakeLists.txt as project and add directories to external libs, i.e.
 #	-DCMAKE_MODULE_PATH=C:\dev\ExternalLibs\OpenDAFF\opendaff-v1.7\opendaff_withcred\cmake -DVTK_DIR=C:\dev\ExternalLibs\VTK\VTK-7.0\win32-x64.vc12\lib\cmake\vtk-7.0 -DFFTW_DIR=C:\dev\ExternalLibs\fftw\fftw-3.3.3\win32-x64 -DSNDFILE_DIR=C:\dev\ExternalLibs\libsndfile\libsndfile-1.0.25\win32-x64

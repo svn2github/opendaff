@@ -19,14 +19,14 @@
      <item>
       <widget class="QLineEdit" name="lineEdit_ExportPath">
        <property name="styleSheet">
-        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+        <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_Browse">
        <property name="styleSheet">
-        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+        <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
        </property>
        <property name="text">
         <string>Select</string>
@@ -40,7 +40,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="width">
        <property name="styleSheet">
-        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+        <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
        </property>
        <property name="text">
         <string>Width</string>
@@ -50,7 +50,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="height">
        <property name="styleSheet">
-        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+        <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
        </property>
        <property name="text">
         <string>Height</string>
@@ -60,7 +60,7 @@
      <item row="0" column="1">
       <widget class="QSpinBox" name="spinBox_Width">
        <property name="styleSheet">
-        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+        <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
        </property>
        <property name="minimum">
         <number>1</number>
@@ -76,7 +76,7 @@
      <item row="1" column="1">
       <widget class="QSpinBox" name="spinBox_Height">
        <property name="styleSheet">
-        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+        <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
        </property>
        <property name="minimum">
         <number>1</number>
@@ -94,7 +94,7 @@
    <item>
     <widget class="QPushButton" name="pushButton_Export">
      <property name="styleSheet">
-      <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+      <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
      </property>
      <property name="text">
       <string>Export</string>

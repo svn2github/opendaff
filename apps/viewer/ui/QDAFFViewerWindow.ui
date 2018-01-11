@@ -58,7 +58,7 @@
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The DAFF &lt;span style=&quot; font-weight:600;&quot;&gt;reader&lt;/span&gt; opens a DAFF file and gives access to general information like file name, content type, file format version and global metadata.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="styleSheet">
-           <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+           <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
           </property>
           <property name="title">
            <string>DAFF Reader </string>
@@ -85,7 +85,7 @@
            <item row="1" column="0">
             <widget class="QLabel" name="labelFileName">
              <property name="styleSheet">
-              <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+              <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
              </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -116,7 +116,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
            <item row="2" column="0">
             <widget class="QLabel" name="labelVersion">
              <property name="styleSheet">
-              <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+              <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
              </property>
              <property name="text">
               <string>Version</string>
@@ -138,7 +138,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
            <item row="3" column="0">
             <widget class="QLabel" name="labelContentType">
              <property name="styleSheet">
-              <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+              <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
              </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -169,7 +169,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The DAFF global &lt;span style=&quot; font-weight:600;&quot;&gt;metadata&lt;/span&gt; is a table of key-value pairs with four data types: boolean, floating point number, integer and string. Creators of DAFF files can specify arbitrary information for the content. It can help to include properties that are not covered natively by DAFF (prototyping). It can also explain more about the directional content, like type of the object, web resource, author, creation date, publication reference, license and many more.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="styleSheet">
-           <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+           <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
           </property>
           <property name="title">
            <string>DAFF Metadata</string>
@@ -194,7 +194,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The &lt;span style=&quot; font-weight:600;&quot;&gt;properties&lt;/span&gt; of a DAFF file are definitions of the file that describe the content in detail. Here, the resolution and ranges for Alpha and Beta angles are stored as well the orientation of the data view that has to be applied by DAFF to rotate from the user (object) view. Also the number of channels, the quantization of the data sets and the total number of data points can be queried.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="styleSheet">
-           <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+           <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
           </property>
           <property name="title">
            <string>DAFF Properties</string>
@@ -212,7 +212,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The &lt;span style=&quot; font-weight:600;&quot;&gt;content&lt;/span&gt; of a DAFF file is the actual data -which can be of different type. These additional properties are shown here, because they are content-depending.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="styleSheet">
-           <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+           <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
           </property>
           <property name="title">
            <string>DAFF Content</string>
@@ -267,7 +267,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Views&lt;/span&gt; on directional contents are a central property of DAFF. A main problem of spatial content is that everyone uses a representation and coordinate system (a &lt;span style=&quot; font-style:italic;&quot;&gt;view&lt;/span&gt;) that naturally appears to be the best. Therefore a variety of views are in place and a debate about pros and cons is meaningless. DAFF does not claim to solve this circumstance, but provides a conversion between the so called &lt;span style=&quot; font-style:italic;&quot;&gt;user (or object) view&lt;/span&gt; and the &lt;span style=&quot; font-style:italic;&quot;&gt;data view&lt;/span&gt;. The &lt;span style=&quot; font-weight:600;&quot;&gt;user view&lt;/span&gt; is commonly used for HRTFs where the frontal direction is at angles (0°, 0°). It is also called object view because it is the projection of oneself into the object (i.e. looking through the 'eyes' of the dummy head). Here, DAFF uses the term Phi and Theta for azimuth and elevation angle. No matter how the underlying data is oriented, this view is meant for users that require to get the right direction without further knowledge on how the data is actually formatted.&lt;/p&gt;&lt;p&gt;The data view, in contrast, is more mathematically motivated and is used when creating DAFF content. During creation of DAFF content and to define the rotation of the data into the user (object) view, an orientation can be added that DAFF will apply automatically, if the &lt;span style=&quot; font-style:italic;&quot;&gt;user view&lt;/span&gt; is used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+             <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
             </property>
             <property name="title">
              <string>User view</string>
@@ -311,7 +311,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The &lt;span style=&quot; font-weight:600;&quot;&gt;Theta&lt;/span&gt; angle corresponds to the vertical direction, also referred to as the elevation angle or elevation.&lt;/p&gt;&lt;p&gt;In DAFF, this angle definition is a value of the &lt;span style=&quot; font-weight:600;&quot;&gt;user view&lt;/span&gt; on the directional data, and a Theta angle of zero degree (0°) is the front direction in vertical plane. The north pole (user view) has a Theta of 90°, the south pole -90°.&lt;/p&gt;&lt;p&gt;The default range of the Theta angle is [-90°, 90°], but the nearest neighbour mapping will also accept any other value that will be projected into this range. Range overrun of &lt;span style=&quot; font-weight:600;&quot;&gt;Theta&lt;/span&gt; may influence the &lt;span style=&quot; font-weight:600;&quot;&gt;Phi&lt;/span&gt; angle, too.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="styleSheet">
-                <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+                <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
                </property>
                <property name="text">
                 <string>Theta</string>
@@ -376,7 +376,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The &lt;span style=&quot; font-weight:600;&quot;&gt;Phi&lt;/span&gt; angle corresponds to the horizontal direction also referred to as the azimuthal angle or azimuth.&lt;/p&gt;&lt;p&gt;In DAFF, this angle definition is a value of the &lt;span style=&quot; font-weight:600;&quot;&gt;user view&lt;/span&gt; on the directional data, and a Phi angle of zero degree (0°) is the front direction in horizontal plane. The north and south pole (user view) have an arbitrary Phi angle.&lt;/p&gt;&lt;p&gt;The default range of the Phi angle is (-180°, 180°], but the nearest neighbour mapping will also accept any other value that will be projected into this range. Range overrun of &lt;span style=&quot; font-weight:600;&quot;&gt;Phi&lt;/span&gt; may influence the &lt;span style=&quot; font-weight:600;&quot;&gt;Theta&lt;/span&gt; angle, too.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="styleSheet">
-                <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+                <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
                </property>
                <property name="text">
                 <string>Phi</string>
@@ -392,7 +392,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Views&lt;/span&gt; on directional contents are a central property of DAFF. A main problem of spatial content is that everyone uses a representation and coordinate system (a &lt;span style=&quot; font-style:italic;&quot;&gt;view&lt;/span&gt;) that naturally appears to be the best. Therefore a variety of views are in place and a debate about pros and cons is meaningless. DAFF does not claim to solve this circumstance, but provides a conversion between the so called &lt;span style=&quot; font-style:italic;&quot;&gt;user (or object) view&lt;/span&gt; and the &lt;span style=&quot; font-style:italic;&quot;&gt;data view&lt;/span&gt;. The &lt;span style=&quot; font-weight:600;&quot;&gt;data view&lt;/span&gt; is commonly used as a mathematical polar coordinate system, and DAFF uses the terms Alpha and Beta for azimuth and elevation angle. The south pole is represented by a Beta elevation angle of 0° (an equally appropriate polar coordinate system would use 0° for the north pole here, but DAFF doesn't). This data view is meant to be used by the creators of DAFF content. By also providing an orientation, the rotation of the data into the user (object) view can be defined and DAFF will apply this rotation automatically, if the &lt;span style=&quot; font-style:italic;&quot;&gt;user view&lt;/span&gt; is used. By this approach, the user of a DAFF file does not require any further information on the formatting of the underlying directional content.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+             <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
             </property>
             <property name="title">
              <string>Data view</string>
@@ -478,7 +478,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A &lt;span style=&quot; font-weight:600;&quot;&gt;record data set&lt;/span&gt; represents a set of (potentially multi-channel) time series audio samples or frequency values for a &lt;span style=&quot; font-weight:600;&quot;&gt;certain direction&lt;/span&gt;. The &lt;span style=&quot; font-weight:600;&quot;&gt;index&lt;/span&gt; of a record defines where in the memory such a data set can be found. DAFF uses a two-step access to directional data that is not spatially continuous. First, a nearest neighbour search has to be executed, that returns a record index. Then, by using the corresponding index, the data can be requested.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="styleSheet">
-                <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+                <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
                </property>
                <property name="text">
                 <string>Index</string>
@@ -508,7 +508,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Depending on the content type, DAFF files have a &lt;span style=&quot; font-weight:600;&quot;&gt;vector&lt;/span&gt; of (potentially multi-channel) data. The base of this data is either a time for a sample in an impule response, or a frequency in a spectrum representation, either as frequency bins in a DFT coefficient vector, or a center frequency in an energetic band spectrum.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+             <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
             </property>
             <property name="title">
              <string>Selection</string>
@@ -517,7 +517,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
              <item row="1" column="0">
               <widget class="QLabel" name="label_11">
                <property name="styleSheet">
-                <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+                <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
                </property>
                <property name="text">
                 <string>Index</string>
@@ -538,7 +538,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
              <item row="2" column="0">
               <widget class="QLabel" name="label_frequency">
                <property name="styleSheet">
-                <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+                <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
                </property>
                <property name="text">
                 <string>Frequency</string>
@@ -559,7 +559,7 @@ font: 75 12pt &quot;Calibri&quot;;</string>
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;DAFF provides &lt;span style=&quot; font-weight:600;&quot;&gt;multi-channel data sets&lt;/span&gt;, i.e. for an HRTF two channels are usually needed. The channel spin box chooses which channel should be shown.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="styleSheet">
-                <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+                <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
                </property>
                <property name="text">
                 <string>Channel</string>

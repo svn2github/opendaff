@@ -11,7 +11,7 @@ Visit the OpenDAFF homepage: http://www.opendaff.org
 
 ## License
 
-Copyright 2016 Institute of Technical Acoustics, RWTH Aachen University
+Copyright 2016 - 2018 Institute of Technical Acoustics, RWTH Aachen University
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use the OpenDAFF software package except in compliance with the License.

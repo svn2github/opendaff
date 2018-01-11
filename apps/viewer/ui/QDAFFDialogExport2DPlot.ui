@@ -19,14 +19,14 @@
      <item>
       <widget class="QLineEdit" name="lineEdit_ExportPath">
        <property name="styleSheet">
-        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+        <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_Browse">
        <property name="styleSheet">
-        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+        <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
        </property>
        <property name="text">
         <string>Select</string>
@@ -38,7 +38,7 @@
    <item>
     <widget class="QCheckBox" name="checkBox_IncludeAllChannels">
      <property name="styleSheet">
-      <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+      <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
      </property>
      <property name="text">
       <string>Include all channels</string>
@@ -51,7 +51,7 @@
    <item>
     <widget class="QCheckBox" name="checkBox_ShowDataPointDots">
      <property name="styleSheet">
-      <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+      <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
      </property>
      <property name="text">
       <string>Show dots at data points</string>
@@ -66,7 +66,7 @@
      <item>
       <widget class="QDoubleSpinBox" name="doubleSpinBox_ScalingFactor">
        <property name="styleSheet">
-        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+        <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
        </property>
        <property name="minimum">
         <double>1.000000000000000</double>
@@ -76,7 +76,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="styleSheet">
-        <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+        <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
        </property>
        <property name="text">
         <string>Scaling factor</string>
@@ -88,7 +88,7 @@
    <item>
     <widget class="QPushButton" name="pushButton_Export">
      <property name="styleSheet">
-      <string notr="true">font: 12pt &quot;Calibri&quot;;</string>
+      <string notr="true">font: 11pt &quot;Calibri&quot;;</string>
      </property>
      <property name="text">
       <string>Export</string>
