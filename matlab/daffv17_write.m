@@ -85,28 +85,42 @@ function [] = daffv17_write( varargin )
     
     % Parse the arguments
     args = struct();
-    for i=1:length(nonarg), args.(nonarg{i}) = false; end
     
-    i=1;
-    while i<=nargin
-        if ~ischar(varargin{i}), error(['Parameter ' num2str(i) ': String expected']); end
-        key = lower(varargin{i});
-        i = i+1;
-        r = nargin-i+1; % Number of remaining arguments
+    % Switch between single cell argument call and option list
+    if isa( varargin, 'cell' ) && length( varargin ) == 1 && isstruct( varargin{ 1 } )
         
-        switch key
-        case nonarg
-            args.(key) = true;
+        args = varargin{ 1 };
+        for i=1:length(nonarg)
+            if ~isfield( args, nonarg{ i } )
+                args.(  nonarg{ i } ) = false;
+            end
+        end
         
-        % Options with one argument
-        case onearg
-            if (r < 1), error(['Option ''' key ''' requires an argument']); end
-            args.(key) = varargin{i};
+    else
+
+        for i=1:length(nonarg), args.(nonarg{i}) = false; end
+        
+        i=1;
+        while i<=nargin
+            if ~ischar(varargin{i}), error(['Parameter ' num2str(i) ': String expected']); end
+            key = lower(varargin{i});
             i = i+1;
-            
-        otherwise
-            error(['Invalid option (''' key ''')']);
-        end        
+            r = nargin-i+1; % Number of remaining arguments
+
+            switch key
+            case nonarg
+                args.(key) = true;
+
+            % Options with one argument
+            case onearg
+                if (r < 1), error(['Option ''' key ''' requires an argument']); end
+                args.(key) = varargin{i};
+                i = i+1;
+
+            otherwise
+                error(['Invalid option (''' key ''')']);
+            end        
+        end
     end
     
     % Validate the arguments
@@ -286,8 +300,10 @@ function [] = daffv17_write( varargin )
     
     if isfield(args, 'betares')
         args.betapoints = (betaspan / args.betares) + 1;
-        if (ceil(args.betapoints) ~= args.betapoints)
+        if (abs(args.betapoints - round(args.betapoints)) > 1e-5 )
             error('Beta range and beta resolution are not an integer multiple')
+        else
+           args.betapoints = round(args.betapoints); 
         end
     else
         args.betares = betaspan / (args.betapoints-1);
@@ -414,7 +430,15 @@ function [] = daffv17_write( varargin )
     % note: use round here to avoid errors if alphapoints are not exactly
     % integers but within epsilon
     x = cell( round( args.alphapoints ), round( args.betapoints ), args.channels );
+    
+    % Speed up for itaHRTF class
+    if isa( args.userdata, 'itaHRTF' )
+        args.userdata = args.userdata.buildsearchdatabase;
+    end
+    
+    disp( 'Starting to gather data via callback function, this might take a while ...' )
     for b=1:args.betapoints
+        tic
         beta = betastart + (b-1)*args.betares;
         
         % Write just one record at the poles
@@ -422,13 +446,11 @@ function [] = daffv17_write( varargin )
             points = 1;
         else
             points = args.alphapoints;
-        end
-        
+        end      
         for a=1:points
             alpha = alphastart + (a-1)*args.alphares;
           
-            % --= Impulse responses =--
-            
+            % --= Impulse responses =--         
             if strcmp( args.content, 'IR' ) 
                 % Get the data
                 [ data, samplerate, metadata ] = args.datafunc( alpha, beta, args.userdata );
@@ -775,7 +797,10 @@ function [] = daffv17_write( varargin )
             
             props.numRecords = props.numRecords + 1;
         end
+        
+        disp( [ 'Processed beta angle ' num2str( beta ) ', took ' num2str( toc ) ] )
     end
+    disp( '... and data has been assembled. Will write to file now.' )
         
     fprintf( 'Global peak: %+0.1f dB (%0.6f)\n', 20*log10(props.globalPeak), props.globalPeak );
   
