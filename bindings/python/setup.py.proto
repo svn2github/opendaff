@@ -1,0 +1,19 @@
+from distutils.core import setup, Extension
+
+module1 = Extension('pydaff',
+                    include_dirs = [ '../../include' ],
+                    libraries = [ 'DAFF' ],
+                    library_dirs = [ '../build_win32-x64.vc14/lib','../../ViSTA/build_win32-x64.vc14/lib' ],
+					sources = [ 'pydaff.cpp', pydaffdoc.hpp' ] )
+
+setup ( name = 'pydaff',
+        version = '17',
+        description = 'OpenDAFF Python 3 binding',
+        author = 'Institute of Technical Acoustics (ITA), RWTH Aachen University',
+        author_email = 'post@akustik.rwth-aachen.de',
+        url = 'https://www.opendaff.org',
+        long_description = '''
+OpenDAFF, the open soure directional audio file format''',
+		license = "Copyright 2016-2018. Apache License, Version 2.0",
+        ext_modules = [ module1 ]
+		)

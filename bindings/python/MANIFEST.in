@@ -1,0 +1,3 @@
+include README.md LICENSE.md MANIFEST.in FILEFORMAT.md
+include bin/*.dll
+include pydaff.c
