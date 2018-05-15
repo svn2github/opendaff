@@ -20,3 +20,6 @@ PyDoc_STRVAR( daff_doc,
 PyDoc_STRVAR( no_doc,
 	"For this method no dedicated documentation is available. Please read the C++ API documentation\n"
 	"of this method for further information." );
+
+PyDoc_STRVAR( open_doc,
+	"open( filepath ): open a DAFF file\n" );

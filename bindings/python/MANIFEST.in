@@ -1,3 +1,4 @@
-include README.md LICENSE.md MANIFEST.in FILEFORMAT.md
-include bin/*.dll
-include pydaff.c
+include README.md LICENSE.md
+include FILEFORMAT.md
+#include bin/*.dll
+include pydaff.cpp

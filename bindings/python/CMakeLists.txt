@@ -21,6 +21,7 @@ target_link_libraries( pydaff DAFF )
 set_property( TARGET pydaff PROPERTY FOLDER "Bindings/Python" )
 
 # Run distutils after (useless) build in your dev env to compile the Python extension into 'dist' folder
+set( OPENDAFF_LIBRARY_DIRS "${CMAKE_BINARY_DIR}/Release" )
 configure_file( "setup.py.proto" "${CMAKE_CURRENT_SOURCE_DIR}/setup.py" @ONLY )
 set( BATCH_SCRIPT_EXTENSION "bat" )
 if( NOT WIN32 )
