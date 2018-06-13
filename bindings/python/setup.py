@@ -1,6 +1,6 @@
 from distutils.core import setup, Extension
 
-daffmodule = Extension('daff',
+daffmodule = Extension('daffCppInterface',
                     include_dirs = [ '../../include' ],
 					sources = [ 'pydaff.cpp', 
 								'../../src/DAFFMetadataImpl.cpp', 

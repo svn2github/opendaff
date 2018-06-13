@@ -628,7 +628,7 @@ static PyMethodDef daff_methods[] =
 static struct PyModuleDef daff_module_def =
 {
 	PyModuleDef_HEAD_INIT,
-	"daff",
+	"daffCppInterface",
 	daff_doc,
 	-1,
 	daff_methods,
@@ -638,10 +638,10 @@ static struct PyModuleDef daff_module_def =
 	NULL
 };
 
-PyMODINIT_FUNC PyInit_daff( void )
+PyMODINIT_FUNC PyInit_daffCppInterface( void )
 {
 	PyObject* pModule = PyModule_Create( &daff_module_def );
-	g_pDAFFError = PyErr_NewException( "daff.error", NULL, NULL );
+	g_pDAFFError = PyErr_NewException( "daffCppInterface.error", NULL, NULL );
 	Py_INCREF( g_pDAFFError );
 
 	return pModule;
