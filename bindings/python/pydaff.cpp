@@ -204,12 +204,17 @@ static void GetRecordPython(DAFFReader* pReader, int iRecordIndex, PyObject* &li
 			PyObject* listChannel = PyList_New(0);
 
 			// Get the impulse response
-			float* fImpulseResponse;
+			float* fImpulseResponse = NULL;;
+			fImpulseResponse = new float[iFilterLength];
 			pContent->getFilterCoeffs(iRecordIndex, c, fImpulseResponse);
 
 			// Append it to current channel list
 			for (int i = 0; i < iFilterLength; i++)
 				PyList_Append(listChannel, PyFloat_FromDouble(fImpulseResponse[i]));
+
+			// Freeing memory
+			delete[] fImpulseResponse;
+			fImpulseResponse = NULL;
 
 			// Append channel List to result List
 			PyList_Append(listResult, listChannel);
@@ -230,12 +235,17 @@ static void GetRecordPython(DAFFReader* pReader, int iRecordIndex, PyObject* &li
 			PyObject* listChannel = PyList_New(0);
 
 			// Get the magnitude spectrum
-			float* fMagnitudes;
+			float* fMagnitudes = NULL;
+			fMagnitudes = new float[iNumFreqs];
 			pContent->getMagnitudes(iRecordIndex, c, fMagnitudes);
 
 			// Append it to current channel list
 			for (int i = 0; i < iNumFreqs; i++)
 				PyList_Append(listChannel, PyFloat_FromDouble(fMagnitudes[i]));
+
+			// Freeing memory
+			delete[] fMagnitudes;
+			fMagnitudes = NULL;
 
 			// Append channel List to result List
 			PyList_Append(listResult, listChannel);
@@ -255,12 +265,17 @@ static void GetRecordPython(DAFFReader* pReader, int iRecordIndex, PyObject* &li
 			PyObject* listChannel = PyList_New(0);
 
 			// Get the phase coefficients
-			float* fPhases;
+			float* fPhases = NULL;
+			fPhases = new float[iNumFreqs];
 			pContent->getPhases(iRecordIndex, c, fPhases);
 
 			// Append it to current channel list
 			for (int i = 0; i < iNumFreqs; i++)
 				PyList_Append(listChannel, PyFloat_FromDouble(fPhases[i]));
+
+			// Freeing memory
+			delete[] fPhases;
+			fPhases = NULL;
 
 			// Append channel List to result List
 			PyList_Append(listResult, listChannel);
@@ -280,7 +295,8 @@ static void GetRecordPython(DAFFReader* pReader, int iRecordIndex, PyObject* &li
 			PyObject* listChannel = PyList_New(0);
 
 			// Get the impulse response
-			float* fCoeffs;
+			float* fCoeffs = NULL;
+			fCoeffs = new float[iNumFreqs];
 			pContent->getCoefficientsRI(iRecordIndex, c, fCoeffs);
 
 			// Append it to current channel list. Even indexes are real and odd indexes are imaginary.
@@ -288,6 +304,10 @@ static void GetRecordPython(DAFFReader* pReader, int iRecordIndex, PyObject* &li
 			{
 				PyList_Append(listChannel, PyComplex_FromDoubles(fCoeffs[2*i], fCoeffs[2*i+1]));
 			}
+
+			// Freeing memory
+			delete[] fCoeffs;
+			fCoeffs = NULL;
 
 			// Append channel List to result List
 			PyList_Append(listResult, listChannel);
@@ -307,7 +327,8 @@ static void GetRecordPython(DAFFReader* pReader, int iRecordIndex, PyObject* &li
 			PyObject* listChannel = PyList_New(0);
 
 			// Get the impulse response
-			float* fDFTCoeffs;
+			float* fDFTCoeffs = NULL;
+			fDFTCoeffs = new float[iNumDFTCoeffs];
 			pContent->getDFTCoeffs(iRecordIndex, c, fDFTCoeffs);
 
 			// Append it to current channel list. Even indexes are real and odd indexes are imaginary.
@@ -315,6 +336,10 @@ static void GetRecordPython(DAFFReader* pReader, int iRecordIndex, PyObject* &li
 			{
 				PyList_Append(listChannel, PyComplex_FromDoubles(fDFTCoeffs[2 * i], fDFTCoeffs[2 * i + 1]));
 			}
+
+			// Freeing memory
+			delete[] fDFTCoeffs;
+			fDFTCoeffs = NULL;
 
 			// Append channel List to result List
 			PyList_Append(listResult, listChannel);
