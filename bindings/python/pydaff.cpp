@@ -148,7 +148,7 @@ static PyObject* daff_nearest_neighbour_record( PyObject*, PyObject** ppArgs, Py
 {
 	// Get the record of the nearest neighbour
 	static const char * const _keywords[] = { "index", "view", "angle1", "angle2", NULL };
-	static _PyArg_Parser _parser = { "iidd:nearest_neighbour_index", _keywords, 0 };
+	static _PyArg_Parser _parser = { "iidd:nearest_neighbour_record", _keywords, 0 };
 	int iHandle = -1;
 	int iView;
 	double dAngle1Deg;
@@ -179,6 +179,41 @@ static PyObject* daff_nearest_neighbour_record( PyObject*, PyObject** ppArgs, Py
 
 	}
 	
+	return record;
+}
+
+static PyObject* daff_record(PyObject*, PyObject** ppArgs, Py_ssize_t nArgs, PyObject* pKeywordNames)
+{
+	// Get the record of the given record index
+	static const char * const _keywords[] = { "index", "recordIndex", NULL };
+	static _PyArg_Parser _parser = { "ii:record", _keywords, 0 };
+	int iHandle = -1;
+	int iRecordIndex;
+
+
+	// Initialize a new list
+	PyObject* record = PyList_New(0);
+
+	if (!_PyArg_ParseStack(ppArgs, nArgs, pKeywordNames, &_parser, &iHandle, &iRecordIndex))
+		return NULL;
+
+	if (!ValidHandle(iHandle))
+	{
+		PyErr_SetString(PyExc_ConnectionError, std::string("Invalid DAFF handle").c_str());
+		return NULL;
+	}
+	else
+	{
+		DAFFReader* pReader = g_mReader[iHandle];
+
+		//Get the record and set the record list
+		GetRecordPython(pReader, iRecordIndex, record);
+
+		//Return the record of the nearest neighbour
+		return record;
+
+	}
+
 	return record;
 }
 
@@ -642,7 +677,8 @@ static PyMethodDef daff_methods[] =
 	{ "open", ( PyCFunction ) daff_open, METH_FASTCALL, open_doc },
 	{ "close", ( PyCFunction ) daff_close, METH_FASTCALL, no_doc },
 	{ "nearest_neighbour_index", ( PyCFunction ) daff_nearest_neighbour_index, METH_FASTCALL, no_doc },
-	{ "nearest_neighbour_record", ( PyCFunction ) daff_nearest_neighbour_record, METH_FASTCALL, no_doc },
+	{ "nearest_neighbour_record", (PyCFunction)daff_nearest_neighbour_record, METH_FASTCALL, no_doc },
+	{ "record", ( PyCFunction ) daff_record, METH_FASTCALL, no_doc },
 	{ "content_type", ( PyCFunction ) daff_content_type, METH_FASTCALL, no_doc },
 	{ "content_type_str", ( PyCFunction ) daff_content_type_str, METH_FASTCALL, no_doc },
 	{ "metadata", ( PyCFunction ) daff_metadata, METH_FASTCALL, no_doc },
