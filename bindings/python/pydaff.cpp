@@ -495,15 +495,15 @@ static PyObject* daff_properties(PyObject*, PyObject** ppArgs, Py_ssize_t nArgs,
 		// --= Create a Python dictionary of the property fields =----------
 
 		// Filename
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("filename"), PyUnicode_FromString(pReader->getFilename().c_str()));
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("Filename"), PyUnicode_FromString(pReader->getFilename().c_str()));
 
 		// File format version
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("fileFormatVersion"), PyLong_FromLong(pReader->getFileFormatVersion()));
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("FileFormatVersion"), PyLong_FromLong(pReader->getFileFormatVersion()));
 
 		// Content type
 		int iContentType = pReader->getContentType();
 		std::string sContentType = DAFFUtils::StrShortContentType(iContentType);
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("contentType"), PyUnicode_FromString(sContentType.c_str()));
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("ContentType"), PyUnicode_FromString(sContentType.c_str()));
 
 		// Quantization
 		int iQuantization = pProps->getQuantization();
@@ -514,14 +514,14 @@ static PyObject* daff_properties(PyObject*, PyObject** ppArgs, Py_ssize_t nArgs,
 			sQuantization = "int24";
 		if (iQuantization == DAFF_FLOAT32)
 			sQuantization = "float32";
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("quantization"), PyUnicode_FromString(sQuantization.c_str()));
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("Quantization"), PyUnicode_FromString(sQuantization.c_str()));
 
 		// Number of channels
 		int iChannels = pProps->getNumberOfChannels();
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("numChannels"), PyLong_FromLong(iChannels));
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("NumChannels"), PyLong_FromLong(iChannels));
 
 		// Number of records
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("numRecords"), PyLong_FromLong(pProps->getNumberOfRecords()));
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("NumRecords"), PyLong_FromLong(pProps->getNumberOfRecords()));
 
 		// Channel labels (python list of strings)
 		PyObject* pyChannelLabels = PyList_New(0);
@@ -530,14 +530,14 @@ static PyObject* daff_properties(PyObject*, PyObject** ppArgs, Py_ssize_t nArgs,
 			if (!pProps->getChannelLabel(c).empty())
 				PyList_Append(pyChannelLabels, PyUnicode_FromString(pProps->getChannelLabel(c).c_str()));
 		}
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("channelLabels"), pyChannelLabels);
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("ChannelLabels"), pyChannelLabels);
 
 
 		// Alpha points 
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("alphaPoints"), PyLong_FromLong(pProps->getAlphaPoints()));
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("AlphaPoints"), PyLong_FromLong(pProps->getAlphaPoints()));
 
 		// Alpha resolution
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("alphaResolution"), PyFloat_FromDouble(pProps->getAlphaResolution()));
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("AlphaResolution"), PyFloat_FromDouble(pProps->getAlphaResolution()));
 
 		// Alpha range
 		PyObject* pyAlphaRange = PyList_New(0);
@@ -545,13 +545,13 @@ static PyObject* daff_properties(PyObject*, PyObject** ppArgs, Py_ssize_t nArgs,
 		float alphaEnd = pProps->getAlphaEnd();
 		PyList_Append(pyAlphaRange, PyFloat_FromDouble(alphaStart));
 		PyList_Append(pyAlphaRange, PyFloat_FromDouble(alphaEnd));
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("alphaRange"), pyAlphaRange);
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("AlphaRange"), pyAlphaRange);
 
 		// Beta points 
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("betaPoints"), PyLong_FromLong(pProps->getBetaPoints()));
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("BetaPoints"), PyLong_FromLong(pProps->getBetaPoints()));
 
 		// Beta resolution
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("betaResolution"), PyFloat_FromDouble(pProps->getBetaResolution()));
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("BetaResolution"), PyFloat_FromDouble(pProps->getBetaResolution()));
 
 		// Beta range
 		PyObject* pyBetaRange = PyList_New(0);
@@ -559,7 +559,7 @@ static PyObject* daff_properties(PyObject*, PyObject** ppArgs, Py_ssize_t nArgs,
 		float betaEnd = pProps->getBetaEnd();
 		PyList_Append(pyBetaRange, PyFloat_FromDouble(betaStart));
 		PyList_Append(pyBetaRange, PyFloat_FromDouble(betaEnd));
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("betaRange"), pyBetaRange);
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("BetaRange"), pyBetaRange);
 
 		// Orientation
 		DAFFOrientationYPR orient;
@@ -568,10 +568,10 @@ static PyObject* daff_properties(PyObject*, PyObject** ppArgs, Py_ssize_t nArgs,
 		float fYawAngle = orient.fYawAngleDeg;
 		float fPitchAngle = orient.fPitchAngleDeg;
 		float fRollAngle = orient.fRollAngleDeg;
-		PyDict_SetItem(pyOrientation, PyUnicode_FromString("yawAngle"), PyFloat_FromDouble(fYawAngle));
-		PyDict_SetItem(pyOrientation, PyUnicode_FromString("pitchAngle"), PyFloat_FromDouble(fPitchAngle));
-		PyDict_SetItem(pyOrientation, PyUnicode_FromString("rollAngle"), PyFloat_FromDouble(fRollAngle));
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("orientation"), pyOrientation);
+		PyDict_SetItem(pyOrientation, PyUnicode_FromString("YawAngle"), PyFloat_FromDouble(fYawAngle));
+		PyDict_SetItem(pyOrientation, PyUnicode_FromString("PitchAngle"), PyFloat_FromDouble(fPitchAngle));
+		PyDict_SetItem(pyOrientation, PyUnicode_FromString("RollAngle"), PyFloat_FromDouble(fRollAngle));
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("Orientation"), pyOrientation);
 
 		// Default orientation
 		PyObject* pyDefOrientation = PyDict_New();
@@ -580,24 +580,24 @@ static PyObject* daff_properties(PyObject*, PyObject** ppArgs, Py_ssize_t nArgs,
 		fYawAngle = orient.fYawAngleDeg;
 		fPitchAngle = orient.fPitchAngleDeg;
 		fRollAngle = orient.fRollAngleDeg;
-		PyDict_SetItem(pyDefOrientation, PyUnicode_FromString("yawAngle"), PyFloat_FromDouble(fYawAngle));
-		PyDict_SetItem(pyDefOrientation, PyUnicode_FromString("pitchAngle"), PyFloat_FromDouble(fPitchAngle));
-		PyDict_SetItem(pyDefOrientation, PyUnicode_FromString("rollAngle"), PyFloat_FromDouble(fRollAngle));
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("orientationDefault"), pyDefOrientation);
+		PyDict_SetItem(pyDefOrientation, PyUnicode_FromString("YawAngle"), PyFloat_FromDouble(fYawAngle));
+		PyDict_SetItem(pyDefOrientation, PyUnicode_FromString("PitchAngle"), PyFloat_FromDouble(fPitchAngle));
+		PyDict_SetItem(pyDefOrientation, PyUnicode_FromString("RollAngle"), PyFloat_FromDouble(fRollAngle));
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("OrientationDefault"), pyDefOrientation);
 
 
 		// Full sphere
-		PyDict_SetItem(pyProperties, PyUnicode_FromString("fullSphere"), PyBool_FromLong(pProps->coversFullSphere()));
+		PyDict_SetItem(pyProperties, PyUnicode_FromString("FullSphere"), PyBool_FromLong(pProps->coversFullSphere()));
 		
 		if (iContentType == DAFF_IMPULSE_RESPONSE)
 		{
 			DAFFContentIR* pContent = dynamic_cast< DAFFContentIR* >(pReader->getContent());
 
 			// Samplerate
-			PyDict_SetItem(pyProperties, PyUnicode_FromString("samplerate"), PyFloat_FromDouble(pContent->getSamplerate()));
+			PyDict_SetItem(pyProperties, PyUnicode_FromString("Samplerate"), PyFloat_FromDouble(pContent->getSamplerate()));
 
 			// Filter length
-			PyDict_SetItem(pyProperties, PyUnicode_FromString("filterLength"), PyLong_FromLong(pContent->getFilterLength()));
+			PyDict_SetItem(pyProperties, PyUnicode_FromString("FilterLength"), PyLong_FromLong(pContent->getFilterLength()));
 		}
 		else if (iContentType == DAFF_MAGNITUDE_SPECTRUM || iContentType == DAFF_PHASE_SPECTRUM || iContentType == DAFF_MAGNITUDE_PHASE_SPECTRUM)
 		{
@@ -605,24 +605,24 @@ static PyObject* daff_properties(PyObject*, PyObject** ppArgs, Py_ssize_t nArgs,
 
 			// Number of frequencies
 			int iNumFreqs = pContent->getNumFrequencies();
-			PyDict_SetItem(pyProperties, PyUnicode_FromString("numFreqs"), PyLong_FromLong(iNumFreqs));
+			PyDict_SetItem(pyProperties, PyUnicode_FromString("NumFreqs"), PyLong_FromLong(iNumFreqs));
 
 			// Frequencies
 			PyObject* pyFrequencies = PyList_New(0);
 			const std::vector<float>& vfFreqs = pContent->getFrequencies();
 			for (int i = 0; i < iNumFreqs; i++)
 				PyList_Append(pyFrequencies, PyFloat_FromDouble(vfFreqs[i]));
-			PyDict_SetItem(pyProperties, PyUnicode_FromString("freqs"), pyFrequencies);
+			PyDict_SetItem(pyProperties, PyUnicode_FromString("Frequencies"), pyFrequencies);
 		}
 		else if (iContentType == DAFF_DFT_SPECTRUM) 
 		{
 			DAFFContentDFT* pContent = dynamic_cast< DAFFContentDFT* >(pReader->getContent());
 
-			PyDict_SetItem(pyProperties, PyUnicode_FromString("transformSize"), PyLong_FromLong(pContent->getTransformSize()));
-			PyDict_SetItem(pyProperties, PyUnicode_FromString("numDFTCoeffs"), PyLong_FromLong(pContent->getNumDFTCoeffs()));
-			PyDict_SetItem(pyProperties, PyUnicode_FromString("isSymmetric"), PyBool_FromLong(pContent->isSymmetric()));
-			PyDict_SetItem(pyProperties, PyUnicode_FromString("samplerate"), PyFloat_FromDouble(pContent->getSamplerate()));
-			PyDict_SetItem(pyProperties, PyUnicode_FromString("frequencyBandwidth"), PyFloat_FromDouble(pContent->getFrequencyBandwidth()));
+			PyDict_SetItem(pyProperties, PyUnicode_FromString("TransformSize"), PyLong_FromLong(pContent->getTransformSize()));
+			PyDict_SetItem(pyProperties, PyUnicode_FromString("NumDFTCoeffs"), PyLong_FromLong(pContent->getNumDFTCoeffs()));
+			PyDict_SetItem(pyProperties, PyUnicode_FromString("IsSymmetric"), PyBool_FromLong(pContent->isSymmetric()));
+			PyDict_SetItem(pyProperties, PyUnicode_FromString("Samplerate"), PyFloat_FromDouble(pContent->getSamplerate()));
+			PyDict_SetItem(pyProperties, PyUnicode_FromString("FrequencyBandwidth"), PyFloat_FromDouble(pContent->getFrequencyBandwidth()));
 		}
 
 
