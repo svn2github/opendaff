@@ -14,11 +14,11 @@ endif( )
 
 add_definitions( -DPy_NO_ENABLE_SHARED )
 
-add_library( pydaff STATIC "pydaff.cpp" "pydaffdoc.hpp" "MANIFEST.in" "setup_with_lib.py" )# Only add library here to check if it compiles in your preferred build env. CMake will run Python distutils to actually compile the extension, see below. 
+add_library( pydaffCppInterface STATIC "pydaff.cpp" "pydaffdoc.hpp" "MANIFEST.in" "setup_with_lib.py" )# Only add library here to check if it compiles in your preferred build env. CMake will run Python distutils to actually compile the extension, see below. 
 
-target_link_libraries( pydaff DAFF )
+target_link_libraries( pydaffCppInterface DAFF )
 
-set_property( TARGET pydaff PROPERTY FOLDER "Bindings/Python" )
+set_property( TARGET pydaffCppInterface PROPERTY FOLDER "Bindings/Python" )
 
 # Run distutils after (useless) build in your dev env to compile the Python extension into 'dist' folder
 set( OPENDAFF_LIBRARY_DIRS "${CMAKE_BINARY_DIR}/Release" )
@@ -28,7 +28,7 @@ if( NOT WIN32 )
 	set( BATCH_SCRIPT_EXTENSION "sh" )
 endif( )
 set( BATCH_SCRIPT_TYPE distutils_build_python_daff_with_lib )
-add_custom_command( TARGET pydaff POST_BUILD COMMAND "${BATCH_SCRIPT_TYPE}.${BATCH_SCRIPT_EXTENSION}" WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" COMMENT "Running distutils" VERBATIM )
+add_custom_command( TARGET pydaffCppInterface POST_BUILD COMMAND "${BATCH_SCRIPT_TYPE}.${BATCH_SCRIPT_EXTENSION}" WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" COMMENT "Running distutils" VERBATIM )
 
 
 # install by copying DLL/SO next to python extension
