@@ -25,3 +25,12 @@ You should also have received a [copy of the License](LICENSE.md) with the OpenD
 
 CMake generates python setup scripts for the `distutils` package manager.
 To create the Python bindings and let the package manager compile the C++ code, run `python setup.py build`. In case you want to link against the DAFF library that has already been compiled, run `python setup_with_lib.py build`. In case you want to install the scripts into your system, set the target to `install`.
+
+
+For Windows users and for testing, use the batch files `distutils_build_python_daff.bat` or `distutils_build_python_daff_with_lib.bat` that run distutils calls including clean up and installation into a portable `dist` folder.
+
+
+## Using DAFF in Python
+
+@todo
+
