@@ -32,5 +32,8 @@ For Windows users and for testing, use the batch files `distutils_build_python_d
 
 ## Using DAFF in Python
 
-@todo
+The easiest way to use DAFF in Python is to use the `DAFF` class located in `..\..\python\DAFF.py`.
+To import the class into your project, write the line `from DAFF import DAFF`.
+A `DAFF` object can be created with the path of an OpenDAFF file as a parameter. Thereafter its methods and properties can be easily accessed.
 
+In case you want directly access the binded functions, you must import `daffCppInterface` located in `.\dist\Lib\site-packages`. The function `daffCppInterface.open` returns a handle which must be passed as the first parameter for the other binded functions.
