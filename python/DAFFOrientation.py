@@ -15,7 +15,6 @@ class DAFFOrientation():
     def __repr__(self):
         return repr(self.__orientationDict);
 
-
     # Get the PitchAngle
     @property
     def PitchAngle(self):

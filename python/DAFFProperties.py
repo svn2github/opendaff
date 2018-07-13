@@ -125,7 +125,7 @@ class DAFFPropertiesIR(DAFFProperties):
     def __init__(self, index):
         DAFFProperties.__init__(self, index);
         self.__samplerate = self._propertyDict['Samplerate'];
-        self.__filterLength = self._propertyDict['SilterLength'];    
+        self.__filterLength = self._propertyDict['FilterLength'];    
         
     # Get the Samplerate
     @property

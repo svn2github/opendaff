@@ -7,7 +7,6 @@ import daffCppInterface;
 from DAFFProperties import DAFFPropertiesIR
 from DAFFProperties import DAFFPropertiesSpectrum
 from DAFFProperties import DAFFPropertiesDFTSpectrum
-from DAFFMetadata import DAFFMetadata
 
 
 # The class for the OpenDAFF objects
