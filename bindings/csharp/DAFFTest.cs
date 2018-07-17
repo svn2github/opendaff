@@ -17,15 +17,15 @@ namespace DAFF
         {
             string FilePath;
             if (args.Length == 0)
-                FilePath = "ITA-Kunstkopf_HRIR_AP11_Pressure_Equalized_3x3_256.v17.ir.daff";
+                FilePath = "../content/matlab/ExampleLowPass6dBOmni.ms.daff";
             else
                 FilePath = args[0];
-            
+
             Console.WriteLine("Attempting to open DAFF file from path " + FilePath);
 
             DAFFReader MyDAFFReader = new DAFFReader();
-            if( !MyDAFFReader.Load(FilePath) )
-                Console.WriteLine( "Could not load DAFF file from path " + FilePath);
+            if (!MyDAFFReader.Load(FilePath))
+                Console.WriteLine("Could not load DAFF file from path " + FilePath);
 
             Console.WriteLine("DAFF content type is " + MyDAFFReader.GetContentType());
 
@@ -35,12 +35,15 @@ namespace DAFF
                 int RecordIndex = HRIR.GetNearestNeighbourRecordIndex(-90, 13);
                 float[] HRIR_L = HRIR.GetRecordData(RecordIndex, 0);
                 float[] HRIR_R = HRIR.GetRecordData(RecordIndex, 1);
+                Console.WriteLine("HRIR [L]: " + HRIR_L);
+                Console.WriteLine("HRIR [R]: " + HRIR_R);
             }
-            else if(MyDAFFReader.GetContentType() == ContentType.MagnitudeSpectrum)
+            else if (MyDAFFReader.GetContentType() == ContentType.MagnitudeSpectrum)
             {
                 MS Directivity = MyDAFFReader.GetContentMS();
                 int RecordIndex = Directivity.GetNearestNeighbourRecordIndex(45, -11);
                 float[] DirectivitySpectrum = Directivity.GetRecordData(RecordIndex, 0);
+                Console.WriteLine("Directivity spectrum: " + DirectivitySpectrum);
             }
             else
             {

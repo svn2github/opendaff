@@ -10,6 +10,7 @@ class CUnmanagedDAFFHandle
 {
 public:
 	inline CUnmanagedDAFFHandle()
+		: pReader( nullptr )
 	{
 	};
 
@@ -28,9 +29,9 @@ CUnmanagedDAFFHandle* NativeDAFFCreate()
 	return pH;
 }
 
-void NativeDAFFDispose( CUnmanagedDAFFHandle* pReader )
+void NativeDAFFDispose( CUnmanagedDAFFHandle* pDAFFHandle )
 {
-	delete pReader;
+	delete pDAFFHandle;
 }
 
 bool NativeDAFFLoad( CUnmanagedDAFFHandle* pDAFFHandle, const char* pcFilePath )
@@ -102,6 +103,7 @@ bool NativeDAFFContentIRGetRecordData( DAFFContentIR* pDAFFContent, const int iI
 {
 	if( pDAFFContent == nullptr )
 		return false;
+
 	pDAFFContent->getFilterCoeffs( iIndex, iChannel, pcSamples );
 	return true;
 }
@@ -117,7 +119,7 @@ DAFFContentMS* NativeDAFFGetContentMS( CUnmanagedDAFFHandle* pDAFFHandle )
 {
 	if( !pDAFFHandle->pReader->isValid() )
 		return nullptr;
-	if( pDAFFHandle->pReader->getContentType() != DAFF_CONTENT_TYPES::DAFF_IMPULSE_RESPONSE )
+	if( pDAFFHandle->pReader->getContentType() != DAFF_CONTENT_TYPES::DAFF_MAGNITUDE_SPECTRUM )
 		return nullptr;
 
 	return dynamic_cast< DAFFContentMS* >( pDAFFHandle->pReader->getContent() );
@@ -149,6 +151,7 @@ bool NativeDAFFContentMSGetRecordData( DAFFContentMS* pDAFFContent, const int iI
 {
 	if( pDAFFContent == nullptr )
 		return false;
+
 	pDAFFContent->getMagnitudes( iIndex, iChannel, pcSamples );
 	return true;
 }

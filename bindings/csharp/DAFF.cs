@@ -181,7 +181,8 @@ namespace DAFF
         {
             int NumSamples = GetLength();
 			float[] Samples = new float[NumSamples];
-            NativeDAFFContentIRGetRecordData(_DAFFIRHandle, RecordIndex, ChannelIndex, out Samples);
+            if (!NativeDAFFContentIRGetRecordData(_DAFFIRHandle, RecordIndex, ChannelIndex, Samples))
+                return null;
 			return Samples;
         }
 
@@ -195,7 +196,7 @@ namespace DAFF
         private static extern int NativeDAFFContentIRGetRecordCoords(IntPtr pHandle, int iIndex, ref double dAzimuth, ref double dElevation);
 
         [DllImport("DAFFCSWrapper")]
-        private static extern void NativeDAFFContentIRGetRecordData(IntPtr pHandle, int iReordIndex, int iChannelIndex, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] out float[] pfSamples);
+        private static extern bool NativeDAFFContentIRGetRecordData(IntPtr pHandle, int iReordIndex, int iChannelIndex, [Out] float[] pfSamples);
 
         [DllImport("DAFFCSWrapper")]
         private static extern int NativeDAFFContentIRGetLength(IntPtr pHandle);
@@ -270,7 +271,8 @@ namespace DAFF
         {
             int NumMags = GetLength();
             float[] Magnitudes = new float[NumMags];
-            NativeDAFFContentMSGetRecordData(_DAFFMSHandle, RecordIndex, ChannelIndex, out Magnitudes);
+            if (!NativeDAFFContentMSGetRecordData(_DAFFMSHandle, RecordIndex, ChannelIndex, Magnitudes))
+                return null;
 			return Magnitudes;
         }
 
@@ -284,7 +286,7 @@ namespace DAFF
         private static extern int NativeDAFFContentMSGetRecordCoords(IntPtr pHandle, int iIndex, ref double dAzimuth, ref double dElevation);
 
         [DllImport("DAFFCSWrapper")]
-        private static extern void NativeDAFFContentMSGetRecordData(IntPtr pHandle, int iIndex, int iChannelIndex, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] out float[] fMags);
+        private static extern bool NativeDAFFContentMSGetRecordData(IntPtr pHandle, int iIndex, int iChannelIndex, [Out] float[] fMags);
 
         [DllImport("DAFFCSWrapper")]
         private static extern int NativeDAFFContentMSGetLength(IntPtr pHandle);
