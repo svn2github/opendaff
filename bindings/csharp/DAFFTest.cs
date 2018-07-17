@@ -33,17 +33,14 @@ namespace DAFF
             {
                 IR HRIR = MyDAFFReader.GetContentIR();
                 int RecordIndex = HRIR.GetNearestNeighbourRecordIndex(-90, 13);
-                float[] HRIR_L;
-                float[] HRIR_R;
-                HRIR.GetRecordData(RecordIndex, 0, out HRIR_L);
-                HRIR.GetRecordData(RecordIndex, 1, out HRIR_R);
+                float[] HRIR_L = HRIR.GetRecordData(RecordIndex, 0);
+                float[] HRIR_R = HRIR.GetRecordData(RecordIndex, 1);
             }
             else if(MyDAFFReader.GetContentType() == ContentType.MagnitudeSpectrum)
             {
                 MS Directivity = MyDAFFReader.GetContentMS();
                 int RecordIndex = Directivity.GetNearestNeighbourRecordIndex(45, -11);
-                float[] DirectivitySpectrum;
-                Directivity.GetRecordData(RecordIndex, 0, out DirectivitySpectrum);
+                float[] DirectivitySpectrum = Directivity.GetRecordData(RecordIndex, 0);
             }
             else
             {

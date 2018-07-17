@@ -215,6 +215,7 @@ int DAFFReaderImpl::deserialize( char* pDAFFDataBuffer )
 
 	return DAFF_NO_ERROR;
 }
+
 int DAFFReaderImpl::openFile( const std::string& sFilePath )
 {
 	if( m_bDAFFObjectValid )

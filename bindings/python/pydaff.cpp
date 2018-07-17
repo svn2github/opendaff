@@ -76,7 +76,7 @@ static PyObject* daff_open( PyObject*, PyObject** ppArgs, Py_ssize_t nArgs, PyOb
 
 	delete pReader;
 
-	PyErr_SetString( PyExc_ConnectionError, std::string( "Could not iopen " + sFilePath ).c_str() );
+	PyErr_SetString( PyExc_ConnectionError, std::string( "Could not open " + sFilePath ).c_str() );
 	return NULL;
 }
 

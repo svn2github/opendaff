@@ -4,7 +4,7 @@
 *  OpenDAFF - A free, open source software package for directional audio data
 *  OpenDAFF is distributed under the terms of the GNU Lesser Public License (LGPL)
 *
-*  Copyright (c) Institute of Technical Acoustics, RWTH Aachen University, 2009-2016
+*  Copyright (c) Institute of Technical Acoustics (ITA), RWTH Aachen University, 2009-2016
 *
 *  ------------------------------------------------------------------------------------
 *
